@@ -21,8 +21,9 @@ class LotController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(ProduitRequest $request)
+    public function index(Request $request)
     {
+
         $lotsAll = Produit::with('lot')->with('etiquette')->withCount('voies')->get();
 
         //selectionner les lots 

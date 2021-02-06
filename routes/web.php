@@ -19,6 +19,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/moi', function () {
+	dd(App::getLocale() ) ;
+    return view('dashboard');
+});
+
 Route::middleware('auth')->group(function(){
 Route::resource('lots', LotController::class);
 Route::resource('voies', VoieController::class);
@@ -26,7 +31,7 @@ Route::resource('tranches', TrancheController::class);
 Route::resource('immeubles', ImmeubleController::class);
 Route::resource('etiquettes', EtiquetteController::class);
 
-Route::patch('/lots', [LotController::class, 'updateBatch']);
+//Route::patch('/lots', [LotController::class, 'updateBatch']);
 
 
 
