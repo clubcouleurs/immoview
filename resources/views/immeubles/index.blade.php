@@ -13,10 +13,10 @@
               Ajouter une nouvelle immeuble 
             </h2>
 
-            <form action=@isset ($immeuble->description){{"/immeubles/".$immeuble->id}}@else "/immeubles" @endisset
+            <form action=@isset ($immeuble){{"/immeubles/".$immeuble->id}}@else "/immeubles" @endisset
             method="POST">
               @csrf
-              @isset ($immeuble->description)
+              @isset ($immeuble)
                 @method('PATCH')
               @endisset
 
@@ -31,7 +31,7 @@
                   placeholder="Description ou observations concernant cette tranche"
                   name="description"
 
-                >@isset ($immeuble->description){{$immeuble->description}}@endisset</textarea>
+                >@isset ($immeuble){{$immeuble->description}}@endisset</textarea>
 
                     @error('description')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
@@ -48,7 +48,13 @@
                   name="tranche_id"
                 >
                 @foreach ($tranches as $tranche)
-                  <option value="{{ $tranche->id }}">Tranche {{$tranche->id}}</option>
+                  <option value="{{ $tranche->id }}"
+                    @isset($immeuble)
+                      @if ($immeuble->tranche_id == $tranche->id)
+                        selected
+                      @endif
+                    @endisset                      
+                    >Tranche {{$tranche->id}}</option>
                 @endforeach
 
                 </select>
@@ -58,7 +64,7 @@
 
 
                 <div class="block mt-4 text-sm">
-                  @isset($immeuble->description)
+                  @isset($immeuble)
                    <button
                     class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-green-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-green-800 focus:outline-none focus:shadow-outline-purple"
                     type="submit"

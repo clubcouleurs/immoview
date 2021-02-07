@@ -122,7 +122,6 @@
                   value="{{$lot->produit->prixM2Definitif}}"
 
                   step="0.01"
-                  required
                 />
                     @error('prixM2Definitif')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
