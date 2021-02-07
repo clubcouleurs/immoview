@@ -12,7 +12,8 @@
             >
               Ajouter une nouvelle immeuble 
             </h2>
-            <form action="/immeubles/@isset ($immeuble->description){{$immeuble->id}}@endisset"
+
+            <form action=@isset ($immeuble->description){{"/immeubles/".$immeuble->id}}@else "/immeubles" @endisset
             method="POST">
               @csrf
               @isset ($immeuble->description)

@@ -30,14 +30,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css"
     />
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"
-      defer
-    ></script>
-    <script src="{{config('app.url')}}/js/charts-lines.js" defer></script>
-    <script src="{{config('app.url')}}/js/charts-pie.js" defer></script>
-    <script src="{{config('app.url')}}/js/charts-bars.js" defer></script>
-    <script src="{{config('app.url')}}/js/charts-polar.js" defer></script>
+
 
     
   <!--<link href="css/tailwind.output.css" rel="stylesheet"> -->

@@ -761,4 +761,14 @@
 
           </div>
         </main>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"
+      defer
+    ></script>
+    <script src="{{config('app.url')}}/js/charts-lines.js" defer></script>
+    <script src="{{config('app.url')}}/js/charts-pie.js" defer></script>
+    <script src="{{config('app.url')}}/js/charts-bars.js" defer></script>
+    <script src="{{config('app.url')}}/js/charts-polar.js" defer></script>
+            
 </x-master>

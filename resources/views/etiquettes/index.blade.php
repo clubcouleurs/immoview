@@ -12,7 +12,8 @@
             >
               Ajouter une nouvelle Etiquette 
             </h2>
-            <form action="/etiquettes/@isset ($etiquette->label){{$etiquette->id}}@endisset"
+
+            <form action=@isset ($etiquette->label){{"/etiquettes/" . $etiquette->id}}@else "/etiquettes" @endisset
             method="POST">
               @csrf
               @isset ($etiquette->label)

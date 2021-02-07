@@ -13,7 +13,7 @@
             >
               Ajouter une nouvelle voie 
             </h2>
-            <form action="/voies/@isset ($voie->Largeur){{$voie->id}}@endisset"
+            <form action=@isset ($voie->Largeur){{"/voies/" . $voie->id}}@else "/voies" @endisset
             method="POST">
               @csrf
               @isset ($voie->Largeur)

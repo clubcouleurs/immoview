@@ -192,6 +192,12 @@ class LotController extends Controller
     public function updateBatch(ProduitRequest $Request)
     {
         dd($request['SearchByNum']) ;
+        
+        if (isset($request['SearchByNum']) && $request['SearchByNum'] != '' ) {
+            $numsLot = preg_split("/[\s,\.]+/", $request['SearchByNum']);
+            $numsLot = array_map('trim', $numsLot);
+            $lotsAll = $lotsAll->whereIn('lot.numLot', $numsLot);
+        }
 
         Produit::upsert([
             ['id' => 21, 'etiquette_id' => 3, 'prixM2Definitif' => 99],

@@ -12,7 +12,7 @@
             >
               Ajouter une nouvelle tranche 
             </h2>
-            <form action="/tranches/@isset ($tranche->description){{$tranche->id}}@endisset"
+            <form action=@isset($tranche->description){{"/tranches/" . $tranche->id}}@else "/tranches" @endisset
             method="POST">
               @csrf
               @isset ($tranche->description)
