@@ -4,7 +4,7 @@
             <h2
               class="my-6 text-4xl font-semibold text-gray-700 dark:text-gray-200"
             >
-              Récapitulatif des lots
+              Récapitulatif des dossiers
             </h2>
 <hr>  
             <!-- Cards -->
@@ -26,12 +26,12 @@
                   <p
                     class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
                   >
-                    Total Lots
+                    Total dossiers
                   </p>
                   <p
                     class="text-lg font-semibold text-gray-700 dark:text-gray-200"
                   >
-                    {{$totalLots}}
+                    {{$totalDossier}}
                   </p>
                 </div>
               </div>
@@ -143,8 +143,8 @@
             <!-- filtre -->
               <p class="text-sm text-gray-600 dark:text-gray-400 ml-2 mb-2">Filtres</p>   
 
-                <form action="/lots/">
-              @csrf
+                <form action="/dossiers">
+              
             <div
               class="flex items-center justify-between p-2 mb-2 text-sm font-semibold text-blue-600 bg-blue-100 rounded-lg shadow-sm focus:outline-none focus:shadow-outline-blue rounded-2xl"
               
@@ -152,7 +152,7 @@
               <div class="flex items-center gap-2">
                 <a
                   class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-2xl active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue"
-                  href="/lots/"
+                  href="/dossiers/"
                 >Tout</a>
 
                 <select
@@ -161,14 +161,7 @@
                 >
                   <option value="-">Tranche</option>
                 
-                @foreach($tranches as $tranche)
-                  <option value="{{$tranche->id}}"
-                    @if ( $SearchByTranche == $tranche->id)
-                    selected
-                    @endif
-                    >Tr {{$tranche->id}}
-                  </option>
-                @endforeach
+
 
 
                 </select>
@@ -205,15 +198,7 @@
                 >
                   <option value="-">Etat</option>
                 
-                
-                @foreach($etiquettes as $etiquette)
-                  <option value="{{$etiquette->id}}"
-                    @if ( $SearchByEtat == $etiquette->id)
-                    selected
-                    @endif
-                    > {{$etiquette->label}}
-                  </option>
-                @endforeach
+
               
                 </select>
                 <select
@@ -243,9 +228,9 @@
                 />
                 <input
                   class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input rounded-2xl"
-                  placeholder="Numéros de lot séparés par (,)"
+                  placeholder="Numéros de dossier séparés par (,)"
                   type="text"
-                  name="numsLot"
+                  name="num"
                   value="{{$SearchByNum}}"
                 />
 
@@ -264,117 +249,7 @@
             </div>
               </form>
 
-              <!-- actions groupées -->
-              <p class="text-sm text-gray-600 dark:text-gray-400 ml-2 mb-2">Actions groupées</p>   
-          <form action="/lots/" method="POST">
-            @csrf
-            @method('PATCH')
-            <input type="hidden" name="SearchByNum" value="{{ $SearchByNum }}">
-            <div
-              class="flex items-center justify-between p-2 mb-8 text-sm font-semibold text-red-600 bg-red-100 rounded-lg shadow-sm focus:outline-none focus:shadow-outline-blue rounded-2xl"
-              
-            >
-              <div class="flex items-center gap-2">
-               
-
-                <select
-                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
-                  name="tranche"
-                >
-                  <option value="-">Tranche</option>
-                
-                @foreach($tranches as $tranche)
-                  <option value="{{$tranche->id}}"
-                    @if ( $SearchByTranche == $tranche->id)
-                    selected
-                    @endif
-                    >Tr {{$tranche->id}}
-                  </option>
-                @endforeach
-
-
-                </select>
-                <select
-                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
-                  name="nombreFacadesLot"
-                >
-                  <option value="-">Façades </option>
-
-                  @for ($i = 0; $i < 3; $i++)
-                  <option value="{{$i+1}}"
-                    @if ( $SearchByFacade == ($i+1) )
-                    selected
-                    @endif
-                    >{{$i+1}} Façade(s)
-                  </option>
-                @endfor
-
-                </select>        
-                <select
-                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
-                  name="nombreEtagesLot"
-                >
-                  <option value="-">Etages</option>
-                
-                  <option value="1" @if ( $SearchByEtage == 1) selected @endif>R+1</option>
-                  <option value="2" @if ( $SearchByEtage == 2) selected @endif>R+2</option>
-                  <option value="3" @if ( $SearchByEtage == 3) selected @endif>R+3</option>
-              
-                </select>
-                <select
-                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
-                  name="etatProduit"
-                >
-                  <option value="-">Etat</option>
-                
-                
-                @foreach($etiquettes as $etiquette)
-                  <option value="{{$etiquette->id}}"
-                    @if ( $SearchByEtat == $etiquette->id)
-                    selected
-                    @endif
-                    > {{$etiquette->label}}
-                  </option>
-                @endforeach
-              
-                </select>
-                <select
-                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
-                  name="typeLot"
-                >
-                  <option value="-">Type</option>
-                
-                  <option value="Habitat"  @if ( $SearchByType == "Habitat") selected @endif>Habitat</option>
-                  <option value="Commercial" @if ( $SearchByType == "Commercial") selected @endif>Commercial</option>              
-                </select> 
-                <input
-                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input rounded-2xl"
-                  placeholder="prix min"
-                  type="number"
-                  step="0.1"
-                  name="minPrix"
-                  value={{$SearchByMin}}
-                />
-                <input
-                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input rounded-2xl"
-                  placeholder="prix max"
-                  type="number"
-                  step="0.1"
-                  name="maxPrix"
-                  value={{$SearchByMax}}
-                />
-
-
-                            <button
-                  class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-2xl active:bg-red-600 hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
-                  type="submit"
-                >
-                  Appliquer
-                </button>
-
-              </div>
-            </div>
-              </form>              
+         
 
             <!-- New Table -->
             <div class="w-full overflow-hidden rounded-lg shadow-xs">
@@ -384,14 +259,17 @@
                     <tr
                       class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
                     >
-                      <th class="px-4 py-3">N° du lot</th>
-                      <th class="px-4 py-3">Surface en m2</th>
-                      <th class="px-4 py-3">Prix m2 Définitif</th>
-                      <th class="px-4 py-3">Prix m2 Indicatif</th>
-                      <th class="px-4 py-3">Nombre de façades</th>
-                      <th class="px-4 py-3">Nombre d'etage</th>
-                      <th class="px-4 py-3">Etat</th>
-                      <th class="px-4 py-3">Type produit</th>
+                      <th class="px-4 py-3">N° du dossier</th>
+                      <th class="px-4 py-3">Date du dossier</th>
+                      <th class="px-4 py-3">Frais</th>
+                      <th class="px-4 py-3">Produit</th>
+                      <th class="px-4 py-3">Client</th>
+                      <th class="px-4 py-3">Commercial</th>
+                      <th class="px-4 py-3">Total Paiements</th>
+                      <th class="px-4 py-3">Total dû</th>
+                      <th class="px-4 py-3">Taux</th>
+
+                      <th class="px-4 py-3">Détail</th>
                       <th class="px-4 py-3">Actions</th>
 
 
@@ -401,7 +279,7 @@
                     class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800"
                   >
 
-                  @foreach ($lots as $produit)
+                  @foreach ($dossiers as $dossier)
                     <tr class="text-gray-700 dark:text-gray-400">
                       <td class="px-4 py-3">
                         <div class="flex items-center text-sm">
@@ -424,63 +302,58 @@
                           <div>
                            
                             <p class="font-semibold">
-                             <a href="/lots/{{ $produit->lot->id }}">
+                             <a href="/dossiers/{{ $dossier->id }}">
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-blue-700 bg-blue-100 rounded-full dark:bg-blue-700 dark:text-blue-100"
                         >                              
-                              {{ $produit->lot->numLot }} 
+                              {{ $dossier->num }} 
                         </span></a>
                             </p>
                             <p class="text-xs text-gray-600 dark:text-gray-400">
-                              Tranche {{ $produit->lot->tranche_id }}
+                               ---
                             </p>
                           </div>
                         </div>
                       </td>
                       <td class="px-4 py-3 text-sm">
-                        {{ $produit->lot->surfaceLot }} m<sup>2</sup>
+                        {{ $dossier->date }} 
                       </td>
                       <td class="px-4 py-3 text-xs">
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
                         >
-                          {{ $produit->prixM2Definitif }} Dhs
+                          {{ number_format($dossier->frais) }} Dhs
                         </span>
-                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                              Total : {{ number_format($produit->prixM2Definitif * $produit->lot->surfaceLot)}} Dhs
-                            </p>                         
+                        
                       </td>
                       <td class="px-4 py-3 text-xs">
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
                         >
-                          {{ $produit->prixM2Indicatif }} Dhs
+                          {{ $dossier->produit->type }}
                         </span>
-                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                              Total : {{ number_format($produit->prixM2Indicatif * $produit->lot->surfaceLot)}} Dhs
-                            </p>                        
+                         
                       </td>
                                                                   
                       <td class="px-4 py-3 text-xs">
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
                         >
-                        {{count($produit->voies)}}F-
-                        @foreach ($produit->voies as $voie)
-                        {{ $voie->Largeur }}
-                        @endforeach
-                           
+                        {{$dossier->client->nom}} {{$dossier->client->prenom}}                       
                         </span>
+                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                              CIN : {{ $dossier->client->cin }}
+                            </p>                         
                       </td>
                       <td class="px-4 py-3 text-sm">
-                        {{ $produit->lot->nombreEtagesLot }}
+                        {{ $dossier->user->name }}
                       </td>                      
                       <td class="px-4 py-3 text-sm">
                         <span
                           class="px-2 py-1 font-semibold leading-tight rounded-full dark:bg-green-700 dark:text-green-100
-                          @if ($produit->etatProduit == 'En stock')
+                          @if ($dossier->etatProduit == 'En stock')
                             text-green-700 bg-green-100
-                            @elseif ($produit->etatProduit == 'Bloqué')
+                            @elseif ($dossier->etatProduit == 'Bloqué')
                             text-white bg-gray-900
                             @else
                             text-red-200 bg-red-900
@@ -488,11 +361,46 @@
 
                           "
                         >
-                          {{ $produit->etiquette->label }}
+                          {{number_format($dossier->paiements->sum('montant'))}} Dhs
                         </span>
                       </td>
                       <td class="px-4 py-3 text-sm">
-                        {{ $produit->lot->typeLot }}
+                        <span
+                          class="px-2 py-1 font-semibold leading-tight rounded-full dark:bg-green-700 dark:text-green-100
+                          @if ($dossier->etatProduit == 'En stock')
+                            text-green-700 bg-green-100
+                            @elseif ($dossier->etatProduit == 'Bloqué')
+                            text-white bg-gray-900
+                            @else
+                            text-red-200 bg-red-900
+                          @endif
+
+                          "
+                        >
+                           {{ number_format($dossier->produit->prixM2Definitif * $dossier->produit->lot->surfaceLot)}} Dhs
+                        </span>
+                      </td>     
+                      <td class="px-4 py-3 text-sm">
+                        <span
+                          class="px-2 py-1 font-semibold leading-tight rounded-full dark:bg-green-700 dark:text-green-100
+                          @if ($dossier->etatProduit == 'En stock')
+                            text-green-700 bg-green-100
+                            @elseif ($dossier->etatProduit == 'Bloqué')
+                            text-white bg-gray-900
+                            @else
+                            text-red-200 bg-red-900
+                          @endif
+
+                          "
+                        >
+                          {{
+                            round($dossier->paiements->sum('montant') * 100 /
+                            ($dossier->produit->prixM2Definitif * $dossier->produit->lot->surfaceLot), 2)
+                          }} %
+                        </span>
+                      </td>                                       
+                      <td class="px-4 py-3 text-sm">
+                        {{ $dossier->detail }}
                       </td>
 
                       <td class="px-4 py-3 text-sm">
@@ -502,7 +410,7 @@
                 <a
                   class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none focus:shadow-outline-gray"
                   aria-label="Like"
-                  href="/produits/{{ $produit->id }}/dossiers/create"
+                  href="/dossiers/{{$dossier->id}}/paiements"
                 >
                   <svg
                     class="w-4 h-4"
@@ -510,7 +418,7 @@
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
-<path d="M2,6 L0,6 L0,8 L2,8 L2,10 L4,10 L4,8 L6,8 L6,6 L4,6 L4,4 L2,4 L2,6 L2,6 Z M8.99999861,6.00166547 C8.99999861,4.34389141 10.3465151,3 11.9999972,3 C13.6568507,3 14.9999958,4.33902013 14.9999958,6.00166547 L14.9999958,7.99833453 C14.9999958,9.65610859 13.6534793,11 11.9999972,11 C10.3431437,11 8.99999861,9.66097987 8.99999861,7.99833453 L8.99999861,6.00166547 L8.99999861,6.00166547 Z M20.0000045,15.1405177 C17.6466165,13.7791553 14.914299,13 12,13 C9.08570101,13 6.35338349,13.7791553 3.99999555,15.1405177 L4,18 L20,18 L20,15.1405151 L20.0000045,15.1405177 L20.0000045,15.1405177 Z" id="Combined-Shape"></path>
+<path d="M0,3.99406028 C0,2.8927712 0.892622799,2 1.99508929,2 L17.0066023,2 C17.5552407,2 18,2.44386482 18,3 L18,4 L2,4 L2,5 L19.0066023,5 C19.5552407,5 20,5.44748943 20,5.99850233 L20,15.9972399 C20,17.1033337 19.1017876,18 18.0092049,18 L1.99079514,18 C0.891309342,18 0,17.1054862 0,16.0059397 L0,3.99406028 Z M16.5,13 C17.3284271,13 18,12.3284271 18,11.5 C18,10.6715729 17.3284271,10 16.5,10 C15.6715729,10 15,10.6715729 15,11.5 C15,12.3284271 15.6715729,13 16.5,13 Z" id="Combined-Shape"></path>
                   </svg>
                 </a>
 
@@ -521,7 +429,7 @@
                 <a
                   class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none focus:shadow-outline-gray"
                   aria-label="Like"
-                  href="/lots/{{ $produit->lot->id }}/edit"
+                  href="/dossiers/{{ $dossier->id }}/edit"
                 >
                   <svg
                     class="w-4 h-4"
@@ -535,7 +443,7 @@
 
             </div>
             <div>
-                        <form action="/lots/{{$produit->lot->id}}" method="POST">
+                        <form action="/dossiers/{{$dossier->id}}" method="POST">
                         @csrf
                         @method('DELETE')
                 <button
@@ -575,7 +483,7 @@
               <div
                 class="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800"
               >
-                {{$lots->links()}}
+                {{$dossiers->links()}}
               </div>
             </div>
 

@@ -20,7 +20,5 @@ class Lot extends Model
     public function tranche()
     {
         return $this->belongsTo(Tranche::class);
-    }    
-
-  
+    }      
 }

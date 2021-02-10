@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\DossierController;
 use App\Http\Controllers\EtiquetteController;
 use App\Http\Controllers\ImmeubleController;
 use App\Http\Controllers\LotController;
+use App\Http\Controllers\PaiementController;
 use App\Http\Controllers\TrancheController;
 use App\Http\Controllers\VoieController;
 use App\Models\Etiquette;
@@ -30,6 +32,13 @@ Route::resource('voies', VoieController::class);
 Route::resource('tranches', TrancheController::class);
 Route::resource('immeubles', ImmeubleController::class);
 Route::resource('etiquettes', EtiquetteController::class);
+
+Route::resource('dossiers', DossierController::class)->except([
+    'create'
+]);
+Route::get('/produits/{produit}/dossiers/create', [DossierController::class, 'create']);
+
+Route::get('/dossiers/{dossier}/paiements', [PaiementController::class, 'index']);
 
 //Route::patch('/lots', [LotController::class, 'updateBatch']);
 

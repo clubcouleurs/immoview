@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProduitRequest;
+use App\Http\Traits\PaginateTrait;
 use App\Models\Etiquette;
 use App\Models\Lot;
 use App\Models\Produit;
@@ -10,12 +11,11 @@ use App\Models\Tranche;
 use App\Models\Voie;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\DB;
 
 class LotController extends Controller
 {
+    use PaginateTrait ;
     /**
      * Display a listing of the resource.
      *
@@ -24,7 +24,7 @@ class LotController extends Controller
     public function index(Request $request)
     {
 
-        $lotsAll = Produit::with('lot')->with('etiquette')->withCount('voies')->get();
+        $lotsAll = Lot::with('produit')->with('etiquette')->withCount('voies')->get();
 
         //selectionner les lots 
         $lotsAll = $lotsAll->whereNotNull('lot.id' ); 
@@ -135,22 +135,27 @@ class LotController extends Controller
         $tranche = Tranche::findOrFail($request['tranche']) ;
         $etiquette = Etiquette::findOrFail($request['etatProduit']) ;
 
-        $produit = new Produit([
-        'etatProduit'       => $request['etatProduit'] ,
-        'prixM2Indicatif'    => $request['prixM2Indicatif'] ,
-        'prixM2Definitif'   => $request['prixM2Definitif']
-        ]) ;
-        $etiquette->produits()->save($produit) ;
-        $produit->voies()->attach($request['voies']) ;
+
         $lot = new Lot() ;
         $lot->numLot                = $request['numLot'];
         $lot->surfaceLot            = $request['surfaceLot'];
         $lot->typeLot               = $request['typeLot'];
         $lot->nombreEtagesLot       = $request['nombreEtagesLot'];
         $lot->descriptionLot        = $request['descriptionLot'];
-        $lot->produit_id            = $produit->id ;
         $lot->save();
         $tranche->lots()->save($lot) ;
+
+        $produit = new Produit([
+        'etatProduit'       => $request['etatProduit'] ,
+        'prixM2Indicatif'    => $request['prixM2Indicatif'] ,
+        'prixM2Definitif'   => $request['prixM2Definitif'],
+        'etiquette_id'   => $etiquette->id,
+
+        ]) ;
+        $lot->produit()->save($produit) ;
+        //$etiquette->produits()->save($produit) ;
+        $produit->voies()->attach($request['voies']) ;
+
 
         return redirect()->action([LotController::class, 'index']);
 
@@ -267,10 +272,5 @@ class LotController extends Controller
         
     }
 
-    public function paginate($items, $perPage = 15, $page = null, $options = [])
-    {
-        $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
-        $items = $items instanceof Collection ? $items : Collection::make($items);
-        return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
-    }    
+    
 }
