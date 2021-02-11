@@ -47,7 +47,7 @@
 <li class="relative px-6 py-3">
               <button
                 class="inline-flex items-center justify-between w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                @click="togglePagesMenu"
+                @click="toggleLotsMenu"
                 aria-haspopup="true"
               >
                 <span class="inline-flex items-center">
@@ -80,7 +80,7 @@
                   ></path>
                 </svg>
               </button>
-              <template x-if="isPagesMenuOpen">
+              <template x-if="isLotsMenuOpen">
                 <ul
                   x-transition:enter="transition-all ease-in-out duration-300"
                   x-transition:enter-start="opacity-25 max-h-0"
@@ -99,9 +99,7 @@
                   <li
                     class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
                   >
-                    <a class="w-full" href="/lots">
-                      Lots
-                    </a>
+                    <a class="w-full" href="/lots">Lots</a>
                   </li>
 
                 </ul>
@@ -110,7 +108,7 @@
             <li class="relative px-6 py-3">
               <button
                 class="inline-flex items-center justify-between w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                @click="togglePagesMenu"
+                @click="toggleDossiersMenu"
                 aria-haspopup="true"
               >
                 <span class="inline-flex items-center">
@@ -143,7 +141,7 @@
                   ></path>
                 </svg>
               </button>
-              <template x-if="isPagesMenuOpen">
+              <template x-if="isDossiersMenuOpen">
                 <ul
                   x-transition:enter="transition-all ease-in-out duration-300"
                   x-transition:enter-start="opacity-25 max-h-0"
@@ -262,7 +260,7 @@
             <li class="relative px-6 py-3">
               <button
                 class="inline-flex items-center justify-between w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                @click="togglePagesMenu"
+                @click="togglePaiementsMenu"
                 aria-haspopup="true"
               >
                 <span class="inline-flex items-center">
@@ -295,7 +293,7 @@
                   ></path>
                 </svg>
               </button>
-              <template x-if="isPagesMenuOpen">
+              <template x-if="isPaiementsMenuOpen">
                 <ul
                   x-transition:enter="transition-all ease-in-out duration-300"
                   x-transition:enter-start="opacity-25 max-h-0"
@@ -318,7 +316,7 @@
             <li class="relative px-6 py-3">
               <button
                 class="inline-flex items-center justify-between w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                @click="togglePagesMenu"
+                @click="toggleAmenagementMenu"
                 aria-haspopup="true"
               >
                 <span class="inline-flex items-center">
@@ -351,7 +349,7 @@
                   ></path>
                 </svg>
               </button>
-              <template x-if="isPagesMenuOpen">
+              <template x-if="isAmenagementMenuOpen">
                 <ul
                   x-transition:enter="transition-all ease-in-out duration-300"
                   x-transition:enter-start="opacity-25 max-h-0"

@@ -43,10 +43,26 @@ function data() {
     closeProfileMenu() {
       this.isProfileMenuOpen = false
     },
+    isLotsMenuOpen: false,
+    toggleLotsMenu() {
+      this.isLotsMenuOpen = !this.isLotsMenuOpen
+    },
+    isDossiersMenuOpen: false,
+    toggleDossiersMenu() {
+      this.isDossiersMenuOpen = !this.isDossiersMenuOpen
+    },
+    isPaiementsMenuOpen: false,
+    togglePaiementsMenu() {
+      this.isPaiementsMenuOpen = !this.isPaiementsMenuOpen
+    },
+    isAmenagementMenuOpen: false,
+    toggleAmenagementMenu() {
+      this.isAmenagementMenuOpen = !this.isAmenagementMenuOpen
+    },   
     isPagesMenuOpen: false,
     togglePagesMenu() {
       this.isPagesMenuOpen = !this.isPagesMenuOpen
-    },
+    },               
     // Modal
     isModalOpen: false,
     trapCleanup: null,
