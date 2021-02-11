@@ -498,6 +498,7 @@
 
                       <td class="px-4 py-3 text-sm">
               <div class="flex px-1 py-1">
+                @if(null == $produit->dossier)
                 <div class="mr-1">
              
                 <a
@@ -516,6 +517,7 @@
                 </a>
 
             </div>
+            @endif
 
                 <div class="mr-1">
              
