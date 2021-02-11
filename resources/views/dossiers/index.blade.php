@@ -155,44 +155,60 @@
                   href="/dossiers/"
                 >Tout</a>
 
+                <input
+                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input rounded-2xl"
+                  placeholder="Numéro CIN, nom ou prénom"
+                  type="text"
+                  name="client"
+                  value="{{$SearchByClient}}"
+                />
                 <select
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
-                  name="tranche"
+                  name="user"
                 >
-                  <option value="-">Tranche</option>
-                
+                  <option value="-">Commercial </option>
 
-
-
-                </select>
-                <select
-                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
-                  name="nombreFacadesLot"
-                >
-                  <option value="-">Façades </option>
-
-                  @for ($i = 0; $i < 3; $i++)
-                  <option value="{{$i+1}}"
-                    @if ( $SearchByFacade == ($i+1) )
+                  @foreach ($users as $user)
+                  <option value="{{$user->id}}"
+                    @if ( $SearchByUser == $user->id)
                     selected
                     @endif
-                    >{{$i+1}} Façade(s)
+                    >{{$user->name}} 
                   </option>
-                @endfor
+                @endforeach
 
-                </select>        
-                <select
-                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
-                  name="nombreEtagesLot"
-                >
-                  <option value="-">Etages</option>
-                
-                  <option value="1" @if ( $SearchByEtage == 1) selected @endif>R+1</option>
-                  <option value="2" @if ( $SearchByEtage == 2) selected @endif>R+2</option>
-                  <option value="3" @if ( $SearchByEtage == 3) selected @endif>R+3</option>
-              
                 </select>
                 <select
+                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
+                  name="sign"
+                >
+                
+                  <option value="<" @if ( $SearchBySign == '<') selected @endif>Moins que</option>
+                  <option value=">" @if ( $SearchBySign == '<') selected @endif>Plus que</option>
+                  <option value="=" @if ( $SearchBySign == '=') selected @endif>Egale à</option>
+                  <option value="<=" @if ( $SearchBySign == '<=') selected @endif>Moins ou égale à</option>
+                  <option value="=>" @if ( $SearchBySign == '=>') selected @endif>Plus ou égale à</option>
+              
+                </select>                
+                <select
+                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
+                  name="tauxComparateur"
+                >
+                  <option value="-">Taux de paiement</option>
+                
+                  <option value="10" @if ( $SearchByTauxComparateur =="10" ) selected @endif>10%</option>
+                  <option value="20" @if ( $SearchByTauxComparateur =="20" ) selected @endif>20%</option>
+                  <option value="30" @if ( $SearchByTauxComparateur =="30" ) selected @endif>30%</option>
+                  <option value="40" @if ( $SearchByTauxComparateur =="40" ) selected @endif>40%</option>
+                  <option value="50" @if ( $SearchByTauxComparateur =="50" ) selected @endif>50%</option>
+                  <option value="60" @if ( $SearchByTauxComparateur =="60" ) selected @endif>60%</option>
+                  <option value="70" @if ( $SearchByTauxComparateur =="70" ) selected @endif>70%</option>
+                  <option value="80" @if ( $SearchByTauxComparateur =="80" ) selected @endif>80%</option>
+                  <option value="90" @if ( $SearchByTauxComparateur =="90" ) selected @endif>90%</option>
+                  <option value="100" @if ( $SearchByTauxComparateur =="100" ) selected @endif>100%</option>
+              
+                </select>
+                <!--<select
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
                   name="etatProduit"
                 >
@@ -225,7 +241,7 @@
                   step="0.1"
                   name="maxPrix"
                   value={{$SearchByMax}}
-                />
+                />-->
                 <input
                   class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input rounded-2xl"
                   placeholder="Numéros de dossier séparés par (,)"
@@ -262,7 +278,6 @@
                       <th class="px-4 py-3">N° du dossier</th>
                       <th class="px-4 py-3">Date du dossier</th>
                       <th class="px-4 py-3">Frais</th>
-                      <th class="px-4 py-3">Produit</th>
                       <th class="px-4 py-3">Client</th>
                       <th class="px-4 py-3">Commercial</th>
                       <th class="px-4 py-3">Total Paiements</th>
@@ -310,7 +325,10 @@
                         </span></a>
                             </p>
                             <p class="text-xs text-gray-600 dark:text-gray-400">
-                               ---
+                          <a href="{{ $dossier->produit->constructible_type }}s/{{ $dossier->produit->constructible->id }}">
+                          {{ $dossier->produit->constructible_type }} N°
+                          {{ $dossier->produit->constructible->num }}
+                        </a>
                             </p>
                           </div>
                         </div>
@@ -326,14 +344,7 @@
                         </span>
                         
                       </td>
-                      <td class="px-4 py-3 text-xs">
-                        <span
-                          class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
-                        >
-                          {{ $dossier->produit->type }}
-                        </span>
-                         
-                      </td>
+
                                                                   
                       <td class="px-4 py-3 text-xs">
                         <span
@@ -377,7 +388,7 @@
 
                           "
                         >
-                           {{ number_format($dossier->produit->prixM2Definitif * $dossier->produit->lot->surfaceLot)}} Dhs
+                           {{ number_format($dossier->produit->prixM2Definitif * $dossier->produit->constructible->surfaceLot)}} Dhs
                         </span>
                       </td>     
                       <td class="px-4 py-3 text-sm">
@@ -395,7 +406,7 @@
                         >
                           {{
                             round($dossier->paiements->sum('montant') * 100 /
-                            ($dossier->produit->prixM2Definitif * $dossier->produit->lot->surfaceLot), 2)
+                            ($dossier->produit->prixM2Definitif * $dossier->produit->constructible->surfaceLot), 2)
                           }} %
                         </span>
                       </td>                                       

@@ -200,8 +200,8 @@
           </div>
         </main>
 
-<script>
-    const MONTH_NAMES = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Decembre'];
+<script type="text/javascript">
+  const MONTH_NAMES = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Decembre'];
     const DAYS = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
 
     function app() {
@@ -218,7 +218,8 @@
           this.month = today.getMonth();
           this.year = today.getFullYear();
           //this.datepickerValue = new Date(this.year, this.month, today.getDate()).toDateString();
-          this.datepickerValue = new Date(this.year, this.month, today.getDate()).toISOString().slice(0, 10);
+          //this.datepickerValue = new Date(this.year, this.month, today.getDate()).toISOString().slice(0, 10);
+          this.datepickerValue = '@isset($paiement->date){{ $paiement->date }}@else' + new Date(this.year, this.month, today.getDate()).toISOString().slice(0, 10) + '@endisset';
 
         },
         isToday(date) {
@@ -227,8 +228,8 @@
           return today.toDateString() === d.toDateString() ? true : false;
         },
         getDateValue(date) {
-          let selectedDate = new Date(this.year, this.month, date);
-          this.datepickerValue = selectedDate.toDateString();
+          let selectedDate = new Date(this.year, this.month, date + 1 );
+          this.datepickerValue = selectedDate.toISOString().slice(0, 10);
           this.$refs.date.value = selectedDate.getFullYear() + "-" + ('0' + selectedDate.getMonth()).slice(-2) + "-" + ('0' + selectedDate.getDate()).slice(-2);
           console.log(this.$refs.date.value);
           this.showDatepicker = false;
@@ -250,6 +251,7 @@
         }
       }
     }
-  </script>
+</script>    
+
 </body>
 </x-master>            

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class Paiement extends Model
 {
     use HasFactory;
+    protected $fillable = ['num', 'date', 'montant','type'];
 
     public function dossier()
     {

@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Traits\PaginateTrait;
 use App\Models\Client;
-use App\Models\Produit;
 use App\Models\Dossier;
+use App\Models\Produit;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,8 +22,56 @@ class DossierController extends Controller
      */
     public function index(Request $request)
     {
+
         $dossiersAll = Dossier::with('produit')->with('client')->with('paiements')->get();
-            
+
+        //recherche par taux de paiement
+        if (isset($request['sign']) && $request['sign'] != '' ) {
+
+            if(isset($request['tauxComparateur']) && $request['tauxComparateur'] != '-' ) {
+
+            $tauxComparateur = $request['tauxComparateur'] ;
+            $sign = $request['sign'] ;
+            $dossiersAll = $dossiersAll->filter(function ($dossier) use ($sign, $tauxComparateur)  {
+            $taux = $dossier->paiements->sum('montant') * 100 /
+                            ($dossier->produit->prixM2Definitif * $dossier->produit->constructible->surfaceLot) ;
+                switch ($sign) {
+                    case '>':
+                    if ($taux > $tauxComparateur) {
+                        return true;
+                    }
+                        return false;
+                        break;
+                    case '<':
+                    if ($taux < $tauxComparateur) {
+                        return true;
+                    }
+                        return false;
+                        break;
+                    case '=>':
+                    if ($taux >= $tauxComparateur) {
+                        return true;
+                    }
+                        return false;
+                        break;
+                    case '<=':
+                    if ($taux <= $tauxComparateur) {
+                        return true;
+                    }
+                        return false;
+                        break;                                                                        
+
+                }
+
+            });                
+            }
+        }
+
+        //dd($dossiersAll) ;
+
+
+
+        //dd($dossiersAll) ;
 
         //selectionner les lots 
         //$lotsAll = $lotsAll->whereNotNull('lot.id' ); 
@@ -30,12 +80,27 @@ class DossierController extends Controller
         //$minPrix = $lotsAll->min('prixM2Indicatif');  
         $numsDossier = [];
 
-        //recherche par numéro des lot
+        //recherche par numéro des dossiers
         if (isset($request['num']) && $request['num'] != '' ) {
             $numsDossier = preg_split("/[\s,\.]+/", $request['num']);
             $numsDossier = array_map('trim', $numsDossier);
-            $dossiersAll = $dossiersAll->whereIn('num', $numsDossier);
+            $dossiersAll = $dossiersAll->whereIn('produit.constructible.num', $numsDossier);
         }
+
+        //recherche par nom, prénom ou CIN client
+        if (isset($request['client']) && $request['client'] != '' ) {
+            $value = strtolower($request['client']) ;
+
+            $dossiersAll = $dossiersAll->filter(function ($item) use ($value)  {
+            $client = strtolower(trim($item->client->cin . ' ' . $item->client->nom . ' ' . $item->client->prenom . ' ' ));
+
+                    if (strpos($client , $value) !== false) {
+                        return true;
+                    }
+                        return false;
+            });                
+
+        }        
 
         //recherche par prix
         if (isset($request['minPrix']) && $request['minPrix'] != '' ) {
@@ -55,10 +120,10 @@ class DossierController extends Controller
             $lotsAll = $lotsAll->where('lot.tranche_id', $tr); 
         }
 
-        //recherche par nombre de façades
-        if (isset($request['nombreFacadesLot']) && $request['nombreFacadesLot'] != '-' ) {
-            $fa = $request['nombreFacadesLot'] ;
-            $lotsAll = $lotsAll->where('voies_count', $fa); 
+        //recherche par commercial
+        if (isset($request['user']) && $request['user'] != '-' ) {
+            $user = $request['user'] ;
+            $dossiersAll = $dossiersAll->where('user_id', $user); 
         }
 
         //recherche par nombre d'etages
@@ -87,20 +152,22 @@ class DossierController extends Controller
 
 
         return view('dossiers.index', [
-            'dossiers'               => $this->paginate($dossiersAll),
+            'dossiers'              => $this->paginate($dossiersAll),
             'totalDossier'          => $dossiersAll->count(),
-            'clients'              =>   Client::all(),
-            'etiquettes'            => '' , //Etiquette::all(),
+            'clients'               =>   Client::all(),
+            'users'                 => User::all(),
             'tranches'              => '' ,
             'valeurTotal'           => 1000, //$prixTotalLots->sum(),
             'SearchByTranche'       => '',//$request['tranche'] ,
-            'SearchByFacade'        => '',//$request['nombreFacadesLot'] ,
-            'SearchByEtage'         => '',//$request['nombreEtagesLot'] ,
-            'SearchByEtat'      => '',//$request['etatProduit'] ,
-            'SearchByType'      => '',//$request['typeLot'] ,
+            'SearchByUser'          => $request['user'] ,
+            'SearchBySign'         => $request['sign'] ,
+            'SearchByTauxComparateur'          => $request['tauxComparateur'] ,
+            'SearchByType'          => '',//$request['typeLot'] ,
             'SearchByMin'           => '',//$request['minPrix'] ,
-            'SearchByMax'     => '',//$request['maxPrix'] ,
-            'SearchByNum' => implode(',' , $numsDossier) ,
+            'SearchByMax'           => '',//$request['maxPrix'] ,
+            'SearchByNum'           => implode(',' , $numsDossier) ,
+            'SearchByClient'        => $request['client'] ,
+
 
         ]);
     }
@@ -112,13 +179,14 @@ class DossierController extends Controller
      */
     public function create(Produit $produit)
     {
-        if (isset($produit->lot)) {
+        
+        if ($produit->constructible_type == 'lot') {
             $dataRecap = 
-            'Qui concerne le Lot N° ' . $produit->lot->numLot . 
-            ', d\'une surface totale de : ' . $produit->lot->surfaceLot . 'm2' .
-            '. Vendu au prix total de : ' . $produit->lot->surfaceLot * $produit->prixM2Defiitif . ' Dhs'.
-            ', du type : ' . $produit->lot->typeLot . ', constructible en R+' . $produit->lot->nombreEtagesLot .
-            '. Ce lot est sur le tranche ' . $produit->lot->tranche_id ;
+            'Qui concerne le Lot N° ' . $produit->constructible->num . 
+            ', d\'une surface totale de : ' . $produit->constructible->surfaceLot . 'm2' .
+            '. Vendu au prix total de : ' . $produit->constructible->surfaceLot * $produit->prixM2Defiitif . ' Dhs'.
+            ', du type : ' . $produit->constructible->typeLot . ', constructible en R+' . $produit->constructible->nombreEtagesLot .
+            '. Ce lot est sur le tranche ' . $produit->constructible->tranche_id ;
 
         }
         elseif (isset($produit->appartement)) {
@@ -137,7 +205,7 @@ class DossierController extends Controller
         return view('dossiers.create', [
             'clients'       => Client::all(),
             'produit'       => $produit,
-            'dataRecap' => $dataRecap
+            'dataRecap'     => $dataRecap
 
         ]) ;
     }

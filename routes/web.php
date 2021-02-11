@@ -36,9 +36,18 @@ Route::resource('etiquettes', EtiquetteController::class);
 Route::resource('dossiers', DossierController::class)->except([
     'create'
 ]);
+
 Route::get('/produits/{produit}/dossiers/create', [DossierController::class, 'create']);
 
 Route::get('/dossiers/{dossier}/paiements', [PaiementController::class, 'index']);
+
+Route::get('/dossiers/{dossier}/paiements/{paiement}', [PaiementController::class, 'show']);
+
+Route::post('/dossiers/{dossier}/paiements', [PaiementController::class, 'store']);
+
+Route::patch('/dossiers/{dossier}/paiements/{paiement}', [PaiementController::class, 'update']);
+
+Route::delete('/dossiers/{dossier}/paiements/{paiement}', [PaiementController::class, 'destroy']);
 
 //Route::patch('/lots', [LotController::class, 'updateBatch']);
 

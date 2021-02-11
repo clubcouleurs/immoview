@@ -24,11 +24,11 @@
                   class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
                   placeholder=""
                   type="number"
-                  name="numLot"
+                  name="num"
                   required
-                  value="{{$lot->numLot}}"
+                  value="{{$lot->num}}"
                 />
-                    @error('numLot')
+                    @error('num')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror

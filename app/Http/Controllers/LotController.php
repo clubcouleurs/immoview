@@ -24,19 +24,23 @@ class LotController extends Controller
     public function index(Request $request)
     {
 
-        $lotsAll = Lot::with('produit')->with('etiquette')->withCount('voies')->get();
-
+        $lotsAll = Produit::with('constructible')
+                            ->where('constructible_type','lot')
+                            ->with('etiquette')
+                            ->withCount('voies')
+                            ->get();
         //selectionner les lots 
-        $lotsAll = $lotsAll->whereNotNull('lot.id' ); 
+        //$lotsAll = $lotsAll->whereNotNull('lot.id' ); 
 
         $maxPrix = $lotsAll->max('prixM2Indicatif');
         $minPrix = $lotsAll->min('prixM2Indicatif');  
-        $numsLot = [];
+        $nums = [];
+
         //recherche par numéro des lot
         if (isset($request['numsLot']) && $request['numsLot'] != '' ) {
             $numsLot = preg_split("/[\s,\.]+/", $request['numsLot']);
             $numsLot = array_map('trim', $numsLot);
-            $lotsAll = $lotsAll->whereIn('lot.numLot', $numsLot);
+            $lotsAll = $lotsAll->whereIn('constructible.num', $numsLot);
         }
 
         //recherche par prix
@@ -54,7 +58,7 @@ class LotController extends Controller
         //recherche par tranche
         if (isset($request['tranche']) && $request['tranche'] != '-' ) {
             $tr = $request['tranche'] ;
-            $lotsAll = $lotsAll->where('lot.tranche_id', $tr); 
+            $lotsAll = $lotsAll->where('constructible.tranche_id', $tr); 
         }
 
         //recherche par nombre de façades
@@ -72,7 +76,7 @@ class LotController extends Controller
         //recherche par type de lot
         if (isset($request['typeLot']) && $request['typeLot'] != '-' ) {
             $ty = $request['typeLot'] ;
-            $lotsAll = $lotsAll->where('lot.typeLot', $ty);  
+            $lotsAll = $lotsAll->where('constructible.typeLot', $ty);  
         }           
 
         //recherche par etat du lot
@@ -83,8 +87,8 @@ class LotController extends Controller
 
         $total = 0 ;
            $prixTotalLots = $lotsAll->map(function ($item, $key) use ($total) {
-        return $total = $total + $item->lot->surfaceLot * $item->prixM2Definitif;
-    });
+        return $total = $total + $item->constructible->surfaceLot * $item->prixM2Definitif;
+        });
 
 
 
@@ -101,7 +105,7 @@ class LotController extends Controller
             'SearchByType'     => $request['typeLot'] ,
             'SearchByMin'     => $request['minPrix'] ,
             'SearchByMax'     => $request['maxPrix'] ,
-            'SearchByNum' => implode(',' , $numsLot) ,
+            'SearchByNum' => $request['numsLot'] ,
 
         ]);
     }
@@ -137,7 +141,7 @@ class LotController extends Controller
 
 
         $lot = new Lot() ;
-        $lot->numLot                = $request['numLot'];
+        $lot->num                = $request['num'];
         $lot->surfaceLot            = $request['surfaceLot'];
         $lot->typeLot               = $request['typeLot'];
         $lot->nombreEtagesLot       = $request['nombreEtagesLot'];
@@ -201,7 +205,7 @@ class LotController extends Controller
         if (isset($request['SearchByNum']) && $request['SearchByNum'] != '' ) {
             $numsLot = preg_split("/[\s,\.]+/", $request['SearchByNum']);
             $numsLot = array_map('trim', $numsLot);
-            $lotsAll = $lotsAll->whereIn('lot.numLot', $numsLot);
+            $lotsAll = $lotsAll->whereIn('lot.num', $numsLot);
         }
 
         Produit::upsert([
@@ -246,7 +250,7 @@ class LotController extends Controller
         $lot->produit->voies()->detach() ; 
         $lot->produit->voies()->attach($request['voies']) ;
 
-        $lot->numLot            = $request['numLot'];
+        $lot->num            = $request['num'];
         $lot->surfaceLot            = $request['surfaceLot'];
         $lot->typeLot               = $request['typeLot'];
         $lot->nombreEtagesLot       = $request['nombreEtagesLot'];

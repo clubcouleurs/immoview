@@ -25,8 +25,8 @@ class ProduitRequest extends FormRequest
     {
         $id = (isset($this->lot->id)) ? $this->lot->id : Null ;
         return [
-            'numLot' => 'sometimes|required|numeric',
-            'numLot' => 'unique:lots,numLot,'.$id,
+            'num' => 'sometimes|required|numeric',
+            'num' => 'unique:lots,num,'.$id,
             'surfaceLot' => 'sometimes|required|numeric',
             'typeLot' => 'sometimes|required|string',
             'nombreEtagesLot' => 'sometimes|required|integer',
@@ -41,7 +41,7 @@ class ProduitRequest extends FormRequest
     public function messages()
     {
         return [
-            'numLot.unique' => 'Ce numéro de lot existe déjà',
+            'num.unique' => 'Ce numéro de lot existe déjà',
             'surfaceLot.required' => 'Merci de siaisir une surface pour ce lot',
             'surfaceLot.numeric' => 'La surface du lot doit être en chiffre',
 

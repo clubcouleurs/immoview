@@ -10,12 +10,18 @@ use Illuminate\Database\Eloquent\Model;
 class Lot extends Model
 {
     use HasFactory;
-    protected $fillable = ['numLot', 'surfaceLot','typeLot','nombreEtagesLot','descriptionLot'];
+    protected $fillable = ['num', 'surfaceLot','typeLot','nombreEtagesLot','descriptionLot'];
+
+    /*public function produit()
+    {
+        return $this->belongsTo(Produit::class);
+    }*/
 
     public function produit()
     {
-        return $this->belongsTo(Produit::class);
+        return $this->morphOne(Produit::class, 'constructible');
     }
+
 
     public function tranche()
     {

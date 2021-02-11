@@ -424,21 +424,22 @@
                           <div>
                            
                             <p class="font-semibold">
-                             <a href="/lots/{{ $produit->lot->id }}">
+                             <a href="/lots/{{ $produit->constructible->id }}">
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-blue-700 bg-blue-100 rounded-full dark:bg-blue-700 dark:text-blue-100"
                         >                              
-                              {{ $produit->lot->numLot }} 
+                              {{ $produit->constructible->num }} 
                         </span></a>
                             </p>
                             <p class="text-xs text-gray-600 dark:text-gray-400">
-                              Tranche {{ $produit->lot->tranche_id }}
+                              Tranche {{ $produit->constructible->tranche_id }}
                             </p>
                           </div>
                         </div>
                       </td>
                       <td class="px-4 py-3 text-sm">
-                        {{ $produit->lot->surfaceLot }} m<sup>2</sup>
+
+                        {{ $produit->constructible->surfaceLot }} m<sup>2</sup>
                       </td>
                       <td class="px-4 py-3 text-xs">
                         <span
@@ -447,7 +448,7 @@
                           {{ $produit->prixM2Definitif }} Dhs
                         </span>
                             <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                              Total : {{ number_format($produit->prixM2Definitif * $produit->lot->surfaceLot)}} Dhs
+                              Total : {{ number_format($produit->prixM2Definitif * $produit->constructible->surfaceLot)}} Dhs
                             </p>                         
                       </td>
                       <td class="px-4 py-3 text-xs">
@@ -457,7 +458,7 @@
                           {{ $produit->prixM2Indicatif }} Dhs
                         </span>
                             <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                              Total : {{ number_format($produit->prixM2Indicatif * $produit->lot->surfaceLot)}} Dhs
+                              Total : {{ number_format($produit->prixM2Indicatif * $produit->constructible->surfaceLot)}} Dhs
                             </p>                        
                       </td>
                                                                   
@@ -473,7 +474,7 @@
                         </span>
                       </td>
                       <td class="px-4 py-3 text-sm">
-                        {{ $produit->lot->nombreEtagesLot }}
+                        {{ $produit->constructible->nombreEtagesLot }}
                       </td>                      
                       <td class="px-4 py-3 text-sm">
                         <span
@@ -492,7 +493,7 @@
                         </span>
                       </td>
                       <td class="px-4 py-3 text-sm">
-                        {{ $produit->lot->typeLot }}
+                        {{ $produit->constructible->typeLot }}
                       </td>
 
                       <td class="px-4 py-3 text-sm">
@@ -521,7 +522,7 @@
                 <a
                   class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none focus:shadow-outline-gray"
                   aria-label="Like"
-                  href="/lots/{{ $produit->lot->id }}/edit"
+                  href="/lots/{{ $produit->constructible->id }}/edit"
                 >
                   <svg
                     class="w-4 h-4"
@@ -535,7 +536,7 @@
 
             </div>
             <div>
-                        <form action="/lots/{{$produit->lot->id}}" method="POST">
+                        <form action="/lots/{{$produit->constructible->id}}" method="POST">
                         @csrf
                         @method('DELETE')
                 <button

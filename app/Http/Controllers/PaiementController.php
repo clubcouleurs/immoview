@@ -17,8 +17,7 @@ class PaiementController extends Controller
     {
         return view('paiements.index', [
             'dossier' => $dossier ,
-            'paiements' => $dossier->paiements()->paginate(5)]) ;
-        
+            'paiements' => $dossier->paiements()->paginate(15)]) ;
     }
 
     /**
@@ -37,9 +36,28 @@ class PaiementController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Dossier $dossier)
     {
-        //
+        $request->validate([
+            'date'      => 'required|string',
+            'type'      => 'required|string',
+            'num'       => 'sometimes|required|string',
+            'montant'   => 'required|integer',
+        ]);
+
+        $paiement = new Paiement([
+            'date'              => $request['date'],
+            'type'              => $request['type'],
+            'montant'           => $request['montant'],
+        ]) ;
+
+        if ($paiement->type != 'Espèce')
+        {
+            $paiement->num = $request['num'] ;
+        }
+
+        $dossier->paiements()->save($paiement) ;
+        return redirect()->action([PaiementController::class, 'index'] , ['dossier' => $dossier]);
     }
 
     /**
@@ -48,9 +66,12 @@ class PaiementController extends Controller
      * @param  \App\Models\Paiement  $paiement
      * @return \Illuminate\Http\Response
      */
-    public function show(Paiement $paiement)
+    public function show(Dossier $dossier, Paiement $paiement)
     {
-        //
+        return view('paiements.index', [
+            'dossier' => $dossier ,
+            'paiement' => $paiement ,
+            'paiements' => $dossier->paiements()->paginate(15)]) ;
     }
 
     /**
@@ -71,9 +92,31 @@ class PaiementController extends Controller
      * @param  \App\Models\Paiement  $paiement
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Paiement $paiement)
+    public function update(Request $request, Dossier $dossier, Paiement $paiement)
     {
-        //
+        $request->validate([
+            'date'      => 'required|string',
+            'type'      => 'required|string',
+            'num'       => 'sometimes|required|string',
+            'montant'   => 'required|integer',
+        ]);
+
+
+            $paiement->date     = $request['date'] ;
+            $paiement->type     = $request['type'] ;
+            $paiement->montant  = $request['montant']; 
+
+
+        if ($paiement->type != 'Espèce')
+        {
+            $paiement->num = $request['num'] ;
+        }else
+        {
+            $paiement->num = NULL ;
+        }
+
+        $paiement->update() ;
+        return redirect()->action([PaiementController::class, 'index'] , ['dossier' => $dossier]);
     }
 
     /**
@@ -82,8 +125,9 @@ class PaiementController extends Controller
      * @param  \App\Models\Paiement  $paiement
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Paiement $paiement)
+    public function destroy(Dossier $dossier, Paiement $paiement)
     {
-        //
+        $paiement->delete() ;
+        return redirect()->action([PaiementController::class, 'index'] , ['dossier' => $dossier]);
     }
 }
