@@ -184,7 +184,7 @@
                 >
                 
                   <option value="<" @if ( $SearchBySign == '<') selected @endif>Moins que</option>
-                  <option value=">" @if ( $SearchBySign == '<') selected @endif>Plus que</option>
+                  <option value=">" @if ( $SearchBySign == '>') selected @endif>Plus que</option>
                   <option value="=" @if ( $SearchBySign == '=') selected @endif>Egale à</option>
                   <option value="<=" @if ( $SearchBySign == '<=') selected @endif>Moins ou égale à</option>
                   <option value="=>" @if ( $SearchBySign == '=>') selected @endif>Plus ou égale à</option>
@@ -388,7 +388,7 @@
 
                           "
                         >
-                           {{ number_format($dossier->produit->prixM2Definitif * $dossier->produit->constructible->surfaceLot)}} Dhs
+                           {{ number_format($dossier->produit->prixM2Definitif * $dossier->produit->constructible->surface)}} Dhs
                         </span>
                       </td>     
                       <td class="px-4 py-3 text-sm">
@@ -406,7 +406,7 @@
                         >
                           {{
                             round($dossier->paiements->sum('montant') * 100 /
-                            ($dossier->produit->prixM2Definitif * $dossier->produit->constructible->surfaceLot), 2)
+                            ($dossier->produit->prixM2Definitif * $dossier->produit->constructible->surface), 2)
                           }} %
                         </span>
                       </td>                                       

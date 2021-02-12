@@ -402,7 +402,15 @@
                   >
 
                   @foreach ($lots as $produit)
-                    <tr class="text-gray-700 dark:text-gray-400">
+                    <tr class="
+                    @if ($produit->etiquette->label == 'En stock')
+                      bg-green-50
+                    @elseif ($produit->etiquette->label == 'Réservé')
+                      bg-gray-200
+                    @else
+                      bg-red-100
+                    @endif
+                    text-gray-700 dark:text-gray-400">
                       <td class="px-4 py-3">
                         <div class="flex items-center text-sm">
 
@@ -428,7 +436,7 @@
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-blue-700 bg-blue-100 rounded-full dark:bg-blue-700 dark:text-blue-100"
                         >                              
-                              {{ $produit->constructible->num }} 
+                              {{$produit->constructible->num }} 
                         </span></a>
                             </p>
                             <p class="text-xs text-gray-600 dark:text-gray-400">
@@ -479,13 +487,16 @@
                       <td class="px-4 py-3 text-sm">
                         <span
                           class="px-2 py-1 font-semibold leading-tight rounded-full dark:bg-green-700 dark:text-green-100
-                          @if ($produit->etatProduit == 'En stock')
-                            text-green-700 bg-green-100
-                            @elseif ($produit->etatProduit == 'Bloqué')
-                            text-white bg-gray-900
-                            @else
-                            text-red-200 bg-red-900
-                          @endif
+
+                    @if ($produit->etiquette->label == 'En stock')
+                      text-green-700 bg-green-100 
+                    @elseif ($produit->etiquette->label == 'Réservé')
+                      text-gray-200 bg-gray-900
+                    @else
+                      text-white bg-red-900
+                    @endif
+
+
 
                           "
                         >
@@ -498,7 +509,7 @@
 
                       <td class="px-4 py-3 text-sm">
               <div class="flex px-1 py-1">
-                @if(null == $produit->dossier)
+                @if(null == $produit->dossier && $produit->etiquette->label == 'En stock')
                 <div class="mr-1">
              
                 <a
@@ -512,11 +523,11 @@
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
-<path d="M2,6 L0,6 L0,8 L2,8 L2,10 L4,10 L4,8 L6,8 L6,6 L4,6 L4,4 L2,4 L2,6 L2,6 Z M8.99999861,6.00166547 C8.99999861,4.34389141 10.3465151,3 11.9999972,3 C13.6568507,3 14.9999958,4.33902013 14.9999958,6.00166547 L14.9999958,7.99833453 C14.9999958,9.65610859 13.6534793,11 11.9999972,11 C10.3431437,11 8.99999861,9.66097987 8.99999861,7.99833453 L8.99999861,6.00166547 L8.99999861,6.00166547 Z M20.0000045,15.1405177 C17.6466165,13.7791553 14.914299,13 12,13 C9.08570101,13 6.35338349,13.7791553 3.99999555,15.1405177 L4,18 L20,18 L20,15.1405151 L20.0000045,15.1405177 L20.0000045,15.1405177 Z" id="Combined-Shape"></path>
+                      <path d="M2,6 L0,6 L0,8 L2,8 L2,10 L4,10 L4,8 L6,8 L6,6 L4,6 L4,4 L2,4 L2,6 L2,6 Z M8.99999861,6.00166547 C8.99999861,4.34389141 10.3465151,3 11.9999972,3 C13.6568507,3 14.9999958,4.33902013 14.9999958,6.00166547 L14.9999958,7.99833453 C14.9999958,9.65610859 13.6534793,11 11.9999972,11 C10.3431437,11 8.99999861,9.66097987 8.99999861,7.99833453 L8.99999861,6.00166547 L8.99999861,6.00166547 Z M20.0000045,15.1405177 C17.6466165,13.7791553 14.914299,13 12,13 C9.08570101,13 6.35338349,13.7791553 3.99999555,15.1405177 L4,18 L20,18 L20,15.1405151 L20.0000045,15.1405177 L20.0000045,15.1405177 Z" id="Combined-Shape"></path>
                   </svg>
                 </a>
 
-            </div>
+              </div>
             @endif
 
                 <div class="mr-1">

@@ -29,5 +29,19 @@ class Dossier extends Model
     public function paiements()
     {
         return $this->hasMany(Paiement::class);
+    }
+            
+    public function getTotalPaiementsAttribute()
+    {
+        return $this->paiements()->sum('montant');
+    }
+    public function getReliquatAttribute()
+    {
+        return  $this->produit->total - $this->paiements()->sum('montant') ;
+    }  
+    public function getTauxPaiementAttribute()
+    {       
+        return round(($this->totalPaiements * 100) / $this->produit->total , 2) ;
     }       
+
 }

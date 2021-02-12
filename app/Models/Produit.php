@@ -59,4 +59,29 @@ class Produit extends Model
             return 'box' ;
         }                
     }
+    public function getPrixAttribute()
+    {
+        return $prix = ($this->prixM2Definitif === 0 || $this->prixM2Definitif == Null) ? $this->prixM2Indicatif : $this->prixM2Definitif ;
+    }
+    public function getTotalDefinitifAttribute()
+    {
+        return $this->prixM2Definitif * $this->constructible->surface ;
+    } 
+    public function getTotalIndicatifAttribute()
+    {
+        return $this->prixM2Indicatif * $this->constructible->surface ;
+    }     
+    public function getTotalAttribute()
+    {
+        return $this->prix * $this->constructible->surface ;
+    }  
+
+    public function getRemiseAttribute()
+    {
+        return round(100 - (($this->prixM2Definitif * 100) / $this->prixM2Indicatif ) , 2) ;
+    } 
+    public function getRemiseNatureAttribute()
+    {
+        return ($this->remise > 0 ) ? 'Remise' : 'Augmentation' ;
+    }                 
 }
