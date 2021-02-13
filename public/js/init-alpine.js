@@ -59,6 +59,10 @@ function data() {
     toggleAmenagementMenu() {
       this.isAmenagementMenuOpen = !this.isAmenagementMenuOpen
     },   
+    isVisitesMenuOpen: false,
+    toggleVisitesMenu() {
+      this.isVisitesMenuOpen = !this.isVisitesMenuOpen
+    },      
     isPagesMenuOpen: false,
     togglePagesMenu() {
       this.isPagesMenuOpen = !this.isPagesMenuOpen

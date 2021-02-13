@@ -2,19 +2,14 @@
 
 namespace App\Policies;
 
-use App\Models\Dossier;
 use App\Models\Produit;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Auth\Access\Response;
 
-class DossierPolicy
+class ProduitPolicy
 {
     use HandlesAuthorization;
-
-    public function xy()
-    {
-        return true ;
-    }
 
     /**
      * Determine whether the user can view any models.
@@ -31,10 +26,10 @@ class DossierPolicy
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Dossier  $dossier
+     * @param  \App\Models\Produit  $produit
      * @return mixed
      */
-    public function view(User $user, Dossier $dossier)
+    public function view(User $user, Produit $produit)
     {
         //
     }
@@ -45,19 +40,21 @@ class DossierPolicy
      * @param  \App\Models\User  $user
      * @return mixed
      */
-    public function create(User $user)
+    public function create(User $user, Produit $produit)
     {
-        dd($user) ;
+        return $produit->etiquette->label === 'En stock'
+                ? Response::allow()
+                : Response::deny('Ce produit immobilier est déjà réservé');
     }
 
     /**
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Dossier  $dossier
+     * @param  \App\Models\Produit  $produit
      * @return mixed
      */
-    public function update(Dossier $dossier)
+    public function update(User $user, Produit $produit)
     {
         //
     }
@@ -66,10 +63,10 @@ class DossierPolicy
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Dossier  $dossier
+     * @param  \App\Models\Produit  $produit
      * @return mixed
      */
-    public function delete(User $user, Dossier $dossier)
+    public function delete(User $user, Produit $produit)
     {
         //
     }
@@ -78,10 +75,10 @@ class DossierPolicy
      * Determine whether the user can restore the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Dossier  $dossier
+     * @param  \App\Models\Produit  $produit
      * @return mixed
      */
-    public function restore(User $user, Dossier $dossier)
+    public function restore(User $user, Produit $produit)
     {
         //
     }
@@ -90,10 +87,10 @@ class DossierPolicy
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Dossier  $dossier
+     * @param  \App\Models\Produit  $produit
      * @return mixed
      */
-    public function forceDelete(User $user, Dossier $dossier)
+    public function forceDelete(User $user, Produit $produit)
     {
         //
     }

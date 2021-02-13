@@ -9,11 +9,16 @@
       {{$errors}}</p>
         @endif
 
+
+
+
             <h2
               class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
             >
               Ajouter un nouveau paiement 
             </h2>
+
+
             <form action=@isset ($paiement->montant){{"/dossiers/$dossier->id/paiements/" . $paiement->id}}@else "/dossiers/{{$dossier->id}}/paiements" @endisset
             method="POST">
               @csrf
@@ -274,23 +279,38 @@
                             </p> 
                           </div>
 
-                            <div
-                              class="flex items-center justify-between p-3 mb-4 text-sm font-bold text-red-600 bg-red-100 rounded-lg shadow-sm focus:outline-none focus:shadow-outline-red rounded-2xl"
-                              
-                            >
-                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                              Prix total du produit :
-                              {{ number_format($dossier->produit->prixM2Definitif * $dossier->produit->constructible->surfaceLot) }}
-                              | Total des avances :
-                              {{ number_format($dossier->paiements()->sum('montant')) }}
-                              | Taux de paiements :
-                              {{ round($dossier->paiements()->sum('montant')*100/
-                              ($dossier->produit->prixM2Definitif * $dossier->produit->constructible->surfaceLot), 2 ) }} %
-                              | Reliquat :
-                              {{ number_format(($dossier->produit->prixM2Definitif * $dossier->produit->constructible->surfaceLot) - $dossier->paiements()->sum('montant'))
-                               }} Dhs                          
-                            </p> 
-                          </div>                          
+            <div class="grid gap-6 mb-2 sm:grid-cols-1 md:grid-cols-1 xl:grid-cols-4">
+                <div class="p-2 bg-gray-500 rounded-lg dark:bg-gray-800"> 
+                    <p class="text-white font-bold">
+                      Prix total {{ $dossier->produit->constructible_type }} :</p>
+                            <p class="font-semibold text-2xl text-white dark:text-gray-400">
+                          {{ number_format($dossier->produit->total) }} Dhs
+                            </p>                             
+                </div>
+                <div class="p-2 bg-green-500 rounded-lg dark:bg-gray-800">              
+                    <p class="text-white font-bold">
+                      Total des avances :</p>
+                            <p class="font-semibold text-2xl text-white dark:text-gray-400">
+                          {{ number_format($dossier->totalPaiements) }} Dhs
+                            </p>                   
+                </div>
+                <div class="p-2 bg-blue-500 rounded-lg dark:bg-gray-800">              
+                    <p class="font-semibold text-white font-bold">
+                      Taux des avances :</p>
+                            <p class="text-2xl text-white dark:text-gray-400">
+                          {{  $dossier->tauxPaiement }} %
+                            </p>                   
+                </div>
+                <div class="p-2 bg-red-500 rounded-lg dark:bg-gray-800">              
+                    <p class="text-white font-bold">
+                      Reste à payer :</p>
+                            <p class="font-semibold text-2xl text-white dark:text-gray-400">
+                          {{ number_format($dossier->Reliquat) }} Dhs
+                            </p>                    
+                </div>                              
+              <!-- Card -->
+            </div>
+                                    
             <!-- New Table -->
             <div class="w-full overflow-hidden rounded-lg shadow-xs">
               <div class="w-full overflow-x-auto">
@@ -313,8 +333,7 @@
                   <tbody
                     class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800"
                   >
-
-                  @foreach ($paiements as $p)
+                  @foreach($paiements as $p)
                     <tr class="text-gray-700 dark:text-gray-400">
                       <td class="px-4 py-3">
                         <div class="flex items-center text-sm">

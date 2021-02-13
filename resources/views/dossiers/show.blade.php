@@ -12,7 +12,7 @@
 
 <!--md:grid-cols-1 xl:grid-cols-2-->
 
-            <div class="grid gap-6 mb-2 md:grid-cols-1 xl:grid-cols-4">
+            <div class="grid gap-6 mb-2 sm:grid-cols-1 md:grid-cols-1 xl:grid-cols-4">
                 <div class="p-2 bg-gray-500 rounded-lg dark:bg-gray-800"> 
                     <p class="text-white font-bold">
                       Prix total {{ $dossier->produit->constructible_type }} :</p>
@@ -310,7 +310,7 @@
 
               </div>
 
-              <div class="row-span-2 col-span-2 bg-blue-50 rounded-lg p-4 shadow-md md:grid-cols-1 dark:bg-gray-800">
+              <div class="row-span-2 col-span-2 bg-blue-50 rounded-lg p-4 shadow-md sm:grid-cols-1 dark:bg-gray-800">
 <!-- Doughnut/Pie chart -->
               <div
                 class="min-w-0 p-4 rounded-lg shadow-xs dark:bg-gray-800"

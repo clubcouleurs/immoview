@@ -83,5 +83,20 @@ class Produit extends Model
     public function getRemiseNatureAttribute()
     {
         return ($this->remise > 0 ) ? 'Remise' : 'Augmentation' ;
-    }                 
+    } 
+
+    public function getNombreVoiesAttribute()
+    {
+        return count($this->voies) ;
+    }
+    public function getQuellesVoiesAttribute()
+    {
+        $voies = '' ;
+        foreach ($this->voies as $voie)
+        {
+                        $voies = $voies  . $voie->Largeur . ' | ' ;
+        }
+        return $voies ;
+
+    }     
 }

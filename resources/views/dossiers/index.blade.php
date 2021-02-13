@@ -162,6 +162,13 @@
                   name="client"
                   value="{{$SearchByClient}}"
                 />
+                <input
+                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input rounded-2xl"
+                  placeholder="lot, appartement etc, séparé par (,)"
+                  type="text"
+                  name="num"
+                  value="{{$SearchByNum}}"
+                />                
                 <select
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
                   name="user"
@@ -242,16 +249,6 @@
                   name="maxPrix"
                   value={{$SearchByMax}}
                 />-->
-                <input
-                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input rounded-2xl"
-                  placeholder="Numéros de dossier séparés par (,)"
-                  type="text"
-                  name="num"
-                  value="{{$SearchByNum}}"
-                />
-
-
-
                             <button
                   class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-2xl active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue"
                   type="submit"

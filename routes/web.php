@@ -6,6 +6,7 @@ use App\Http\Controllers\ImmeubleController;
 use App\Http\Controllers\LotController;
 use App\Http\Controllers\PaiementController;
 use App\Http\Controllers\TrancheController;
+use App\Http\Controllers\VisiteController;
 use App\Http\Controllers\VoieController;
 use App\Models\Etiquette;
 use Illuminate\Support\Facades\Route;
@@ -32,12 +33,14 @@ Route::resource('voies', VoieController::class);
 Route::resource('tranches', TrancheController::class);
 Route::resource('immeubles', ImmeubleController::class);
 Route::resource('etiquettes', EtiquetteController::class);
+Route::resource('visites', VisiteController::class);
 
 Route::resource('dossiers', DossierController::class)->except([
     'create'
 ]);
 
-Route::get('/produits/{produit}/dossiers/create', [DossierController::class, 'create']);
+Route::get('/produits/{produit}/dossiers/create', [DossierController::class, 'create'])
+->middleware('can:create,produit');
 
 Route::get('/dossiers/{dossier}/paiements', [PaiementController::class, 'index']);
 

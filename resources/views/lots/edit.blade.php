@@ -41,11 +41,11 @@
                   placeholder=""
                   type="number"
                   step="0.1"
-                  name="surfaceLot"
+                  name="surface"
                   required
-                  value="{{$lot->surfaceLot}}"
+                  value="{{$lot->surface}}"
                 />
-                    @error('surfaceLot')
+                    @error('surface')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror
@@ -146,9 +146,9 @@
                     <input
                       type="radio"
                       class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
-                      name="typeLot"
+                      name="type"
                       value="Commercial"
-                      @if ($lot->typeLot == "Commercial")
+                      @if ($lot->type == "Commercial")
                         checked
                       @endif                       
                     />
@@ -162,7 +162,7 @@
                       class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
                       name="typeLot"
                       value="Habitat"
-                      @if ($lot->typeLot == "Habitat")
+                      @if ($lot->type == "Habitat")
                         checked
                       @endif                       
                     />
@@ -205,14 +205,14 @@
                 </span>
                 <select
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
-                  name="nombreEtagesLot"
+                  name="etage"
                 >
                   @for($i = 0; $i < 10; $i++)
-                    <option @if(($i+1) == $lot->nombreEtagesLot) selected @endif>{{$i + 1}}</option>
+                    <option @if(($i+1) == $lot->etage) selected @endif>{{$i + 1}}</option>
                   @endfor
                 </select>
 
-                    @error('nombreEtagesLot')
+                    @error('etage')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror

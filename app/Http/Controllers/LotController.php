@@ -68,15 +68,15 @@ class LotController extends Controller
         }
 
         //recherche par nombre d'etages
-        if (isset($request['nombreEtagesLot']) && $request['nombreEtagesLot'] != '-' ) {
-            $et = $request['nombreEtagesLot'] ;
-            $lotsAll = $lotsAll->where('lot.nombreEtagesLot', $et); 
+        if (isset($request['etage']) && $request['etage'] != '-' ) {
+            $et = $request['etage'] ;
+            $lotsAll = $lotsAll->where('constructible.etage', $et); 
         }  
 
         //recherche par type de lot
-        if (isset($request['typeLot']) && $request['typeLot'] != '-' ) {
-            $ty = $request['typeLot'] ;
-            $lotsAll = $lotsAll->where('constructible.typeLot', $ty);  
+        if (isset($request['type']) && $request['type'] != '-' ) {
+            $ty = $request['type'] ;
+            $lotsAll = $lotsAll->where('constructible.type', $ty);  
         }           
 
         //recherche par etat du lot
@@ -87,7 +87,7 @@ class LotController extends Controller
 
         $total = 0 ;
            $prixTotalLots = $lotsAll->map(function ($item, $key) use ($total) {
-        return $total = $total + $item->constructible->surfaceLot * $item->prixM2Definitif;
+        return $total = $total + $item->constructible->surface * $item->prixM2Definitif;
         });
 
 
@@ -100,9 +100,9 @@ class LotController extends Controller
             'valeurTotal'       => $prixTotalLots->sum(),
             'SearchByTranche'   => $request['tranche'] ,
             'SearchByFacade'    => $request['nombreFacadesLot'] ,
-            'SearchByEtage'     => $request['nombreEtagesLot'] ,
+            'SearchByEtage'     => $request['etage'] ,
             'SearchByEtat'     => $request['etatProduit'] ,
-            'SearchByType'     => $request['typeLot'] ,
+            'SearchByType'     => $request['type'] ,
             'SearchByMin'     => $request['minPrix'] ,
             'SearchByMax'     => $request['maxPrix'] ,
             'SearchByNum' => $request['numsLot'] ,
@@ -142,9 +142,9 @@ class LotController extends Controller
 
         $lot = new Lot() ;
         $lot->num                = $request['num'];
-        $lot->surfaceLot            = $request['surfaceLot'];
-        $lot->typeLot               = $request['typeLot'];
-        $lot->nombreEtagesLot       = $request['nombreEtagesLot'];
+        $lot->surface            = $request['surface'];
+        $lot->type               = $request['type'];
+        $lot->etage       = $request['etage'];
         $lot->descriptionLot        = $request['descriptionLot'];
         $lot->save();
         $tranche->lots()->save($lot) ;
@@ -251,9 +251,9 @@ class LotController extends Controller
         $lot->produit->voies()->attach($request['voies']) ;
 
         $lot->num            = $request['num'];
-        $lot->surfaceLot            = $request['surfaceLot'];
-        $lot->typeLot               = $request['typeLot'];
-        $lot->nombreEtagesLot       = $request['nombreEtagesLot'];
+        $lot->surface            = $request['surface'];
+        $lot->type               = $request['type'];
+        $lot->etage       = $request['etage'];
         $lot->descriptionLot        = $request['descriptionLot'];
         $lot->update();
         $tranche->lots()->save($lot) ;

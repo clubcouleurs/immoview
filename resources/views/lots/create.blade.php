@@ -41,12 +41,12 @@
                   placeholder=""
                   type="number"
                   step="0.1"
-                  name="surfaceLot"
-                  value="{{old('surfaceLot')}}"
+                  name="surface"
+                  value="{{old('surface')}}"
 
                   required
                 />
-                    @error('surfaceLot')
+                    @error('surface')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror
@@ -122,7 +122,7 @@
 
               <div class="mt-4 text-sm">
 
-                    @error('typeLot')
+                    @error('type')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror
@@ -137,7 +137,7 @@
                     <input
                       type="radio"
                       class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
-                      name="typeLot"
+                      name="type"
                       value="Commercial"
                       checked
                     />
@@ -149,7 +149,7 @@
                     <input
                       type="radio"
                       class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
-                      name="typeLot"
+                      name="type"
                       value="Habitat"
                     />
                     <span class="ml-2">Habitat</span>
@@ -188,14 +188,14 @@
                 </span>
                 <select
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
-                  name="nombreEtagesLot"
+                  name="etage"
                 >
                   @for($i = 0; $i < 10; $i++)
                     <option >{{$i + 1}}</option>
                   @endfor
                 </select>
 
-                    @error('nombreEtagesLot')
+                    @error('etage')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror
