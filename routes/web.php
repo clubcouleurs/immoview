@@ -42,6 +42,8 @@ Route::resource('dossiers', DossierController::class)->except([
 Route::get('/produits/{produit}/dossiers/create', [DossierController::class, 'create'])
 ->middleware('can:create,produit');
 
+Route::get('/paiements', [PaiementController::class, 'historique']);
+
 Route::get('/dossiers/{dossier}/paiements', [PaiementController::class, 'index']);
 
 Route::get('/dossiers/{dossier}/paiements/{paiement}', [PaiementController::class, 'show']);

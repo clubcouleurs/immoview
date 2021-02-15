@@ -4,10 +4,38 @@ namespace App\Http\Controllers;
 
 use App\Models\Dossier;
 use App\Models\Paiement;
+use App\Models\Produit;
 use Illuminate\Http\Request;
 
 class PaiementController extends Controller
 {
+
+
+
+
+    public function historique()
+    {
+
+
+        $collection = Produit::with('constructible')->get() ;
+
+
+        $multiplied = $collection->map(function ($item, $key) {
+            return $item->prixM2Definitif * $item->constructible->surface;
+        });
+
+        $ca = $multiplied->sum() ;
+        $totalPaiements = Paiement::sum('montant') ;
+
+
+        return view('paiements.historique', [
+            'paiements' => Paiement::paginate(15),
+            'ca' => $ca,
+            'toatalPaiements' => $totalPaiements
+
+        ]) ;
+    }
+
     /**
      * Display a listing of the resource.
      *
