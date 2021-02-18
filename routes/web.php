@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AppartementController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DossierController;
 use App\Http\Controllers\EtiquetteController;
 use App\Http\Controllers\ImmeubleController;
@@ -29,6 +31,9 @@ Route::get('/moi', function () {
 
 Route::middleware('auth')->group(function(){
 Route::resource('lots', LotController::class);
+
+Route::resource('appartements', AppartementController::class);
+
 Route::resource('voies', VoieController::class);
 Route::resource('tranches', TrancheController::class);
 Route::resource('immeubles', ImmeubleController::class);
@@ -63,13 +68,16 @@ Route::get('/parametres', function () {
     return view('settings', ['totalEtiquettes' => $totalEtiquettes->count()]);
 });
 
-Route::get('/', function () {
-    return view('dashboard');
-});
+Route::get('/', [DashboardController::class, 'index'])->name('dashboard'); ;
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard'); ;
 
-Route::get('/dashboard', function () {
+/*Route::get('/', function () {
     return view('dashboard');
-})->name('dashboard');
+});*/
+
+//Route::get('/dashboard', function () {
+//    return view('dashboard');
+//})->name('dashboard');
 
 });
 

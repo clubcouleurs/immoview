@@ -23,14 +23,24 @@ class ProduitRequest extends FormRequest
      */
     public function rules()
     {
-        $id = (isset($this->lot->id)) ? $this->lot->id : Null ;
+        $idLot = (isset($this->lot->id)) ? $this->lot->id : Null ;
+        $idApp = (isset($this->appartement->id)) ? $this->appartement->id : Null ;
+
         return [
-            'num' => 'sometimes|required|numeric',
-            'num' => 'unique:lots,num,'.$id,
-            'surfaceLot' => 'sometimes|required|numeric',
-            'typeLot' => 'sometimes|required|string',
-            'nombreEtagesLot' => 'sometimes|required|integer',
-            'descriptionLot' => 'string|nullable',         
+            'numLot' => 'sometimes|required|numeric',
+            'numLot' => 'unique:lots,num,'.$idLot,
+
+            'numApp' => 'sometimes|required|numeric',
+            'numApp' => 'unique:appartements,num,'.$idApp,            
+
+
+            'surface' => 'sometimes|required|numeric',
+            'surfaceApp' => 'sometimes|required|numeric',
+            'surfaceTerrasse' => 'sometimes|required|numeric',
+
+            'type' => 'sometimes|required|string',
+            'etage' => 'sometimes|required|integer',
+            'description' => 'string|nullable',         
             'etatProduit' => 'required|numeric',
             'prixM2Indicatif' => 'required|numeric|nullable',
             'prixM2Definitif' => 'numeric|nullable',

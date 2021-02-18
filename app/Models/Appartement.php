@@ -2,15 +2,15 @@
 
 namespace App\Models;
 
+use App\Models\Immeuble;
 use App\Models\Produit;
-use App\Models\Tranche;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Lot extends Model
+class Appartement extends Model
 {
     use HasFactory;
-    protected $fillable = ['num', 'surface','type','etage','description'];
+    protected $fillable = ['num', 'surfaceApp','surfaceTerrasse','type','etage','description'];
 
     /*public function produit()
     {
@@ -23,8 +23,14 @@ class Lot extends Model
     }
 
 
-    public function tranche()
+    public function immeuble()
     {
-        return $this->belongsTo(Tranche::class);
-    }      
+        return $this->belongsTo(Immeuble::class);
+    } 
+
+    public function getSurfaceAttribute()
+    {
+        return $this->surfaceTerrasse + $this->surfaceApp ;
+
+    }     
 }

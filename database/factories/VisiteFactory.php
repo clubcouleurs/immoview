@@ -22,7 +22,7 @@ class VisiteFactory extends Factory
     public function definition()
     {
         return [
-            'date' => $this->faker->dateTimeBetween($startDate = '-3 days', $endDate = 'now'),
+            'date' => $this->faker->dateTimeBetween($startDate = '-180 days', $endDate = 'now'),
             'detail' => $this->faker->realText($maxNbChars = 200, $indexSize = 2),
             'remarqueClient' => $this->faker->realText($maxNbChars = 200, $indexSize = 2),
         ];

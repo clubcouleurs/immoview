@@ -8,50 +8,67 @@
             <h2
               class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
             >
-              Ajouter un nouveau lot
+              Ajouter un nouvel appartement
             </h2>
-            <form action="/lots" method="POST">
+            <form action="/appartements" method="POST">
               @csrf
 
             <div
               class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800"
             >
               <label class="block text-sm">
-                <span class="text-gray-700 dark:text-gray-400">N° du lot</span>
+                <span class="text-gray-700 dark:text-gray-400">N° de l'appartement</span>
                 <input
                   class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
                   placeholder=""
                   type="number"
-                  name="num"
-                  value="{{old('num')}}"
+                  name="numApp"
+                  value="{{old('numApp')}}"
                   required
                 />
-                    @error('num')
+                    @error('numApp')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror
               </label>
 
               <label class="block mt-4 text-sm">
-                <span class="text-gray-700 dark:text-gray-400">Surface du lot en m2</span>
+                <span class="text-gray-700 dark:text-gray-400">Surface couvert en m2</span>
                 <input
                   class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
                   placeholder=""
                   type="number"
                   step="0.1"
-                  name="surface"
-                  value="{{old('surface')}}"
+                  name="surfaceApp"
+                  value="{{old('surfaceApp')}}"
 
                   required
                 />
-                    @error('surface')
+                    @error('surfaceApp')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror
               </label>
               <label class="block mt-4 text-sm">
+                <span class="text-gray-700 dark:text-gray-400">Surface Terrasse en m2</span>
+                <input
+                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                  placeholder=""
+                  type="number"
+                  step="0.1"
+                  name="surfaceTerrasse"
+                  value="{{old('surfaceTerrasse')}}"
+
+                  required
+                />
+                    @error('surfaceTerrasse')
+                    <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
+                    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
+                    @enderror
+              </label>              
+              <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">
-                  Ce lot est sur les voie : 
+                  Cet appartemen est sur les voie : 
                 </span>
 
 
@@ -82,18 +99,18 @@
 
               <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">
-                  Sur quelle tranche se trouve ce lot ?
+                  Sur quelle immeuble se trouve cet appartement ?
                 </span>
                 <select
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
-                  name="tranche"
+                  name="immeuble"
                 >
-                @foreach ($tranches as $tranche)
-                  <option value="{{ $tranche->id }}"
-                    @if(old('tranche') == $tranche->id)
+                @foreach ($immeubles as $immeuble)
+                  <option value="{{ $immeuble->id }}"
+                    @if(old('immeuble') == $immeuble->id)
                       selected
                     @endif                    
-                    >Tranche {{$tranche->id}}</option>
+                    >Immeuble {{$immeuble->id}}</option>
                 @endforeach
 
                 </select>
@@ -144,7 +161,7 @@
                     @enderror
 
                 <span class="text-gray-700 dark:text-gray-400">
-                  Type du lot
+                  Type de l'appartement
                 </span>
                 <div class="mt-2">
                   <label
@@ -162,7 +179,7 @@
                         checked
                       @endif                      
                     />
-                    <span class="ml-2">Commercial</span>
+                    <span class="ml-2">Standing</span>
                   </label>
                   <label
                     class="inline-flex items-center ml-6 text-gray-600 dark:text-gray-400"
@@ -176,7 +193,7 @@
                         checked
                       @endif                      
                     />
-                    <span class="ml-2">Habitat</span>
+                    <span class="ml-2">Economique</span>
                   </label>
                 </div>
               </div>
@@ -184,7 +201,7 @@
               <div class="mt-4 text-sm">
 
                 <span class="text-gray-700 dark:text-gray-400">
-                  Etat du lot
+                  Etat de l'appartement
                 </span>
                 <div class="mt-2">
                                 <label class="block text-sm">
@@ -212,7 +229,7 @@
 
               <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">
-                  Nombre d'Etages : R + ...
+                  A quelle étage se trouve cet appartemetnt : R + ...
                 </span>
                 <select
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
@@ -241,11 +258,11 @@
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-textarea focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
                   rows="3"
                   placeholder="Si vous avez une description et une observation à saisir"
-                  name="descriptionLot"
+                  name="description"
 
 
-                >{{old('descriptionLot')}}</textarea>
-                    @error('descriptionLot')
+                >{{old('description')}}</textarea>
+                    @error('description')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror

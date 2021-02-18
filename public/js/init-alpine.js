@@ -62,7 +62,11 @@ function data() {
     isVisitesMenuOpen: false,
     toggleVisitesMenu() {
       this.isVisitesMenuOpen = !this.isVisitesMenuOpen
-    },      
+    },   
+    isAppartementsMenuOpen: false,
+    toggleAppartementsMenu() {
+      this.isAppartementsMenuOpen = !this.isAppartementsMenuOpen
+    },         
     isPagesMenuOpen: false,
     togglePagesMenu() {
       this.isPagesMenuOpen = !this.isPagesMenuOpen

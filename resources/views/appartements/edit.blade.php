@@ -5,13 +5,15 @@
         <p class="block h-160 px-4 py-4 rounded-lg mx-auto w-full mt-4
         bg-red-200 text-red-600 text-xl"> Attention Il y'a des erreurs dans votre formulaire</p>
         @endif
+
             <h2
               class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
             >
               Ajouter un nouveau lot
             </h2>
-            <form action="/lots" method="POST">
+            <form action="/lots/{{$lot->id}}" method="POST">
               @csrf
+              @method('PATCH')
 
             <div
               class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800"
@@ -23,8 +25,8 @@
                   placeholder=""
                   type="number"
                   name="num"
-                  value="{{old('num')}}"
                   required
+                  value="{{$lot->num}}"
                 />
                     @error('num')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
@@ -32,7 +34,7 @@
                     @enderror
               </label>
 
-              <label class="block mt-4 text-sm">
+              <label class="block   mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">Surface du lot en m2</span>
                 <input
                   class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
@@ -40,9 +42,8 @@
                   type="number"
                   step="0.1"
                   name="surface"
-                  value="{{old('surface')}}"
-
                   required
+                  value="{{$lot->surface}}"
                 />
                     @error('surface')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
@@ -53,8 +54,6 @@
                 <span class="text-gray-700 dark:text-gray-400">
                   Ce lot est sur les voie : 
                 </span>
-
-
                 <select
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
                   multiple
@@ -63,18 +62,13 @@
                 >
                 @foreach ($voies as $voie)
                   <option value="{{ $voie->id }}"
-                    @if( old('voies') !== null )
-                      @foreach (old('voies') as $v)
-                        @if($v == $voie->id)
-                          selected
-                        @endif
-                      @endforeach
-                    @endif
+                    @foreach ($lot->produit->voies as $produit_voie)
+                      @if ($voie->id == $produit_voie->id)
+                      selected
+                      @endif
+                    @endforeach
+                    >{{$voie->Largeur}} m</option>
 
-                    >
-
-                    {{$voie->Largeur}} m
-                  </option>
                 @endforeach
 
                 </select>
@@ -90,9 +84,9 @@
                 >
                 @foreach ($tranches as $tranche)
                   <option value="{{ $tranche->id }}"
-                    @if(old('tranche') == $tranche->id)
-                      selected
-                    @endif                    
+                      @if ($lot->tranche_id == $tranche->id)
+                        selected
+                      @endif                    
                     >Tranche {{$tranche->id}}</option>
                 @endforeach
 
@@ -109,8 +103,7 @@
                   type="number"
                   name="prixM2Indicatif"
                   step="0.01"
-                  value="{{old('prixM2Indicatif')}}"
-
+                  value="{{$lot->produit->prixM2Indicatif}}"
                   required
                 />
                     @error('prixM2Indicatif')
@@ -126,7 +119,7 @@
                   placeholder=""
                   type="number"
                   name="prixM2Definitif"
-                  value="{{old('prixM2Definitif')}}"
+                  value="{{$lot->produit->prixM2Definitif}}"
 
                   step="0.01"
                 />
@@ -138,7 +131,7 @@
 
               <div class="mt-4 text-sm">
 
-                    @error('type')
+                    @error('typeLot')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror
@@ -155,12 +148,9 @@
                       class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
                       name="type"
                       value="Commercial"
-                      @if(old('type') == 'Commercial')
+                      @if ($lot->type == "Commercial")
                         checked
-                      @endif
-                      @if(null == old('type'))
-                        checked
-                      @endif                      
+                      @endif                       
                     />
                     <span class="ml-2">Commercial</span>
                   </label>
@@ -170,11 +160,11 @@
                     <input
                       type="radio"
                       class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
-                      name="type"
+                      name="typeLot"
                       value="Habitat"
-                      @if(old('type') == 'Habitat')
+                      @if ($lot->type == "Habitat")
                         checked
-                      @endif                      
+                      @endif                       
                     />
                     <span class="ml-2">Habitat</span>
                   </label>
@@ -188,19 +178,19 @@
                 </span>
                 <div class="mt-2">
                                 <label class="block text-sm">
+
                 <select
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+                  multiple
                   required
                   name="etatProduit"
                 >
                 @foreach ($etiquettes as $etiquette)
                   <option value="{{ $etiquette->id }}"
-                    @if(old('etatProduit') == $etiquette->id)
-                      selected
+                    @if($etiquette->id == $lot->produit->etiquette_id)
+                    selected
                     @endif
-                    >
-                    {{$etiquette->label}}
-                  </option>
+                    >{{$etiquette->label}}</option>
                 @endforeach
 
                 </select>
@@ -208,7 +198,6 @@
                                 
                 </div>
               </div>
-
 
               <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">
@@ -218,13 +207,8 @@
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
                   name="etage"
                 >
-                  @for($i = 1; $i < 11; $i++)
-                    <option value="{{$i}}"
-                    @if(old('etage') == $i)
-                      selected
-                    @endif
-
-                    >{{$i}}</option>
+                  @for($i = 0; $i < 10; $i++)
+                    <option @if(($i+1) == $lot->etage) selected @endif>{{$i + 1}}</option>
                   @endfor
                 </select>
 
@@ -243,8 +227,7 @@
                   placeholder="Si vous avez une description et une observation à saisir"
                   name="descriptionLot"
 
-
-                >{{old('descriptionLot')}}</textarea>
+                >{{ $lot->descriptionLot }}</textarea>
                     @error('descriptionLot')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
@@ -257,7 +240,7 @@
                   class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
                   type="submit"
                 >
-                  Sauvegarder
+                  Modifier
                 </button>
               </div>
 

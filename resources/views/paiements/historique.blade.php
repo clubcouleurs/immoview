@@ -42,10 +42,11 @@ role="progressbar" :aria-valuenow="value" aria-valuemin="0" :aria-valuemax="tota
                       class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
                     >
                       <th class="px-4 py-3">N° du paiement</th>
+
                       <th class="px-4 py-3">Montant</th>
                       <th class="px-4 py-3">Date du paiement</th>
                       <th class="px-4 py-3">Moyen de paiement</th>
-                      <th class="px-4 py-3">Numéro de la pièce</th>
+                      <th class="px-4 py-3">Client</th>
 
                       <th class="px-4 py-3">Action</th>
 
@@ -94,10 +95,10 @@ role="progressbar" :aria-valuenow="value" aria-valuemin="0" :aria-valuemax="tota
                         {{ $p->date }}
                       </td>    
                       <td class="px-4 py-3 text-sm">
-                        {{ $p->type }}
+                        {{ $p->dossier->produit->constructible_type }} N° {{ $p->dossier->produit->constructible->num }}
                       </td> 
                       <td class="px-4 py-3 text-sm">
-                        {{ $p->num }}
+                        {{ $p->dossier->client->nom }} {{ $p->dossier->client->prenom }}
                       </td>                                                               
                       <form action="/dossiers/{{$p->dossier->id}}/paiements/{{$p->id}}" method="POST">
                         @csrf

@@ -4,7 +4,7 @@
             <h2
               class="my-6 text-4xl font-semibold text-gray-700 dark:text-gray-200"
             >
-              Récapitulatif des visites
+              Récapitulatif des appartements
             </h2>
 <hr>  
             <!-- Cards -->
@@ -26,12 +26,12 @@
                   <p
                     class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
                   >
-                    Visites d'aujroud'hui
+                    Total appartements
                   </p>
                   <p
                     class="text-lg font-semibold text-gray-700 dark:text-gray-200"
                   >
-                    {{$visitesDay}}
+                    {{$totalappartements}}
                   </p>
                 </div>
               </div>
@@ -54,12 +54,12 @@
                   <p
                     class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
                   >
-                    Visites de cette semaine
+                    Valeur total
                   </p>
                   <p
                     class="text-lg font-semibold text-gray-700 dark:text-gray-200"
                   >
-                  {{$visitesWeek}}
+                  {{number_format($valeurTotal, 2)}} Dhs
                   </p>
                 </div>
               </div>
@@ -80,12 +80,12 @@
                   <p
                     class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
                   >
-                    Visites de ce mois
+                    appartements réservés
                   </p>
                   <p
                     class="text-lg font-semibold text-gray-700 dark:text-gray-200"
                   >
-                    {{ $visitesMonth }}
+                    376
                   </p>
                 </div>
               </div>
@@ -105,12 +105,12 @@
                   <p
                     class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
                   >
-                    Visites de cette année {{date_format(now(), 'Y')}}
+                    appartements en stock
                   </p>
                   <p
                     class="text-lg font-semibold text-gray-700 dark:text-gray-200"
                   >
-                    {{ $visitesYear }}
+                    35
                   </p>
                 </div>
               </div>
@@ -129,12 +129,12 @@
                   <p
                     class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
                   >
-                    Total de visites
+                    appartements Bloqués
                   </p>
                   <p
                     class="text-lg font-semibold text-gray-700 dark:text-gray-200"
                   >
-                    {{count($totalVisites)}}
+                    35
                   </p>
                 </div>
               </div>              
@@ -143,7 +143,7 @@
             <!-- filtre -->
               <p class="text-sm text-gray-600 dark:text-gray-400 ml-2 mb-2">Filtres</p>   
 
-                <form action="/lots/">
+                <form action="/appartements/">
               @csrf
             <div
               class="flex items-center justify-between p-2 mb-2 text-sm font-semibold text-blue-600 bg-blue-100 rounded-lg shadow-sm focus:outline-none focus:shadow-outline-blue rounded-2xl"
@@ -152,10 +152,70 @@
               <div class="flex items-center gap-2">
                 <a
                   class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-2xl active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue"
-                  href="/lots/"
+                  href="/appartements/"
                 >Tout</a>
 
+                <select
+                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
+                  name="tranche"
+                >
+                  <option value="-">Tranche</option>
+                
+                @foreach($tranches as $tranche)
+                  <option value="{{$tranche->id}}"
+                    @if ( $SearchByTranche == $tranche->id)
+                    selected
+                    @endif
+                    >Tr {{$tranche->id}}
+                  </option>
+                @endforeach
 
+
+                </select>
+                <select
+                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
+                  name="nombreFacadesappartement"
+                >
+                  <option value="-">Façades </option>
+
+                  @for ($i = 0; $i < 3; $i++)
+                  <option value="{{$i+1}}"
+                    @if ( $SearchByFacade == ($i+1) )
+                    selected
+                    @endif
+                    >{{$i+1}} Façade(s)
+                  </option>
+                @endfor
+
+                </select>        
+                <select
+                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
+                  name="etage"
+                >
+                  <option value="-">Etages</option>
+                
+                  <option value="1" @if ( $SearchByEtage == 1) selected @endif>R+1</option>
+                  <option value="2" @if ( $SearchByEtage == 2) selected @endif>R+2</option>
+                  <option value="3" @if ( $SearchByEtage == 3) selected @endif>R+3</option>
+              
+                </select>
+                <select
+                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
+                  name="etatProduit"
+                >
+                  <option value="-">Etat</option>
+                
+                
+                @foreach($etiquettes as $etiquette)
+                  <option value="{{$etiquette->id}}"
+                    @if ( $SearchByEtat == $etiquette->id)
+                    selected
+                    @endif
+                    > {{$etiquette->label}}
+                  </option>
+                @endforeach
+              
+                </select>
                 <select
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
                   name="type"
@@ -183,9 +243,9 @@
                 />
                 <input
                   class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input rounded-2xl"
-                  placeholder="Numéros de lot séparés par (,)"
+                  placeholder="Numéros de appartement séparés par (,)"
                   type="text"
-                  name="numsLot"
+                  name="numsappartement"
                   value="{{$SearchByNum}}"
                 />
 
@@ -204,6 +264,117 @@
             </div>
               </form>
 
+              <!-- actions groupées -->
+              <p class="text-sm text-gray-600 dark:text-gray-400 ml-2 mb-2">Actions groupées</p>   
+          <form action="/appartements/" method="POST">
+            @csrf
+            @method('PATCH')
+            <input type="hidden" name="SearchByNum" value="{{ $SearchByNum }}">
+            <div
+              class="flex items-center justify-between p-2 mb-8 text-sm font-semibold text-red-600 bg-red-100 rounded-lg shadow-sm focus:outline-none focus:shadow-outline-blue rounded-2xl"
+              
+            >
+              <div class="flex items-center gap-2">
+               
+
+                <select
+                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
+                  name="tranche"
+                >
+                  <option value="-">Tranche</option>
+                
+                @foreach($tranches as $tranche)
+                  <option value="{{$tranche->id}}"
+                    @if ( $SearchByTranche == $tranche->id)
+                    selected
+                    @endif
+                    >Tr {{$tranche->id}}
+                  </option>
+                @endforeach
+
+
+                </select>
+                <select
+                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
+                  name="nombreFacadesappartement"
+                >
+                  <option value="-">Façades </option>
+
+                  @for ($i = 0; $i < 3; $i++)
+                  <option value="{{$i+1}}"
+                    @if ( $SearchByFacade == ($i+1) )
+                    selected
+                    @endif
+                    >{{$i+1}} Façade(s)
+                  </option>
+                @endfor
+
+                </select>        
+                <select
+                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
+                  name="nombreEtagesappartement"
+                >
+                  <option value="-">Etages</option>
+                
+                  <option value="1" @if ( $SearchByEtage == 1) selected @endif>R+1</option>
+                  <option value="2" @if ( $SearchByEtage == 2) selected @endif>R+2</option>
+                  <option value="3" @if ( $SearchByEtage == 3) selected @endif>R+3</option>
+              
+                </select>
+                <select
+                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
+                  name="etatProduit"
+                >
+                  <option value="-">Etat</option>
+                
+                
+                @foreach($etiquettes as $etiquette)
+                  <option value="{{$etiquette->id}}"
+                    @if ( $SearchByEtat == $etiquette->id)
+                    selected
+                    @endif
+                    > {{$etiquette->label}}
+                  </option>
+                @endforeach
+              
+                </select>
+                <select
+                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
+                  name="typeappartement"
+                >
+                  <option value="-">Type</option>
+                
+                  <option value="Habitat"  @if ( $SearchByType == "Habitat") selected @endif>Habitat</option>
+                  <option value="Commercial" @if ( $SearchByType == "Commercial") selected @endif>Commercial</option>              
+                </select> 
+                <input
+                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input rounded-2xl"
+                  placeholder="prix min"
+                  type="number"
+                  step="0.1"
+                  name="minPrix"
+                  value={{$SearchByMin}}
+                />
+                <input
+                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input rounded-2xl"
+                  placeholder="prix max"
+                  type="number"
+                  step="0.1"
+                  name="maxPrix"
+                  value={{$SearchByMax}}
+                />
+
+
+                            <button
+                  class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-2xl active:bg-red-600 hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
+                  type="submit"
+                >
+                  Appliquer
+                </button>
+
+              </div>
+            </div>
+              </form>              
 
             <!-- New Table -->
             <div class="w-full overflow-hidden rounded-lg shadow-xs">
@@ -213,12 +384,15 @@
                     <tr
                       class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
                     >
-                      <th class="px-4 py-3">N° Visite</th>
-                      <th class="px-4 py-3">Date de la visite</th>
-                      <th class="px-4 py-3">Prospect</th>
-                      <th class="px-4 py-3">Intéressez par</th>                      
-                      <th class="px-4 py-3">Détails de la visite</th>
-                      <th class="px-4 py-3">Remarques du prospect</th>
+                      <th class="px-4 py-3">N° du appartement</th>
+                      <th class="px-4 py-3">Surface en m2</th>
+                      <th class="px-4 py-3">Prix m2 Indicatif</th>
+                      
+                      <th class="px-4 py-3">Prix m2 Définitif</th>
+                      <th class="px-4 py-3">Nombre de façades</th>
+                      <th class="px-4 py-3">Etage</th>
+                      <th class="px-4 py-3">Etat</th>
+                      <th class="px-4 py-3">Type</th>
                       <th class="px-4 py-3">Actions</th>
 
 
@@ -228,8 +402,15 @@
                     class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800"
                   >
 
-                  @foreach ($visites as $visite)
+                  @foreach ($appartements as $produit)
                     <tr class="
+                    @if ($produit->etiquette->label == 'En stock')
+                      bg-green-50
+                    @elseif ($produit->etiquette->label == 'Réservé')
+                      bg-gray-200
+                    @else
+                      bg-red-100
+                    @endif
                     text-gray-700 dark:text-gray-400">
                       <td class="px-4 py-3">
                         <div class="flex items-center text-sm">
@@ -252,66 +433,88 @@
                           <div>
                            
                             <p class="font-semibold">
-                             <a href="/visites/{{ $visite->id }}">
+                             <a href="/appartements/{{ $produit->constructible->id }}">
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-blue-700 bg-blue-100 rounded-full dark:bg-blue-700 dark:text-blue-100"
                         >                              
-                              {{$visite->id }} 
+                              {{$produit->constructible->num }} 
                         </span></a>
                             </p>
-
+                            <p class="text-xs text-gray-600 dark:text-gray-400">
+                              Imm. {{ $produit->constructible->immeuble_id }}
+                            </p>
                           </div>
                         </div>
                       </td>
                       <td class="px-4 py-3 text-sm">
 
-                        {{ $visite->date }}
+                        {{ $produit->constructible->surface }} m<sup>2</sup>
+                      </td>
+
+                      <td class="px-4 py-3 text-xs">
+                        <span
+                          class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
+                        >
+                          {{ $produit->prixM2Indicatif }} Dhs
+                        </span>
+                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                              Total : {{ number_format($produit->totalIndicatif)}} Dhs
+                            </p>                        
                       </td>
                       <td class="px-4 py-3 text-xs">
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
                         >
-                          {{ $visite->client->nom }} {{ $visite->client->prenom }}
+                          {{ $produit->prixM2Definitif }} Dhs
                         </span>
-                            <p class="flex text-xs text-gray-600 dark:text-gray-400 mt-1">
-                                                <svg
-                    class="w-3 h-3"
-                    aria-hidden="true"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                  <path d="M11.1735916,16.8264084 C7.57463481,15.3079672 4.69203285,12.4253652 3.17359164,8.82640836 L5.29408795,6.70591205 C5.68612671,6.31387329 6,5.55641359 6,5.00922203 L6,0.990777969 C6,0.45097518 5.55237094,3.33066907e-16 5.00019251,3.33066907e-16 L1.65110039,3.33066907e-16 L1.00214643,8.96910337e-16 C0.448676237,1.13735153e-15 -1.05725384e-09,0.445916468 -7.33736e-10,1.00108627 C-7.33736e-10,1.00108627 -3.44283713e-14,1.97634814 -3.44283713e-14,3 C-3.44283713e-14,12.3888407 7.61115925,20 17,20 C18.0236519,20 18.9989137,20 18.9989137,20 C19.5517984,20 20,19.5565264 20,18.9978536 L20,18.3488996 L20,14.9998075 C20,14.4476291 19.5490248,14 19.009222,14 L14.990778,14 C14.4435864,14 13.6861267,14.3138733 13.2940879,14.7059121 L11.1735916,16.8264084 Z" id="Combined-Shape"></path>
-                  </svg> <span class="ml-2">{{ $visite->client->mobile}} </span>
+                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                              Total : {{ number_format($produit->totalDefinitif)}} Dhs
                             </p>                         
-                      </td>
+                      </td>                                                                  
                       <td class="px-4 py-3 text-xs">
-                        {{ $visite->interet}}
-                      </td>                      
-                      <td class="px-4 py-3 text-xs">
-
-                          {{ substr($visite->detail, 0  , 80) }} ...
-                    
-                       
-                      </td>
-                                                                  
-                      <td class="px-4 py-3 text-xs">
-
-                        {{ substr($visite->remarqueClient, 0  , 80) }} ...
+                        <span
+                          class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
+                        >
+                        {{$produit->nombreVoies}}F-{{$produit->quellesVoies}}
 
                            
-            
+                        </span>
                       </td>
-                      
+                      <td class="px-4 py-3 text-sm">
+                        R+{{ $produit->constructible->etage }}
+                      </td>                      
+                      <td class="px-4 py-3 text-sm">
+                        <span
+                          class="px-2 py-1 font-semibold leading-tight rounded-full dark:bg-green-700 dark:text-green-100
 
+                    @if ($produit->etiquette->label == 'En stock')
+                      text-green-700 bg-green-100 
+                    @elseif ($produit->etiquette->label == 'Réservé')
+                      text-gray-200 bg-gray-900
+                    @else
+                      text-white bg-red-900
+                    @endif
+
+
+
+                          "
+                        >
+                          {{ $produit->etiquette->label }}
+                        </span>
+                      </td>
+                      <td class="px-4 py-3 text-sm">
+                        {{ $produit->constructible->type }}
+                      </td>
 
                       <td class="px-4 py-3 text-sm">
               <div class="flex px-1 py-1">
+                @if(null == $produit->dossier && $produit->etiquette->label == 'En stock')
                 <div class="mr-1">
              
                 <a
-                  class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-400 border border-transparent rounded-lg active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue"
+                  class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none focus:shadow-outline-gray"
                   aria-label="Like"
-                  href="/visites/{{ $visite->id }}"
+                  href="/produits/{{ $produit->id }}/dossiers/create"
                 >
                   <svg
                     class="w-4 h-4"
@@ -319,18 +522,19 @@
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
-                  <path d="M0,3.99406028 C0,2.8927712 0.895857811,2 1.9973917,2 L9,2 L11,4 L18.0026083,4 C19.1057373,4 20,4.89706013 20,6.00585866 L20,15.9941413 C20,17.1019465 19.1017876,18 18.0092049,18 L1.99079514,18 C0.891309342,18 0,17.1054862 0,16.0059397 L0,3.99406028 Z" id="Rectangle-1"></path>
+                      <path d="M2,6 L0,6 L0,8 L2,8 L2,10 L4,10 L4,8 L6,8 L6,6 L4,6 L4,4 L2,4 L2,6 L2,6 Z M8.99999861,6.00166547 C8.99999861,4.34389141 10.3465151,3 11.9999972,3 C13.6568507,3 14.9999958,4.33902013 14.9999958,6.00166547 L14.9999958,7.99833453 C14.9999958,9.65610859 13.6534793,11 11.9999972,11 C10.3431437,11 8.99999861,9.66097987 8.99999861,7.99833453 L8.99999861,6.00166547 L8.99999861,6.00166547 Z M20.0000045,15.1405177 C17.6466165,13.7791553 14.914299,13 12,13 C9.08570101,13 6.35338349,13.7791553 3.99999555,15.1405177 L4,18 L20,18 L20,15.1405151 L20.0000045,15.1405177 L20.0000045,15.1405177 Z" id="Combined-Shape"></path>
                   </svg>
                 </a>
 
-            </div>
+              </div>
+            @endif
 
                 <div class="mr-1">
              
                 <a
                   class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none focus:shadow-outline-gray"
                   aria-label="Like"
-                  href="/visites/{{ $visite->id }}/edit"
+                  href="/appartements/{{ $produit->constructible->id }}/edit"
                 >
                   <svg
                     class="w-4 h-4"
@@ -344,7 +548,7 @@
 
             </div>
             <div>
-                        <form action="/visites/{{$visite->id}}" method="POST">
+                        <form action="/appartements/{{$produit->constructible->id}}" method="POST">
                         @csrf
                         @method('DELETE')
                 <button
@@ -384,7 +588,7 @@
               <div
                 class="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800"
               >
-                {{$visites->links()}}
+                {{$appartements->links()}}
               </div>
             </div>
 

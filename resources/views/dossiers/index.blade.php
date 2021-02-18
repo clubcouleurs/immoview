@@ -213,7 +213,8 @@
                   <option value="80" @if ( $SearchByTauxComparateur =="80" ) selected @endif>80%</option>
                   <option value="90" @if ( $SearchByTauxComparateur =="90" ) selected @endif>90%</option>
                   <option value="100" @if ( $SearchByTauxComparateur =="100" ) selected @endif>100%</option>
-              
+             
+
                 </select>
                 <!--<select
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
@@ -314,12 +315,11 @@
                           <div>
                            
                             <p class="font-semibold">
-                             <a href="/dossiers/{{ $dossier->id }}">
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-blue-700 bg-blue-100 rounded-full dark:bg-blue-700 dark:text-blue-100"
                         >                              
                               {{ $dossier->num }} 
-                        </span></a>
+                        </span>
                             </p>
                             <p class="text-xs text-gray-600 dark:text-gray-400">
                           <a href="{{ $dossier->produit->constructible_type }}s/{{ $dossier->produit->constructible->id }}">
@@ -385,7 +385,7 @@
 
                           "
                         >
-                           {{ number_format($dossier->produit->prixM2Definitif * $dossier->produit->constructible->surface)}} Dhs
+                           {{ number_format($dossier->produit->totalDefinitif)}} Dhs
                         </span>
                       </td>     
                       <td class="px-4 py-3 text-sm">
@@ -401,10 +401,7 @@
 
                           "
                         >
-                          {{
-                            round($dossier->paiements->sum('montant') * 100 /
-                            ($dossier->produit->prixM2Definitif * $dossier->produit->constructible->surface), 2)
-                          }} %
+                          {{ $dossier->tauxPaiement }} %
                         </span>
                       </td>                                       
                       <td class="px-4 py-3 text-sm">
@@ -413,6 +410,24 @@
 
                       <td class="px-4 py-3 text-sm">
               <div class="flex px-1 py-1">
+                <div class="mr-1">
+             
+                <a
+                  class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none focus:shadow-outline-gray"
+                  aria-label="Like"
+                  href="/dossiers/{{ $dossier->id }}"
+                >
+                  <svg
+                    class="w-4 h-4"
+                    aria-hidden="true"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+ <path d="M0,3.99406028 C0,2.8927712 0.895857811,2 1.9973917,2 L9,2 L11,4 L18.0026083,4 C19.1057373,4 20,4.89706013 20,6.00585866 L20,15.9941413 C20,17.1019465 19.1017876,18 18.0092049,18 L1.99079514,18 C0.891309342,18 0,17.1054862 0,16.0059397 L0,3.99406028 Z M2,6 L18,6 L18,16 L2,16 L2,6 Z"></path>
+                  </svg>
+                </a>
+  </div>
+
                 <div class="mr-1">
              
                 <a
