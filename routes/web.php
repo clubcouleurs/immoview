@@ -6,6 +6,8 @@ use App\Http\Controllers\DossierController;
 use App\Http\Controllers\EtiquetteController;
 use App\Http\Controllers\ImmeubleController;
 use App\Http\Controllers\LotController;
+use App\Http\Controllers\MagasinController;
+use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\PaiementController;
 use App\Http\Controllers\TrancheController;
 use App\Http\Controllers\VisiteController;
@@ -33,6 +35,10 @@ Route::middleware('auth')->group(function(){
 Route::resource('lots', LotController::class);
 
 Route::resource('appartements', AppartementController::class);
+
+Route::resource('magasins', MagasinController::class);
+
+Route::resource('offices', OfficeController::class);
 
 Route::resource('voies', VoieController::class);
 Route::resource('tranches', TrancheController::class);

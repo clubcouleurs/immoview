@@ -30,6 +30,9 @@ class AppartementController extends Controller
                             ->with('etiquette')
                             ->withCount('voies')
                             ->get();
+        $appartementsReserved = $appartementsAll->where('etiquette_id', 3)->count() ;
+        $appartementsStocked = $appartementsAll->where('etiquette_id', 2)->count() ;
+        $appartementsBlocked = $appartementsAll->whereNotIn('etiquette_id', [3,2])->count() ;
 
         //selectionner les appartements 
         //$appartementsAll = $appartementsAll->whereNotNull('appartement.id' ); 
@@ -53,9 +56,11 @@ class AppartementController extends Controller
         //recherche par prix
         if (isset($request['maxPrix']) && $request['maxPrix'] != '' ) {
             $maxPrix = floatval($request['maxPrix']) ;
+            $appartementsAll = $appartementsAll->whereBetween('prixM2Indicatif', [$minPrix, $maxPrix] ); 
+
         }
 
-        $appartementsAll = $appartementsAll->whereBetween('prixM2Indicatif', [$minPrix, $maxPrix] ); 
+
 
         //recherche par tranche
         if (isset($request['tranche']) && $request['tranche'] != '-' ) {
@@ -89,7 +94,7 @@ class AppartementController extends Controller
 
         $total = 0 ;
            $prixTotalappartements = $appartementsAll->map(function ($item, $key) use ($total) {
-        return $total = $total + $item->constructible->id * $item->prixM2Definitif;
+               return $total = $total + $item->totalIndicatif;
         });
 
 
@@ -100,6 +105,11 @@ class AppartementController extends Controller
             'tranches'          =>Tranche::all(),
             'etiquettes'          =>Etiquette::all(),
             'valeurTotal'       => $prixTotalappartements->sum(),
+
+            'appartementsReserved'       => $appartementsReserved,
+            'appartementsBlocked'        => $appartementsBlocked,
+            'appartementsStocked'        => $appartementsStocked,
+
             'SearchByTranche'   => $request['tranche'] ,
             'SearchByFacade'    => $request['nombreFacadesappartement'] ,
             'SearchByEtage'     => $request['etage'] ,
@@ -183,7 +193,11 @@ class AppartementController extends Controller
      */
     public function edit(Appartement $appartement)
     {
-        //
+        return view('appartements.edit', [
+            'appartement'           => $appartement, 
+            'voies'         => Voie::all(), 
+            'etiquettes'    => Etiquette::all(),
+            'immeubles'      => Immeuble::all()]) ;
     }
 
     /**
@@ -195,7 +209,27 @@ class AppartementController extends Controller
      */
     public function update(Request $request, Appartement $appartement)
     {
-        //
+        $appartement->produit->etiquette_id     = $request['etatProduit']; 
+        $appartement->produit->prixM2Indicatif  = $request['prixM2Indicatif'];
+        $appartement->produit->prixM2Definitif  = $request['prixM2Definitif'];
+        $appartement->produit->update() ;
+        $appartement->produit->voies()->detach() ; 
+        $appartement->produit->voies()->attach($request['voies']) ;
+
+
+        $immeuble = Immeuble::findOrFail($request['immeuble']) ;
+
+        $appartement->num               = $request['numApp'];
+        $appartement->surfaceApp        = $request['surfaceApp'];
+        $appartement->surfaceTerrasse   = $request['surfaceTerrasse'];
+        $appartement->type              = $request['type'];
+        $appartement->etage             = $request['etage'];
+        $appartement->description       = $request['descriptionApp'];
+        $appartement->update();
+
+        $immeuble->appartements()->save($appartement) ;
+
+        return redirect()->action([AppartementController::class, 'index']);
     }
 
     /**
@@ -206,10 +240,8 @@ class AppartementController extends Controller
      */
     public function destroy(Appartement $appartement)
     {
-        $appartement->produit->voies()->detach() ;
-        
+        $appartement->produit->voies()->detach() ;       
         $appartement->immeuble()->dissociate() ;
-
         $appartement->delete() ;
         $appartement->produit()->delete() ;
         return redirect()->action([AppartementController::class, 'index']);

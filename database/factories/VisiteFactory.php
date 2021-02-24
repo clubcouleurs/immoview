@@ -32,3 +32,7 @@ class VisiteFactory extends Factory
 Client::factory()->count(20)->for($user)->has(Visite::factory()->create())->create()
 Visite::factory()->count(20)->for($user)->for(Client::factory()->count(20))->create();
 Visite::factory()->count(20)->for($user)->for($client)->create();*/
+
+
+//UPDATE visites
+//SET interet = elt(floor(rand()*5) + 1, 'lot','appartement','bureau','magasin','box');

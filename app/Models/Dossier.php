@@ -42,6 +42,27 @@ class Dossier extends Model
     public function getTauxPaiementAttribute()
     {       
         return round(($this->totalPaiements * 100) / $this->produit->total , 2) ;
-    }       
+    }     
+
+    public static function dossiersParType()
+    {       
+        /*return \DB::select('SELECT COUNT(*) AS nombre, produits.constructible_type
+                FROM dossiers
+                LEFT JOIN produits ON dossiers.produit_id = produits.id
+                GROUP BY produits.constructible_type');*/
+
+        return \DB::table('dossiers')
+                ->select('produits.constructible_type', \DB::raw('COUNT(*) as nombre'))
+                ->leftJoin('produits', 'dossiers.produit_id', '=', 'produits.id')
+                ->groupBy('produits.constructible_type')
+                ->get();
+
+        //return Dossier::with('produit')->where('constructible_type','lot')->count() ;
+                //$dossiers = Dossier::with('produit')->get();
+
+               // return $dossiers->groupBy('produit.constructible_type')->count();
+
+    } 
+
 
 }

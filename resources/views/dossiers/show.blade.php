@@ -185,7 +185,11 @@
                         </div>
                       </td>
                       <td class="px-4 py-3 text-sm">
+                        @isset($dossier->produit->constructible->tranche)
                           {{$dossier->produit->constructible->tranche->num}}
+                          @else
+                          {{$dossier->produit->constructible->immeuble->tranche->num}}
+                        @endisset
                       </td>
                     </tr>  
                     <tr class="text-gray-700 dark:text-gray-400">

@@ -31,8 +31,8 @@ class Visite extends Model
     public static function visitesDay()
     {
         $now = Carbon::now();
-        $day = $now->day;
-		return count(Visite::whereDay('date', '=', $day)->get()) ;
+        $date = $now->toDateString();
+		return count(Visite::where('date', '=', $date)->get()) ;
     }  
     public static function VisitesWeek()
     {
@@ -56,5 +56,12 @@ class Visite extends Model
         $year = $now->year;
 		return count(Visite::whereYear('date', '=', $year)->get()) ;
     }
+    public static function Interets()
+    {
+        return Visite::groupBy('interet')
+                        ->selectRaw('count(*) as nombre, interet')
+                        ->get();
+        //return \DB::select('SELECT interet, COUNT(*) AS nombre FROM visites GROUP BY interet ORDER BY COUNT(*) DESC');
+    }    
          
 }

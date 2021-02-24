@@ -22,9 +22,13 @@ class Lot extends Model
         return $this->morphOne(Produit::class, 'constructible');
     }
 
-
     public function tranche()
     {
         return $this->belongsTo(Tranche::class);
+    }
+
+    public function getRPlusEtageAttribute()
+    {
+        return 'R+' . $this->etage ;
     }      
 }

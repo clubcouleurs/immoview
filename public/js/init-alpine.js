@@ -66,7 +66,15 @@ function data() {
     isAppartementsMenuOpen: false,
     toggleAppartementsMenu() {
       this.isAppartementsMenuOpen = !this.isAppartementsMenuOpen
-    },         
+    },    
+    isMagasinsMenuOpen: false,
+    toggleMagasinsMenu() {
+      this.isMagasinsMenuOpen = !this.isMagasinsMenuOpen
+    },   
+    isBureauxMenuOpen: false,
+    toggleBureauxMenu() {
+      this.isBureauxMenuOpen = !this.isBureauxMenuOpen
+    },           
     isPagesMenuOpen: false,
     togglePagesMenu() {
       this.isPagesMenuOpen = !this.isPagesMenuOpen

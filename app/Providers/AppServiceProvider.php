@@ -28,7 +28,7 @@ class AppServiceProvider extends ServiceProvider
             'lot' => 'App\Models\Lot',
             'appartement' => 'App\Models\Appartement',
             'magasin' => 'App\Models\Magasin',
-            'bureau' => 'App\Models\Bureau',
+            'bureau' => 'App\Models\Office',
             'box' => 'App\Models\Box',
         ]);
     }

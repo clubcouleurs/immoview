@@ -5,6 +5,7 @@
               class="my-6 text-4xl font-semibold text-gray-700 dark:text-gray-200"
             >
               Récapitulatif des visites
+
             </h2>
 <hr>  
             <!-- Cards -->
@@ -140,6 +141,82 @@
               </div>              
 
             </div>
+
+<div class="grid gap-6 mb-8 md:grid-cols-2">
+              <!-- Doughnut/Pie chart -->
+              <div
+                class="min-w-0 p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800"
+              >
+                <h4 class="mb-4 font-semibold text-gray-800 dark:text-gray-300">
+                  Interêts des visiteurs
+                </h4>
+                <canvas id="pie"></canvas>
+                <div
+                  class="flex justify-center mt-4 space-x-3 text-sm text-gray-600 dark:text-gray-400"
+                >
+                  <!-- Chart legend -->
+                  <div class="flex items-center">
+                    <span
+                      class="inline-block w-3 h-3 mr-1 bg-red-600 rounded-full"
+                    ></span>
+                    <span>Lots</span>
+                  </div>
+                  <div class="flex items-center">
+                    <span
+                      class="inline-block w-3 h-3 mr-1 bg-pink-400 rounded-full"
+                    ></span>
+                    <span>Bureaux</span>
+                  </div>
+                  <div class="flex items-center">
+                    <span
+                      class="inline-block w-3 h-3 mr-1 bg-blue-800 rounded-full"
+                    ></span>
+                    <span>Appartements</span>
+                  </div>
+                  <div class="flex items-center">
+                    <span
+                      class="inline-block w-3 h-3 mr-1 bg-blue-300 rounded-full"
+                    ></span>
+                    <span>Magasins</span>
+                  </div>
+                  <div class="flex items-center">
+                    <span
+                      class="inline-block w-3 h-3 mr-1 bg-indigo-200 rounded-full"
+                    ></span>
+                    <span>Boxes</span>
+                  </div>                                    
+                </div>
+              </div>
+              <!-- Lines chart -->
+              <div
+                class="min-w-0 p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800"
+              >
+                <h4 class="mb-4 font-semibold text-gray-800 dark:text-gray-300">
+                  Nombre de visites par mois
+                </h4>
+                <canvas id="line"></canvas>
+                <div
+                  class="flex justify-center mt-4 space-x-3 text-sm text-gray-600 dark:text-gray-400"
+                >
+                  <!-- Chart legend -->
+                  <div class="flex items-center">
+                    <span
+                      class="inline-block w-3 h-3 mr-1 bg-green-600 rounded-full"
+                    ></span>
+                    <span>Evolution des visites et de la proespection</span>
+                  </div>
+                  <!--<div class="flex items-center">
+                    <span
+                      class="inline-block w-3 h-3 mr-1 bg-purple-600 rounded-full"
+                    ></span>
+                    <span>Lots</span>
+                  </div>-->
+                </div>
+              </div>
+           
+            </div>
+
+
             <!-- filtre -->
               <p class="text-sm text-gray-600 dark:text-gray-400 ml-2 mb-2">Filtres</p>   
 
@@ -391,4 +468,20 @@
 
           </div>
         </main>
+<script>
+
+
+@foreach ($interets as $interet)
+  var {{$interet->interet}}={{$interet->nombre}}
+@endforeach
+
+
+
+</script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"
+      defer
+    ></script>
+    <script src="{{config('app.url')}}/js/pie-interet-visites.js" defer></script>
+
 </x-master>

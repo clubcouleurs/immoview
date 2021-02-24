@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DossierRequest;
 use App\Http\Traits\PaginateTrait;
 use App\Models\Client;
 use App\Models\Dossier;
@@ -156,6 +157,7 @@ class DossierController extends Controller
             'totalDossier'          => $dossiersAll->count(),
             'clients'               =>   Client::all(),
             'users'                 => User::all(),
+            'dossiersParType'    => Dossier::dossiersParType(),
             'tranches'              => '' ,
             'valeurTotal'           => 1000, //$prixTotalLots->sum(),
             'SearchByTranche'       => '',//$request['tranche'] ,
@@ -179,27 +181,15 @@ class DossierController extends Controller
      */
     public function create(Produit $produit)
     {
-        if ($produit->constructible_type == 'lot') {
+
             $dataRecap = 
-            'Qui concerne le Lot N° ' . $produit->constructible->num . 
+            'Qui concerne ' . $produit->constructible_type .' N° ' . $produit->constructible->num . 
             ', d\'une surface totale de : ' . $produit->constructible->surface . 'm2' .
             '. Vendu au prix total de : ' . number_format($produit->total) . ' Dhs'.
-            ', du type : ' . $produit->constructible->type . ', constructible en R+' . $produit->constructible->etage .
-            '. Ce lot est sur le tranche ' . $produit->constructible->tranche_id ;
+            '. Du type : ' . $produit->constructible->type . '. Etage : ' . $produit->constructible->etage .
+            '. ' . ucfirst($produit->constructible_type) .' sur la tranche ' . $produit->constructible->tranche->id ;
 
-        }
-        elseif (isset($produit->appartement)) {
-            $dataRecap = 'appartement' ;
-        }
-        elseif (isset($produit->magasin)) {
-            $dataRecap = 'magasin' ;
-        }   
-        elseif (isset($produit->bureau)) {
-            $dataRecap = 'bureau' ;
-        }
-        elseif (isset($produit->box)) {
-            $dataRecap = 'box' ;
-        }        
+    
 
         return view('dossiers.create', [
             'clients'       => Client::where('activer', '=' , 1)->get(),
@@ -215,16 +205,16 @@ class DossierController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(DossierRequest $request)
     {
         $dossier = new Dossier([
-        'num'              => $request['num'] ,    
-        'date'              => $request['date'] ,
-        'frais'             => $request['frais'] ,
-        'detail'            => $request['detail'],
-        'client_id'         => $request['client'],
-        'produit_id'        => $request['produit'],
-        'user_id'           => Auth::id(),
+            'num'              => $request['num'] ,    
+            'date'              => $request['date'] ,
+            'frais'             => $request['frais'] ,
+            'detail'            => $request['detail'],
+            'client_id'         => $request['client'],
+            'produit_id'        => $request['produit'],
+            'user_id'           => Auth::id(),
         ]) ;
         $dossier->save();
         $dossier->produit->etiquette_id = 3 ;
@@ -271,7 +261,7 @@ class DossierController extends Controller
      */
     public function edit(Dossier $dossier)
     {
-        //
+        dd($dossier) ;
     }
 
     /**
@@ -281,7 +271,7 @@ class DossierController extends Controller
      * @param  \App\Models\dossier  $dossier
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Dossier $dossier)
+    public function update(DossierRequest $request, Dossier $dossier)
     {
         //
     }
@@ -294,6 +284,12 @@ class DossierController extends Controller
      */
     public function destroy(Dossier $dossier)
     {
-        //
+        // le produit devient dispo au stock après suppression du dossier
+        $dossier->produit->etiquette_id = 2 ; // étiquette -> En stock
+
+        $dossier->delete() ;
+        $dossier->paiements()->delete() ;
+
+        return redirect()->action([LotController::class, 'index']);
     }
 }

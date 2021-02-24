@@ -5,74 +5,74 @@
         <p class="block h-160 px-4 py-4 rounded-lg mx-auto w-full mt-4
         bg-red-200 text-red-600 text-xl"> Attention Il y'a des erreurs dans votre formulaire</p>
         @endif
-        {{$errors}}
+
             <h2
               class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
             >
-              Ajouter un nouvel appartement
+              Modifier magasin N°{{$magasin->num}}
             </h2>
-            <form action="/appartements" method="POST">
+            <form action="/magasins/{{$magasin->id}}" method="POST">
               @csrf
+              @method('PATCH')
 
-            <div x-data="{ isOpenPrix: false }"
+            <div
               class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800"
             >
               <label class="block text-sm">
-                <span class="text-gray-700 dark:text-gray-400">N° de l'appartement</span>
+                <span class="text-gray-700 dark:text-gray-400">N° du magasin</span>
                 <input
                   class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
                   placeholder=""
                   type="number"
-                  name="numApp"
-                  value="{{old('numApp')}}"
+                  name="numMag"
                   required
+                  value="{{$magasin->num}}"
                 />
-                    @error('numApp')
+                    @error('numMag')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror
               </label>
 
               <label class="block mt-4 text-sm">
-                <span class="text-gray-700 dark:text-gray-400">Surface couvert en m2</span>
+                <span class="text-gray-700 dark:text-gray-400">Surface du plancher en m2</span>
                 <input
                   class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
                   placeholder=""
                   type="number"
                   step="0.1"
-                  name="surfaceApp"
-                  value="{{old('surfaceApp')}}"
+                  name="surfacePlancher"
+                  value="{{$magasin->surfacePlancher}}"
 
                   required
                 />
-                    @error('surfaceApp')
+                    @error('surfacePlancher')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror
               </label>
               <label class="block mt-4 text-sm">
-                <span class="text-gray-700 dark:text-gray-400">Surface Terrasse en m2</span>
+                <span class="text-gray-700 dark:text-gray-400">Surface Mezzanine en m2</span>
                 <input
                   class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
                   placeholder=""
                   type="number"
                   step="0.1"
-                  name="surfaceTerrasse"
-                  value="{{old('surfaceTerrasse')}}"
+                  name="surfaceMezzanine"
+                  value="{{$magasin->surfaceMezzanine }}"
 
                   required
                 />
-                    @error('surfaceTerrasse')
+                    @error('surfaceMezzanine')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror
-              </label>              
+              </label> 
+
               <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">
-                  Cet appartement est sur les voie : 
+                  Ce magasin est sur les voie : 
                 </span>
-
-
                 <select
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
                   multiple
@@ -81,18 +81,13 @@
                 >
                 @foreach ($voies as $voie)
                   <option value="{{ $voie->id }}"
-                    @if( old('voies') !== null )
-                      @foreach (old('voies') as $v)
-                        @if($v == $voie->id)
-                          selected
-                        @endif
-                      @endforeach
-                    @endif
+                    @foreach ($magasin->produit->voies as $produit_voie)
+                      @if ($voie->id == $produit_voie->id)
+                      selected
+                      @endif
+                    @endforeach
+                    >{{$voie->Largeur}} m</option>
 
-                    >
-
-                    {{$voie->Largeur}} m
-                  </option>
                 @endforeach
 
                 </select>
@@ -100,7 +95,7 @@
 
               <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">
-                  Sur quelle immeuble se trouve cet appartement ?
+                  Sur quelle tranche se trouve ce magasin ?
                 </span>
                 <select
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
@@ -108,71 +103,17 @@
                 >
                 @foreach ($immeubles as $immeuble)
                   <option value="{{ $immeuble->id }}"
-                    @if(old('immeuble') == $immeuble->id)
-                      selected
-                    @endif                    
-                    >Immeuble {{$immeuble->id}}</option>
+                      @if ($magasin->immeuble_id == $immeuble->id)
+                        selected
+                      @endif                    
+                    >Imm. {{$immeuble->id}}</option>
                 @endforeach
 
                 </select>
               </label>              
 
-                   <div class="mt-4 text-sm">
+     
 
-                    @error('type')
-                    <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
-                    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
-                    @enderror
-
-                <span class="text-gray-700 dark:text-gray-400">
-                  Type de l'appartement
-                </span>
-                <div class="mt-2">
-                  <label
-                    class="inline-flex items-center text-gray-600 dark:text-gray-400"
-                  >
-                    <input
-                      type="radio"
-                      class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
-                      name="type"
-                      value="Economique"
-                      x-on:click="isOpenPrix = !isOpenPrix"
-
-                      @if(old('type') == 'Economique')
-                        checked
-                      @endif
-                      @if(null == old('type'))
-                        checked
-                      @endif                      
-                    />
-                    <span class="ml-2">Social</span>
-                  </label>
-                  <label
-                    class="inline-flex items-center ml-6 text-gray-600 dark:text-gray-400"
-                  >
-                    <input
-                      type="radio"
-                      class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
-                      name="type"
-                      value="Standing"
-                      x-on:click="isOpenPrix = !isOpenPrix"
-
-                      @if(old('type') == 'Standing')
-                        checked
-                      @endif                      
-                    />
-                    <span class="ml-2">Standing </span>
-                  </label>
-                </div>
-              </div>
-            <div x-show="!isOpenPrix"
-              class="flex items-center justify-between p-3 mt-2 text-sm font-semibold text-blue-600 bg-blue-100 rounded-lg shadow-sm focus:outline-none focus:shadow-outline-blue rounded-2xl">
-              Le prix pour cet apprtement est : 250.000 Dhs
-              
-            </div>
-
-
-              <div x-show="isOpenPrix">
               <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">Prix au m2 indicatif</span>
                 <input
@@ -181,9 +122,8 @@
                   type="number"
                   name="prixM2Indicatif"
                   step="0.01"
-                  value="{{old('prixM2Indicatif')}}"
-                  :required="isOpenPrix"
-                  :disabled="!isOpenPrix"    
+                  value="{{$magasin->produit->prixM2Indicatif}}"
+                  required
                 />
                     @error('prixM2Indicatif')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
@@ -198,10 +138,9 @@
                   placeholder=""
                   type="number"
                   name="prixM2Definitif"
-                  value="{{old('prixM2Definitif')}}"
+                  value="{{$magasin->produit->prixM2Definitif}}"
+
                   step="0.01"
-                  :required="isOpenPrix"
-                  :disabled="!isOpenPrix"                    
                 />
                     @error('prixM2Definitif')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
@@ -209,15 +148,20 @@
                     @enderror
               </label>  
 
-              </div>
               
+              @isset($magasin->produit->dossier)
+              <div
+              class="flex items-center justify-between p-2 mt-4 mb-2 text-sm font-semibold text-red-600 bg-red-100 rounded-lg shadow-sm focus:outline-none focus:shadow-outline-red rounded-2xl">
+              Attention : Vous pourrez pas modifier l'état de ce produit car déjà réservé pour le client {{ $magasin->produit->dossier->client->nom . ' ' . $magasin->produit->dossier->client->prenom}}
+              
+            </div>
+              @else
               <div class="mt-4 text-sm">
-
                 <span class="text-gray-700 dark:text-gray-400">
-                  Etat de l'appartement
+                  Etat du magasin
                 </span>
                 <div class="mt-2">
-                                <label class="block text-sm">
+                  <label class="block text-sm">
                 <select
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
                   required
@@ -225,45 +169,17 @@
                 >
                 @foreach ($etiquettes as $etiquette)
                   <option value="{{ $etiquette->id }}"
-                    @if(old('etatProduit') == $etiquette->id)
-                      selected
+                    @if($etiquette->id == $magasin->produit->etiquette_id)
+                    selected
                     @endif
-                    >
-                    {{$etiquette->label}}
-                  </option>
+                    >{{$etiquette->label}}</option>
                 @endforeach
-
                 </select>
               </label>   
-                                
                 </div>
               </div>
+              @endisset
 
-
-              <label class="block mt-4 text-sm">
-                <span class="text-gray-700 dark:text-gray-400">
-                  A quelle étage se trouve cet appartement : R + ...
-                </span>
-                <select
-                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
-                  name="etage"
-                >
-                  @for($i = 1; $i < 11; $i++)
-                    <option value="{{$i}}"
-                    @if(old('etage') == $i)
-                      selected
-                    @endif
-
-                    >{{$i}}</option>
-                  @endfor
-                </select>
-
-                    @error('etage')
-                    <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
-                    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
-                    @enderror
-
-              </label>
 
               <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">Description & Observations</span>
@@ -273,8 +189,7 @@
                   placeholder="Si vous avez une description et une observation à saisir"
                   name="description"
 
-
-                >{{old('description')}}</textarea>
+                >{{ $magasin->description }}</textarea>
                     @error('description')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
@@ -287,7 +202,7 @@
                   class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
                   type="submit"
                 >
-                  Sauvegarder
+                  Modifier
                 </button>
               </div>
 

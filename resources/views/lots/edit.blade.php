@@ -5,11 +5,11 @@
         <p class="block h-160 px-4 py-4 rounded-lg mx-auto w-full mt-4
         bg-red-200 text-red-600 text-xl"> Attention Il y'a des erreurs dans votre formulaire</p>
         @endif
-
+        {{$errors}}
             <h2
               class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
             >
-              Ajouter un nouveau lot
+              Modifier le lot N°{{$lot->num}} 
             </h2>
             <form action="/lots/{{$lot->id}}" method="POST">
               @csrf
@@ -24,11 +24,11 @@
                   class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
                   placeholder=""
                   type="number"
-                  name="num"
+                  name="numLot"
                   required
                   value="{{$lot->num}}"
                 />
-                    @error('num')
+                    @error('numLot')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror
@@ -131,7 +131,7 @@
 
               <div class="mt-4 text-sm">
 
-                    @error('typeLot')
+                    @error('type')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror
@@ -160,7 +160,7 @@
                     <input
                       type="radio"
                       class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
-                      name="typeLot"
+                      name="type"
                       value="Habitat"
                       @if ($lot->type == "Habitat")
                         checked
@@ -170,9 +170,15 @@
                   </label>
                 </div>
               </div>
-              
-              <div class="mt-4 text-sm">
 
+             @isset($lot->produit->dossier)
+              <div
+                class="flex items-center justify-between p-2 mt-4 mb-2 text-sm font-semibold text-red-600 bg-red-100 rounded-lg shadow-sm focus:outline-none focus:shadow-outline-red rounded-2xl">
+                Attention : Vous pourrez pas modifier l'état de ce produit car déjà réservé pour le client {{ $lot->produit->dossier->client->nom . ' ' . $lot->produit->dossier->client->prenom}}
+              </div>
+              @else
+
+              <div class="mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">
                   Etat du lot
                 </span>
@@ -181,7 +187,6 @@
 
                 <select
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
-                  multiple
                   required
                   name="etatProduit"
                 >
@@ -198,6 +203,7 @@
                                 
                 </div>
               </div>
+              @endisset
 
               <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">
@@ -225,10 +231,10 @@
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-textarea focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
                   rows="3"
                   placeholder="Si vous avez une description et une observation à saisir"
-                  name="descriptionLot"
+                  name="description"
 
-                >{{ $lot->descriptionLot }}</textarea>
-                    @error('descriptionLot')
+                >{{ $lot->description }}</textarea>
+                    @error('description')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror

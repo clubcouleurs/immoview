@@ -5,33 +5,98 @@
         <p class="block h-160 px-4 py-4 rounded-lg mx-auto w-full mt-4
         bg-red-200 text-red-600 text-xl"> Attention Il y'a des erreurs dans votre formulaire</p>
         @endif
-        {{$errors}}
             <h2
               class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
             >
-              Ajouter un nouvel appartement
+              Modifier le bureau N° {{ $office->num }}
             </h2>
-            <form action="/appartements" method="POST">
+            <form action="/offices/{{$office->id}}" method="POST">
               @csrf
+              @method('PATCH')
 
-            <div x-data="{ isOpenPrix: false }"
+            <div x-data="{
+                      isOpen: false,
+                      isOpenApp: false,
+                      isOpenMag: false,
+                    @if (isset($office->situable_type) && ($office->situable_type == 'appartement' ))
+                      isOpenApp: true,
+                      isOpen : true,
+                    @endif 
+
+                    @if (isset($office->situable_type) && ($office->situable_type == 'magasin' ))
+                      isOpenMag: true,
+                      isOpen : true,
+                    @endif                     
+                     }" 
               class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800"
             >
+            <!-- début bloc choix type bureau  -->
+              <div class="inline-flex items-center text-sm mb-4">
+                    @error('type')
+                    <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
+                    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
+                    @enderror
+
+                <div class="">
+                      <span class="mr-4 text-gray-700 dark:text-gray-400">
+                          Type de bureau
+                      </span>                  
+                  <label
+                    class=" text-gray-600 dark:text-gray-400"
+                  >
+
+                    <input
+                      type="radio"
+                      class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+                      name="type"
+                      value="Magasin"
+                      x-on:click="isOpenApp = false, isOpenMag = true, isOpen = true"
+                      @if ($office->situable_type == 'magasin')
+                        checked
+                      @endif
+                    />
+                    <span class="ml-2">Magasin</span>
+                  </label>
+                  <label
+                    class="ml-6 text-gray-600 dark:text-gray-400"
+                  >
+                    <input
+                      type="radio"
+                      class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+                      name="type"
+                      value="Appartement"
+                      x-on:click="isOpenApp = true, isOpenMag = false, isOpen = true"
+
+                      @if($office->situable_type == 'appartement')
+                        checked
+                      @endif                      
+                    />
+                    <span class="ml-2">Appartement</span>
+                  </label>
+                </div>
+              </div>
+                <hr>
+
+              <!-- fin bloc choix type bureau -->
+              <div x-show="isOpen" class="mt-4">
               <label class="block text-sm">
-                <span class="text-gray-700 dark:text-gray-400">N° de l'appartement</span>
+                <span class="text-gray-700 dark:text-gray-400">N° du bureau</span>
                 <input
                   class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
                   placeholder=""
                   type="number"
-                  name="numApp"
-                  value="{{old('numApp')}}"
+                  name="numBur"
+                  value="{{$office->num}}"
                   required
                 />
-                    @error('numApp')
+                    @error('numBur')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror
               </label>
+
+              <!-- début inputs pour type apprtement -->
+              <div x-show="isOpenApp" >
 
               <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">Surface couvert en m2</span>
@@ -41,7 +106,9 @@
                   type="number"
                   step="0.1"
                   name="surfaceApp"
-                  value="{{old('surfaceApp')}}"
+                  :required="isOpenApp"
+                  :disabled="!isOpenApp"                  
+                  value="{{$office->surfacePrincipale}}"
 
                   required
                 />
@@ -58,7 +125,9 @@
                   type="number"
                   step="0.1"
                   name="surfaceTerrasse"
-                  value="{{old('surfaceTerrasse')}}"
+                  :required="isOpenApp"
+                  :disabled="!isOpenApp"                  
+                  value="{{$office->surfaceSecondaire}}"
 
                   required
                 />
@@ -66,10 +135,59 @@
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror
-              </label>              
+              </label>
+              </div>
+              <!-- fin inputs pour type apprtement -->
+
+              <!-- début inputs pour type Magasin -->
+              <div x-show="isOpenMag" >
+
+              <label class="block mt-4 text-sm">
+                <span class="text-gray-700 dark:text-gray-400">Surface Plancher en m2</span>
+                <input
+                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                  placeholder=""
+                  type="number"
+                  step="0.1"
+                  :required="isOpenMag"
+                  :disabled="!isOpenMag"                  
+                  name="surfacePlancher"
+                  value="{{$office->surfacePrincipale}}"
+
+                  required
+                />
+                    @error('surfacePlancher')
+                    <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
+                    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
+                    @enderror
+              </label>
+              <label class="block mt-4 text-sm">
+                <span class="text-gray-700 dark:text-gray-400">Surface Mezzanine en m2</span>
+                <input
+                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                  placeholder=""
+                  type="number"
+                  step="0.1"
+                  :required="isOpenMag"
+                  :disabled="!isOpenMag"                  
+                  name="surfaceMezzanine"
+                  value="{{$office->surfaceSecondaire}}"
+
+                  required
+                />
+                    @error('surfaceTerrasse')
+                    <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
+                    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
+                    @enderror
+              </label>
+              </div>
+              <!-- fin inputs pour type Magasin -->
+
+
+
               <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">
-                  Cet appartement est sur les voie : 
+                  Ce bureau est sur les voie : 
                 </span>
 
 
@@ -81,26 +199,22 @@
                 >
                 @foreach ($voies as $voie)
                   <option value="{{ $voie->id }}"
-                    @if( old('voies') !== null )
-                      @foreach (old('voies') as $v)
-                        @if($v == $voie->id)
-                          selected
-                        @endif
-                      @endforeach
-                    @endif
+                    @foreach ($office->produit->voies as $produit_voie)
+                      @if ($voie->id == $produit_voie->id)
+                      selected
+                      @endif
+                    @endforeach
+                    >{{$voie->Largeur}} m</option>
 
-                    >
-
-                    {{$voie->Largeur}} m
-                  </option>
                 @endforeach
+
 
                 </select>
               </label>
 
               <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">
-                  Sur quelle immeuble se trouve cet appartement ?
+                  Sur quelle immeuble se trouve ce bureau ?
                 </span>
                 <select
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
@@ -108,7 +222,7 @@
                 >
                 @foreach ($immeubles as $immeuble)
                   <option value="{{ $immeuble->id }}"
-                    @if(old('immeuble') == $immeuble->id)
+                    @if($office->immeuble->id == $immeuble->id)
                       selected
                     @endif                    
                     >Immeuble {{$immeuble->id}}</option>
@@ -117,62 +231,8 @@
                 </select>
               </label>              
 
-                   <div class="mt-4 text-sm">
+     
 
-                    @error('type')
-                    <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
-                    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
-                    @enderror
-
-                <span class="text-gray-700 dark:text-gray-400">
-                  Type de l'appartement
-                </span>
-                <div class="mt-2">
-                  <label
-                    class="inline-flex items-center text-gray-600 dark:text-gray-400"
-                  >
-                    <input
-                      type="radio"
-                      class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
-                      name="type"
-                      value="Economique"
-                      x-on:click="isOpenPrix = !isOpenPrix"
-
-                      @if(old('type') == 'Economique')
-                        checked
-                      @endif
-                      @if(null == old('type'))
-                        checked
-                      @endif                      
-                    />
-                    <span class="ml-2">Social</span>
-                  </label>
-                  <label
-                    class="inline-flex items-center ml-6 text-gray-600 dark:text-gray-400"
-                  >
-                    <input
-                      type="radio"
-                      class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
-                      name="type"
-                      value="Standing"
-                      x-on:click="isOpenPrix = !isOpenPrix"
-
-                      @if(old('type') == 'Standing')
-                        checked
-                      @endif                      
-                    />
-                    <span class="ml-2">Standing </span>
-                  </label>
-                </div>
-              </div>
-            <div x-show="!isOpenPrix"
-              class="flex items-center justify-between p-3 mt-2 text-sm font-semibold text-blue-600 bg-blue-100 rounded-lg shadow-sm focus:outline-none focus:shadow-outline-blue rounded-2xl">
-              Le prix pour cet apprtement est : 250.000 Dhs
-              
-            </div>
-
-
-              <div x-show="isOpenPrix">
               <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">Prix au m2 indicatif</span>
                 <input
@@ -181,9 +241,9 @@
                   type="number"
                   name="prixM2Indicatif"
                   step="0.01"
-                  value="{{old('prixM2Indicatif')}}"
-                  :required="isOpenPrix"
-                  :disabled="!isOpenPrix"    
+                  value="{{$office->produit->prixM2Indicatif}}"
+
+                  required
                 />
                     @error('prixM2Indicatif')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
@@ -198,23 +258,20 @@
                   placeholder=""
                   type="number"
                   name="prixM2Definitif"
-                  value="{{old('prixM2Definitif')}}"
+                  value="{{$office->produit->prixM2Definitif}}"
+
                   step="0.01"
-                  :required="isOpenPrix"
-                  :disabled="!isOpenPrix"                    
                 />
                     @error('prixM2Definitif')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror
               </label>  
-
-              </div>
-              
+             
               <div class="mt-4 text-sm">
 
                 <span class="text-gray-700 dark:text-gray-400">
-                  Etat de l'appartement
+                  Etat du bureau
                 </span>
                 <div class="mt-2">
                                 <label class="block text-sm">
@@ -225,12 +282,10 @@
                 >
                 @foreach ($etiquettes as $etiquette)
                   <option value="{{ $etiquette->id }}"
-                    @if(old('etatProduit') == $etiquette->id)
-                      selected
+                    @if($etiquette->id == $office->produit->etiquette_id)
+                    selected
                     @endif
-                    >
-                    {{$etiquette->label}}
-                  </option>
+                    >{{$etiquette->label}}</option>
                 @endforeach
 
                 </select>
@@ -240,9 +295,9 @@
               </div>
 
 
-              <label class="block mt-4 text-sm">
+              <label class="block mt-4 text-sm" x-show="isOpenApp" >
                 <span class="text-gray-700 dark:text-gray-400">
-                  A quelle étage se trouve cet appartement : R + ...
+                  A quelle étage se trouve ce bureau : R + ...
                 </span>
                 <select
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
@@ -250,7 +305,7 @@
                 >
                   @for($i = 1; $i < 11; $i++)
                     <option value="{{$i}}"
-                    @if(old('etage') == $i)
+                    @if($office->produit->etage == $i)
                       selected
                     @endif
 
@@ -274,7 +329,7 @@
                   name="description"
 
 
-                >{{old('description')}}</textarea>
+                >{{$office->situable->description}}</textarea>
                     @error('description')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
@@ -287,11 +342,11 @@
                   class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
                   type="submit"
                 >
-                  Sauvegarder
+                  Modifier
                 </button>
               </div>
 
-
+              </div>
             </div>
             </form>
           </div>

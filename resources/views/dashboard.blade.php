@@ -400,11 +400,6 @@
         </main>
 <script>
 
-@for ($i = 1; $i < 8; $i++)
-  var v{{ $i }}=0
-  var d{{ $i }}=''
-
-@endfor
 
 
 @foreach ($nombreVisites as $visite)

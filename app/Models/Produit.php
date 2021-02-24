@@ -12,11 +12,6 @@ class Produit extends Model
     use HasFactory;
     protected $fillable = ['prixM2Indicatif','prixM2Definitif', 'etiquette_id'];
 
-    /*public function lot()
-    {
-        return $this->hasOne(Lot::class);
-    }*/
-
     public function constructible()
     {
         return $this->morphTo();
@@ -52,23 +47,40 @@ class Produit extends Model
         elseif (isset($this->magasin)) {
             return 'magasin' ;
         }   
-        elseif (isset($this->bureau)) {
-            return 'bureau' ;
+        elseif (isset($this->office)) {
+            return 'office' ;
         }
         elseif (isset($this->box)) {
             return 'box' ;
         }                
     }
+
+
+
     public function getPrixAttribute()
     {
+        if ($this->constructible->type === 'Economique')
+        {
+            return 250000 / $this->constructible->surface;
+        }
+      
         return $prix = ($this->prixM2Definitif === 0 || $this->prixM2Definitif == Null) ? $this->prixM2Indicatif : $this->prixM2Definitif ;
     }
     public function getTotalDefinitifAttribute()
     {
+        if ($this->constructible->type === 'Economique')
+        {
+            return 250000 ;
+        }
+
         return $this->prixM2Definitif * $this->constructible->surface ;
     } 
     public function getTotalIndicatifAttribute()
     {
+        if ($this->constructible->type === 'Economique')
+        {
+            return 250000 ;
+        }        
         return $this->prixM2Indicatif * $this->constructible->surface ;
     }     
     public function getTotalAttribute()
@@ -78,6 +90,10 @@ class Produit extends Model
 
     public function getRemiseAttribute()
     {
+        if ($this->constructible->type === 'Economique')
+        {
+            return 0 ;
+        }         
         return round(100 - (($this->prixM2Definitif * 100) / $this->prixM2Indicatif ) , 2) ;
     } 
     public function getRemiseNatureAttribute()

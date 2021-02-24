@@ -18,9 +18,10 @@ class VisiteController extends Controller
      */
     public function index()
     {
+        //dd(Visite::interets()) ;
         $visitesAll = Visite::with('client')
                             ->with('user')
-                            ->get();
+                            ->latest('created_at')->get();
         /*                            
         //selectionner les lots 
         //$lotsAll = $lotsAll->whereNotNull('lot.id' ); 
@@ -86,12 +87,13 @@ class VisiteController extends Controller
         */
 
         return view('visites.index', [
-            'visites'              => $this->paginate($visitesAll),
-            'totalVisites' => Visite::all(),
-            'visitesDay'              => Visite::visitesDay(),
-            'visitesMonth'              => Visite::visitesMonth(),
-            'visitesYear'              => Visite::visitesYear(),
-            'visitesWeek'              => Visite::visitesWeek(),
+            'visites'       => $this->paginate($visitesAll),
+            'totalVisites'  => Visite::all(),
+            'visitesDay'    => Visite::visitesDay(),
+            'visitesMonth'  => Visite::visitesMonth(),
+            'visitesYear'   => Visite::visitesYear(),
+            'visitesWeek'   => Visite::visitesWeek(),
+            'interets'       => Visite::interets(),
 
             'totalLots'         => $visitesAll->count(),
             'tranches'          => '' , //Tranche::all(),

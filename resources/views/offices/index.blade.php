@@ -4,7 +4,7 @@
             <h2
               class="my-6 text-4xl font-semibold text-gray-700 dark:text-gray-200"
             >
-              Récapitulatif des lots
+              Récapitulatif des bureaux
             </h2>
 <hr>  
             <!-- Cards -->
@@ -26,12 +26,12 @@
                   <p
                     class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
                   >
-                    Total Lots
+                    Total bureaux
                   </p>
                   <p
                     class="text-lg font-semibold text-gray-700 dark:text-gray-200"
                   >
-                    {{$totalLots}}
+                    {{$totalOffices}}
                   </p>
                 </div>
               </div>
@@ -80,12 +80,13 @@
                   <p
                     class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
                   >
-                    Lots réservés
+                    Bureaux réservés
                   </p>
                   <p
                     class="text-lg font-semibold text-gray-700 dark:text-gray-200"
                   >
-                    {{$lotsReserved}}
+                    {{$officesReserved}}
+                    
                   </p>
                 </div>
               </div>
@@ -105,12 +106,13 @@
                   <p
                     class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
                   >
-                    Lots en stock
+                    Bureaux en stock
                   </p>
                   <p
                     class="text-lg font-semibold text-gray-700 dark:text-gray-200"
                   >
-                    {{$lotsStocked}}
+                    {{$officesStocked}}
+                    
                   </p>
                 </div>
               </div>
@@ -129,12 +131,12 @@
                   <p
                     class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
                   >
-                    Lots Bloqués
+                    Bureaux Bloqués
                   </p>
                   <p
                     class="text-lg font-semibold text-gray-700 dark:text-gray-200"
                   >
-                    {{$lotsBlocked}}
+                    {{$officesBlocked}}
                   </p>
                 </div>
               </div>              
@@ -143,7 +145,7 @@
             <!-- filtre -->
               <p class="text-sm text-gray-600 dark:text-gray-400 ml-2 mb-2">Filtres</p>   
 
-                <form action="/lots/">
+                <form action="/offices/">
               @csrf
             <div
               class="flex items-center justify-between p-2 mb-2 text-sm font-semibold text-blue-600 bg-blue-100 rounded-lg shadow-sm focus:outline-none focus:shadow-outline-blue rounded-2xl"
@@ -152,7 +154,7 @@
               <div class="flex items-center gap-2">
                 <a
                   class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-2xl active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue"
-                  href="/lots/"
+                  href="/offices/"
                 >Tout</a>
 
                 <select
@@ -174,7 +176,7 @@
                 </select>
                 <select
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
-                  name="nombreFacadesLot"
+                  name="nombreFacadesappartement"
                 >
                   <option value="-">Façades </option>
 
@@ -243,9 +245,9 @@
                 />
                 <input
                   class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input rounded-2xl"
-                  placeholder="Numéros de lot séparés par (,)"
+                  placeholder="Numéros de bureaux séparés par (,)"
                   type="text"
-                  name="numsLot"
+                  name="numsappartement"
                   value="{{$SearchByNum}}"
                 />
 
@@ -266,7 +268,7 @@
 
               <!-- actions groupées -->
               <p class="text-sm text-gray-600 dark:text-gray-400 ml-2 mb-2">Actions groupées</p>   
-          <form action="/lots/" method="POST">
+          <form action="/offices/" method="POST">
             @csrf
             @method('PATCH')
             <input type="hidden" name="SearchByNum" value="{{ $SearchByNum }}">
@@ -296,7 +298,7 @@
                 </select>
                 <select
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
-                  name="nombreFacadesLot"
+                  name="nombreFacadesappartement"
                 >
                   <option value="-">Façades </option>
 
@@ -312,7 +314,7 @@
                 </select>        
                 <select
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
-                  name="nombreEtagesLot"
+                  name="nombreEtagesappartement"
                 >
                   <option value="-">Etages</option>
                 
@@ -340,7 +342,7 @@
                 </select>
                 <select
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
-                  name="typeLot"
+                  name="typeappartement"
                 >
                   <option value="-">Type</option>
                 
@@ -384,15 +386,15 @@
                     <tr
                       class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
                     >
-                      <th class="px-4 py-3">N° du lot</th>
+                      <th class="px-4 py-3">N° du Bureau</th>
                       <th class="px-4 py-3">Surface en m2</th>
                       <th class="px-4 py-3">Prix m2 Indicatif</th>
                       
                       <th class="px-4 py-3">Prix m2 Définitif</th>
                       <th class="px-4 py-3">Nombre de façades</th>
-                      <th class="px-4 py-3">Nombre d'etage</th>
+                      <th class="px-4 py-3">Etage</th>
                       <th class="px-4 py-3">Etat</th>
-                      <th class="px-4 py-3">Type produit</th>
+                      <th class="px-4 py-3">Type</th>
                       <th class="px-4 py-3">Actions</th>
 
 
@@ -402,7 +404,7 @@
                     class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800"
                   >
 
-                  @foreach ($lots as $produit)
+                  @foreach ($offices as $produit)
                     <tr class="
                     @if ($produit->etiquette->label == 'En stock')
                       bg-green-50
@@ -433,7 +435,7 @@
                           <div>
                            
                             <p class="font-semibold">
-                             <!-- <a href="/lots/{{ $produit->constructible->id }}"> -->
+                             <!-- <a href="/offices/{{ $produit->constructible->id }}"> -->
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-blue-700 bg-blue-100 rounded-full dark:bg-blue-700 dark:text-blue-100"
                         >                              
@@ -442,14 +444,19 @@
                       <!-- </a> -->
                             </p>
                             <p class="text-xs text-gray-600 dark:text-gray-400">
-                              Tranche {{ $produit->constructible->tranche_id }}
+                              Imm. {{ $produit->constructible->situable->immeuble_id }}
                             </p>
                           </div>
                         </div>
                       </td>
                       <td class="px-4 py-3 text-sm">
 
-                        {{ $produit->constructible->surface }} m<sup>2</sup>
+                        {{ $produit->constructible->situable->surface }} m<sup>2</sup>
+                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">
+
+                              {!! $produit->constructible->surfaceDetail !!} 
+                            </p> 
+
                       </td>
 
                       <td class="px-4 py-3 text-xs">
@@ -482,7 +489,7 @@
                         </span>
                       </td>
                       <td class="px-4 py-3 text-sm">
-                        {{ $produit->constructible->rPlusEtage }}
+                        {{ $produit->constructible->etage }}
                       </td>                      
                       <td class="px-4 py-3 text-sm">
                         <span
@@ -535,7 +542,7 @@
                 <a
                   class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none focus:shadow-outline-gray"
                   aria-label="Like"
-                  href="/lots/{{ $produit->constructible->id }}/edit"
+                  href="/offices/{{ $produit->constructible->id }}/edit"
                 >
                   <svg
                     class="w-4 h-4"
@@ -549,7 +556,7 @@
 
             </div>
             <div>
-                        <form action="/lots/{{$produit->constructible->id}}" method="POST">
+                        <form action="/offices/{{$produit->constructible->id}}" method="POST">
                         @csrf
                         @method('DELETE')
                 <button
@@ -589,7 +596,7 @@
               <div
                 class="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800"
               >
-                {{$lots->links()}}
+                {{$offices->links()}}
               </div>
             </div>
 

@@ -85,7 +85,7 @@
                   <p
                     class="text-lg font-semibold text-gray-700 dark:text-gray-200"
                   >
-                    376
+                    {{$appartementsReserved}}
                   </p>
                 </div>
               </div>
@@ -110,7 +110,8 @@
                   <p
                     class="text-lg font-semibold text-gray-700 dark:text-gray-200"
                   >
-                    35
+                    {{$appartementsStocked}}
+                    
                   </p>
                 </div>
               </div>
@@ -134,7 +135,8 @@
                   <p
                     class="text-lg font-semibold text-gray-700 dark:text-gray-200"
                   >
-                    35
+                    {{$appartementsBlocked}}
+                    
                   </p>
                 </div>
               </div>              
@@ -433,12 +435,13 @@
                           <div>
                            
                             <p class="font-semibold">
-                             <a href="/appartements/{{ $produit->constructible->id }}">
+                             <!-- <a href="/appartements/{{ $produit->constructible->id }}"> -->
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-blue-700 bg-blue-100 rounded-full dark:bg-blue-700 dark:text-blue-100"
                         >                              
                               {{$produit->constructible->num }} 
-                        </span></a>
+                        </span>
+                      <!-- </a> -->
                             </p>
                             <p class="text-xs text-gray-600 dark:text-gray-400">
                               Imm. {{ $produit->constructible->immeuble_id }}
@@ -449,28 +452,38 @@
                       <td class="px-4 py-3 text-sm">
 
                         {{ $produit->constructible->surface }} m<sup>2</sup>
+                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                              {!! $produit->constructible->surfaceDetail !!}
+                            </p> 
+
+                        
+                      </td>
+                      @if($produit->constructible->type === "Economique")
+
+                      @endif
+                      <td class="px-4 py-3 text-xs">
+                        <span
+                          class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
+                        >
+                          {{ number_format($produit->constructible->prixM2Indicatif) }} Dhs
+                        </span>
+                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                              Total : {{ number_format($produit->totalIndicatif)}} Dhs
+                            </p>                        
                       </td>
 
                       <td class="px-4 py-3 text-xs">
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
                         >
-                          {{ $produit->prixM2Indicatif }} Dhs
-                        </span>
-                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                              Total : {{ number_format($produit->totalIndicatif)}} Dhs
-                            </p>                        
-                      </td>
-                      <td class="px-4 py-3 text-xs">
-                        <span
-                          class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
-                        >
-                          {{ $produit->prixM2Definitif }} Dhs
+                          {{ number_format($produit->constructible->prixM2Definitif) }} Dhs
                         </span>
                             <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">
                               Total : {{ number_format($produit->totalDefinitif)}} Dhs
                             </p>                         
-                      </td>                                                                  
+                      </td>  
+
+
                       <td class="px-4 py-3 text-xs">
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"

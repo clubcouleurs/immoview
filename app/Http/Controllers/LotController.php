@@ -29,6 +29,10 @@ class LotController extends Controller
                             ->with('etiquette')
                             ->withCount('voies')
                             ->get();
+
+        $lotsReserved = $lotsAll->where('etiquette_id', 3)->count() ;
+        $lotsStocked = $lotsAll->where('etiquette_id', 2)->count() ;
+        $lotsBlocked = $lotsAll->whereNotIn('etiquette_id', [3,2])->count() ;                            
         //selectionner les lots 
         //$lotsAll = $lotsAll->whereNotNull('lot.id' ); 
 
@@ -87,7 +91,7 @@ class LotController extends Controller
 
         $total = 0 ;
            $prixTotalLots = $lotsAll->map(function ($item, $key) use ($total) {
-        return $total = $total + $item->constructible->surface * $item->prixM2Definitif;
+                return $total = $total + $item->totalIndicatif;
         });
 
 
@@ -98,6 +102,11 @@ class LotController extends Controller
             'tranches'          =>Tranche::all(),
             'etiquettes'          =>Etiquette::all(),
             'valeurTotal'       => $prixTotalLots->sum(),
+
+            'lotsReserved'       => $lotsReserved,
+            'lotsBlocked'        => $lotsBlocked,
+            'lotsStocked'        => $lotsStocked,
+
             'SearchByTranche'   => $request['tranche'] ,
             'SearchByFacade'    => $request['nombreFacadesLot'] ,
             'SearchByEtage'     => $request['etage'] ,
@@ -135,17 +144,17 @@ class LotController extends Controller
      */
     public function store(ProduitRequest $request)
     {   
-
+        //dd($request) ;
         $tranche = Tranche::findOrFail($request['tranche']) ;
         $etiquette = Etiquette::findOrFail($request['etatProduit']) ;
 
 
         $lot = new Lot() ;
-        $lot->num                = $request['num'];
+        $lot->num                = $request['numLot'];
         $lot->surface            = $request['surface'];
         $lot->type               = $request['type'];
-        $lot->etage       = $request['etage'];
-        $lot->description        = $request['descriptionLot'];
+        $lot->etage             = $request['etage'];
+        $lot->description        = $request['description'];
         $lot->save();
         $tranche->lots()->save($lot) ;
 
@@ -250,11 +259,11 @@ class LotController extends Controller
         $lot->produit->voies()->detach() ; 
         $lot->produit->voies()->attach($request['voies']) ;
 
-        $lot->num            = $request['num'];
+        $lot->num               = $request['numLot'];
         $lot->surface            = $request['surface'];
         $lot->type               = $request['type'];
         $lot->etage       = $request['etage'];
-        $lot->descriptionLot        = $request['descriptionLot'];
+        $lot->description        = $request['description'];
         $lot->update();
         $tranche->lots()->save($lot) ;
 
