@@ -12,6 +12,9 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+use setasign\Fpdi\Fpdi;
+use NumberToWords\NumberToWords;
+
 class DossierController extends Controller
 {
     use PaginateTrait ;
@@ -292,4 +295,101 @@ class DossierController extends Controller
 
         return redirect()->action([LotController::class, 'index']);
     }
+
+    public function actes(Dossier $dossier)
+    {
+
+        // create the number to words "manager" class
+        $toWords = new NumberToWords();
+        // build a new number transformer using the RFC 3066 language identifier
+        $numberTransformer = $toWords->getNumberTransformer('fr');
+
+         // outputs "five thousand one hundred twenty"
+
+
+
+        // initiate FPDI
+        $pdf = new FPDI();
+
+        $pdf->SetFont('Helvetica');
+
+        // get the page count
+        $pageCount = $pdf->setSourceFile(Storage_path('app/public/acte-reservation.pdf'));
+        // iterate through all pages
+        for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+            $pdf->SetMargins(0, 0, 0 , 0) ;
+
+            // import a page
+            $templateId = $pdf->importPage($pageNo); //$pageNo
+            // get the size of the imported page
+            $size = $pdf->getTemplateSize($templateId);
+            //dd($size) ;
+            // create a page (landscape or portrait depending on the imported page size)
+            if ($size['width'] > $size['height']) {
+                $pdf->AddPage('L', array($size['width'], $size['height']));
+            } else {
+                $pdf->AddPage('P', array($size['width'], $size['height']));
+            }
+
+            // use the imported page
+            $pdf->useTemplate($templateId);
+            if ($pageNo == 1)
+            {
+            $pdf->SetXY(75, 93.75);
+            $nomC = ucfirst($dossier->client->nom) . ' ' . ucfirst($dossier->client->prenom) ;
+            $pdf->Write(8, $nomC);
+
+            $pdf->SetXY(83, 99);
+            $pdf->Write(8, ucfirst(preg_replace( "/\r|\n/", " ",$dossier->client->adresse)));
+
+            $pdf->SetXY(147, 104.25);
+            $pdf->Write(8, ucfirst($dossier->client->cin));    
+
+            $pdf->SetXY(120, 266.25);
+            $pdf->Write(8, ucfirst($dossier->produit->constructible->num));   
+
+            $pdf->SetXY(180, 266.25);
+            $pdf->Write(8, ucfirst($dossier->produit->constructible->tranche_id));    
+
+            $pdf->SetXY(105.25, 275.8);
+            $pdf->Write(0, ucfirst($dossier->produit->constructible->surface));   
+            }    
+
+            if ($pageNo == 2)
+            {
+
+            $pdf->SetXY(49, 32);
+            $pdf->Write(8, number_format($dossier->produit->total*3));   
+
+            $pdf->SetXY(80, 32);
+            $pdf->Write(8, ucfirst($numberTransformer->toWords($dossier->produit->total*3)) . ' dirhams');  
+
+            $pdf->SetXY(50.25, 37.25);
+            $pdf->Write(8, $dossier->produit->prix);    
+
+            // affichage du 30% du prix en chiffre
+            $pdf->SetXY(49, 56);
+            $pdf->Write(0, number_format((($dossier->produit->total*3) * 30) /100 ));   
+
+            // affichage du 30% du prix en lettre
+            $pdf->SetXY(80, 56);
+            $pdf->Write(0, ucfirst($numberTransformer->toWords((($dossier->produit->total*3) * 30) /100 )) . ' dirhams');  
+
+            }  
+
+            if ($pageNo == 4)
+            {
+
+            $pdf->SetXY(113, 101.5);
+            $pdf->Write(8, date("j/n/Y"));   
+          
+
+            }  
+
+        }
+
+        // Output the new PDF
+        $pdf->Output();
+    }
+
 }

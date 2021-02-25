@@ -12,8 +12,10 @@ use App\Http\Controllers\PaiementController;
 use App\Http\Controllers\TrancheController;
 use App\Http\Controllers\VisiteController;
 use App\Http\Controllers\VoieController;
+use App\Models\Dossier;
 use App\Models\Etiquette;
 use Illuminate\Support\Facades\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -27,8 +29,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/moi', function () {
-	dd(App::getLocale() ) ;
-    return view('dashboard');
+
 });
 
 Route::middleware('auth')->group(function(){
@@ -52,6 +53,9 @@ Route::resource('dossiers', DossierController::class)->except([
 
 Route::get('/produits/{produit}/dossiers/create', [DossierController::class, 'create'])
 ->middleware('can:create,produit');
+
+Route::get('/dossiers/{dossier}/actes', [DossierController::class, 'actes']) ;
+
 
 Route::get('/paiements', [PaiementController::class, 'historique']);
 

@@ -61,7 +61,7 @@ class Produit extends Model
     {
         if ($this->constructible->type === 'Economique')
         {
-            return 250000 / $this->constructible->surface;
+            return round(250000 / $this->constructible->surface) ;
         }
       
         return $prix = ($this->prixM2Definitif === 0 || $this->prixM2Definitif == Null) ? $this->prixM2Indicatif : $this->prixM2Definitif ;
