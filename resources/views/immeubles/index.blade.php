@@ -23,15 +23,31 @@
             <div
               class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800"
             >
+              <label class="block text-sm mb-4">
+                <span class="text-gray-700 dark:text-gray-400">Numéro de la Immeuble</span>
+                <input
+                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                  placeholder="Numéro de l'immeuble"
+                  type="text"
+                  name="num"
+                  required
+                  value="@isset ($immeuble->num){{$immeuble->num}}@else{{old('num')}}@endisset"
+                />
+                    @error('num')
+                    <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
+                    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
+                    @enderror
+              </label>
+
               <label class="block text-sm">
                 <span class="text-gray-700 dark:text-gray-400">Description</span>
                 <textarea
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-textarea focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
                   rows="3"
-                  placeholder="Description ou observations concernant cette tranche"
+                  placeholder="Description ou observations concernant cette immeuble"
                   name="description"
 
-                >@isset ($immeuble){{$immeuble->description}}@endisset</textarea>
+                >@isset ($immeuble){{$immeuble->description}}@else{{old('description')}}@endisset</textarea>
 
                     @error('description')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
@@ -131,7 +147,7 @@
                           >
                             <img
                               class="object-cover w-full h-full rounded-full"
-                              src="https://images.unsplash.com/flagged/photo-1570612861542-284f4c12e75f?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&ixid=eyJhcHBfaWQiOjE3Nzg0fQ"
+                              src="{{asset('imm.png')}}"
                               alt=""
                               loading="lazy"
                             />
@@ -146,7 +162,7 @@
                   class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
                   href="/immeubles/{{ $immeuble->id }}"
                 >
-                  {{ $immeuble->id }}
+                  {{ $immeuble->num }}
                 </a>
                               </p>
 
@@ -159,10 +175,29 @@
                       <td class="px-4 py-3 text-sm">
                         {{ $immeuble->description }}
                       </td>
+
+
+                      <td class="flex px-4 py-3 text-sm">
+                <div class="mr-1">
+                <a
+                  class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none focus:shadow-outline-gray"
+                  aria-label="Like"
+                  href="/immeubles/{{$immeuble->id}}"
+                >
+                  <svg
+                    class="w-4 h-4"
+                    aria-hidden="true"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                  <path d="M12.2928932,3.70710678 L0,16 L0,20 L4,20 L16.2928932,7.70710678 L12.2928932,3.70710678 Z M13.7071068,2.29289322 L16,0 L20,4 L17.7071068,6.29289322 L13.7071068,2.29289322 Z" id="Combined-Shape"></path>
+                  </svg>
+                </a>
+                </div>
+                                        
                       <form action="/immeubles/{{$immeuble->id}}" method="POST">
                         @csrf
-                        @method('DELETE')
-                      <td class="px-4 py-3 text-sm">
+                        @method('DELETE')                        
               <div>
                 <button
                   class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
@@ -184,9 +219,9 @@
                   </svg>
                 </button>
               </div>
+                      </form>
               
                       </td>
-                      </form>
                     </tr>
                     @endforeach
                   </tbody>

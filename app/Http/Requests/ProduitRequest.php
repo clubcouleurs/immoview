@@ -46,7 +46,7 @@ class ProduitRequest extends FormRequest
             'type' => 'sometimes|required|string',
             'etage' => 'sometimes|required|integer',
             'description' => 'string|nullable',         
-            'etatProduit' => 'required|numeric',
+            'etatProduit' => 'sometimes|required|numeric',
             'prixM2Indicatif' => 'sometimes|required|numeric|nullable',
             'prixM2Definitif' => 'numeric|nullable',
             'remise' => 'numeric|nullable',

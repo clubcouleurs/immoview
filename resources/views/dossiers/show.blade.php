@@ -48,85 +48,90 @@
                   <table class="w-full">
                   <tbody class="divide-y dark:divide-gray-700 dark:bg-gray-800">
                     <tr class="text-gray-700 dark:text-gray-400">
-                      <td class="px-4 py-3">
+                      <td class="px-1 py-1 w-36">
                         <div class="flex items-center text-sm">
                           <div><p class="font-semibold">
                             <span
-                              class="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded-md dark:bg-red-700 dark:text-red-100">
+                              class="font-semibold leading-tight text-red-700 bg-red-100 rounded-md dark:bg-red-700 dark:text-red-100">
                               N° Réservation :
                             </span>
                             </p>
                           </div>
                         </div>
                       </td>
-                      <td class="px-4 py-3 text-sm">
+                      <td class="px-1 py-1 text-sm">
                           {{$dossier->num}}
                       </td>
                     </tr>
                     <tr class="text-gray-700 dark:text-gray-400">
-                      <td class="px-4 py-3">
+                      <td class="px-1 py-1">
                         <div class="flex items-center text-sm">
                           <div><p class="font-semibold">
                             <span
-                              class="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded-md dark:bg-red-700 dark:text-red-100">
+                              class="font-semibold leading-tight text-red-700 bg-red-100 rounded-md dark:bg-red-700 dark:text-red-100">
                               Date Réservation :                      
                             </span>
                             </p>
                           </div>
                         </div>
                       </td>
-                      <td class="px-4 py-3 text-sm">
+                      <td class="px-1 py-1 text-sm">
                           {{$dossier->date}}
                       </td>
                     </tr> 
                     <tr class="text-gray-700 dark:text-gray-400">
-                      <td class="px-4 py-3">
+                      <td class="px-1 py-1">
                         <div class="flex items-center text-sm">
                           <div><p class="font-semibold">
                             <span
-                              class="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded-md dark:bg-red-700 dark:text-red-100">
+                              class="font-semibold leading-tight text-red-700 bg-red-100 rounded-md dark:bg-red-700 dark:text-red-100">
                               Frais du dossier :                     
                             </span>
                             </p>
                           </div>
                         </div>
                       </td>
-                      <td class="px-4 py-3 text-sm">
+                      <td class="px-1 py-1 text-sm">
                           {{number_format($dossier->frais)}} Dhs
                       </td>
                     </tr>  
                     <tr class="text-gray-700 dark:text-gray-400">
-                      <td class="px-4 py-3">
+                      <td class="px-1 py-1">
                         <div class="flex items-center text-sm">
                           <div><p class="font-semibold">
                             <span
-                              class="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded-md dark:bg-red-700 dark:text-red-100">
+                              class="font-semibold leading-tight text-red-700 bg-red-100 rounded-md dark:bg-red-700 dark:text-red-100">
                               Observation :                       
                             </span>
                             </p>
                           </div>
                         </div>
                       </td>
-                      <td class="px-4 py-3 text-sm">
+                      <td class="px-1 py-1 text-sm">
                           {{$dossier->detail}}
                       </td>
                     </tr>   
                     <tr class="text-gray-700 dark:text-gray-400">
-                      <td class="px-4 py-3 col-span-2">
+                      <td class="px-1">
                         <div class="flex items-center text-sm">
-                          <div>
+                            {!!$dossier->acte!!}
+                        </div>
+                      </td>
+                    </tr>                     
+                    <tr class="text-gray-700 dark:text-gray-400">
+                      <td class="px-1 py-4">
+                        <div class="flex items-center text-sm">
+                          <div class="flex gap-2">
                             
-                                  <button
-                                    class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
-                                    type="submit"
+                                  <a
+                                    class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-green-600 border border-transparent rounded-lg active:bg-green-600 hover:bg-green-700 focus:outline-none focus:shadow-outline-green"
+                                    href="/dossiers/{{$dossier->id}}/edit"
                                   >
                                     Modifier
-                                  </button>                                                     
-                            
+                                  </a>
                           </div>
                         </div>
                       </td>
-                     
                     </tr>                                                                            
                   </tbody>
                 </table>
@@ -141,7 +146,7 @@
 <table class="w-full">
                   <tbody class="divide-y dark:divide-gray-700 dark:bg-gray-800">
                     <tr class="text-gray-700 dark:text-gray-400">
-                      <td class="px-4 py-3">
+                      <td class="px-1 py-3">
                         <div class="flex items-center text-sm">
                           <div><p class="font-semibold">
                             <span
@@ -152,12 +157,12 @@
                           </div>
                         </div>
                       </td>
-                      <td class="px-4 py-3 text-sm">
+                      <td class="px-1 py-3 text-sm">
                           {{$dossier->produit->constructible->num}}
                       </td>
                     </tr>
                     <tr class="text-gray-700 dark:text-gray-400">
-                      <td class="px-4 py-3">
+                      <td class="px-1 py-3">
                         <div class="flex items-center text-sm">
                           <div><p class="font-semibold">
                             <span
@@ -168,12 +173,12 @@
                           </div>
                         </div>
                       </td>
-                      <td class="px-4 py-3 text-sm">
+                      <td class="px-1 py-3 text-sm">
                           {{$dossier->produit->constructible->surface}} m<sup>2</sup>
                       </td>
                     </tr> 
                     <tr class="text-gray-700 dark:text-gray-400">
-                      <td class="px-4 py-3">
+                      <td class="px-1 py-3">
                         <div class="flex items-center text-sm">
                           <div><p class="font-semibold">
                             <span
@@ -184,7 +189,7 @@
                           </div>
                         </div>
                       </td>
-                      <td class="px-4 py-3 text-sm">
+                      <td class="px-1 py-3 text-sm">
                         @isset($dossier->produit->constructible->tranche)
                           {{$dossier->produit->constructible->tranche->num}}
                           @else
@@ -193,7 +198,7 @@
                       </td>
                     </tr>  
                     <tr class="text-gray-700 dark:text-gray-400">
-                      <td class="px-4 py-3">
+                      <td class="px-1 py-3">
                         <div class="flex items-center text-sm">
                           <div><p class="font-semibold">
                             <span
@@ -204,12 +209,12 @@
                           </div>
                         </div>
                       </td>
-                      <td class="px-4 py-3 text-sm">
+                      <td class="px-1 py-3 text-sm">
                           R+{{$dossier->produit->constructible->etage}}
                       </td>
                     </tr>
                     <tr class="text-gray-700 dark:text-gray-400">
-                      <td class="px-4 py-3">
+                      <td class="px-1 py-3">
                         <div class="flex items-center text-sm">
                           <div><p class="font-semibold">
                             <span
@@ -220,12 +225,12 @@
                           </div>
                         </div>
                       </td>
-                      <td class="px-4 py-3 text-sm">
+                      <td class="px-1 py-3 text-sm">
                           {{number_format($dossier->produit->prixM2Definitif)}} Dhs 
                       </td>
                     </tr>
                     <tr class="text-gray-700 dark:text-gray-400">
-                      <td class="px-4 py-3">
+                      <td class="px-1 py-3">
                         <div class="flex items-center text-sm">
                           <div><p class="font-semibold">
                             <span
@@ -236,12 +241,12 @@
                           </div>
                         </div>
                       </td>
-                      <td class="px-4 py-3 text-sm">
+                      <td class="px-1 py-3 text-sm">
                           {{number_format($dossier->produit->prixM2Indicatif)}} Dhs 
                       </td>
                     </tr> 
                     <tr class="text-gray-700 dark:text-gray-400">
-                      <td class="px-4 py-3">
+                      <td class="px-1 py-3">
                         <div class="flex items-center text-sm">
                           <div><p class="font-semibold">
                             <span
@@ -252,12 +257,12 @@
                           </div>
                         </div>
                       </td>
-                      <td class="px-4 py-3 text-sm">
+                      <td class="px-1 py-3 text-sm">
                           {{number_format($dossier->produit->totalDefinitif)}} Dhs 
                       </td>
                     </tr>
                     <tr class="text-gray-700 dark:text-gray-400">
-                      <td class="px-4 py-3">
+                      <td class="px-1 py-3">
                         <div class="flex items-center text-sm">
                           <div><p class="font-semibold">
                             <span
@@ -268,12 +273,12 @@
                           </div>
                         </div>
                       </td>
-                      <td class="px-4 py-3 text-sm">
+                      <td class="px-1 py-3 text-sm">
                           {{number_format($dossier->produit->totalIndicatif)}} Dhs
                       </td>
                     </tr> 
                     <tr class="text-gray-700 dark:text-gray-400">
-                      <td class="px-4 py-3">
+                      <td class="px-1 py-3">
                         <div class="flex items-center text-sm">
                           <div><p class="font-semibold">
                             <span
@@ -284,23 +289,23 @@
                           </div>
                         </div>
                       </td>
-                      <td class="px-4 py-3 text-sm">
+                      <td class="px-1 py-3 text-sm">
                           {{$dossier->produit->remise}} %                     
                       </td>
                     </tr>                     
 
 
                     <tr class="text-gray-700 dark:text-gray-400">
-                      <td class="px-4 py-3 col-span-2">
+                      <td class="px-1 py-3 col-span-2">
                         <div class="flex items-center text-sm">
                           <div>
                             
-                                  <button
+                                  <a
                                     class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-green-600 border border-transparent rounded-lg active:bg-green-600 hover:bg-green-700 focus:outline-none focus:shadow-outline-green"
-                                    type="submit"
+                                    href="/{{$dossier->produit->constructible_type}}s/{{$dossier->produit->constructible->id}}/edit"
                                   >
                                     Modifier
-                                  </button>                                                     
+                                  </a>                                                     
                             
                           </div>
                         </div>
@@ -343,6 +348,12 @@
                 </div>
               </div>
               
+               <a
+                  class="mt-4 text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
+                  href="/dossiers/{{$dossier->id}}/paiements"
+                >
+                  Consulter l'historique de paiements >>
+                </a>
               </div>   
 
              <div
@@ -351,7 +362,7 @@
                   <table class="w-full">
                   <tbody class="divide-y dark:divide-gray-700 dark:bg-gray-800">
                     <tr class="text-gray-700 dark:text-gray-400">
-                      <td class="px-4 py-3">
+                      <td class="px-1 py-3">
                         <div class="flex items-center text-sm">
                           <div><p class="font-semibold">
                             <span
@@ -362,12 +373,12 @@
                           </div>
                         </div>
                       </td>
-                      <td class="px-4 py-3 text-sm">
+                      <td class="px-1 py-3 text-sm">
                           {{$dossier->client->nom}}
                       </td>
                     </tr>
                     <tr class="text-gray-700 dark:text-gray-400">
-                      <td class="px-4 py-3">
+                      <td class="px-1 py-3">
                         <div class="flex items-center text-sm">
                           <div><p class="font-semibold">
                             <span
@@ -383,7 +394,7 @@
                       </td>
                     </tr> 
                     <tr class="text-gray-700 dark:text-gray-400">
-                      <td class="px-4 py-3">
+                      <td class="px-1 py-3">
                         <div class="flex items-center text-sm">
                           <div><p class="font-semibold">
                             <span
@@ -394,12 +405,12 @@
                           </div>
                         </div>
                       </td>
-                      <td class="px-4 py-3 text-sm">
+                      <td class="px-1 py-3 text-sm">
                           {{$dossier->client->cin }}
                       </td>
                     </tr>  
                     <tr class="text-gray-700 dark:text-gray-400">
-                      <td class="px-4 py-3">
+                      <td class="px-1 py-3">
                         <div class="flex items-center text-sm">
                           <div><p class="font-semibold">
                             <span
@@ -410,21 +421,21 @@
                           </div>
                         </div>
                       </td>
-                      <td class="px-4 py-3 text-sm">
+                      <td class="px-1 py-3 text-sm">
                           {{$dossier->client->mobile}}
                       </td>
                     </tr>   
                     <tr class="text-gray-700 dark:text-gray-400">
-                      <td class="px-4 py-3 col-span-2">
+                      <td class="px-1 py-3 col-span-2">
                         <div class="flex items-center text-sm">
                           <div>
                             
-                                  <button
+                                  <a
                                     class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-green-600 border border-transparent rounded-lg active:bg-green-600 hover:bg-green-700 focus:outline-none focus:shadow-outline-green"
-                                    type="submit"
+                                    href="/clients/{{$dossier->client->id}}/edit"
                                   >
                                     Modifier
-                                  </button>                                                     
+                                  </a>                                                     
                             
                           </div>
                         </div>

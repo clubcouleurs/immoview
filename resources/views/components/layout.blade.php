@@ -8,17 +8,14 @@
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
   <title>{{ config('app.name', 'Dar Sud Developpement') }}</title>
-  <!--<title>{{ config('app.name', 'MonGraphisme.com') }}</title>-->
 
-  <!-- Scripts 
-  <script src="{{config('app.url')}}/js/app.js" defer></script>-->
+
   <script src="{{config('app.url')}}/js/init-alpine.js"></script>
 
-  <!-- filepond js -->
 
   <!-- Fonts -->
-  <link rel="dns-prefetch" href="//fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+  <!-- <link rel="dns-prefetch" href="//fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet"> -->
 
   <!-- Styles -->
   <script
@@ -26,11 +23,12 @@
   defer
   ></script>
 
+
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css"
     />
-
+    
 
     
   <!--<link href="css/tailwind.output.css" rel="stylesheet"> -->

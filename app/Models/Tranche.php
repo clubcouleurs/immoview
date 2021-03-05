@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 class Tranche extends Model
 {
     use HasFactory;
-    protected $fillable = ['description'];
+    protected $fillable = ['description', 'num'];
 
     public function immeubles()
     {

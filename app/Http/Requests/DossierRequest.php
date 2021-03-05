@@ -23,11 +23,11 @@ class DossierRequest extends FormRequest
      */
 public function rules()
     {
-        $numDossier = (isset($this->dossier->num)) ? $this->dossier->num : Null ;
-
+        $idDossier = (isset($this->dossier->id)) ? $this->dossier->id : Null ;
+       
         return [
             'num' => 'sometimes|required|numeric',
-            'num' => 'unique:dossiers,num,'.$numDossier,
+            'num' => 'unique:dossiers,num,'.$idDossier,
             'date' => 'date|required',
             'frais' => 'required|numeric',
             'detail' => 'string|nullable',         

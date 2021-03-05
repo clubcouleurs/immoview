@@ -38,10 +38,14 @@ class TrancheController extends Controller
      
         $request->validate([
             'description' => 'string|nullable',
+            'num' => 'required|numeric|unique:tranches',
+
         ]);
 
         $tranche = new Tranche([
         'description'       => $request['description'] ,
+        'num'               => $request['num'] ,
+
         ]) ;
         $tranche->save() ;
         return redirect()->action([TrancheController::class, 'index']);
@@ -81,9 +85,13 @@ class TrancheController extends Controller
     {
         $request->validate([
             'description' => 'string|nullable',
+            'num' => 'required|numeric|unique:tranches,num,'.$tranch->id,
+
         ]);
 
         $tranch->description = $request['description'] ;
+        $tranch->num = $request['num'] ;
+
         $tranch->save() ;
 
         return redirect()->action([TrancheController::class, 'index']);

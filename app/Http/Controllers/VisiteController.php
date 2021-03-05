@@ -117,9 +117,7 @@ class VisiteController extends Controller
      */
     public function create()
     {
-        return view('visites.create', [
-
-        ]) ;
+        return view('visites.create') ;
     }
 
     /**

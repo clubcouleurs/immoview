@@ -9,6 +9,12 @@ use Illuminate\Database\Eloquent\Model;
 class Client extends Model
 {
     use HasFactory;
+	protected $dates = [
+	    'created_at',
+	    'updated_at'
+	];
+
+    protected $fillable = ['nom', 'prenom','cin','mobile','adresse'];
 
     public function dossiers()
     {

@@ -2,14 +2,12 @@
 
 namespace App\Policies;
 
-use App\Models\Dossier;
-use App\Models\Produit;
+use App\Models\Etiquette;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
 
-
-class DossierPolicy
+class EtiquettePolicy
 {
     use HandlesAuthorization;
 
@@ -28,14 +26,12 @@ class DossierPolicy
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Dossier  $dossier
+     * @param  \App\Models\Etiquette  $etiquette
      * @return mixed
      */
-    public function view(User $user, Dossier $dossier)
+    public function view(User $user, Etiquette $etiquette)
     {
-        return ($dossier->hasActe || $dossier->validate) 
-                ? Response::allow()
-                : Response::deny('L\' acte de réservation n\' est pas encore disponible car le client n\'a pas encore payé 30% du montant total du produit');        
+        //
     }
 
     /**
@@ -44,34 +40,33 @@ class DossierPolicy
      * @param  \App\Models\User  $user
      * @return mixed
      */
-    public function create(User $user, Dossier $dossier)
+    public function create(User $user)
     {
-        return ($dossier->hasActe || $dossier->validate) 
-                ? Response::deny('Ce dossier est déjà validé ou le client a déjà payé 30% du montant total du produit')
-                : Response::allow();
-        
+        //
     }
 
     /**
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Dossier  $dossier
+     * @param  \App\Models\Etiquette  $etiquette
      * @return mixed
      */
-    public function update(Dossier $dossier)
+    public function update(User $user, Etiquette $etiquette)
     {
-        //
+        return in_array($etiquette->id, [2,3])
+                ? Response::deny('Impossible de modifier cette étiquette')
+                : Response::allow();
     }
 
     /**
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Dossier  $dossier
+     * @param  \App\Models\Etiquette  $etiquette
      * @return mixed
      */
-    public function delete(User $user, Dossier $dossier)
+    public function delete(User $user, Etiquette $etiquette)
     {
         //
     }
@@ -80,10 +75,10 @@ class DossierPolicy
      * Determine whether the user can restore the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Dossier  $dossier
+     * @param  \App\Models\Etiquette  $etiquette
      * @return mixed
      */
-    public function restore(User $user, Dossier $dossier)
+    public function restore(User $user, Etiquette $etiquette)
     {
         //
     }
@@ -92,10 +87,10 @@ class DossierPolicy
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Dossier  $dossier
+     * @param  \App\Models\Etiquette  $etiquette
      * @return mixed
      */
-    public function forceDelete(User $user, Dossier $dossier)
+    public function forceDelete(User $user, Etiquette $etiquette)
     {
         //
     }

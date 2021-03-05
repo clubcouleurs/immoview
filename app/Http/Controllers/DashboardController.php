@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Paiement;
 use App\Models\Dossier;
 use App\Models\Produit;
 use App\Models\Visite;
@@ -27,6 +28,9 @@ class DashboardController extends Controller
 
         $dossiersAll = Dossier::with('produit')->with('client')->with('paiements')->paginate(15);
 
+        $countProduits = \DB::select("SELECT COUNT(constructible_type) as nbr from produits
+GROUP BY constructible_type");  
+//dd($countProduits[0])  ;
 
 
 // end of 
@@ -41,7 +45,6 @@ class DashboardController extends Controller
 	        'dossiers' => $dossiersAll,
 	        'nombreVisites' => $nombreVisites,
 	        'mois' => $mois,
-
         ]);
     }
 }

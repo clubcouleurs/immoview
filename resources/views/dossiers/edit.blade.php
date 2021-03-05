@@ -119,8 +119,9 @@
 
             @endisset
 
-            <form action="/dossiers" method="POST">
+            <form action="/dossiers/{{$dossier->id}}" method="POST">
               @csrf
+              @method('PATCH')
               <input type="hidden" id="idProduit" name="produit" value="@isset($produit->id){{$produit->id}}@endisset">
 
             <div
@@ -133,7 +134,7 @@
                   placeholder=""
                   type="number"
                   name="num"
-                  value="{{old('num')}}"
+                  value="{{$dossier->num}}"
                   required
                 />
                     @error('num')
@@ -257,7 +258,7 @@
                   type="number"
                   step="0.1"
                   name="frais"
-                  value="{{old('frais')}}"
+                  value="{{$dossier->frais}}"
 
                   required
                 />
@@ -286,7 +287,7 @@
                   rows="3"
                   placeholder="Si vous avez une description et une observation à saisir"
                   name="detail"
-                  value="{{old('detail')}}"
+                  value="{{$dossier->detail}}"
 
 
                 ></textarea>
@@ -299,10 +300,10 @@
 
                 <div class="block mt-4 text-sm">
                 <button
-                  class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+                  class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-green-600 border border-transparent rounded-lg active:bg-green-600 hover:bg-green-700 focus:outline-none focus:shadow-outline-green"
                   type="submit"
                 >
-                  Sauvegarder
+                  Modifier
                 </button>
               </div>
 

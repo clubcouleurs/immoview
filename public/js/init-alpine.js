@@ -74,7 +74,17 @@ function data() {
     isBureauxMenuOpen: false,
     toggleBureauxMenu() {
       this.isBureauxMenuOpen = !this.isBureauxMenuOpen
-    },           
+    },   
+    isBoxesMenuOpen: false,
+    toggleBoxesMenu() {
+      this.isBoxesMenuOpen = !this.isBoxesMenuOpen
+    },
+
+    isClientsMenuOpen: false,
+    toggleClientsMenu() {
+      this.isClientsMenuOpen = !this.isClientsMenuOpen
+    },    
+
     isPagesMenuOpen: false,
     togglePagesMenu() {
       this.isPagesMenuOpen = !this.isPagesMenuOpen

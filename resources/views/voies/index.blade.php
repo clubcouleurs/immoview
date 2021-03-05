@@ -111,7 +111,7 @@
                           >
                             <img
                               class="object-cover w-full h-full rounded-full"
-                              src="https://images.unsplash.com/flagged/photo-1570612861542-284f4c12e75f?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&ixid=eyJhcHBfaWQiOjE3Nzg0fQ"
+                              src="{{asset('road.png')}}"
                               alt=""
                               loading="lazy"
                             />
@@ -136,10 +136,28 @@
                       <td class="px-4 py-3 text-sm">
                         {{ $voie->Largeur }}
                       </td>
+
+
+                      <td class="flex px-4 py-3 text-sm">
+                <div class="mr-1">
+                <a
+                  class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none focus:shadow-outline-gray"
+                  aria-label="Like"
+                  href="/voies/{{ $voie->id }}"
+                >
+                  <svg
+                    class="w-4 h-4"
+                    aria-hidden="true"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                  <path d="M12.2928932,3.70710678 L0,16 L0,20 L4,20 L16.2928932,7.70710678 L12.2928932,3.70710678 Z M13.7071068,2.29289322 L16,0 L20,4 L17.7071068,6.29289322 L13.7071068,2.29289322 Z" id="Combined-Shape"></path>
+                  </svg>
+                </a>
+                </div>
                       <form action="/voies/{{$voie->id}}" method="POST">
                         @csrf
-                        @method('DELETE')
-                      <td class="px-4 py-3 text-sm">
+                        @method('DELETE')                        
               <div>
                 <button
                   class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
@@ -161,9 +179,9 @@
                   </svg>
                 </button>
               </div>
-              
+                                    </form>
                       </td>
-                      </form>
+
                     </tr>
                     @endforeach
                   </tbody>

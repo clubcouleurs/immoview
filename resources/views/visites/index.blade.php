@@ -293,7 +293,9 @@
                       <th class="px-4 py-3">N° Visite</th>
                       <th class="px-4 py-3">Date de la visite</th>
                       <th class="px-4 py-3">Prospect</th>
-                      <th class="px-4 py-3">Intéressez par</th>                      
+                      <th class="px-4 py-3">Intéressez par</th>        
+                      <th class="px-4 py-3">Commercial</th>                      
+
                       <th class="px-4 py-3">Détails de la visite</th>
                       <th class="px-4 py-3">Remarques du prospect</th>
                       <th class="px-4 py-3">Actions</th>
@@ -363,7 +365,10 @@
                       </td>
                       <td class="px-4 py-3 text-xs">
                         {{ $visite->interet}}
-                      </td>                      
+                      </td>   
+                      <td class="px-4 py-3 text-xs">
+                        {{ $visite->user->name}}
+                      </td>                                          
                       <td class="px-4 py-3 text-xs">
 
                           {{ substr($visite->detail, 0  , 80) }} ...

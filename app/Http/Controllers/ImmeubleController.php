@@ -40,10 +40,14 @@ class ImmeubleController extends Controller
         $tranche = Tranche::findOrFail($request['tranche_id']) ;
         $request->validate([
             'description' => 'string|nullable',
+            'num' => 'required|alpha_num|unique:immeubles',
+
         ]);
 
         $immeuble = new Immeuble([
-        'description'       => $request['description'] ,
+        'description'       => $request['description'],
+        'num'               => $request['num'] ,
+
         ]) ;
         $tranche->immeubles()->save($immeuble) ;
         return redirect()->action([ImmeubleController::class, 'index']);
@@ -85,10 +89,12 @@ class ImmeubleController extends Controller
 
         $request->validate([
             'description' => 'string|nullable',
+            'num' => 'required|alpha_num|unique:immeubles,num,'. $immeuble->id,
         ]);
 
         $immeuble->description = $request['description'] ;
         $immeuble->tranche_id = $request['tranche_id'] ;
+        $immeuble->num = $request['num'] ;
 
         $immeuble->save() ;
 

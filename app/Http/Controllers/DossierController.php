@@ -184,21 +184,49 @@ class DossierController extends Controller
      */
     public function create(Produit $produit)
     {
+        return view('dossiers.create', [
+            'clients'       => Client::where('activer', '=' , 1)->get(),
+            'produit'       => $produit,
+            'dataRecap'     => $this->recap($produit),
 
-            $dataRecap = 
+        ]) ;
+    }
+
+    public function createWithClient(Produit $produit, Client $client)
+    {
+        return view('dossiers.create', [
+            'client'    => $client,
+            'produit'   => $produit,
+            'dataRecap' => $this->recap(),
+
+        ]) ;
+    }
+
+    public function recap(Produit $produit)
+    {
+        return 
             'Qui concerne ' . $produit->constructible_type .' N° ' . $produit->constructible->num . 
             ', d\'une surface totale de : ' . $produit->constructible->surface . 'm2' .
             '. Vendu au prix total de : ' . number_format($produit->total) . ' Dhs'.
             '. Du type : ' . $produit->constructible->type . '. Etage : ' . $produit->constructible->etage .
             '. ' . ucfirst($produit->constructible_type) .' sur la tranche ' . $produit->constructible->tranche->id ;
+    }
 
-    
-
+    public function createWithoutProduit(Client $client)
+    {   
+        // ici on connait que le client
+        // Renvoyer le client et le produit sera retrouvé grâce au formulaire de recherche ...
         return view('dossiers.create', [
-            'clients'       => Client::where('activer', '=' , 1)->get(),
-            'produit'       => $produit,
-            'dataRecap'     => $dataRecap
+            'client'    => $client
+        ]) ;
+    }
 
+    public function createWithoutClient()
+    {
+        // ici on connait ni le client ni le produit
+        // Renvoyer tous les clients et le produit sera retrouvé grâce au formulaire de recherche ...
+        return view('dossiers.create', [
+            'clients'       => Client::where('activer', '=' , 1)->get()
         ]) ;
     }
 
@@ -219,10 +247,19 @@ class DossierController extends Controller
             'produit_id'        => $request['produit'],
             'user_id'           => Auth::id(),
         ]) ;
-        $dossier->save();
-        $dossier->produit->etiquette_id = 3 ;
-        $dossier->produit->update() ;
-        return redirect()->action([DossierController::class, 'index']);
+        $produit = Produit::findOrFail($request['produit']) ;
+            if(isset($produit) && $produit->etiquette_id === 2 )
+            {
+                $dossier->save();
+                $dossier->produit->etiquette_id = 3 ;
+                $dossier->produit->update() ;
+                return redirect()->action([DossierController::class, 'index']);
+            }
+
+            return Redirect::back()->withErrors(['msg', 'Attention : ' .
+                ucfirst($produit->constructible_type). ' n\'existant pas ou étant déjà résérvé !'
+            ]);
+
     }
 
     /**
@@ -264,7 +301,12 @@ class DossierController extends Controller
      */
     public function edit(Dossier $dossier)
     {
-        dd($dossier) ;
+        return view('dossiers.edit' , [ 
+            'dossier' => $dossier,
+            'produit' => $dossier->produit,
+            'client'  => $dossier->client,
+            'dataRecap' => $this->recap($dossier->produit)
+        ]);
     }
 
     /**
@@ -276,7 +318,13 @@ class DossierController extends Controller
      */
     public function update(DossierRequest $request, Dossier $dossier)
     {
-        //
+
+            $dossier->num = $request['num']; 
+            $dossier->date = $request['date'];
+            $dossier->frais = $request['frais'];
+            $dossier->detail = $request['detail'];
+            $dossier->update(); 
+        return redirect()->action([DossierController::class, 'index'])->with('message','Dossier modifié') ;
     }
 
     /**
@@ -289,11 +337,12 @@ class DossierController extends Controller
     {
         // le produit devient dispo au stock après suppression du dossier
         $dossier->produit->etiquette_id = 2 ; // étiquette -> En stock
+        $dossier->produit->update() ; // étiquette -> En stock
 
         $dossier->delete() ;
         $dossier->paiements()->delete() ;
 
-        return redirect()->action([LotController::class, 'index']);
+        return redirect()->action([DossierController::class, 'index']);
     }
 
     public function actes(Dossier $dossier)
@@ -306,15 +355,16 @@ class DossierController extends Controller
 
          // outputs "five thousand one hundred twenty"
 
-
-
         // initiate FPDI
         $pdf = new FPDI();
-
+        $pdf->SetTextColor(0, 0, 255) ;
         $pdf->SetFont('Helvetica');
 
         // get the page count
-        $pageCount = $pdf->setSourceFile(Storage_path('app/public/acte-reservation.pdf'));
+
+        $pageCount = $pdf->setSourceFile(Storage_path('app/public/acte-reservation-'.
+         $dossier->produit->constructible_type .'.pdf'));
+
         // iterate through all pages
         for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
             $pdf->SetMargins(0, 0, 0 , 0) ;
@@ -339,8 +389,11 @@ class DossierController extends Controller
             $nomC = ucfirst($dossier->client->nom) . ' ' . ucfirst($dossier->client->prenom) ;
             $pdf->Write(8, $nomC);
 
+            $adresse = stripslashes($dossier->client->adresse);
+            $adresse = iconv('UTF-8', 'windows-1252', $adresse);
+
             $pdf->SetXY(83, 99);
-            $pdf->Write(8, ucfirst(preg_replace( "/\r|\n/", " ",$dossier->client->adresse)));
+            $pdf->Write(8, ucfirst(preg_replace( "/\r|\n/", " ", $adresse )));
 
             $pdf->SetXY(147, 104.25);
             $pdf->Write(8, ucfirst($dossier->client->cin));    
@@ -352,28 +405,31 @@ class DossierController extends Controller
             $pdf->Write(8, ucfirst($dossier->produit->constructible->tranche_id));    
 
             $pdf->SetXY(105.25, 275.8);
-            $pdf->Write(0, ucfirst($dossier->produit->constructible->surface));   
+            $pdf->Write(0, 
+                ucfirst($dossier->produit->constructible->surface) .
+                'm2 (R+' . $dossier->produit->constructible->etage . ').'
+            );   
             }    
 
             if ($pageNo == 2)
             {
 
             $pdf->SetXY(49, 32);
-            $pdf->Write(8, number_format($dossier->produit->total*3));   
+            $pdf->Write(8, number_format($dossier->produit->total));   
 
             $pdf->SetXY(80, 32);
-            $pdf->Write(8, ucfirst($numberTransformer->toWords($dossier->produit->total*3)) . ' dirhams');  
+            $pdf->Write(8, ucfirst($numberTransformer->toWords($dossier->produit->total)) . ' dirhams');  
 
             $pdf->SetXY(50.25, 37.25);
             $pdf->Write(8, $dossier->produit->prix);    
 
             // affichage du 30% du prix en chiffre
             $pdf->SetXY(49, 56);
-            $pdf->Write(0, number_format((($dossier->produit->total*3) * 30) /100 ));   
+            $pdf->Write(0, number_format((($dossier->produit->total) * 30) /100 ));   
 
             // affichage du 30% du prix en lettre
             $pdf->SetXY(80, 56);
-            $pdf->Write(0, ucfirst($numberTransformer->toWords((($dossier->produit->total*3) * 30) /100 )) . ' dirhams');  
+            $pdf->Write(0, ucfirst($numberTransformer->toWords((($dossier->produit->total) * 30) /100 )) . ' dirhams');  
 
             }  
 
@@ -389,7 +445,8 @@ class DossierController extends Controller
         }
 
         // Output the new PDF
-        $pdf->Output();
+        $pdf->Output('D', 'actes_reservation_lot_N_' . $dossier->produit->constructible->num
+            . '_' . $dossier->client->nom . '_' . $dossier->client->prenom . '.pdf', true);
     }
-
+    
 }

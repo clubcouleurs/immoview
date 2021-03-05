@@ -5,7 +5,7 @@
         <p class="block h-160 px-4 py-4 rounded-lg mx-auto w-full mt-4
         bg-red-200 text-red-600 text-xl"> Attention Il y'a des erreurs dans votre formulaire</p>
         @endif
-        {{$errors}}
+{{$errors}}
             <h2
               class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
             >
@@ -174,7 +174,7 @@
              @isset($lot->produit->dossier)
               <div
                 class="flex items-center justify-between p-2 mt-4 mb-2 text-sm font-semibold text-red-600 bg-red-100 rounded-lg shadow-sm focus:outline-none focus:shadow-outline-red rounded-2xl">
-                Attention : Vous pourrez pas modifier l'état de ce produit car déjà réservé pour le client {{ $lot->produit->dossier->client->nom . ' ' . $lot->produit->dossier->client->prenom}}
+                Attention : Vous ne pourrez pas modifier l'état de ce produit car déjà réservé pour le client {{ $lot->produit->dossier->client->nom . ' ' . $lot->produit->dossier->client->prenom}}
               </div>
               @else
 

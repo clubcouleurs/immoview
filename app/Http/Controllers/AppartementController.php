@@ -209,7 +209,11 @@ class AppartementController extends Controller
      */
     public function update(Request $request, Appartement $appartement)
     {
-        $appartement->produit->etiquette_id     = $request['etatProduit']; 
+        if ($appartement->produit->dossier == null) {
+            
+            $appartement->produit->etiquette_id = $request['etatProduit']; 
+            
+        }
         $appartement->produit->prixM2Indicatif  = $request['prixM2Indicatif'];
         $appartement->produit->prixM2Definitif  = $request['prixM2Definitif'];
         $appartement->produit->update() ;

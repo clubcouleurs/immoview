@@ -252,7 +252,14 @@ class LotController extends Controller
     public function update(ProduitRequest $request, Lot $lot)
     {
         $tranche = Tranche::findOrFail($request['tranche']) ;
-        $lot->produit->etiquette_id      = $request['etatProduit']; 
+
+        if ($lot->produit->dossier == null) {
+            
+            $lot->produit->etiquette_id = $request['etatProduit']; 
+            
+        }
+
+        
         $lot->produit->prixM2Indicatif  = $request['prixM2Indicatif'];
         $lot->produit->prixM2Definitif  = $request['prixM2Definitif'];
         $lot->produit->update() ;

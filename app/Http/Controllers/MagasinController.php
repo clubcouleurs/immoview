@@ -204,6 +204,13 @@ class MagasinController extends Controller
     public function update(ProduitRequest $request, Magasin $magasin)
     {
         $immeuble = Immeuble::findOrFail($request['immeuble']) ;
+
+        if ($magasin->produit->dossier == null) {
+            
+            $magasin->produit->etiquette_id      = $request['etatProduit'];  
+            
+        }
+
         $magasin->produit->etiquette_id      = $request['etatProduit']; 
         $magasin->produit->prixM2Indicatif  = $request['prixM2Indicatif'];
         $magasin->produit->prixM2Definitif  = $request['prixM2Definitif'];

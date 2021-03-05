@@ -293,7 +293,12 @@ class OfficeController extends Controller
         $office->num =  $request['numBur']; 
         $office->update() ;
 
-        $office->produit->etiquette_id      = $request['etatProduit']; 
+        if ($office->produit->dossier == null) {
+            
+            $office->produit->etiquette_id      = $request['etatProduit']; 
+            
+        }
+
         $office->produit->prixM2Indicatif  = $request['prixM2Indicatif'];
         $office->produit->prixM2Definitif  = $request['prixM2Definitif'];
         $office->produit->update() ;
