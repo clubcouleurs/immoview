@@ -12,8 +12,9 @@
             >
               Modification de la visite N° {{$visite->id}}
             </h2>
-            <form action="/visites" method="POST">
+            <form action="/visites/{{$visite->id}}" method="POST">
               @csrf
+              @method('PATCH')
               <input type="hidden" name="date" value="{{date_format(now(), 'Y-m-d H:i:s')}}">
             <div
               class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800"

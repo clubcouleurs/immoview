@@ -11,7 +11,11 @@
 
 
   <script src="{{config('app.url')}}/js/init-alpine.js"></script>
+  <script src="https://unpkg.com/turbolinks"></script>
 
+<link rel="icon" 
+      type="image/png" 
+      href="{{asset('favicon-16x16.png')}}">
 
   <!-- Fonts -->
   <!-- <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -67,6 +71,5 @@
 {{ $slot }}
 
 
-<!--<script src="https://unpkg.com/turbolinks"></script>-->
 </body>
 </html>

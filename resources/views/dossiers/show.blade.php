@@ -112,7 +112,7 @@
                       </td>
                     </tr>   
                     <tr class="text-gray-700 dark:text-gray-400">
-                      <td class="px-1">
+                      <td class="px-1 py-2">
                         <div class="flex items-center text-sm">
                             {!!$dossier->acte!!}
                         </div>

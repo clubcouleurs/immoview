@@ -195,7 +195,32 @@ class VisiteController extends Controller
      */
     public function update(Request $request, Visite $visite)
     {
+        $client = $visite->client ;
 
+        $request->validate([
+            'nom'      => 'required|string',
+            'prenom'      => 'required|string',
+            'mobile'   => 'required|numeric|unique:clients,mobile,'. $client->id,
+            'date'  => 'required|date',
+            'interet' => 'required|string',
+            'detail' => 'required|string'
+        ]);
+
+        $client->nom                = $request['nom'];
+        $client->prenom             = $request['prenom'];
+        $client->mobile             = $request['mobile'];
+
+        $client->update();
+
+        $visite->interet        = $request['interet'] ;
+        $visite->detail         = $request['detail'];
+        $visite->remarqueClient = $request['remarqueClient'];
+
+
+        $visite->update() ;
+
+
+        return redirect()->action([VisiteController::class, 'index']);
     }
 
     /**

@@ -32,6 +32,7 @@ class Dossier extends Model
         return $this->hasMany(Paiement::class);
     }
 
+
     public function validation()
     {
         return $this->hasOne(Validation::class);
@@ -42,6 +43,16 @@ class Dossier extends Model
     {
         return $this->paiements()->sum('montant');
     }
+// les paiements validés
+    public function getTotalPaiementsVAttribute()
+    {
+        return $this->paiements()->where('valider',1)->sum('montant');
+    }
+    public function getTauxPaiementVAttribute()
+    {       
+        return round(($this->totalPaiementsV * 100) / $this->produit->total , 2) ;
+    }     
+// fin paiements validés
     public function getReliquatAttribute()
     {
         return  $this->produit->total - $this->paiements()->sum('montant') ;
@@ -53,36 +64,26 @@ class Dossier extends Model
 
     public static function dossiersParType()
     {       
-        /*return \DB::select('SELECT COUNT(*) AS nombre, produits.constructible_type
-                FROM dossiers
-                LEFT JOIN produits ON dossiers.produit_id = produits.id
-                GROUP BY produits.constructible_type');*/
-
         return \DB::table('dossiers')
                 ->select('produits.constructible_type', \DB::raw('COUNT(*) as nombre'))
                 ->leftJoin('produits', 'dossiers.produit_id', '=', 'produits.id')
                 ->groupBy('produits.constructible_type')
                 ->get();
-
-        //return Dossier::with('produit')->where('constructible_type','lot')->count() ;
-                //$dossiers = Dossier::with('produit')->get();
-
-               // return $dossiers->groupBy('produit.constructible_type')->count();
-
     } 
 
     public function getHasActeAttribute()
     {       
         if ($this->produit->constructible_type != 'appartement') {
-            return $this->tauxPaiement > 30 ;
+            return $this->tauxPaiementV > 30 ;
         }elseif ($this->produit->constructible_type === 'appartement') {
-            return $this->totalPaiements > 75000 ;
+            return $this->totalPaiementsV > 75000 ;
         }
     }  
     public function getValidateAttribute()
     {       
         return boolval($this->validation);
     } 
+
     public function getActeAttribute()
     {       
         if ($this->hasActe || $this->validate)
@@ -115,7 +116,6 @@ class Dossier extends Model
                 <a
                   class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
                   aria-label="Like"
-                  target="_blank"
                   href="/dossiers/' . $this->id . '/validation/create"
                 >
                     <svg

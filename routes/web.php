@@ -89,6 +89,8 @@ Route::get('/dossiers/{dossier}/actes', [DossierController::class, 'actes'])
 
 Route::get('/paiements', [PaiementController::class, 'historique']);
 
+//Route::patch('/paiements/{paiement}', [PaiementController::class, 'update']);
+
 Route::get('/dossiers/{dossier}/paiements', [PaiementController::class, 'index']);
 
 Route::get('/dossiers/{dossier}/paiements/{paiement}', [PaiementController::class, 'show']);

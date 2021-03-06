@@ -36,6 +36,11 @@ class Produit extends Model
         return $this->hasOne(Dossier::class);
     }
 
+    public function paiements()
+    {
+        return $this->hasManyThrough(Paiement::class, Dossier::class );
+    }
+
     public function getTypeAttribute()
     {
         if (isset($this->lot)) {
@@ -55,7 +60,13 @@ class Produit extends Model
         }                
     }
 
-
+    public static function produitsParType()
+    {       
+        return \DB::table('produits')
+                ->select('constructible_type', \DB::raw('COUNT(*) as nombre'))
+                ->groupBy('constructible_type')
+                ->get();
+    } 
 
     public function getPrixAttribute()
     {

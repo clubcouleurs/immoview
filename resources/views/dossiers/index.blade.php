@@ -203,19 +203,19 @@
                 <table class="w-full whitespace-no-wrap">
                   <thead>
                     <tr
-                      class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
+                      class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border  dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
                     >
-                      <th class="px-4 py-3">N° du dossier</th>
-                      <th class="px-4 py-3">Date du dossier</th>
-                      <th class="px-4 py-3">Frais</th>
-                      <th class="px-4 py-3">Client</th>
-                      <th class="px-4 py-3">Commercial</th>
-                      <th class="px-4 py-3">Total Paiements</th>
-                      <th class="px-4 py-3">Total dû</th>
-                      <th class="px-4 py-3">Taux</th>
+                      <th class="py-3">N° du dossier</th>
+                      <th class="py-3">Date du dossier</th>
+                      <th class="py-3">Frais</th>
+                      <th class="py-3">Client</th>
+                      <th class="py-3">Commercial</th>
+                      <th class="py-3">Total Paiements</th>
+                      <th class="py-3">Total dû</th>
+                      <th class="py-3">Taux</th>
 
-                      <th class="px-4 py-3">Détail</th>
-                      <th class="px-4 py-3">Actions</th>
+                      <th class="py-3">Détail</th>
+                      <th class="py-3">Actions</th>
 
 
                     </tr>
@@ -226,7 +226,7 @@
 
                   @foreach ($dossiers as $dossier)
                     <tr class="text-gray-700 dark:text-gray-400">
-                      <td class="px-4 py-3">
+                      <td class="px-1 py-3">
                         <div class="flex items-center text-sm">
 
                           <!-- Avatar with inset shadow -->
@@ -262,10 +262,10 @@
                           </div>
                         </div>
                       </td>
-                      <td class="px-4 py-3 text-sm">
+                      <td class="px-1 py-3 text-sm">
                         {{ $dossier->date }} 
                       </td>
-                      <td class="px-4 py-3 text-xs">
+                      <td class="px-1 py-3 text-xs">
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
                         >
@@ -275,7 +275,7 @@
                       </td>
 
                                                                   
-                      <td class="px-4 py-3 text-xs">
+                      <td class="px-1 py-3 text-xs">
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
                         >
@@ -285,10 +285,10 @@
                               CIN : {{ $dossier->client->cin }}
                             </p>                         
                       </td>
-                      <td class="px-4 py-3 text-sm">
+                      <td class="px-1 py-3 text-sm">
                         {{ $dossier->user->name }}
                       </td>                      
-                      <td class="px-4 py-3 text-sm">
+                      <td class="px-1 py-3 text-sm">
                         <span
                           class="px-2 py-1 font-semibold leading-tight rounded-full dark:bg-green-700 dark:text-green-100
                           @if ($dossier->etatProduit == 'En stock')
@@ -304,7 +304,7 @@
                           {{number_format($dossier->paiements->sum('montant'))}} Dhs
                         </span>
                       </td>
-                      <td class="px-4 py-3 text-sm">
+                      <td class="px-1 py-3 text-sm">
                         <span
                           class="px-2 py-1 font-semibold leading-tight rounded-full dark:bg-green-700 dark:text-green-100
                           @if ($dossier->etatProduit == 'En stock')
@@ -320,7 +320,7 @@
                            {{ number_format($dossier->produit->totalDefinitif)}} Dhs
                         </span>
                       </td>     
-                      <td class="px-4 py-3 text-sm">
+                      <td class="px-1 py-3 text-sm">
                         <span
                           class="px-2 py-1 font-semibold leading-tight rounded-full dark:bg-green-700 dark:text-green-100
                           @if ($dossier->etatProduit == 'En stock')
@@ -336,11 +336,11 @@
                           {{ $dossier->tauxPaiement }} %
                         </span>
                       </td>                                       
-                      <td class="px-4 py-3 text-sm w-24">
+                      <td class="px-1 py-3 text-sm w-24">
                         {{ substr($dossier->detail, 0, 40) }}
                       </td>
 
-                      <td class="px-4 py-3 text-sm">
+                      <td class="px-1 py-3 text-sm">
 
               <div class="flex px-1 py-1">
                 {!!$dossier->acte!!}

@@ -93,7 +93,7 @@
                       type="radio"
                       class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
                       name="interet"
-                      value="interet"
+                      value="lot"
                       checked
                     />
                     <span class="ml-2">Lot</span>
@@ -105,7 +105,7 @@
                       type="radio"
                       class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
                       name="interet"
-                      value="Appartement"
+                      value="appartement"
                     />
                     <span class="ml-2">Appartement</span>
                   </label>
@@ -116,7 +116,7 @@
                       type="radio"
                       class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
                       name="interet"
-                      value="Magasin"
+                      value="magasin"
                     />
                     <span class="ml-2">Magasin</span>
                   </label>
@@ -127,7 +127,7 @@
                       type="radio"
                       class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
                       name="interet"
-                      value="Bureau"
+                      value="bureau"
                     />
                     <span class="ml-2">Bureau</span>
                   </label>
@@ -138,7 +138,7 @@
                       type="radio"
                       class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
                       name="interet"
-                      value="Box"
+                      value="box"
                     />
                     <span class="ml-2">Box</span>
                   </label>                                                      

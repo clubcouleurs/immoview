@@ -15,19 +15,12 @@ class PaiementController extends Controller
 
     public function historique()
     {
-
-
         $collection = Produit::with('constructible')->get() ;
-
-
         $multiplied = $collection->map(function ($item, $key) {
             return $item->prixM2Definitif * $item->constructible->surface;
         });
-
         $ca = $multiplied->sum() ;
         $totalPaiements = Paiement::sum('montant') ;
-
-
         return view('paiements.historique', [
             'paiements' => Paiement::paginate(15),
             'ca' => $ca,
@@ -72,18 +65,15 @@ class PaiementController extends Controller
             'num'       => 'sometimes|required|string',
             'montant'   => 'required|integer',
         ]);
-
         $paiement = new Paiement([
             'date'              => $request['date'],
             'type'              => $request['type'],
             'montant'           => $request['montant'],
         ]) ;
-
         if ($paiement->type != 'Espèce')
         {
             $paiement->num = $request['num'] ;
         }
-
         $dossier->paiements()->save($paiement) ;
         return redirect()->action([PaiementController::class, 'index'] , ['dossier' => $dossier]);
     }
@@ -123,27 +113,32 @@ class PaiementController extends Controller
     public function update(Request $request, Dossier $dossier, Paiement $paiement)
     {
         $request->validate([
-            'date'      => 'required|string',
-            'type'      => 'required|string',
+            'date'      => 'sometimes|required|string',
+            'type'      => 'sometimes|required|string',
             'num'       => 'sometimes|required|string',
-            'montant'   => 'required|integer',
+            'montant'   => 'sometimes|required|integer',
+            'valider'   => 'sometimes|required|boolean',
         ]);
 
-
+        if (isset($request['montant']))
+        {
             $paiement->date     = $request['date'] ;
             $paiement->type     = $request['type'] ;
             $paiement->montant  = $request['montant']; 
-
-
-        if ($paiement->type != 'Espèce')
-        {
-            $paiement->num = $request['num'] ;
-        }else
-        {
-            $paiement->num = NULL ;
+            if ($paiement->type != 'Espèce')
+            {
+                $paiement->num = $request['num'] ;
+            }else
+            {
+                $paiement->num = NULL ;
+            }
         }
-
+        elseif(isset($request['valider']))
+        {
+            $paiement->valider = boolval($request['valider']) ;
+        }
         $paiement->update() ;
+        $dossier = ($dossier != null) ? $dossier : $paiement->$dossier ;
         return redirect()->action([PaiementController::class, 'index'] , ['dossier' => $dossier]);
     }
 

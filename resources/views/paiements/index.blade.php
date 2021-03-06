@@ -324,6 +324,7 @@
                       <th class="px-4 py-3">Date du paiement</th>
                       <th class="px-4 py-3">Moyen de paiement</th>
                       <th class="px-4 py-3">Numéro de la pièce</th>
+                      <th class="px-4 py-3">Status</th>
 
                       <th class="px-4 py-3">Action</th>
 
@@ -343,7 +344,7 @@
                           >
                             <img
                               class="object-cover w-full h-full rounded-full"
-                              src=""
+                              src="{{asset('dollar.png')}}"
                               alt=""
                               loading="lazy"
                             />
@@ -376,11 +377,19 @@
                       </td> 
                       <td class="px-4 py-3 text-sm">
                         {{ $p->num }}
-                      </td>                                                               
+                      </td>
+                      <td class="px-4 py-3 text-sm">
+                        <form action="/dossiers/{{$dossier->id}}/paiements/{{$p->id}}" method="POST">
+                          @csrf
+                          @method('PATCH')
+                    {!!$p->validate!!}
+                    </form>
+                  </td>
+                      <td class="px-4 py-3 text-sm">
+
                       <form action="/dossiers/{{$dossier->id}}/paiements/{{$p->id}}" method="POST">
                         @csrf
-                        @method('DELETE')
-                      <td class="px-4 py-3 text-sm">
+                        @method('DELETE')                        
               <div>
                 <button
                   class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
@@ -402,9 +411,8 @@
                   </svg>
                 </button>
               </div>
-              
-                      </td>
                       </form>
+                      </td>
                     </tr>
                     @endforeach
                   </tbody>
