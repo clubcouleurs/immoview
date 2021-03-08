@@ -75,7 +75,8 @@ class PaiementController extends Controller
             $paiement->num = $request['num'] ;
         }
         $dossier->paiements()->save($paiement) ;
-        return redirect()->action([PaiementController::class, 'index'] , ['dossier' => $dossier]);
+        return redirect()->action([PaiementController::class, 'index'] , ['dossier' => $dossier])
+        ->with('message','Paiement ajouté !');
     }
 
     /**
@@ -139,7 +140,7 @@ class PaiementController extends Controller
         }
         $paiement->update() ;
         $dossier = ($dossier != null) ? $dossier : $paiement->$dossier ;
-        return redirect()->action([PaiementController::class, 'index'] , ['dossier' => $dossier]);
+        return redirect()->action([PaiementController::class, 'index'] , ['dossier' => $dossier])->with('message','Paiement modifié !');
     }
 
     /**
@@ -151,6 +152,7 @@ class PaiementController extends Controller
     public function destroy(Dossier $dossier, Paiement $paiement)
     {
         $paiement->delete() ;
-        return redirect()->action([PaiementController::class, 'index'] , ['dossier' => $dossier]);
+        return redirect()->action([PaiementController::class, 'index'] , ['dossier' => $dossier])
+        ->with('message','Paiement supprimé !');
     }
 }

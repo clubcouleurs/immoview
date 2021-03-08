@@ -267,19 +267,6 @@
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror
               </label>
-
-
-          
-
-     
-
-              
- 
-
-              
-              
-              
-
               <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">Description & Observations</span>
                 <textarea
@@ -287,10 +274,7 @@
                   rows="3"
                   placeholder="Si vous avez une description et une observation à saisir"
                   name="detail"
-                  value="{{$dossier->detail}}"
-
-
-                ></textarea>
+                >{{$dossier->detail}}</textarea>
                     @error('detail')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>

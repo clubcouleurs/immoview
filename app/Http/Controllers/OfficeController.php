@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProduitRequest;
 use App\Http\Traits\PaginateTrait;
 use App\Models\Appartement;
 use App\Models\Etiquette;
@@ -29,6 +30,7 @@ class OfficeController extends Controller
                             ->where('constructible_type','bureau')
                             ->with('etiquette')
                             ->withCount('voies')
+                            ->orderByDesc('created_at')
                             ->get();
 
         $officesReserved = $officesAll->where('etiquette_id', 3)->count() ;
@@ -140,7 +142,7 @@ class OfficeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProduitRequest $request)
     {
         $immeuble = Immeuble::findOrFail($request['immeuble']) ;
         $etiquette = Etiquette::findOrFail($request['etatProduit']) ;
@@ -182,7 +184,8 @@ class OfficeController extends Controller
         $produit->voies()->attach($request['voies']) ;
 
 
-        return redirect()->action([OfficeController::class, 'index']);
+        return redirect()->action([OfficeController::class, 'index'])
+        ->with('message','Bureau ajouté !');
     }
 
     /**
@@ -235,7 +238,7 @@ class OfficeController extends Controller
             $office->situable->etage             = $request['etage'];
             $office->situable->description       = $request['descriptionApp'];
             $office->situable->save();
-            $immeuble->appartements()->save($situable) ;
+            $immeuble->appartements()->save($office->situable) ;
         }
             // le bureau était un magasin et il reste un magasin
         if($office->situable_type == 'magasin' && $request['type'] === 'Magasin')
@@ -268,6 +271,9 @@ class OfficeController extends Controller
             $situable->description       = $request['descriptionApp'];
             $situable->save();
             $immeuble->appartements()->save($situable) ;
+
+            $situable->office()->save($office) ;
+
         }
             // le bureau était un appartement et il devient un magasin
 
@@ -287,6 +293,9 @@ class OfficeController extends Controller
             $situable->description       = $request['description'];
             $situable->save();
             $immeuble->magasins()->save($situable) ;   
+
+            $situable->office()->save($office) ;
+
         }
 
 
@@ -294,9 +303,8 @@ class OfficeController extends Controller
         $office->update() ;
 
         if ($office->produit->dossier == null) {
-            
-            $office->produit->etiquette_id      = $request['etatProduit']; 
-            
+
+            $office->produit->etiquette_id = $request['etatProduit']; 
         }
 
         $office->produit->prixM2Indicatif  = $request['prixM2Indicatif'];
@@ -306,12 +314,12 @@ class OfficeController extends Controller
         $office->produit->voies()->attach($request['voies']) ;
 
 
-        $situable->office()->save($office) ;
         //$office->produit()->save($produit) ;
 
 
 
-        return redirect()->action([OfficeController::class, 'index']);
+        return redirect()->action([OfficeController::class, 'index'])
+        ->with('message','Bureau modifié !');
 
     }
 
@@ -327,6 +335,7 @@ class OfficeController extends Controller
         $office->delete() ;
         $office->produit()->delete() ;  
         $office->situable()->delete() ;  
-        return redirect()->action([OfficeController::class, 'index']);
+        return redirect()->action([OfficeController::class, 'index'])
+        ->with('message','Bureau supprimé !');
     }
 }

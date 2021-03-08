@@ -28,6 +28,7 @@ class LotController extends Controller
                             ->where('constructible_type','lot')
                             ->with('etiquette')
                             ->withCount('voies')
+                            ->orderByDesc('created_at')
                             ->get();
 
         $lotsReserved = $lotsAll->where('etiquette_id', 3)->count() ;
@@ -170,7 +171,8 @@ class LotController extends Controller
         $produit->voies()->attach($request['voies']) ;
 
 
-        return redirect()->action([LotController::class, 'index']);
+        return redirect()->action([LotController::class, 'index'])
+        ->with('message','Lot ajouté !');
 
     }
 
@@ -274,7 +276,9 @@ class LotController extends Controller
         $lot->update();
         $tranche->lots()->save($lot) ;
 
-        return redirect()->action([LotController::class, 'index']);
+        return redirect()->action([LotController::class, 'index'])
+        ->with('message','Lot modifié !');
+
     }
 
     /**
@@ -288,7 +292,8 @@ class LotController extends Controller
         $lot->produit->voies()->detach() ;
         $lot->delete() ;
         $lot->produit()->delete() ;
-        return redirect()->action([LotController::class, 'index']);
+        return redirect()->action([LotController::class, 'index'])
+        ->with('message','Lot supprimé !');
         
     }
 

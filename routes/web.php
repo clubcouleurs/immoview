@@ -30,6 +30,7 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::middleware('auth')->group(function(){
 
 Route::get('/moi', function () {
 	return view('visites.test') ;
@@ -39,7 +40,6 @@ Route::get('/moi', function () {
 Route::get('/produits_data/{num}/{type}/', [ProduitController::class, 'produits_data']);
 
 
-Route::middleware('auth')->group(function(){
 Route::resource('lots', LotController::class);
 
 Route::resource('appartements', AppartementController::class);
@@ -67,7 +67,7 @@ Route::resource('etiquettes', EtiquetteController::class)->except([
 
 Route::resource('visites', VisiteController::class);
 
-Route::get('/prospects/{activer?}', [ClientController::class, 'index']);
+Route::get('/prospects/{activer?}', [ClientController::class, 'index'])->name('prospectsRoute');
 
 Route::get('/dossiers/create', [DossierController::class, 'createWithoutClient']);
 

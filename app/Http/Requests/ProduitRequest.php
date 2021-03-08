@@ -26,6 +26,9 @@ class ProduitRequest extends FormRequest
         $idLot = (isset($this->lot->id)) ? $this->lot->id : Null ;
         $idApp = (isset($this->appartement->id)) ? $this->appartement->id : Null ;
         $idMag = (isset($this->magasin->id)) ? $this->magasin->id : Null ;
+        $idBur = (isset($this->office->id)) ? $this->office->id : Null ;
+        $idBox = (isset($this->box->id)) ? $this->box->id : Null ;
+
         return [
             'numLot' => 'sometimes|required|numeric',
             'numLot' => 'unique:lots,num,'.$idLot,
@@ -35,6 +38,12 @@ class ProduitRequest extends FormRequest
 
             'numMag' => 'sometimes|required|numeric',
             'numMag' => 'unique:magasins,num,'.$idMag, 
+
+            'numBur' => 'sometimes|required|numeric',
+            'numBur' => 'unique:offices,num,'.$idBur, 
+
+            'numBox' => 'sometimes|required|numeric',
+            'numBox' => 'unique:boxes,num,'.$idBox, 
 
             'surface' => 'sometimes|required|numeric',
             'surfaceApp' => 'sometimes|required|numeric',
@@ -59,6 +68,8 @@ class ProduitRequest extends FormRequest
             'numLot.unique' => 'Ce numéro de lot existe déjà',
             'numMag.unique' => 'Ce numéro de magasin existe déjà',
             'numApp.unique' => 'Ce numéro d\' appartement existe déjà',
+            'numBur.unique' => 'Ce numéro de bureau existe déjà',
+            'numBox.unique' => 'Ce numéro de box existe déjà',
 
             'surfaceLot.required' => 'Merci de siaisir une surface pour ce lot',
             'surfaceLot.numeric' => 'La surface du lot doit être en chiffre',

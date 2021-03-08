@@ -27,7 +27,8 @@ class DossierController extends Controller
     public function index(Request $request)
     {
 
-        $dossiersAll = Dossier::with('produit')->with('client')->with('paiements')->get();
+        $dossiersAll = Dossier::with('produit')->with('client')
+                            ->with('paiements')->orderbyDesc('created_at')->get();
 
         //recherche par taux de paiement
         if (isset($request['sign']) && $request['sign'] != '' ) {
@@ -185,7 +186,7 @@ class DossierController extends Controller
     public function create(Produit $produit)
     {
         return view('dossiers.create', [
-            'clients'       => Client::where('activer', '=' , 1)->get(),
+            'clients'       => Client::where('activer', '=' , 1)->orderbyDesc('created_at')->get(),
             'produit'       => $produit,
             'dataRecap'     => $this->recap($produit),
 
@@ -226,7 +227,7 @@ class DossierController extends Controller
         // ici on connait ni le client ni le produit
         // Renvoyer tous les clients et le produit sera retrouvé grâce au formulaire de recherche ...
         return view('dossiers.create', [
-            'clients'       => Client::where('activer', '=' , 1)->get()
+            'clients' => Client::where('activer', '=' , 1)->orderbyDesc('created_at')->get()
         ]) ;
     }
 
@@ -253,7 +254,8 @@ class DossierController extends Controller
                 $dossier->save();
                 $dossier->produit->etiquette_id = 3 ;
                 $dossier->produit->update() ;
-                return redirect()->action([DossierController::class, 'index']);
+                return redirect()->action([DossierController::class, 'index'])
+                    ->with('message','Dossier ajouté !');
             }
 
             return Redirect::back()->withErrors(['msg', 'Attention : ' .
@@ -324,7 +326,8 @@ class DossierController extends Controller
             $dossier->frais = $request['frais'];
             $dossier->detail = $request['detail'];
             $dossier->update(); 
-        return redirect()->action([DossierController::class, 'index'])->with('message','Dossier modifié') ;
+        return redirect()->action([DossierController::class, 'index'])
+        ->with('message','Dossier modifié') ;
     }
 
     /**
@@ -342,7 +345,8 @@ class DossierController extends Controller
         $dossier->delete() ;
         $dossier->paiements()->delete() ;
 
-        return redirect()->action([DossierController::class, 'index']);
+        return redirect()->action([DossierController::class, 'index'])
+                ->with('message','Dossier supprimé !');
     }
 
     public function actes(Dossier $dossier)
@@ -385,8 +389,14 @@ class DossierController extends Controller
             $pdf->useTemplate($templateId);
             if ($pageNo == 1)
             {
+            $prenom = stripslashes($dossier->client->prenom);
+            $prenom = iconv('UTF-8', 'windows-1252', $prenom);
+
+            $nom = stripslashes($dossier->client->nom);
+            $nom = iconv('UTF-8', 'windows-1252', $nom);
+
             $pdf->SetXY(75, 93.75);
-            $nomC = ucfirst($dossier->client->nom) . ' ' . ucfirst($dossier->client->prenom) ;
+            $nomC = ucfirst($nom) . ' ' . ucfirst($prenom) ;
             $pdf->Write(8, $nomC);
 
             $adresse = stripslashes($dossier->client->adresse);

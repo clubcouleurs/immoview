@@ -179,7 +179,7 @@
                   <p
                     class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
                   >
-                    Dossiers non-validés
+                    Dossiers validés
                   </p>
                   <p
                     class="text-lg font-semibold text-gray-700 dark:text-gray-200"
@@ -205,7 +205,7 @@
                   <p
                     class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
                   >
-                    Dossiers validés
+                    Dossiers non-validés
                   </p>
                   <p
                     class="text-lg font-semibold text-gray-700 dark:text-gray-200"
@@ -268,14 +268,9 @@
                     <span
                       class="inline-block w-3 h-3 mr-1 bg-green-600 rounded-full"
                     ></span>
-                    <span>Evolution des visites et de la proespection</span>
+                    <span>Evolution des visites et de la prospection</span>
                   </div>
-                  <!--<div class="flex items-center">
-                    <span
-                      class="inline-block w-3 h-3 mr-1 bg-purple-600 rounded-full"
-                    ></span>
-                    <span>Lots</span>
-                  </div>-->
+
                 </div>
               </div>
               <!-- Bars chart -->
@@ -292,50 +287,59 @@
                   <!-- Chart legend -->
                   <div class="flex items-center">
                     <span
-                      class="inline-block w-3 h-3 mr-1 bg-teal-500 rounded-full"
+                      class="inline-block w-3 h-3 mr-1 bg-purple-500 rounded-full"
                     ></span>
                     <span>Appartements</span>
                   </div>
                   <div class="flex items-center">
                     <span
-                      class="inline-block w-3 h-3 mr-1 bg-purple-600 rounded-full"
+                      class="inline-block w-3 h-3 mr-1 bg-red-600 rounded-full"
                     ></span>
                     <span>Lots</span>
                   </div>
+                  <div class="flex items-center">
+                    <span
+                      class="inline-block w-3 h-3 mr-1 bg-blue-600 rounded-full"
+                    ></span>
+                    <span>Magasins</span>
+                  </div>
+                  <div class="flex items-center">
+                    <span
+                      class="inline-block w-3 h-3 mr-1 bg-green-600 rounded-full"
+                    ></span>
+                    <span>Bureaux</span>
+                  </div>
+                  <div class="flex items-center">
+                    <span
+                      class="inline-block w-3 h-3 mr-1 bg-yellow-600 rounded-full"
+                    ></span>
+                    <span>Box</span>
+                  </div>                                                      
                 </div>
               </div>
-              <!-- Doughnut/Pie chart -->
+
+              <!-- Lines chart -->
               <div
                 class="min-w-0 p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800"
               >
                 <h4 class="mb-4 font-semibold text-gray-800 dark:text-gray-300">
-                  Etats des lots
+                  Etat des ventes par mois
                 </h4>
-                <canvas id="polars"></canvas>
+                <canvas id="lineV"></canvas>
                 <div
                   class="flex justify-center mt-4 space-x-3 text-sm text-gray-600 dark:text-gray-400"
                 >
                   <!-- Chart legend -->
                   <div class="flex items-center">
                     <span
-                      class="inline-block w-3 h-3 mr-1 bg-blue-600 rounded-full"
-                    ></span>
-                    <span>Réservé</span>
-                  </div>
-                  <div class="flex items-center">
-                    <span
                       class="inline-block w-3 h-3 mr-1 bg-green-600 rounded-full"
                     ></span>
-                    <span>En Stock</span>
+                    <span>Evolution des ventes mensuellement</span>
                   </div>
-                  <div class="flex items-center">
-                    <span
-                      class="inline-block w-3 h-3 mr-1 bg-purple-600 rounded-full"
-                    ></span>
-                    <span>Bloqué</span>
-                  </div>
+
                 </div>
-              </div>              
+              </div> 
+
             </div>
 
 
@@ -474,24 +478,71 @@
 <script>
 
 
-
+{{$i = 0 }}
 @foreach ($nombreVisites as $visite)
   var v{{$loop->iteration}}={{$visite->nombreVisites}}
   var d{{$loop->iteration}}='{{ $mois[ ($visite->mois - 1) ] }}'
+  {{$i = $loop->iteration}}
 @endforeach
 
-var stocked={{ $stocked }};
-var blocked={{ $blocked }};
-var reserved={{ $reserved }};
+@if ($i < 7)
+  @for ($i = $i+1 ; $i <= 7; $i++)
+  var v{{$i}}=0
+  var d{{$i}}='{{ $mois[ ($i) ] }}'
+  @endfor
+@endif
+
+var stocked={{ $stocked }}
+var blocked={{ $blocked }}
+var reserved={{ $reserved }}
+
+
+{{$i = 0 }}
+@foreach ($nombreVentes as $ventes)
+  var lot{{$loop->iteration}}={{$ventes->lot}}
+  var bur{{$loop->iteration}}={{$ventes->bureau}}
+  var box{{$loop->iteration}}={{$ventes->box}}
+  var app{{$loop->iteration}}={{$ventes->appartement}}
+  var mag{{$loop->iteration}}={{$ventes->magasin}}
+  var da{{$loop->iteration}}='{{ $mois[ ($ventes->mois - 1) ] }}'
+  {{$i = $loop->iteration}}
+@endforeach
+
+@if ($i < 7)
+  @for ($i = $i+1 ; $i <= 7; $i++)
+  var lot{{$i}}=0
+  var bur{{$i}}=0
+  var box{{$i}}=0
+  var app{{$i}}=0
+  var mag{{$i}}=0
+  var da{{$i}}='{{ $mois[ ($i) ] }}'
+  @endfor
+@endif
+
+
+{{$i = 0 }}
+@foreach ($nombreVentesParMois as $ventes)
+  var vvpm{{$loop->iteration}}={{$ventes->nombreVentes}}
+  var dvpm{{$loop->iteration}}='{{ $mois[ ($ventes->mois - 1) ] }}'
+  {{$i = $loop->iteration}}
+@endforeach
+
+@if ($i < 7)
+  @for ($i = $i+1 ; $i <= 7; $i++)
+  var vvpm{{$i}}=0
+  var dvpm{{$i}}='{{ $mois[ ($i) ] }}'
+  @endfor
+@endif
+
 
 </script>
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"
       defer
     ></script>
-    <script src="{{config('app.url')}}/js/charts-lines.js" defer></script>
     <script src="{{config('app.url')}}/js/charts-pie.js" defer></script>
+    <script src="{{config('app.url')}}/js/charts-lines.js" defer></script>
     <script src="{{config('app.url')}}/js/charts-bars.js" defer></script>
-    <script src="{{config('app.url')}}/js/charts-polar.js" defer></script>
+    <script src="{{config('app.url')}}/js/charts-linesV.js" defer></script>
             
 </x-master>

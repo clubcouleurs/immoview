@@ -48,7 +48,8 @@ class TrancheController extends Controller
 
         ]) ;
         $tranche->save() ;
-        return redirect()->action([TrancheController::class, 'index']);
+        return redirect()->action([TrancheController::class, 'index'])
+        ->with('message','Tranche ajouté !');
     }
 
     /**
@@ -94,7 +95,8 @@ class TrancheController extends Controller
 
         $tranch->save() ;
 
-        return redirect()->action([TrancheController::class, 'index']);
+        return redirect()->action([TrancheController::class, 'index'])
+        ->with('message','Tranche modifié !');
     }
 
     /**
@@ -106,6 +108,7 @@ class TrancheController extends Controller
     public function destroy(Tranche $tranch)
     {
         $tranch->delete() ;
-        return redirect()->action([TrancheController::class, 'index']);
+        return redirect()->action([TrancheController::class, 'index'])
+        ->with('message','Tranche supprimé !');
     }
 }

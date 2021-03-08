@@ -39,7 +39,8 @@ class ValidationController extends Controller
         $validation = new Validation ;
         $validation->raison = $request['raison'] ;
         $dossier->validation()->save($validation) ;
-        return redirect()->action([DossierController::class, 'index']);
+        return redirect()->action([DossierController::class, 'index'])
+        ->with('message','Dossier validé !');
     }
 
     /**

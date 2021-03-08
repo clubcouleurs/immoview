@@ -43,7 +43,9 @@ class EtiquetteController extends Controller
         'label'       => $request['label'] ,
         ]) ;
         $etiquette->save() ;
-        return redirect()->action([EtiquetteController::class, 'index']);
+        return redirect()->action([EtiquetteController::class, 'index'])
+        ->with('message','Etiquette ajouté !');
+
 
     }
 
@@ -86,7 +88,9 @@ class EtiquetteController extends Controller
         $etiquette->label = $request['label'] ;
         $etiquette->save() ;
 
-        return redirect()->action([EtiquetteController::class, 'index']);
+        return redirect()->action([EtiquetteController::class, 'index'])
+        ->with('message','Etiquette modifié !');
+
 
     }
 
@@ -99,7 +103,9 @@ class EtiquetteController extends Controller
     public function destroy(Etiquette $etiquette)
     {
         $etiquette->delete() ;
-        return redirect()->action([EtiquetteController::class, 'index']);
+        return redirect()->action([EtiquetteController::class, 'index'])
+        ->with('message','Etiquette supprimé !');
+
 
     }
 }

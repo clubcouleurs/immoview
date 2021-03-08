@@ -70,7 +70,7 @@
                         selected
                       @endif
                     @endisset                      
-                    >Tranche {{$tranche->id}}</option>
+                    >Tranche {{$tranche->num}}</option>
                 @endforeach
 
                 </select>
@@ -170,7 +170,7 @@
                         </div>
                       </td>
                       <td class="px-4 py-3 text-sm">
-                        {{ $immeuble->tranche_id }}
+                        {{ $immeuble->tranche->num }}
                       </td>                      
                       <td class="px-4 py-3 text-sm">
                         {{ $immeuble->description }}

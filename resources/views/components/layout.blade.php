@@ -11,7 +11,6 @@
 
 
   <script src="{{config('app.url')}}/js/init-alpine.js"></script>
-  <script src="https://unpkg.com/turbolinks"></script>
 
 <link rel="icon" 
       type="image/png" 
@@ -70,6 +69,7 @@
 
 {{ $slot }}
 
+  <script src="https://unpkg.com/turbolinks"></script>
 
 </body>
 </html>

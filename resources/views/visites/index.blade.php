@@ -205,12 +205,7 @@
                     ></span>
                     <span>Evolution des visites et de la proespection</span>
                   </div>
-                  <!--<div class="flex items-center">
-                    <span
-                      class="inline-block w-3 h-3 mr-1 bg-purple-600 rounded-full"
-                    ></span>
-                    <span>Lots</span>
-                  </div>-->
+
                 </div>
               </div>
            
@@ -231,41 +226,6 @@
                   class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-2xl active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue"
                   href="/lots/"
                 >Tout</a>
-
-
-                <select
-                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
-                  name="type"
-                >
-                  <option value="-">Type</option>
-                
-                  <option value="Habitat"  @if ( $SearchByType == "Habitat") selected @endif>Habitat</option>
-                  <option value="Commercial" @if ( $SearchByType == "Commercial") selected @endif>Commercial</option>              
-                </select> 
-                <input
-                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input rounded-2xl"
-                  placeholder="prix min"
-                  type="number"
-                  step="0.1"
-                  name="minPrix"
-                  value={{$SearchByMin}}
-                />
-                <input
-                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input rounded-2xl"
-                  placeholder="prix max"
-                  type="number"
-                  step="0.1"
-                  name="maxPrix"
-                  value={{$SearchByMax}}
-                />
-                <input
-                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input rounded-2xl"
-                  placeholder="Numéros de lot séparés par (,)"
-                  type="text"
-                  name="numsLot"
-                  value="{{$SearchByNum}}"
-                />
-
 
 
                             <button
@@ -480,7 +440,19 @@
   var {{$interet->interet}}={{$interet->nombre}}
 @endforeach
 
+{{$i = 0 }}
+@foreach ($nombreVisites as $visite)
+  var v{{$loop->iteration}}={{$visite->nombreVisites}}
+  var d{{$loop->iteration}}='{{ $mois[ ($visite->mois - 1) ] }}'
+  {{$i = $loop->iteration}}
+@endforeach
 
+@if ($i < 7)
+  @for ($i = $i+1 ; $i <= 7; $i++)
+  var v{{$i}}=0
+  var d{{$i}}='{{ $mois[ ($i) ] }}'
+  @endfor
+@endif
 
 </script>
     <script
@@ -488,5 +460,6 @@
       defer
     ></script>
     <script src="{{config('app.url')}}/js/pie-interet-visites.js" defer></script>
+    <script src="{{config('app.url')}}/js/charts-lines.js" defer></script>
 
 </x-master>

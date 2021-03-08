@@ -311,7 +311,7 @@
                 >
                   @for($i = 1; $i < 11; $i++)
                     <option value="{{$i}}"
-                    @if($office->produit->etage == $i)
+                    @if($office->situable->etage == $i)
                       selected
                     @endif
 

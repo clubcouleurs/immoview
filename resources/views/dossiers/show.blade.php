@@ -45,6 +45,15 @@
               <div
                 class="row-span-1 p-2 bg-red-50 rounded-lg shadow-md dark:bg-gray-800"
               >
+               @isset($dossier->validation)
+                <div class="p-2 bg-red-500 rounded-lg dark:bg-gray-800 mb-4">              
+                    <p class="text-white font-bold">
+                      Raison de la validation de ce dossier :</p>
+                            <p class="text-sm text-white dark:text-gray-400">
+                          {{ $dossier->validation->raison }}
+                            </p>                    
+                </div>              
+                @endisset
                   <table class="w-full">
                   <tbody class="divide-y dark:divide-gray-700 dark:bg-gray-800">
                     <tr class="text-gray-700 dark:text-gray-400">

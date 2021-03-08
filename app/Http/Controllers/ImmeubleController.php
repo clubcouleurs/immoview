@@ -50,7 +50,9 @@ class ImmeubleController extends Controller
 
         ]) ;
         $tranche->immeubles()->save($immeuble) ;
-        return redirect()->action([ImmeubleController::class, 'index']);
+        return redirect()->action([ImmeubleController::class, 'index'])
+        ->with('message','Immeuble ajouté !');
+
     }
 
     /**
@@ -98,7 +100,9 @@ class ImmeubleController extends Controller
 
         $immeuble->save() ;
 
-        return redirect()->action([ImmeubleController::class, 'index']);
+        return redirect()->action([ImmeubleController::class, 'index'])
+        ->with('message','Immeuble modifié !');
+
     }
 
     /**
@@ -110,6 +114,8 @@ class ImmeubleController extends Controller
     public function destroy(Immeuble $immeuble)
     {
         $immeuble->delete() ;
-        return redirect()->action([ImmeubleController::class, 'index']);
+        return redirect()->action([ImmeubleController::class, 'index'])
+        ->with('message','Immeuble supprimé !');
+
     }
 }

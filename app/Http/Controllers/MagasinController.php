@@ -28,6 +28,7 @@ class MagasinController extends Controller
                             ->where('constructible_type','magasin')
                             ->with('etiquette')
                             ->withCount('voies')
+                            ->orderByDesc('created_at')
                             ->get();
         $magasinsReserved = $magasinsAll->where('etiquette_id', 3)->count() ;
         $magasinsStocked = $magasinsAll->where('etiquette_id', 2)->count() ;
@@ -164,7 +165,8 @@ class MagasinController extends Controller
         $produit->voies()->attach($request['voies']) ;
 
 
-        return redirect()->action([MagasinController::class, 'index']);
+        return redirect()->action([MagasinController::class, 'index'])
+        ->with('message','Magasin ajouté !');
 
     }
 
@@ -225,7 +227,8 @@ class MagasinController extends Controller
         $magasin->update();
         $immeuble->magasins()->save($magasin) ;
 
-        return redirect()->action([MagasinController::class, 'index']);
+        return redirect()->action([MagasinController::class, 'index'])
+        ->with('message','Magasin modifié !');
     }
 
     /**
@@ -239,6 +242,7 @@ class MagasinController extends Controller
         $magasin->produit->voies()->detach() ;
         $magasin->delete() ;
         $magasin->produit()->delete() ;
-        return redirect()->action([MagasinController::class, 'index']);
+        return redirect()->action([MagasinController::class, 'index'])
+        ->with('message','Magasin supprimé !');
     }
 }

@@ -48,7 +48,8 @@ class VoieController extends Controller
 
 
 
-        return redirect()->action([VoieController::class, 'index']);
+        return redirect()->action([VoieController::class, 'index'])
+        ->with('message','Voie ajouté !');
     }
 
     /**
@@ -90,7 +91,8 @@ class VoieController extends Controller
         $voie->Largeur = $request['Largeur'] ;
         $voie->save() ;
 
-        return redirect()->action([VoieController::class, 'index']);
+        return redirect()->action([VoieController::class, 'index'])
+        ->with('message','Voie modifié !');
     }
 
     /**
@@ -102,6 +104,7 @@ class VoieController extends Controller
     public function destroy(Voie $voie)
     {
         $voie->delete() ;
-        return redirect()->action([VoieController::class, 'index']);
+        return redirect()->action([VoieController::class, 'index'])
+        ->with('message','Voie supprimé !');
     }
 }

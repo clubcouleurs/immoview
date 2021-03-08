@@ -85,6 +85,18 @@ class VisiteController extends Controller
         });
 
         */
+        $mois = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'September', 'October', 'November','Décembre'] ;
+
+        $nombreVisites = \DB::select("
+                    SELECT * FROM (
+                    SELECT YEAR (date) as an, MONTH(date) as mois , COUNT(*) as nombreVisites
+                    from visites
+                    group by MONTH(date), YEAR(date)
+                    Order by YEAR(date) desc, MONTH(date) desc
+                    limit 7
+                    ) as sub
+                    ORDER BY an asc, mois asc            
+            ");        
 
         return view('visites.index', [
             'visites'       => $this->paginate($visitesAll),
@@ -93,10 +105,10 @@ class VisiteController extends Controller
             'visitesMonth'  => Visite::visitesMonth(),
             'visitesYear'   => Visite::visitesYear(),
             'visitesWeek'   => Visite::visitesWeek(),
-            'interets'       => Visite::interets(),
+            'interets'      => Visite::interets(),
 
-            'totalLots'         => $visitesAll->count(),
-            'tranches'          => '' , //Tranche::all(),
+            'nombreVisites' => $nombreVisites,
+            'mois'          => $mois, 
             'etiquettes'        =>'' , //Etiquette::all(),
             'valeurTotal'       => 0 , //$prixTotalLots->sum(),
             'SearchByTranche'   => '' , //$request['tranche'] ,
@@ -160,7 +172,8 @@ class VisiteController extends Controller
         $visite->save() ;
 
 
-        return redirect()->action([VisiteController::class, 'index']);
+        return redirect()->action([VisiteController::class, 'index'])
+        ->with('message','Visite ajouté !');
     }
 
     /**
@@ -220,7 +233,8 @@ class VisiteController extends Controller
         $visite->update() ;
 
 
-        return redirect()->action([VisiteController::class, 'index']);
+        return redirect()->action([VisiteController::class, 'index'])
+        ->with('message','Visite modifié !');
     }
 
     /**
@@ -232,7 +246,8 @@ class VisiteController extends Controller
     public function destroy(Visite $visite)
     {
         $visite->delete() ;
-        return redirect()->action([VisiteController::class, 'index']);
+        return redirect()->action([VisiteController::class, 'index'])
+        ->with('message','Visite supprimé !');
 
     }
 }

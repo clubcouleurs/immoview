@@ -29,6 +29,7 @@ class AppartementController extends Controller
                             ->where('constructible_type','appartement')
                             ->with('etiquette')
                             ->withCount('voies')
+                            ->orderByDesc('created_at')
                             ->get();
         $appartementsReserved = $appartementsAll->where('etiquette_id', 3)->count() ;
         $appartementsStocked = $appartementsAll->where('etiquette_id', 2)->count() ;
@@ -171,7 +172,8 @@ class AppartementController extends Controller
         $produit->voies()->attach($request['voies']) ;
 
 
-        return redirect()->action([AppartementController::class, 'index']);
+        return redirect()->action([AppartementController::class, 'index'])
+        ->with('message','Appartement ajouté !');
     }
 
     /**
@@ -233,7 +235,8 @@ class AppartementController extends Controller
 
         $immeuble->appartements()->save($appartement) ;
 
-        return redirect()->action([AppartementController::class, 'index']);
+        return redirect()->action([AppartementController::class, 'index'])
+        ->with('message','Appartement modifié !');
     }
 
     /**
@@ -248,6 +251,7 @@ class AppartementController extends Controller
         $appartement->immeuble()->dissociate() ;
         $appartement->delete() ;
         $appartement->produit()->delete() ;
-        return redirect()->action([AppartementController::class, 'index']);
+        return redirect()->action([AppartementController::class, 'index'])
+        ->with('message','Appartement supprimé !');
     }
 }

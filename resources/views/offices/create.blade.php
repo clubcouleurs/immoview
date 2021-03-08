@@ -5,6 +5,7 @@
         <p class="block h-160 px-4 py-4 rounded-lg mx-auto w-full mt-4
         bg-red-200 text-red-600 text-xl"> Attention Il y'a des erreurs dans votre formulaire</p>
         @endif
+        {{--var_dump(old())--}}
             <h2
               class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
             >
@@ -15,13 +16,17 @@
 
             <div x-data="{
                       isOpen: false,
-                    @if (isset($bureau->situable_type) && ($bureau->situable_type != 'appartement' ))
+
+                    @if (old('type')!=null && old('type') == 'Appartement')
                       isOpenApp: true,
+                      isOpen : true,
                     @else
+
                      isOpenApp: false,
                     @endif 
-                    @if (isset($bureau->situable_type) && ($bureau->situable_type != 'magasin' ))
-                      isOpenMag: true
+                    @if (old('type')!=null && old('type') == 'Magasin')
+                      isOpenMag: true,
+                      isOpen : true,
                     @else
                      isOpenMag: false
                     @endif                     
@@ -169,11 +174,11 @@
                   :required="isOpenMag"
                   :disabled="!isOpenMag"                  
                   name="surfaceMezzanine"
-                  value="{{old('surfaceTerrasse')}}"
+                  value="{{old('surfaceMezzanine')}}"
 
                   required
                 />
-                    @error('surfaceTerrasse')
+                    @error('surfaceMezzanine')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror

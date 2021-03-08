@@ -210,14 +210,21 @@ class ClientController extends Controller
      */
     public function destroy(Client $client)
     {
-
         if (!$client->dossiers->isEmpty()) {
             return redirect()->action([ClientController::class, 'index'])
             ->with('error','Impossible de supprimer ce client, il a un dossier');
         }
+
         $client->delete() ;
-        return redirect()->action([ClientController::class, 'index'])
-            ->with('message','Fiche client supprimée');
+
+        if ($client->activer) {
+            return redirect()->action([ClientController::class, 'index'])
+                    ->with('message', 'Fiche client supprimée') ;
+        }
+            return redirect()->route('prospectsRoute', ['activer' => 0 ])
+                    ->with('message', 'Fiche prospect supprimée');
+
+            
 
     }
 }
