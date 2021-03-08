@@ -64,9 +64,9 @@ class AppartementController extends Controller
 
 
         //recherche par tranche
-        if (isset($request['tranche']) && $request['tranche'] != '-' ) {
-            $tr = $request['tranche'] ;
-            $appartementsAll = $appartementsAll->where('constructible.tranche_id', $tr); 
+        if (isset($request['immeuble']) && $request['immeuble'] != '-' ) {
+            $tr = $request['immeuble'] ;
+            $appartementsAll = $appartementsAll->where('constructible.immeuble_id', $tr); 
         }
 
         //recherche par nombre de façades
@@ -103,16 +103,16 @@ class AppartementController extends Controller
         return view('appartements.index', [
             'appartements'              => $this->paginate($appartementsAll),
             'totalappartements'         => $appartementsAll->count(),
-            'tranches'          =>Tranche::all(),
-            'etiquettes'          =>Etiquette::all(),
-            'valeurTotal'       => $prixTotalappartements->sum(),
+            'immeubles'                 =>Immeuble::all(),
+            'etiquettes'                =>Etiquette::all(),
+            'valeurTotal'               => $prixTotalappartements->sum(),
 
-            'appartementsReserved'       => $appartementsReserved,
-            'appartementsBlocked'        => $appartementsBlocked,
-            'appartementsStocked'        => $appartementsStocked,
+            'appartementsReserved'      => $appartementsReserved,
+            'appartementsBlocked'       => $appartementsBlocked,
+            'appartementsStocked'       => $appartementsStocked,
 
-            'SearchByTranche'   => $request['tranche'] ,
-            'SearchByFacade'    => $request['nombreFacadesappartement'] ,
+            'SearchByImm'           => $request['immeuble'] ,
+            'SearchByFacade'        => $request['nombreFacadesappartement'] ,
             'SearchByEtage'     => $request['etage'] ,
             'SearchByEtat'     => $request['etatProduit'] ,
             'SearchByType'     => $request['type'] ,

@@ -60,9 +60,9 @@ class MagasinController extends Controller
         $magasinsAll = $magasinsAll->whereBetween('prixM2Indicatif', [$minPrix, $maxPrix] ); 
 
         //recherche par tranche
-        if (isset($request['tranche']) && $request['tranche'] != '-' ) {
-            $tr = $request['tranche'] ;
-            $magasinsAll = $magasinsAll->where('constructible.tranche_id', $tr); 
+        if (isset($request['immeuble']) && $request['immeuble'] != '-' ) {
+            $tr = $request['immeuble'] ;
+            $magasinsAll = $magasinsAll->where('constructible.immeuble_id', $tr); 
         }
 
         //recherche par nombre de façades
@@ -99,7 +99,7 @@ class MagasinController extends Controller
         return view('magasins.index', [
             'magasins'              => $this->paginate($magasinsAll),
             'totalMagasins'         => $magasinsAll->count(),
-            'tranches'              =>Tranche::all(),
+            'immeubles'              =>Immeuble::all(),
             'etiquettes'            =>Etiquette::all(),
             'valeurTotal'           => $prixTotalappartements->sum(),
 
@@ -107,7 +107,7 @@ class MagasinController extends Controller
             'magasinsBlocked'        => $magasinsBlocked,
             'magasinsStocked'        => $magasinsStocked,
 
-            'SearchByTranche'       => $request['tranche'] ,
+            'SearchByImm'       => $request['immeuble'] ,
             'SearchByFacade'        => $request['nombreFacadesappartement'] ,
             'SearchByEtage'         => $request['etage'] ,
             'SearchByEtat'          => $request['etatProduit'] ,

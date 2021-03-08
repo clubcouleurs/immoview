@@ -316,7 +316,7 @@
           this.year = today.getFullYear();
           //this.datepickerValue = new Date(this.year, this.month, today.getDate()).toDateString();
           //this.datepickerValue = new Date(this.year, this.month, today.getDate()).toISOString().slice(0, 10);
-          this.datepickerValue = '@isset($paiement->date){{ $paiement->date }}@else' + new Date(this.year, this.month, today.getDate()).toISOString().slice(0, 10) + '@endisset';
+          this.datepickerValue = '@isset($dossier->date){{ $dossier->date }}@else' + new Date(this.year, this.month, today.getDate()).toISOString().slice(0, 10) + '@endisset';
 
         },
         isToday(date) {

@@ -159,16 +159,16 @@
 
                 <select
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
-                  name="tranche"
+                  name="immeuble"
                 >
-                  <option value="-">Tranche</option>
+                  <option value="-">Immeuble</option>
                 
-                @foreach($tranches as $tranche)
-                  <option value="{{$tranche->id}}"
-                    @if ( $SearchByTranche == $tranche->id)
+                @foreach($immeubles as $immeuble)
+                  <option value="{{$immeuble->id}}"
+                    @if ( $SearchByImm == $immeuble->id)
                     selected
                     @endif
-                    >Tr {{$tranche->id}}
+                    >Imm {{$immeuble->id}}
                   </option>
                 @endforeach
 
@@ -247,7 +247,7 @@
                   class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input rounded-2xl"
                   placeholder="Numéros de bureaux séparés par (,)"
                   type="text"
-                  name="numsappartement"
+                  name="numsBureaux"
                   value="{{$SearchByNum}}"
                 />
 
@@ -283,14 +283,14 @@
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
                   name="tranche"
                 >
-                  <option value="-">Tranche</option>
+                  <option value="-">Immeuble</option>
                 
-                @foreach($tranches as $tranche)
-                  <option value="{{$tranche->id}}"
-                    @if ( $SearchByTranche == $tranche->id)
+                @foreach($immeubles as $immeuble)
+                  <option value="{{$immeuble->id}}"
+                    @if ( $SearchByImm == $immeuble->id)
                     selected
                     @endif
-                    >Tr {{$tranche->id}}
+                    >Imm {{$immeuble->id}}
                   </option>
                 @endforeach
 

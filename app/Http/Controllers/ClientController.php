@@ -24,70 +24,20 @@ class ClientController extends Controller
                             ->orderby('created_at', 'desc')
                             ->get();
 
-        //$lotsReserved = $lotsAll->where('etiquette_id', 3)->count() ;
-        //$lotsStocked = $lotsAll->where('etiquette_id', 2)->count() ;
-        //$lotsBlocked = $lotsAll->whereNotIn('etiquette_id', [3,2])->count() ;                            
-        //selectionner les lots 
-        //$lotsAll = $lotsAll->whereNotNull('lot.id' ); 
-/*
-        $maxPrix = $lotsAll->max('prixM2Indicatif');
-        $minPrix = $lotsAll->min('prixM2Indicatif');  
-        $nums = [];
+        //recherche par nom, prénom ou CIN client
+        if (isset($request['client']) && $request['client'] != '' ) {
+            $value = strtolower($request['client']) ;
 
-        //recherche par numéro des lot
-        if (isset($request['numsLot']) && $request['numsLot'] != '' ) {
-            $numsLot = preg_split("/[\s,\.]+/", $request['numsLot']);
-            $numsLot = array_map('trim', $numsLot);
-            $lotsAll = $lotsAll->whereIn('constructible.num', $numsLot);
-        }
+            $clientsAll = $clientsAll->filter(function ($item) use ($value)  {
+            $client = strtolower(trim($item->cin . ' ' . $item->nom . ' ' . $item->prenom . ' ' ));
 
-        //recherche par prix
-        if (isset($request['minPrix']) && $request['minPrix'] != '' ) {
-            $minPrix = intval($request['minPrix']) ;
-        }
+                    if (strpos($client , $value) !== false) {
+                        return true;
+                    }
+                        return false;
+            });                
 
-        //recherche par prix
-        if (isset($request['maxPrix']) && $request['maxPrix'] != '' ) {
-            $maxPrix = floatval($request['maxPrix']) ;
-        }
-
-        $lotsAll = $lotsAll->whereBetween('prixM2Indicatif', [$minPrix, $maxPrix] ); 
-
-        //recherche par tranche
-        if (isset($request['tranche']) && $request['tranche'] != '-' ) {
-            $tr = $request['tranche'] ;
-            $lotsAll = $lotsAll->where('constructible.tranche_id', $tr); 
-        }
-
-        //recherche par nombre de façades
-        if (isset($request['nombreFacadesLot']) && $request['nombreFacadesLot'] != '-' ) {
-            $fa = $request['nombreFacadesLot'] ;
-            $lotsAll = $lotsAll->where('voies_count', $fa); 
-        }
-
-        //recherche par nombre d'etages
-        if (isset($request['etage']) && $request['etage'] != '-' ) {
-            $et = $request['etage'] ;
-            $lotsAll = $lotsAll->where('constructible.etage', $et); 
-        }  
-
-        //recherche par type de lot
-        if (isset($request['type']) && $request['type'] != '-' ) {
-            $ty = $request['type'] ;
-            $lotsAll = $lotsAll->where('constructible.type', $ty);  
-        }           
-
-        //recherche par etat du lot
-        if (isset($request['etatProduit']) && $request['etatProduit'] != '-' ) {
-            $etat = $request['etatProduit'] ;
-            $lotsAll = $lotsAll->where('etiquette_id', $etat);  
-        }           
-
-        $total = 0 ;
-           $prixTotalLots = $lotsAll->map(function ($item, $key) use ($total) {
-                return $total = $total + $item->totalIndicatif;
-        });*/
-
+        } 
 
 
         return view('clients.index', [

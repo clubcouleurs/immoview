@@ -39,7 +39,7 @@
             <!-- filtre -->
               <p class="text-sm text-gray-600 dark:text-gray-400 ml-2 mb-2">Filtres</p>   
 
-                <form action="/lots/">
+                <form action="/clients/">
               @csrf
             <div
               class="flex items-center justify-between p-2 mb-2 text-sm font-semibold text-blue-600 bg-blue-100 rounded-lg shadow-sm focus:outline-none focus:shadow-outline-blue rounded-2xl"
@@ -48,7 +48,7 @@
               <div class="flex items-center gap-2">
                 <a
                   class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-2xl active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue"
-                  href="/lots/"
+                  href="/clients/"
                 >Tout</a>
 
                 <input

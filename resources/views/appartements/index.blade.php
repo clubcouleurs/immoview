@@ -159,16 +159,16 @@
 
                 <select
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
-                  name="tranche"
+                  name="immeuble"
                 >
-                  <option value="-">Tranche</option>
+                  <option value="-">Immeuble</option>
                 
-                @foreach($tranches as $tranche)
-                  <option value="{{$tranche->id}}"
-                    @if ( $SearchByTranche == $tranche->id)
+                @foreach($immeubles as $immeuble)
+                  <option value="{{$immeuble->id}}"
+                    @if ( $SearchByImm == $immeuble->id)
                     selected
                     @endif
-                    >Tr {{$tranche->id}}
+                    >Imm {{$immeuble->id}}
                   </option>
                 @endforeach
 
@@ -199,6 +199,13 @@
                   <option value="1" @if ( $SearchByEtage == 1) selected @endif>R+1</option>
                   <option value="2" @if ( $SearchByEtage == 2) selected @endif>R+2</option>
                   <option value="3" @if ( $SearchByEtage == 3) selected @endif>R+3</option>
+                  <option value="4" @if ( $SearchByEtage == 4) selected @endif>R+4</option>
+                  <option value="5" @if ( $SearchByEtage == 5) selected @endif>R+5</option>
+                  <option value="6" @if ( $SearchByEtage == 6) selected @endif>R+6</option>
+                  <option value="7" @if ( $SearchByEtage == 7) selected @endif>R+7</option>
+                  <option value="8" @if ( $SearchByEtage == 8) selected @endif>R+8</option>
+                  <option value="9" @if ( $SearchByEtage == 9) selected @endif>R+9</option>
+                  <option value="10" @if ( $SearchByEtage == 10) selected @endif>R+10</option>
               
                 </select>
                 <select
@@ -224,8 +231,8 @@
                 >
                   <option value="-">Type</option>
                 
-                  <option value="Habitat"  @if ( $SearchByType == "Habitat") selected @endif>Habitat</option>
-                  <option value="Commercial" @if ( $SearchByType == "Commercial") selected @endif>Commercial</option>              
+                  <option value="Economique"  @if ( $SearchByType == "Economique") selected @endif>Social</option>
+                  <option value="Standing" @if ( $SearchByType == "Standing") selected @endif>Standing</option>              
                 </select> 
                 <input
                   class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input rounded-2xl"
@@ -281,16 +288,16 @@
 
                 <select
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
-                  name="tranche"
+                  name="immeuble"
                 >
-                  <option value="-">Tranche</option>
+                  <option value="-">Immeuble</option>
                 
-                @foreach($tranches as $tranche)
-                  <option value="{{$tranche->id}}"
-                    @if ( $SearchByTranche == $tranche->id)
+                @foreach($immeubles as $immeuble)
+                  <option value="{{$immeuble->id}}"
+                    @if ( $SearchByImm == $immeuble->id)
                     selected
                     @endif
-                    >Tr {{$tranche->id}}
+                    >Tr {{$immeuble->id}}
                   </option>
                 @endforeach
 

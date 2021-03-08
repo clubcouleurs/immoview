@@ -26,6 +26,7 @@ class OfficeController extends Controller
      */
     public function index(Request $request)
     {
+
         $officesAll = Produit::with('constructible')
                             ->where('constructible_type','bureau')
                             ->with('etiquette')
@@ -36,7 +37,8 @@ class OfficeController extends Controller
         $officesReserved = $officesAll->where('etiquette_id', 3)->count() ;
         $officesStocked = $officesAll->where('etiquette_id', 2)->count() ;
         $officesBlocked = $officesAll->whereNotIn('etiquette_id', [3,2])->count() ;
-
+        
+        //dd($officesAll) ;
         //selectionner les appartements 
         //$officesAll = $officesAll->whereNotNull('appartement.id' ); 
 
@@ -45,10 +47,10 @@ class OfficeController extends Controller
         $nums = [];
 
         //recherche par numéro des appartement
-        if (isset($request['numsappartement']) && $request['numsappartement'] != '' ) {
-            $numsappartement = preg_split("/[\s,\.]+/", $request['numsappartement']);
-            $numsappartement = array_map('trim', $numsappartement);
-            $officesAll = $officesAll->whereIn('constructible.num', $numsappartement);
+        if (isset($request['numsBureaux']) && $request['numsBureaux'] != '' ) {
+            $numsBureaux = preg_split("/[\s,\.]+/", $request['numsBureaux']);
+            $numsBureaux = array_map('trim', $numsBureaux);
+            $officesAll = $officesAll->whereIn('constructible.num', $numsBureaux);
         }
 
         //recherche par prix
@@ -64,9 +66,9 @@ class OfficeController extends Controller
         $officesAll = $officesAll->whereBetween('prixM2Indicatif', [$minPrix, $maxPrix] ); 
 
         //recherche par tranche
-        if (isset($request['tranche']) && $request['tranche'] != '-' ) {
-            $tr = $request['tranche'] ;
-            $officesAll = $officesAll->where('constructible.tranche_id', $tr); 
+        if (isset($request['immeuble']) && $request['immeuble'] != '-' ) {
+            $tr = $request['immeuble'] ;
+            $officesAll = $officesAll->where('constructible.immeuble_id', $tr); 
         }
 
         //recherche par nombre de façades
@@ -103,14 +105,14 @@ class OfficeController extends Controller
         return view('offices.index', [
             'offices'               => $this->paginate($officesAll),
             'totalOffices'          => $officesAll->count(),
-            'tranches'              => Tranche::all(),
+            'immeubles'              => Immeuble::all(),
             'etiquettes'            => Etiquette::all(),
             'valeurTotal'           => $prixTotalOffices->sum(),
             'officesReserved'       => $officesReserved,
             'officesBlocked'        => $officesBlocked,
             'officesStocked'        => $officesStocked,
 
-            'SearchByTranche'       => $request['tranche'] ,
+            'SearchByImm'       => $request['immeuble'] ,
             'SearchByFacade'        => $request['nombreFacadesappartement'] ,
             'SearchByEtage'         => $request['etage'] ,
             'SearchByEtat'          => $request['etatProduit'] ,

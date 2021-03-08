@@ -20,7 +20,8 @@ class Office extends Model
     public function produit()
     {
         return $this->morphOne(Produit::class, 'constructible');
-    }     
+    }
+
 
     public function getSurfaceAttribute()
     {
