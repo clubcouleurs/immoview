@@ -67,11 +67,15 @@ class PaiementController extends Controller
             'type'      => 'required|string',
             'num'       => 'sometimes|required|string',
             'montant'   => 'required|integer',
+            'banque'   => 'required|integer',
+
         ]);
         $paiement = new Paiement([
             'date'              => $request['date'],
             'type'              => $request['type'],
             'montant'           => $request['montant'],
+            'banque_id'           => $request['banque'],
+
         ]) ;
         if ($paiement->type != 'Espèce')
         {
@@ -124,6 +128,8 @@ class PaiementController extends Controller
             'num'       => 'sometimes|required|string',
             'montant'   => 'sometimes|required|integer',
             'valider'   => 'sometimes|required|boolean',
+            'banque'   => 'required|integer',
+
         ]);
 
         if (isset($request['montant']))
@@ -131,6 +137,8 @@ class PaiementController extends Controller
             $paiement->date     = $request['date'] ;
             $paiement->type     = $request['type'] ;
             $paiement->montant  = $request['montant']; 
+            $paiement->banque_id = $request['banque']; 
+            
             if ($paiement->type != 'Espèce')
             {
                 $paiement->num = $request['num'] ;

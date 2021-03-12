@@ -252,7 +252,7 @@
                       name="banque"
                       value="{{$banque->id}}"
                     
-                      @if (isset($paiement->banque) && ($paiement->banque == 'Espèce' ))
+                      @if (isset($paiement->banque) && ($paiement->banque->id == $banque->id ))
                       checked
                       @endif
                     />
