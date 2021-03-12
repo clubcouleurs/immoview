@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Banque;
 use App\Models\Dossier;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -16,6 +17,10 @@ class Paiement extends Model
         return $this->belongsTo(Dossier::class);
     }
 
+    public function banque()
+    {
+        return $this->belongsTo(Banque::class);
+    } 
     public function getValidateAttribute()
     {       
 

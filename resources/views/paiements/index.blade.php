@@ -232,6 +232,36 @@
                     @enderror
               </label>
 
+              <div class="mt-4 text-sm">
+                    @error('banque')
+                    <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
+                    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
+                    @enderror
+
+                <span class="text-gray-700 dark:text-gray-400">
+                  Destination du paiement
+                </span>
+                <div class="mt-2">
+                @foreach ($banques as $banque)
+                  <label
+                    class="inline-flex items-center mr-6 text-gray-600 dark:text-gray-400"
+                  >
+                    <input
+                      type="radio"
+                      class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+                      name="banque"
+                      value="{{$banque->id}}"
+                    
+                      @if (isset($paiement->banque) && ($paiement->banque == 'Espèce' ))
+                      checked
+                      @endif
+                    />
+                    <span class="ml-2">{{$banque->abreviation}}</span>
+                  </label>
+                @endforeach
+                </div>
+              </div>
+
                 <div class="block mt-4 text-sm">
                   @isset($paiement->montant)
                    <button
@@ -324,6 +354,8 @@
                       <th class="px-4 py-3">Date du paiement</th>
                       <th class="px-4 py-3">Moyen de paiement</th>
                       <th class="px-4 py-3">Numéro de la pièce</th>
+                      <th class="px-4 py-3">Destination</th>
+
                       <th class="px-4 py-3">Status</th>
 
                       <th class="px-4 py-3">Action</th>
@@ -378,6 +410,9 @@
                       <td class="px-4 py-3 text-sm">
                         {{ $p->num }}
                       </td>
+                      <td class="px-4 py-3 text-sm">
+                        {{ $p->banque->abreviation }}
+                      </td>                      
                       <td class="px-4 py-3 text-sm">
                         <form action="/dossiers/{{$dossier->id}}/paiements/{{$p->id}}" method="POST">
                           @csrf

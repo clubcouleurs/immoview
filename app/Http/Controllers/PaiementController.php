@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Banque;
 use App\Models\Dossier;
 use App\Models\Paiement;
 use App\Models\Produit;
@@ -38,7 +39,9 @@ class PaiementController extends Controller
     {
         return view('paiements.index', [
             'dossier' => $dossier ,
-            'paiements' => $dossier->paiements()->paginate(15)]) ;
+            'paiements' => $dossier->paiements()->paginate(15),
+            'banques' => Banque::all(),
+        ]);
     }
 
     /**
@@ -90,7 +93,9 @@ class PaiementController extends Controller
         return view('paiements.index', [
             'dossier' => $dossier ,
             'paiement' => $paiement ,
-            'paiements' => $dossier->paiements()->paginate(15)]) ;
+            'paiements' => $dossier->paiements()->paginate(15),
+            'banques' => Banque::all(),
+        ]) ;
     }
 
     /**

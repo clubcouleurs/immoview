@@ -198,7 +198,7 @@ class DossierController extends Controller
         return view('dossiers.create', [
             'client'    => $client,
             'produit'   => $produit,
-            'dataRecap' => $this->recap(),
+            'dataRecap' => $this->recap($produit),
 
         ]) ;
     }
