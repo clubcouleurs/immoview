@@ -67,6 +67,15 @@ class Produit extends Model
                 ->groupBy('constructible_type')
                 ->get();
     } 
+    
+    // public static function produitsParTypeParEtat()
+    // {       
+    //     return \DB::table('produits')
+    //             ->leftJoin('etiquettes', 'etiquettes.id', '=', 'produits.etiquette_id')
+    //             ->select('etiquettes.label','constructible_type', \DB::raw('COUNT(*) as nombre'))
+    //             ->groupBy('constructible_type','etiquettes.label')
+    //             ->get();
+    // } 
 
     public function getPrixAttribute()
     {
@@ -96,6 +105,11 @@ class Produit extends Model
     }     
     public function getTotalAttribute()
     {
+        if ($this->constructible->type === 'Economique')
+        {
+            return 250000 ;
+        }
+
         return $this->prix * $this->constructible->surface ;
     }  
 

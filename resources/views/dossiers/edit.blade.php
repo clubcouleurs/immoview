@@ -282,6 +282,108 @@
 
               </label>
 
+<!-- début upload pièce jointe >
+<div  x-data="{
+
+  @if (isset($dossier->actePj))
+    isOpen: true
+  @else
+   isOpen: false
+  @endif
+
+ }"
+              <div class="mt-4 text-sm" x-show="isOpen">
+                    @error('actePj')
+                    <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
+                    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
+                    @enderror
+
+                <span class="text-gray-700 dark:text-gray-400">
+                  La pièce scanné
+                </span>
+                <div class="mt-2">
+
+@if (isset($dossier->actePj) && ($dossier->actePj !== Null))
+<section
+x-data="{
+logoToDelete:false,
+logos:[],
+logoDb:true,
+addLogo(){
+this.logos.push({
+id: this.logos.length +1,
+});
+//this.logoToDelete = true;
+},
+
+}"
+>
+<input type="hidden" name="logoToDelete" :value="logoToDelete">
+
+<section x-show="logoDb">
+            <button
+            class="relative align-middle rounded-md focus:outline-none focus:shadow-outline-purple"
+            @click="addLogo(), logoDb = ! logoDb"
+            :aria-expanded="logoDb ? 'true' : 'false'" :class="{ 'active': logoDb }"
+            type="button"
+            >
+            <span
+            aria-hidden="true"
+            class="inline-block align-middle absolute text-md shadow-xs font-bold text-white top-0 right-0
+            bg-red-600 w-6 h-6 transform translate-x-2 -translate-y-2 rounded-full"
+            >X</span></button>
+
+            @if (substr($dossier->actePj, -3) == 'pdf' )
+            <a href="{{ asset($dossier->actePj) }}" download="actePj"
+              class="text-blue-500 underline border px-4 py-4 bg-blue-100">Télécharger L'acte</a>
+            @else
+            <img src="{{asset($dossier->actePj)}}" width="250" class="px-2 py-2 w-48 border border-blue-400 shadow-lg rounded-lg mb-2">
+            @endif         
+        </section>
+          <section x-show="logos.length">
+  <template x-for="logo in logos" :key="logo.id">
+
+    <input
+    type="file"
+    name="actePj"
+    id="actePj"
+    :required="logoDb"
+    :disabled="logoDb"    
+    >
+  </template>
+        </section>
+      </section>
+
+
+        @error('actePj')
+        <p id="logoError" class="block h-10 px-2 py-2 rounded-md w-full mt-2
+        bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
+        @enderror
+
+here was the form to delete the logo
+
+    @else
+
+        
+    <input
+    type="file"
+    name="actePj"
+    id="actePj"
+    :required="logoDb"
+    :disabled="logoDb"
+    >
+
+    @error('actePj')
+    <p id="logoError" class="block h-10 px-2 py-2 rounded-md w-full mt-2
+    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
+    @enderror
+    @endif
+                </div>
+              </div>              
+</div>
+             
+             fin upload pièce jointe -->
+
                 <div class="block mt-4 text-sm">
                 <button
                   class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-green-600 border border-transparent rounded-lg active:bg-green-600 hover:bg-green-700 focus:outline-none focus:shadow-outline-green"

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Traits\PaginateTrait;
 use App\Models\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ClientController extends Controller
 {
@@ -67,24 +68,49 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
-//dd($request['idProduit']) ;
+
         $request->validate([
             'nom'       => 'required|string',
             'prenom'    => 'required|string',
+            'prenomAr'    => 'string',
+            'nomAr'    => 'string',
+            'adresseAr'    => 'string',
+
             'mobile'    => 'required|numeric|unique:clients,mobile',
             'cin'    => 'required|alpha_num|unique:clients,cin',
             'idProduit' => 'numeric|nullable',
             'adresse' => 'required|string',
+            'cinPj' => 'sometimes|required|max:5000|mimetypes:application/pdf,image/png,image/jpeg,image/tiff,image/gif',
         ]);
 
         $client = new Client() ;
-        $client->nom    = $request['nom'];
-        $client->prenom = $request['prenom'];
+        $client->nom    = strtoupper($request['nom']);
+        $client->prenom = strtoupper($request['prenom']);
         $client->mobile = $request['mobile'];
-        $client->cin = $request['cin'];
-        $client->adresse = $request['adresse'];
+        $client->cin = strtoupper($request['cin']);
+        $client->adresse = strtoupper($request['adresse']);
+        $client->nomAr    = strtoupper($request['nomAr']);
+        $client->prenomAr = strtoupper($request['prenomAr']);        
+        $client->adresseAr = strtoupper($request['adresseAr']);
 
         $client->activer = 1 ;
+
+        if($request->hasFile('cinPj'))
+        {
+            $infoClient = $client->nom . '-' . $client->prenom . '-' .$client->cin;
+
+            $pjName = str_replace('.', '',  $infoClient ) . '-' 
+
+            . str_replace(' ', '-', date('Y-m-d-His')) ;
+
+            $pjExtension = $request->file('cinPj')->extension() ;                 
+
+            $pdfPath = $request->file('cinPj')
+            ->storeAs('public/cin', $pjName . '.' . $pjExtension) ;
+
+            $client->cinPj = 'cin/' . $pjName . '.' . $pjExtension ;
+        }
+
         $client->save();
 
         if(isset($request['idProduit']) && $request['idProduit'] != null)
@@ -137,14 +163,37 @@ class ClientController extends Controller
             'prenom'    => 'required|string',
             'mobile'    => 'required|numeric|unique:clients,mobile,' . $client->id,
             'adresse' => 'required|string',
+            'prenomAr'    => 'string',
+            'nomAr'    => 'string',
+            'adresseAr'    => 'string',            
         ]);
 
-        $client->nom        = $request['nom'];
-        $client->prenom     = $request['prenom'];
+        $client->nom        = strtoupper($request['nom']);
+        $client->prenom     = strtoupper($request['prenom']);
         $client->mobile     = $request['mobile'];
-        $client->cin        = $request['cin'];
-        $client->adresse    = $request['adresse'];
+        $client->cin        = strtoupper($request['cin']);
+        $client->adresse    = strtoupper($request['adresse']);
         $client->activer    = 1 ;
+
+        if($request->hasFile('cinPj'))
+        {
+            if ($client->cinPj != null) {
+                Storage::delete('public/' . $client->cinPj);
+            }
+            $infoClient = $client->nom . '-' . $client->prenom . '-' .$client->cin;
+
+            $pjName = str_replace('.', '',  $infoClient ) . '-' 
+
+            . str_replace(' ', '-', date('Y-m-d-His')) ;
+
+            $pjExtension = $request->file('cinPj')->extension() ;                 
+
+            $pdfPath = $request->file('cinPj')
+            ->storeAs('public/cin', $pjName . '.' . $pjExtension) ;
+
+            $client->cinPj = 'cin/' . $pjName . '.' . $pjExtension ;
+        }
+
         $client->update();
 
         return redirect()->action([ClientController::class, 'index'])

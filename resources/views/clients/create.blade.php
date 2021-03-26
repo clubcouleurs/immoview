@@ -116,7 +116,7 @@
             <div
               class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800"
             >
-            <form action="/clients" method="POST">
+            <form action="/clients" method="POST" enctype="multipart/form-data">
               @csrf
               <input type="hidden" name="date" value="{{date_format(now(), 'Y-m-d H:i:s')}}">
               <input type="hidden" id="idProduit" name="idProduit" value="">
@@ -136,7 +136,21 @@
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror
               </label>
-
+              <label class="block text-sm mt-4">
+                <span class="text-gray-700 dark:text-gray-400">Nom client en Arabe</span>
+                <input
+                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                  placeholder="المرابط"
+                  type="text"
+                  name="nomAr"
+                  value="{{old('nomAr')}}"
+                  required
+                />
+                    @error('nomAr')
+                    <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
+                    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
+                    @enderror
+              </label>
               <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">Prénom client</span>
                 <input
@@ -148,6 +162,21 @@
                   required
                 />
                     @error('prenom')
+                    <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
+                    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
+                    @enderror
+              </label>
+              <label class="block mt-4 text-sm">
+                <span class="text-gray-700 dark:text-gray-400">Prénom client en Arabe</span>
+                <input
+                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                  placeholder="سارة"
+                  type="text"
+                  name="prenomAr"
+                  value="{{old('prenomAr')}}"
+                  required
+                />
+                    @error('prenomAr')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror
@@ -169,6 +198,94 @@
                     @enderror
               </label>           
 
+<!-- début upload pièce jointe -->
+              <div class="mt-4 text-sm" x-show="isOpen">
+                <span class="text-gray-700 dark:text-gray-400">
+                  La CIN scannée
+                </span>
+                <div class="mt-2">
+
+@if (isset($client->cinPj) && ($client->cinPj !== Null))
+<section
+x-data="{
+logoToDelete:false,
+logos:[],
+logoDb:true,
+addLogo(){
+this.logos.push({
+id: this.logos.length +1,
+});
+//this.logoToDelete = true;
+},
+
+}"
+>
+<input type="hidden" name="logoToDelete" :value="logoToDelete">
+
+<section x-show="logoDb">
+            <button
+            class="relative align-middle rounded-md focus:outline-none focus:shadow-outline-purple"
+            @click="addLogo(), logoDb = ! logoDb"
+            :aria-expanded="logoDb ? 'true' : 'false'" :class="{ 'active': logoDb }"
+            type="button"
+            >
+            <span
+            aria-hidden="true"
+            class="inline-block align-middle absolute text-md shadow-xs font-bold text-white top-0 right-0
+            bg-red-600 w-6 h-6 transform translate-x-2 -translate-y-2 rounded-full"
+            >X</span></button>
+
+            <img src="{{asset($client->cinPj)}}" width="250" class="px-2 py-2 w-48 border border-blue-400 shadow-lg rounded-lg mb-2">
+   
+        </section>
+          <section x-show="logos.length">
+  <template x-for="logo in logos" :key="logo.id">
+
+    <input
+    type="file"
+    name="cinPj"
+    id="cinPj"
+    :required="logoDb"
+    :disabled="logoDb"    
+    >
+
+
+
+  </template>
+        </section>           
+
+
+   
+      </section>
+
+
+        @error('cinPj')
+        <p id="logoError" class="block h-10 px-2 py-2 rounded-md w-full mt-2
+        bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
+        @enderror
+
+<!-- here was the form to delete the logo -->
+
+    @else
+
+        
+    <input
+    type="file"
+    name="cinPj"
+    id="cinPj"
+    required
+    >
+
+    @error('cinPj')
+    <p id="logoError" class="block h-10 px-2 py-2 rounded-md w-full mt-2
+    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
+    @enderror
+    @endif
+                </div>
+              </div>              
+
+             
+              <!-- fin upload pièce jointe -->
      
 
               <label class="block mt-4 text-sm">
@@ -207,6 +324,24 @@
 
               </label>
             
+
+              <label class="block mt-4 text-sm">
+                <span class="text-gray-700 dark:text-gray-400">Adresse en Arabe</span>
+                <textarea
+                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-textarea focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+                  rows="3"
+                  placeholder="العنوان"
+                  name="adresseAr"
+                  required
+
+                >{{old('adresseAr')}}</textarea>
+                    @error('adresseAr')
+                    <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
+                    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
+                    @enderror
+
+              </label>
+
                 <div class="block mt-4 text-sm">
                 <button
                   class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"

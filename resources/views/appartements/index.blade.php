@@ -115,7 +115,7 @@
                   </p>
                 </div>
               </div>
-
+              @can('voir etat bloque')
               <div
                 class="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800"
               >
@@ -140,7 +140,7 @@
                   </p>
                 </div>
               </div>              
-
+              @endcan
             </div>
             <!-- filtre -->
               <p class="text-sm text-gray-600 dark:text-gray-400 ml-2 mb-2">Filtres</p>   
@@ -412,11 +412,18 @@
                   >
 
                   @foreach ($appartements as $produit)
+                    @if (!in_array($produit->etiquette_id, [2,3]))
+                          @cannot('voir etat bloque')
+                            @continue
+                          @endcannot
+                    @endif
                     <tr class="
                     @if ($produit->etiquette->label == 'En stock')
                       bg-green-50
                     @elseif ($produit->etiquette->label == 'Réservé')
                       bg-gray-200
+                    @elseif ($produit->etiquette->label == 'Vendu')
+                      bg-purple-200
                     @else
                       bg-red-100
                     @endif
@@ -511,6 +518,8 @@
                       text-green-700 bg-green-100 
                     @elseif ($produit->etiquette->label == 'Réservé')
                       text-gray-200 bg-gray-900
+                    @elseif ($produit->etiquette->label == 'Vendu')
+                      text-purple-100 bg-purple-900                      
                     @else
                       text-white bg-red-900
                     @endif
@@ -527,6 +536,7 @@
                       </td>
 
                       <td class="px-4 py-3 text-sm">
+                        @can('editer appartements')
               <div class="flex px-1 py-1">
                 @if(null == $produit->dossier && $produit->etiquette->label == 'En stock')
                 <div class="mr-1">
@@ -594,19 +604,20 @@
                       </div>                
               </div>
 
-              
+                      @endcan
                       </td>
 
 
 
 
                     </tr>
+
                     @endforeach
                   </tbody>
                 </table>
               </div>
               <div
-                class="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800"
+                class="grid py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t"
               >
                 {{$appartements->links()}}
               </div>

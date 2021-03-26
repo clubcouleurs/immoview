@@ -9,17 +9,16 @@
       {{$errors}}</p>
         @endif
 
-
-
-
             <h2
               class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
             >
               Ajouter un nouveau paiement 
+
             </h2>
 
 
-            <form action=@isset ($paiement->montant){{"/dossiers/$dossier->id/paiements/" . $paiement->id}}@else "/dossiers/{{$dossier->id}}/paiements" @endisset
+            <form enctype="multipart/form-data"
+            action=@isset ($paiement->montant){{"/dossiers/$dossier->id/paiements/" . $paiement->id}}@else "/dossiers/{{$dossier->id}}/paiements" @endisset
             method="POST">
               @csrf
               @isset ($paiement->montant)
@@ -114,12 +113,15 @@
     
         
 <div x-data="{
-@if (isset($paiement->type) && ($paiement->type != 'Espèce' ))
+@if ( old('type') != null && (old('type') != 'Espèce' ))
   isOpen: true
 @else
- isOpen: false
-@endif 
-
+  @if (isset($paiement->type) && ($paiement->type != 'Espèce' ))
+    isOpen: true
+  @else
+   isOpen: true // était false pour cacher l'upload du fichier si le commercial coche l'espèce
+  @endif
+@endif
  }">
 <div class="mt-4 text-sm">
 
@@ -141,13 +143,15 @@
                       name="type"
                       value="Espèce"
                       x-on:click=" isOpen = false"
-                      @if (!isset($paiement->type))
+                {{ old('type', $paiement->type ?? '')== "Espèce" ? 'checked' : '' }}                      
+                      />
+<!--                       @if (!isset($paiement->type))
                           checked
                       @endif                      
                       @if (isset($paiement->type) && ($paiement->type == 'Espèce' ))
                       checked
-                      @endif
-                    />
+                      @endif -->
+                    
                     <span class="ml-2">Espèce</span>
                   </label>
                   <label
@@ -158,11 +162,14 @@
                       class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
                       name="type"
                       value="Chèque"
+                      required
                       x-on:click=" isOpen = true"
-                        @if (isset($paiement->type) && ($paiement->type == 'Chèque' ))
+                      {{ old('type', $paiement->type ?? '')== "Chèque" ? 'checked' : '' }}
+                      />
+<!--                         @if (isset($paiement->type) && ($paiement->type == 'Chèque' ))
                           checked
-                        @endif                      
-                    />
+                        @endif  -->                     
+                    
                     <span class="ml-2">Chèque</span>
                   </label>
                   <label
@@ -174,10 +181,14 @@
                       name="type"
                       value="Effet"
                       x-on:click=" isOpen = true"
-                      @if (isset($paiement->type) && ($paiement->type == 'Effet' ))
+
+                  {{ old('type', $paiement->type ?? '')== "Effet" ? 'checked' : '' }}                      
+
+                      />
+<!--                       @if (isset($paiement->type) && ($paiement->type == 'Effet' ))
                       checked
-                      @endif                        
-                    />
+                      @endif  -->                       
+                    
                     <span class="ml-2">Effet</span>
                   </label>
                   <label
@@ -189,14 +200,17 @@
                       name="type"
                       value="Virement"
                       x-on:click="isOpen = true"
-                      @if (isset($paiement->type) && ($paiement->type == 'Virement' ))
+                      {{ old('type', $paiement->type ?? '')== "Virement" ? 'checked' : '' }}
+                      />
+<!--                       @if (isset($paiement->type) && ($paiement->type == 'Virement' ))
                       checked
-                      @endif                        
-                    />
+                      @endif   -->                      
+                    
                     <span class="ml-2">Virement</span>
                   </label>                                    
                 </div>
               </div>
+
              <label class="block text-sm mt-4" x-show="isOpen">
                 <span class="text-gray-700 dark:text-gray-400">Numéro de la pièce</span>
                 <input
@@ -206,7 +220,7 @@
                   name="num"
                   :required="isOpen"
                   :disabled="!isOpen"
-                  value="@isset ($paiement->num){{$paiement->num}}@endisset"
+                  value="{{ old('num') ?? $paiement->num ?? '' }}"
                 />
                     @error('num')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
@@ -214,17 +228,112 @@
                     @enderror
               </label>
 
+<!-- début upload pièce jointe -->
+              <div class="mt-4 text-sm" x-show="isOpen">
+                    @error('pj')
+                    <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
+                    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
+                    @enderror
+
+                <span class="text-gray-700 dark:text-gray-400">
+                  La pièce scanné
+                </span>
+                <div class="mt-2">
+
+@if (isset($paiement->pj) && ($paiement->pj !== Null))
+<section
+x-data="{
+logoToDelete:false,
+logos:[],
+logoDb:true,
+addLogo(){
+this.logos.push({
+id: this.logos.length +1,
+});
+//this.logoToDelete = true;
+},
+
+}"
+>
+<input type="hidden" name="logoToDelete" :value="logoToDelete">
+
+<section x-show="logoDb">
+            <button
+            class="relative align-middle rounded-md focus:outline-none focus:shadow-outline-purple"
+            @click="addLogo(), logoDb = ! logoDb"
+            :aria-expanded="logoDb ? 'true' : 'false'" :class="{ 'active': logoDb }"
+            type="button"
+            >
+            <span
+            aria-hidden="true"
+            class="inline-block align-middle absolute text-md shadow-xs font-bold text-white top-0 right-0
+            bg-red-600 w-6 h-6 transform translate-x-2 -translate-y-2 rounded-full"
+            >X</span></button>
+
+            <img src="{{asset($paiement->pj)}}" width="250" class="px-2 py-2 w-48 border border-blue-400 shadow-lg rounded-lg mb-2">
+   
+        </section>
+          <section x-show="logos.length">
+  <template x-for="logo in logos" :key="logo.id">
+
+    <input
+    type="file"
+    name="pj"
+    id="pj"
+    :required="logoDb"
+    :disabled="logoDb"    
+    >
+
+
+
+  </template>
+        </section>           
+
+
+   
+      </section>
+
+
+        @error('pj')
+        <p id="logoError" class="block h-10 px-2 py-2 rounded-md w-full mt-2
+        bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
+        @enderror
+
+<!-- here was the form to delete the logo -->
+
+    @else
+
+        
+    <input
+    type="file"
+    name="pj"
+    id="pj"
+    :required="isOpen"
+    :disabled="!isOpen"
+    >
+
+    @error('pj')
+    <p id="logoError" class="block h-10 px-2 py-2 rounded-md w-full mt-2
+    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
+    @enderror
+    @endif
+                </div>
+              </div>              
+
+             
+              <!-- fin upload pièce jointe -->
 </div>
 
               <label class="block text-sm mt-4">
                 <span class="text-gray-700 dark:text-gray-400">Montant</span>
                 <input
                   class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                  placeholder=""
+                  placeholder="Le montant du paiement"
                   type="number"
                   name="montant"
                   required
-                  value="@isset ($paiement->montant){{$paiement->montant}}@endisset"
+                  value="{{ old('montant') ?? $paiement->montant ?? '' }}"
+
                 />
                     @error('montant')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
@@ -250,17 +359,24 @@
                       type="radio"
                       class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
                       name="banque"
+                      required 
                       value="{{$banque->id}}"
-                    
+                      {{ old('banque', $paiement->banque->id ?? '')== $banque->id ? 'checked' : '' }}
+                      />
+                      <!-- @if (!isset($paiement) && $loop->first)
+                          checkede
+                      @endif                     
                       @if (isset($paiement->banque) && ($paiement->banque->id == $banque->id ))
-                      checked
-                      @endif
-                    />
+                        checked
+                      @endif -->
+                    
                     <span class="ml-2">{{$banque->abreviation}}</span>
                   </label>
                 @endforeach
                 </div>
               </div>
+
+              
 
                 <div class="block mt-4 text-sm">
                   @isset($paiement->montant)
@@ -309,7 +425,7 @@
                             </p> 
                           </div>
 
-            <div class="grid gap-6 mb-2 sm:grid-cols-1 md:grid-cols-1 xl:grid-cols-4">
+            <div class="grid gap-6 mb-2 sm:grid-cols-1 md:grid-cols-1 xl:grid-cols-6">
                 <div class="p-2 bg-gray-500 rounded-lg dark:bg-gray-800"> 
                     <p class="text-white font-bold">
                       Prix total {{ $dossier->produit->constructible_type }} :</p>
@@ -319,16 +435,31 @@
                 </div>
                 <div class="p-2 bg-green-500 rounded-lg dark:bg-gray-800">              
                     <p class="text-white font-bold">
-                      Total des avances :</p>
+                      Total avances Encaissées :</p>
                             <p class="font-semibold text-2xl text-white dark:text-gray-400">
-                          {{ number_format($dossier->totalPaiements) }} Dhs
+                          {{ number_format($dossier->totalPaiementsV) }} Dhs
                             </p>                   
                 </div>
+                <div class="p-2 bg-red-500 rounded-lg dark:bg-gray-800">              
+                    <p class="text-white font-bold">
+                      Total paiements non-validés :</p>
+                            <p class="font-semibold text-2xl text-white dark:text-gray-400">
+                          {{ number_format($dossier->totalPaiements - $dossier->totalPaiementsV) }} Dhs
+                            </p>                   
+                </div>  
+                <div class="p-2 bg-red-500 rounded-lg dark:bg-gray-800">              
+                    <p class="text-white font-bold">
+                      Avance non-encaissées :</p>
+                            <p class="font-semibold text-2xl text-white dark:text-gray-400">
+                          {{ number_format(
+                            ( $dossier->produit->total * 30 / 100 ) - $dossier->totalPaiements) }} Dhs
+                            </p>                   
+                </div>                               
                 <div class="p-2 bg-blue-500 rounded-lg dark:bg-gray-800">              
                     <p class="font-semibold text-white font-bold">
                       Taux des avances :</p>
                             <p class="text-2xl text-white dark:text-gray-400">
-                          {{  $dossier->tauxPaiement }} %
+                          {{  $dossier->tauxPaiementV }} %
                             </p>                   
                 </div>
                 <div class="p-2 bg-red-500 rounded-lg dark:bg-gray-800">              
@@ -355,6 +486,7 @@
                       <th class="px-4 py-3">Moyen de paiement</th>
                       <th class="px-4 py-3">Numéro de la pièce</th>
                       <th class="px-4 py-3">Destination</th>
+                      <th class="px-4 py-3">Pièce scannée</th>
 
                       <th class="px-4 py-3">Status</th>
 
@@ -412,6 +544,15 @@
                       </td>
                       <td class="px-4 py-3 text-sm">
                         {{ $p->banque->abreviation }}
+                      </td>
+                      <td class="px-4 py-3 text-sm">
+                        @isset($p->pj)
+                        <a href="{{asset($p->pj)}}" target="_blank">
+                        <img class="h-8" src="{{asset($p->pj)}}">
+                        </a>
+                        @else
+                        Aucune pièce jointe
+                        @endisset
                       </td>                      
                       <td class="px-4 py-3 text-sm">
                         <form action="/dossiers/{{$dossier->id}}/paiements/{{$p->id}}" method="POST">
@@ -454,7 +595,7 @@
                 </table>
               </div>
               <div
-                class="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800"
+                class="grid py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t"
               >
                 {{$paiements->links()}}
               </div>

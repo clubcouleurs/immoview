@@ -51,4 +51,22 @@ class User extends Authenticatable
     {
         return $this->hasMany(Visite::class);
     }      
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function assignRole(Role $role)
+    {
+        $this->role()->associate($role) ;
+    }
+
+    public function permissions()
+    {
+        return (null !== $this->role) ? $this->role->permissions->flatten()->pluck('name')->unique() : collect([]);
+    } 
+    public function isAdministrator()
+    {
+        return ($this->role !== NULL) ? ($this->role->name == 'Admin') : false ;
+    }   
 }

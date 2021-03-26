@@ -88,7 +88,11 @@ function data() {
     isPagesMenuOpen: false,
     togglePagesMenu() {
       this.isPagesMenuOpen = !this.isPagesMenuOpen
-    },               
+    },  
+    isAccesMenuOpen: false,
+    toggleAccesMenu() {
+      this.isAccesMenuOpen = !this.isAccesMenuOpen
+    },                  
     // Modal
     isModalOpen: false,
     trapCleanup: null,

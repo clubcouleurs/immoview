@@ -16,7 +16,7 @@
             <div
               class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800"
             >
-            <form action="/clients/{{$client->id}}" method="POST">
+            <form action="/clients/{{$client->id}}" method="POST" enctype="multipart/form-data">
               @csrf
               @method('PATCH')
 
@@ -68,7 +68,98 @@
                     @enderror
               </label>           
 
-     
+
+<!-- début upload pièce jointe -->
+              <div class="mt-4 text-sm">
+                    @error('cinPj')
+                    <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
+                    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
+                    @enderror
+
+                <span class="text-gray-700 dark:text-gray-400">
+                  La CIN scannée
+                </span>
+                <div class="mt-2">
+
+@if (isset($client->cinPj) && ($client->cinPj !== Null))
+<section
+x-data="{
+logoToDelete:false,
+logos:[],
+logoDb:true,
+addLogo(){
+this.logos.push({
+id: this.logos.length +1,
+});
+//this.logoToDelete = true;
+},
+
+}"
+>
+<input type="hidden" name="logoToDelete" :value="logoToDelete">
+
+<section x-show="logoDb">
+            <button
+            class="relative align-middle rounded-md focus:outline-none focus:shadow-outline-purple"
+            @click="addLogo(), logoDb = ! logoDb"
+            :aria-expanded="logoDb ? 'true' : 'false'" :class="{ 'active': logoDb }"
+            type="button"
+            >
+            <span
+            aria-hidden="true"
+            class="inline-block align-middle absolute text-md shadow-xs font-bold text-white top-0 right-0
+            bg-red-600 w-6 h-6 transform translate-x-2 -translate-y-2 rounded-full"
+            >X</span></button>
+
+            <img src="{{asset($client->cinPj)}}" width="250" class="px-2 py-2 w-48 border border-blue-400 shadow-lg rounded-lg mb-2">
+   
+        </section>
+          <section x-show="logos.length">
+  <template x-for="logo in logos" :key="logo.id">
+
+    <input
+    type="file"
+    name="cinPj"
+    id="cinPj"
+    :required="logoDb"
+    :disabled="logoDb"    
+    >
+
+
+
+  </template>
+        </section>           
+
+
+   
+      </section>
+
+
+        @error('cinPj')
+        <p id="logoError" class="block h-10 px-2 py-2 rounded-md w-full mt-2
+        bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
+        @enderror
+
+<!-- here was the form to delete the logo -->
+
+    @else
+
+        
+    <input
+    type="file"
+    name="cinPj"
+    id="cinPj">
+
+    @error('cinPj')
+    <p id="logoError" class="block h-10 px-2 py-2 rounded-md w-full mt-2
+    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
+    @enderror
+    @endif
+                </div>
+              </div>              
+
+             
+              <!-- fin upload pièce jointe -->     
 
               <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">Mobile</span>

@@ -154,9 +154,9 @@ class VisiteController extends Controller
         ]);
 
         $client = new Client() ;
-        $client->nom                = $request['nom'];
-        $client->prenom            = $request['prenom'];
-        $client->mobile       = $request['mobile'];
+        $client->nom    = strtoupper($request['nom']);
+        $client->prenom = strtoupper($request['prenom']);
+        $client->mobile = $request['mobile'];
         $client->save();
 
         $visite = new Visite([
@@ -219,8 +219,8 @@ class VisiteController extends Controller
             'detail' => 'required|string'
         ]);
 
-        $client->nom                = $request['nom'];
-        $client->prenom             = $request['prenom'];
+        $client->nom                = strtoupper($request['nom']);
+        $client->prenom             = strtoupper($request['prenom']);
         $client->mobile             = $request['mobile'];
 
         $client->update();

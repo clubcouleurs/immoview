@@ -24,15 +24,20 @@ class DossierRequest extends FormRequest
 public function rules()
     {
         $idDossier = (isset($this->dossier->id)) ? $this->dossier->id : Null ;
-       
+
         return [
             'num' => 'sometimes|required|numeric',
             'num' => 'unique:dossiers,num,'.$idDossier,
-            'date' => 'date|required',
-            'frais' => 'required|numeric',
+            'date' => 'sometimes|date|required',
+            'delai' => 'sometimes|date|required', //|after:today',
+
+            'frais' => 'sometimes|required|numeric',
             'detail' => 'string|nullable',         
-            'client' => 'required|integer',
-            'produit' => 'required|integer',
+            'client' => 'sometimes|required|integer|exists:clients,id',
+            'produit' => 'sometimes|required|integer|exists:produits,id',
+            'actePj' => 'sometimes|required|max:5000|mimetypes:application/pdf,image/png,image/jpeg,image/tiff,image/gif',
+            'isVente'    => 'required|boolean',
+
 
         ];
     }
@@ -45,6 +50,7 @@ public function rules()
             'date.date' => 'Il faut une date à ce dossier',
             'frais.required' => 'Il faut saisir les frais de ce dossier',
             'frais.numeric' => 'Les frais du dossier doivent être en numéraire',
+            'delai.after' => 'La date du délai doit être une date postérieure à celle d\'aujourd\'hui',
 
         ];
     } 

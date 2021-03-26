@@ -3,21 +3,26 @@
 use App\Http\Controllers\AppartementController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DelaiController;
 use App\Http\Controllers\DossierController;
 use App\Http\Controllers\EtiquetteController;
+use App\Http\Controllers\FinanceController;
 use App\Http\Controllers\ImmeubleController;
 use App\Http\Controllers\LotController;
 use App\Http\Controllers\MagasinController;
 use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\PaiementController;
 use App\Http\Controllers\ProduitController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TrancheController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\ValidationController;
 use App\Http\Controllers\VisiteController;
 use App\Http\Controllers\VoieController;
 use App\Models\Dossier;
 use App\Models\Etiquette;
 use Illuminate\Support\Facades\Route;
+//use PDF; // at the top of the file
 
 
 /*
@@ -33,9 +38,14 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth')->group(function(){
 
 Route::get('/moi', function () {
-	return view('visites.test') ;
+
 
 });
+
+Route::get('/finances', [FinanceController::class, 'index']);
+
+
+Route::get('/{constructible?}/{tranche?}/dossiers', [DossierController::class, 'index']);
 
 Route::get('/produits_data/{num}/{type}/', [ProduitController::class, 'produits_data']);
 
@@ -50,6 +60,9 @@ Route::resource('offices', OfficeController::class);
 
 Route::resource('clients', ClientController::class);
 
+Route::resource('users', UserController::class);
+
+Route::resource('roles', RoleController::class);
 
 
 Route::resource('voies', VoieController::class);
@@ -80,9 +93,13 @@ Route::get('/produits/{produit}/clients/{client}/dossiers/create', [DossierContr
 
 Route::get('/clients/{client}/dossiers/create', [DossierController::class, 'createWithoutProduit']);
 
+
+
+
+
 Route::resource('dossiers', DossierController::class)->except([
     'create', 'createWithoutClient'
-]);
+])->middleware('can:voir dossiers');
 
 Route::get('/dossiers/{dossier}/actes', [DossierController::class, 'actes'])
 						->middleware('can:view,dossier');
@@ -104,9 +121,18 @@ Route::delete('/dossiers/{dossier}/paiements/{paiement}', [PaiementController::c
 //Route::patch('/lots', [LotController::class, 'updateBatch']);
 
 Route::get('/dossiers/{dossier}/validation/create', [ValidationController::class, 'create'])
-			->middleware('can:create,dossier');
+			->middleware('can:create,dossier', 'can:valider dossiers');
 
-Route::post('/dossiers/{dossier}/validation', [ValidationController::class, 'store']);
+
+Route::get('/dossiers/{dossier}/delais/create', [DelaiController::class, 'create']);
+Route::post('/dossiers/{dossier}/delais', [DelaiController::class, 'store']);
+
+
+Route::get('/dossiers/{dossier}/retour', [DossierController::class, 'retour'])
+			->middleware('can:view,dossier');
+
+Route::post('/dossiers/{dossier}/validation', [ValidationController::class, 'store'])
+			->middleware('can:valider dossiers');
 
 
 Route::get('/parametres', function () {

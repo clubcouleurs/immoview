@@ -62,26 +62,63 @@ class PaiementController extends Controller
      */
     public function store(Request $request, Dossier $dossier)
     {
+
         $request->validate([
             'date'      => 'required|string',
             'type'      => 'required|string',
             'num'       => 'sometimes|required|string',
             'montant'   => 'required|integer',
             'banque'   => 'required|integer',
+            'pj' => 'sometimes|required|max:5000|mimetypes:application/pdf,image/png,image/jpeg,image/tiff,image/gif',
 
         ]);
+        $banque = Banque::findOrFail($request['banque']) ;
         $paiement = new Paiement([
             'date'              => $request['date'],
             'type'              => $request['type'],
             'montant'           => $request['montant'],
-            'banque_id'           => $request['banque'],
-
         ]) ;
+
+        $totalPaiement = $dossier->totalPaiements + $paiement->montant ;
+        $restePaiement = $paiement->montant - $dossier->totalPaiements ;
+
+        if($totalPaiement > $dossier->produit->total)
+        {
+            return back()->withInput()->with('error', 'Vous avez dépasser le reste à payer!') ;
+        }
+
         if ($paiement->type != 'Espèce')
         {
             $paiement->num = $request['num'] ;
+
+        if($request->hasFile('pj'))
+        {
+            $client = $dossier->client->nom . '-' . $dossier->client->prenom ;
+
+            $pjName = str_replace(' ', '', $paiement->type) . '-' 
+            . str_replace('.', '', $paiement->num) . '-DossierN' 
+
+            . str_replace('.', '', $dossier->num) . '-' 
+
+            . str_replace('.', '',  $client ) . '-' 
+
+            . str_replace(' ', '-', date('Y-m-d-His')) ;
+
+            $pjExtension = $request->file('pj')->extension() ;                 
+
+            $pdfPath = $request->file('pj')
+            ->storeAs('public/pj', $pjName . '.' . $pjExtension) ;
+
+            $paiement->pj = 'pj/' . $pjName . '.' . $pjExtension ;
         }
-        $dossier->paiements()->save($paiement) ;
+
+        }        
+        $paiement->banque()->associate($banque) ;
+        $paiement->dossier()->associate($dossier) ;
+        $paiement->save();
+
+        $dossier->isVente = true ;
+        $dossier->update() ;
         return redirect()->action([PaiementController::class, 'index'] , ['dossier' => $dossier])
         ->with('message','Paiement ajouté !');
     }
@@ -128,7 +165,8 @@ class PaiementController extends Controller
             'num'       => 'sometimes|required|string',
             'montant'   => 'sometimes|required|integer',
             'valider'   => 'sometimes|required|boolean',
-            'banque'   => 'required|integer',
+            'banque'    => 'sometimes|required|integer',
+            'pj' => 'sometimes|required|max:5000|mimetypes:application/pdf,image/png,image/jpeg,image/tiff,image/gif',
 
         ]);
 
@@ -139,12 +177,42 @@ class PaiementController extends Controller
             $paiement->montant  = $request['montant']; 
             $paiement->banque_id = $request['banque']; 
             
+        if($totalPaiement > $dossier->produit->total)
+        {
+            return back()->withInput()->with('error', 'Vous avez dépasser le reste à payer!') ;
+        }
+
             if ($paiement->type != 'Espèce')
             {
                 $paiement->num = $request['num'] ;
+
+                if($request->hasFile('pj'))
+                {
+                    $client = $dossier->client->nom . '-' . $dossier->client->prenom ;
+
+                    $pjName = str_replace(' ', '', $paiement->type) . '-' 
+                    . str_replace('.', '', $paiement->num) . '-DossierN' 
+
+                    . str_replace('.', '', $dossier->num) . '-' 
+
+                    . str_replace('.', '',  $client ) . '-' 
+
+                    . str_replace(' ', '-', date('Y-m-d-His')) ;
+
+                    $pjExtension = $request->file('pj')->extension() ;                 
+
+                    $pdfPath = $request->file('pj')
+                    ->storeAs('public/pj', $pjName . '.' . $pjExtension) ;
+
+                    $paiement->pj = 'pj/' . $pjName . '.' . $pjExtension ;
+
+                    //$paiement->pj = $pjName . '.' . $pjExtension ;
+                }
+
             }else
             {
-                $paiement->num = NULL ;
+                $paiement->num  = NULL ;
+                $paiement->pj   = NULL ;
             }
         }
         elseif(isset($request['valider']))
@@ -165,6 +233,10 @@ class PaiementController extends Controller
     public function destroy(Dossier $dossier, Paiement $paiement)
     {
         $paiement->delete() ;
+        if ($dossier->paiements->count() === 0 ) {
+            $dossier->isVente = false ;
+            $dossier->update() ;
+        }
         return redirect()->action([PaiementController::class, 'index'] , ['dossier' => $dossier])
         ->with('message','Paiement supprimé !');
     }

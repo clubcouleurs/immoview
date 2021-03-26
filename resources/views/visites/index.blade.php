@@ -142,6 +142,7 @@
 
             </div>
 
+
 <div class="grid gap-6 mb-8 md:grid-cols-2">
               <!-- Doughnut/Pie chart -->
               <div
@@ -150,7 +151,7 @@
                 <h4 class="mb-4 font-semibold text-gray-800 dark:text-gray-300">
                   Interêts des visiteurs
                 </h4>
-                <canvas id="pie"></canvas>
+                <canvas id="pieInteret"></canvas>
                 <div
                   class="flex justify-center mt-4 space-x-3 text-sm text-gray-600 dark:text-gray-400"
                 >
@@ -348,8 +349,8 @@
 
                       <td class="px-4 py-3 text-sm">
               <div class="flex px-1 py-1">
+                @can('voir visites')
                 <div class="mr-1">
-             
                 <a
                   class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-400 border border-transparent rounded-lg active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue"
                   aria-label="Like"
@@ -365,8 +366,9 @@
                   </svg>
                 </a>
 
-            </div>
-
+                </div>
+                @endcan
+                @can('editer visites')
                 <div class="mr-1">
              
                 <a
@@ -385,6 +387,8 @@
                 </a>
 
             </div>
+            @endcan
+            @can('supprimer visites')
             <div>
                         <form action="/visites/{{$visite->id}}" method="POST">
                         @csrf
@@ -409,7 +413,8 @@
                   </svg>
                 </button>
                       </form>
-                      </div>                
+                      </div>    
+              @endcan            
               </div>
 
               
@@ -424,7 +429,7 @@
                 </table>
               </div>
               <div
-                class="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800"
+                class="grid py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t"
               >
                 {{$visites->links()}}
               </div>
@@ -435,22 +440,31 @@
         </main>
 <script>
 
+var lot = 0 ;
+var bureau = 0 ;
+var appartement = 0 ;
+var magasin = 0 ;
+var box = 0 ;
 
 @foreach ($interets as $interet)
   var {{$interet->interet}}={{$interet->nombre}}
 @endforeach
 
 {{$i = 0 }}
+{{$k = 0 }}
+
 @foreach ($nombreVisites as $visite)
   var v{{$loop->iteration}}={{$visite->nombreVisites}}
   var d{{$loop->iteration}}='{{ $mois[ ($visite->mois - 1) ] }}'
   {{$i = $loop->iteration}}
+  {{$k = ($visite->mois - 1) }}  
 @endforeach
 
 @if ($i < 7)
   @for ($i = $i+1 ; $i <= 7; $i++)
+  {{$k++}}
   var v{{$i}}=0
-  var d{{$i}}='{{ $mois[ ($i) ] }}'
+  var d{{$i}}='{{ $mois[ ($k) ] }}'
   @endfor
 @endif
 

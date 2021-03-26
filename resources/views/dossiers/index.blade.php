@@ -38,6 +38,7 @@
               </div>
               <!-- Card -->
               @foreach($dossiersParType as $type)
+
                 <div
                   class="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800"
                 >
@@ -56,7 +57,7 @@
                     <p
                       class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
                     >
-                      {{ ucfirst($type->constructible_type) }}s
+                      {{ ucfirst($type->constructible_type) }}
                     </p>
                     <p
                       class="text-lg font-semibold text-gray-700 dark:text-gray-200"
@@ -75,8 +76,21 @@
             <!-- filtre -->
               <p class="text-sm text-gray-600 dark:text-gray-400 ml-2 mb-2">Filtres</p>   
 
-                <form action="/dossiers">
+              <div
+              class="flex items-center justify-between p-2 mb-2 text-sm font-semibold text-blue-600 bg-yellow-100 rounded-lg shadow-sm focus:outline-none focus:shadow-outline-blue rounded-2xl"
               
+            >
+              <div class="flex items-center gap-2">
+                @foreach ($tranches as $tranche)
+                <a
+                  class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-yellow-500 border border-transparent rounded-2xl active:bg-yellow-600 hover:bg-yellow-600 focus:outline-none focus:shadow-outline-yellow"
+                  href="{{$constructible}}/{{$tranche->id}}/dossiers/"
+                >Tranche {{$tranche->num}}</a>
+                @endforeach
+              </div>
+            </div>
+                <form action="{{$constructible}}/0/dossiers">
+
             <div
               class="flex items-center justify-between p-2 mb-2 text-sm font-semibold text-blue-600 bg-blue-100 rounded-lg shadow-sm focus:outline-none focus:shadow-outline-blue rounded-2xl"
               
@@ -84,7 +98,7 @@
               <div class="flex items-center gap-2">
                 <a
                   class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-2xl active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue"
-                  href="/dossiers/"
+                  href="{{$constructible}}/0/dossiers"
                 >Tout</a>
 
                 <input
@@ -148,16 +162,19 @@
              
 
                 </select>
-                <!--<select
+
+                <select
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
-                  name="etatProduit"
+                  name="etatDossier"
                 >
                   <option value="-">Etat</option>
+                  <option value="0" @if ( $etatDossier =="0" ) selected @endif>Réservation</option>
+                  <option value="1" @if ( $etatDossier =="1" ) selected @endif>Vente</option>
                 
 
               
                 </select>
-                <select
+                <!--<select
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
                   name="typeLot"
                 >
@@ -225,7 +242,9 @@
                   >
 
                   @foreach ($dossiers as $dossier)
-                    <tr class="text-gray-700 dark:text-gray-400">
+                    <tr class="text-gray-700
+                    {{($dossier->isVente)? '' : 'bg-yellow-200'}}
+                    dark:text-gray-400">
                       <td class="px-1 py-3">
                         <div class="flex items-center text-sm">
 
@@ -246,24 +265,49 @@
                           </div>
                           <div>
                            
-                            <p class="font-semibold">
-                        <span
-                          class="px-2 py-1 font-semibold leading-tight text-blue-700 bg-blue-100 rounded-full dark:bg-blue-700 dark:text-blue-100"
-                        >                              
+                            <p class="font-bold">
+                            
                               {{ $dossier->num }} 
-                        </span>
+
                             </p>
-                            <p class="text-xs text-gray-600 dark:text-gray-400">
+                            <p class="mb-2 text-xs text-gray-600 dark:text-gray-400">
                           <a href="{{ $dossier->produit->constructible_type }}s/{{ $dossier->produit->constructible->id }}">
-                          {{ $dossier->produit->constructible_type }} N°
+                          {{ ucfirst($dossier->produit->constructible_type) }} N°
                           {{ $dossier->produit->constructible->num }}
                         </a>
-                            </p>
+                      </p>
+                          @if(!$dossier->isVente)
+                        <span
+                          class="px-2 py-1 font-semibold leading-tight
+                          text-red-100 bg-red-700 rounded-full"
+                        >
+                          RESERVATION
+                          </span>
+                          @endif
+                            
                           </div>
                         </div>
                       </td>
                       <td class="px-1 py-3 text-sm">
-                        {{ $dossier->date }} 
+                        {{ $dossier->date }}
+                          @if(!$dossier->isVente)
+                        <br>
+                        <p class="mb-2 text-xs font-semibold text-gray-600 dark:text-gray-400">
+                          Délai pour rappeler le client
+                        </p>
+                      @if(Carbon\Carbon::today() >= $dossier->delais->last()->date)
+                <span class="px-2 py-1 font-semibold leading-tight text-red-100 bg-red-700 rounded-full"
+                >
+                {{$dossier->delais->last()->date->diffForHumans()}}
+               </span>
+                      @else
+                <span class="px-2 py-1 font-semibold leading-tight text-green-100 bg-green-700 rounded-full"
+                >
+                {{$dossier->delais->last()->date->diffForHumans()}}
+               </span>
+                      @endif
+
+                          @endif                        
                       </td>
                       <td class="px-1 py-3 text-xs">
                         <span
@@ -301,7 +345,7 @@
 
                           "
                         >
-                          {{number_format($dossier->paiements->sum('montant'))}} Dhs
+                          {{number_format($dossier->totalPaiementsV)}} Dhs
                         </span>
                       </td>
                       <td class="px-1 py-3 text-sm">
@@ -333,7 +377,7 @@
 
                           "
                         >
-                          {{ $dossier->tauxPaiement }} %
+                          {{ $dossier->tauxPaiementV }} %
                         </span>
                       </td>                                       
                       <td class="px-1 py-3 text-sm w-24">
@@ -341,9 +385,32 @@
                       </td>
 
                       <td class="px-1 py-3 text-sm">
-
               <div class="flex px-1 py-1">
-                {!!$dossier->acte!!}
+                @if(!$dossier->isVente)
+                <!-- icon prolongation délai -->
+                <div class="mr-1">
+                <a
+                  class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-yellow-600 border border-transparent rounded-lg active:bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:shadow-outline-yellow"
+                  aria-label="Like"
+                  href="/dossiers/{{ $dossier->id }}/delais/create"
+                >
+<svg class="w-4 h-4" aria-hidden="true" fill="none" viewBox="0 0 20 20">
+                    <g id="Page-1" stroke="none" stroke-width="1" fill="currentColor" fill-rule="evenodd">
+                            <g id="icon-shape">
+                                <path d="M14.9056439,5.68014258 C13.7991209,4.81998894 12.4607085,4.24404153 11,4.06189375 L11,2 L9,2 L9,4.06189375 C5.05368842,4.55399184 2,7.92038235 2,12 C2,16.418278 5.581722,20 10,20 C14.418278,20 18,16.418278 18,12 C18,10.1512885 17.3729184,8.44903985 16.3198574,7.09435615 L17.7781746,5.63603897 L16.363961,4.22182541 L14.9056439,5.68014258 Z M10,18 C13.3137085,18 16,15.3137085 16,12 C16,8.6862915 13.3137085,6 10,6 C6.6862915,6 4,8.6862915 4,12 C4,15.3137085 6.6862915,18 10,18 Z M7,0 L13,0 L13,2 L7,2 L7,0 Z M12.1213203,8.46446609 L13.5355339,9.87867966 L10,13.4142136 L8.58578644,12 L12.1213203,8.46446609 Z" id="Combined-Shape"></path>                         
+                            </g>
+                        </g>
+                    </svg>
+                </a>
+                </div>
+                <!-- fin icon prolongation -->
+                @endif
+
+
+                @can('voir actes')
+                  {!!$dossier->acte!!}
+                @endcan
+                @can('voir dossiers')
                 <div class="mr-1">
              
                 <a
@@ -357,11 +424,13 @@
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
- <path d="M0,3.99406028 C0,2.8927712 0.895857811,2 1.9973917,2 L9,2 L11,4 L18.0026083,4 C19.1057373,4 20,4.89706013 20,6.00585866 L20,15.9941413 C20,17.1019465 19.1017876,18 18.0092049,18 L1.99079514,18 C0.891309342,18 0,17.1054862 0,16.0059397 L0,3.99406028 Z M2,6 L18,6 L18,16 L2,16 L2,6 Z"></path>
+                  <path d="M0,3.99406028 C0,2.8927712 0.895857811,2 1.9973917,2 L9,2 L11,4 L18.0026083,4 C19.1057373,4 20,4.89706013 20,6.00585866 L20,15.9941413 C20,17.1019465 19.1017876,18 18.0092049,18 L1.99079514,18 C0.891309342,18 0,17.1054862 0,16.0059397 L0,3.99406028 Z M2,6 L18,6 L18,16 L2,16 L2,6 Z"></path>
                   </svg>
                 </a>
-  </div>
+                </div>
 
+                @endcan
+                @can('voir paiements')
                 <div class="mr-1">
              
                 <a
@@ -380,7 +449,8 @@
                 </a>
 
             </div>
-
+            @endcan
+            @can('editer dossiers')
                 <div class="mr-1">
              
                 <a
@@ -399,6 +469,8 @@
                 </a>
 
             </div>
+            @endcan
+            @can('supprimer dossiers')
             <div>
                         <form action="/dossiers/{{$dossier->id}}" method="POST">
                         @csrf
@@ -423,10 +495,11 @@
                   </svg>
                 </button>
                       </form>
-                      </div>                
+                      </div>  
+                      @endcan              
               </div>
 
-              
+                      
                       </td>
 
 
@@ -438,7 +511,7 @@
                 </table>
               </div>
               <div
-                class="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800"
+                class="grid py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t"
               >
                 {{$dossiers->links()}}
               </div>

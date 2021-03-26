@@ -1,7 +1,7 @@
 /**
  * For usage, visit Chart.js docs https://www.chartjs.org/docs/latest/
  */
-const pieConfig = {
+const pieConfigInteret = {
   type: 'doughnut',
   data: {
     datasets: [
@@ -32,5 +32,5 @@ const pieConfig = {
 }
 
 // change this to the id of your chart element in HMTL
-const pieCtx = document.getElementById('pie')
-window.myPie = new Chart(pieCtx, pieConfig)
+const pieCtxInteret = document.getElementById('pieInteret')
+window.myPie = new Chart(pieCtxInteret, pieConfigInteret)

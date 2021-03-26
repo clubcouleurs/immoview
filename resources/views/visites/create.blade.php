@@ -94,7 +94,9 @@
                       class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
                       name="interet"
                       value="lot"
-                      checked
+                      @if (old('interet') == "lot")
+                        checked
+                      @endif 
                     />
                     <span class="ml-2">Lot</span>
                   </label>
@@ -106,6 +108,9 @@
                       class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
                       name="interet"
                       value="appartement"
+                      @if (old('interet') == "appartement")
+                        checked
+                      @endif                       
                     />
                     <span class="ml-2">Appartement</span>
                   </label>
@@ -117,6 +122,9 @@
                       class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
                       name="interet"
                       value="magasin"
+                      @if (old('interet') == "magasin")
+                        checked
+                      @endif                       
                     />
                     <span class="ml-2">Magasin</span>
                   </label>
@@ -128,6 +136,9 @@
                       class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
                       name="interet"
                       value="bureau"
+                      @if (old('interet') == "bureau")
+                        checked
+                      @endif                       
                     />
                     <span class="ml-2">Bureau</span>
                   </label>
@@ -139,6 +150,9 @@
                       class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
                       name="interet"
                       value="box"
+                      @if (old('interet') == "box")
+                        checked
+                      @endif                       
                     />
                     <span class="ml-2">Box</span>
                   </label>                                                      

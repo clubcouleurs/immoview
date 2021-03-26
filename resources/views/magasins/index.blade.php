@@ -36,6 +36,7 @@
                 </div>
               </div>
               <!-- Card -->
+              @can('voir finance')
               <div
                 class="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800"
               >
@@ -63,6 +64,7 @@
                   </p>
                 </div>
               </div>
+              @endcan
               <!-- Card -->
               <div
                 class="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800"
@@ -114,7 +116,7 @@
                   </p>
                 </div>
               </div>
-
+              @can('voir etat bloque')
               <div
                 class="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800"
               >
@@ -138,7 +140,7 @@
                   </p>
                 </div>
               </div>              
-
+              @endcan
             </div>
             <!-- filtre -->
               <p class="text-sm text-gray-600 dark:text-gray-400 ml-2 mb-2">Filtres</p>   
@@ -365,6 +367,11 @@
                   >
 
                   @foreach ($magasins as $produit)
+                    @if (!in_array($produit->etiquette_id, [2,3]))
+                          @cannot('voir etat bloque')
+                            @continue
+                          @endcannot
+                    @endif                  
                     <tr class="
                     @if ($produit->etiquette->label == 'En stock')
                       bg-green-50
@@ -471,7 +478,9 @@
 
 
                       <td class="px-4 py-3 text-sm">
+
               <div class="flex px-1 py-1">
+                @can('editer dossiers')
                 @if(null == $produit->dossier && $produit->etiquette->label == 'En stock')
                 <div class="mr-1">
              
@@ -492,6 +501,8 @@
 
               </div>
             @endif
+            @endcan
+              @can('editer magasins')
 
                 <div class="mr-1">
              
@@ -511,6 +522,8 @@
                 </a>
 
             </div>
+            @endcan
+            @can('supprimer magasins')
             <div>
                         <form action="/magasins/{{$produit->constructible->id}}" method="POST">
                         @csrf
@@ -535,7 +548,8 @@
                   </svg>
                 </button>
                       </form>
-                      </div>                
+                      </div>  
+                      @endcan              
               </div>
 
               
@@ -550,7 +564,7 @@
                 </table>
               </div>
               <div
-                class="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800"
+                class="grid py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t"
               >
                 {{$magasins->links()}}
               </div>

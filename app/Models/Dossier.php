@@ -2,18 +2,24 @@
 
 namespace App\Models;
 
+use App\Models\Appartement;
+use App\Models\Box;
 use App\Models\Client;
+use App\Models\Delai;
+use App\Models\Lot;
 use App\Models\Paiement;
 use App\Models\Produit;
 use App\Models\User;
 use App\Models\Validation;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\Gate;
 
 class Dossier extends Model
 {
     use HasFactory;
-    protected $fillable = ['num', 'date', 'frais','detail','client_id','user_id', 'produit_id'];
+    protected $fillable = ['num', 'date', 'frais','detail','client_id','user_id', 'produit_id', 'isVente'];
     
     public function produit()
     {
@@ -32,6 +38,68 @@ class Dossier extends Model
         return $this->hasMany(Paiement::class);
     }
 
+    public function delais()
+    {
+        return $this->hasMany(Delai::class);
+    }
+
+/// à revoir 
+public function lot() {
+    return $this->hasOneThrough(
+        Lot::class, // the class that we want objects from
+        Produit::class, // foreign key in leave class
+        'constructible_id', // local key in this class
+        'id' // key of the leave in the request class
+        )
+        // we have to limit it to only Leave class
+        ->where('constructible_type', array_search(Produit::class, Relation::morphMap()) ?: Produit::class);
+}
+
+public function appartement() {
+    return $this->hasOneThrough(
+        Appartement::class, // the class that we want objects from
+        Produit::class, // foreign key in leave class
+        'constructible_id', // local key in this class
+        'id' // key of the leave in the request class
+        )
+        // we have to limit it to only Leave class
+        ->where('constructible_type', array_search(Appartement::class, Relation::morphMap()) ?: Produit::class);
+}
+
+public function box() {
+    return $this->hasOneThrough(
+        Box::class, // the class that we want objects from
+        Produit::class, // foreign key in leave class
+        'constructible_id', // local key in this class
+        'id' // key of the leave in the request class
+        )
+        // we have to limit it to only Leave class
+        ->where('constructible_type', array_search(Box::class, Relation::morphMap()) ?: Produit::class);
+}
+
+public function magasin() {
+    return $this->hasOneThrough(
+        Magasin::class, // the class that we want objects from
+        Produit::class, // foreign key in leave class
+        'constructible_id', // local key in this class
+        'id' // key of the leave in the request class
+        )
+        // we have to limit it to only Leave class
+        ->where('constructible_type', array_search(Magasin::class, Relation::morphMap()) ?: Produit::class);
+}
+
+public function bureau() {
+    return $this->hasOneThrough(
+        Office::class, // the class that we want objects from
+        Produit::class, // foreign key in leave class
+        'constructible_id', // local key in this class
+        'id' // key of the leave in the request class
+        )
+        // we have to limit it to only Leave class
+        ->where('constructible_type', array_search(Office::class, Relation::morphMap()) ?: Produit::class);
+}
+
+// fin à revoir
 
     public function validation()
     {
@@ -55,7 +123,7 @@ class Dossier extends Model
 // fin paiements validés
     public function getReliquatAttribute()
     {
-        return  $this->produit->total - $this->paiements()->sum('montant') ;
+        return  $this->produit->total - $this->totalPaiementsV ;
     }  
     public function getTauxPaiementAttribute()
     {       
@@ -74,9 +142,9 @@ class Dossier extends Model
     public function getHasActeAttribute()
     {       
         if ($this->produit->constructible_type != 'appartement') {
-            return $this->tauxPaiementV > 30 ;
+            return $this->tauxPaiementV >= 30 ;
         }elseif ($this->produit->constructible_type === 'appartement') {
-            return $this->totalPaiementsV > 75000 ;
+            return $this->totalPaiementsV >= 75000 ;
         }
     }  
     public function getValidateAttribute()
@@ -85,7 +153,31 @@ class Dossier extends Model
     } 
 
     public function getActeAttribute()
-    {       
+    {    
+    if ($this->actePj)
+    {
+            return
+            '<div class="mr-1">
+                <a
+                  class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
+                  aria-label="Like"
+                  target="_blank"
+                  href="' . asset($this->actePj) . '"
+                >
+                    <svg
+                    class="w-4 h-4"
+                    aria-hidden="true"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                        <path d="M14,14 L18,14 L18,2 L2,2 L2,14 L6,14 L6,14.0020869 C6,15.1017394 6.89458045,16 7.99810135,16 L12.0018986,16 C13.1132936,16 14,15.1055038 14,14.0020869 L14,14 L14,14 Z M0,1.99079514 C0,0.891309342 0.898212381,0 1.99079514,0 L18.0092049,0 C19.1086907,0 20,0.898212381 20,1.99079514 L20,18.0092049 C20,19.1086907 19.1017876,20 18.0092049,20 L1.99079514,20 C0.891309342,20 0,19.1017876 0,18.0092049 L0,1.99079514 L0,1.99079514 Z M4,4 L16,4 L16,6 L4,6 L4,4 L4,4 Z M4,7 L16,7 L16,9 L4,9 L4,7 L4,7 Z M4,10 L16,10 L16,12 L4,12 L4,10 L4,10 Z" id="Combined-Shape"></path>
+                    </svg>
+                </a>
+             </div>';         
+           
+       }   
+       else
+       {
         if ($this->hasActe || $this->validate)
         {
             return
@@ -105,12 +197,28 @@ class Dossier extends Model
                         <path d="M14,14 L18,14 L18,2 L2,2 L2,14 L6,14 L6,14.0020869 C6,15.1017394 6.89458045,16 7.99810135,16 L12.0018986,16 C13.1132936,16 14,15.1055038 14,14.0020869 L14,14 L14,14 Z M0,1.99079514 C0,0.891309342 0.898212381,0 1.99079514,0 L18.0092049,0 C19.1086907,0 20,0.898212381 20,1.99079514 L20,18.0092049 C20,19.1086907 19.1017876,20 18.0092049,20 L1.99079514,20 C0.891309342,20 0,19.1017876 0,18.0092049 L0,1.99079514 L0,1.99079514 Z M4,4 L16,4 L16,6 L4,6 L4,4 L4,4 Z M4,7 L16,7 L16,9 L4,9 L4,7 L4,7 Z M4,10 L16,10 L16,12 L4,12 L4,10 L4,10 Z" id="Combined-Shape"></path>
                     </svg>
                 </a>
+             </div>
+             <div class="mr-1">
+                <a
+                  class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
+                  aria-label="Like"
+                  href="/dossiers/' . $this->id . '/retour"
+                >
+                    <svg
+                    class="w-4 h-4"
+                    aria-hidden="true"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                        <path d="M14,14 L18,14 L18,2 L2,2 L2,14 L6,14 L6,14.0020869 C6,15.1017394 6.89458045,16 7.99810135,16 L12.0018986,16 C13.1132936,16 14,15.1055038 14,14.0020869 L14,14 Z M0,1.99079514 C0,0.891309342 0.898212381,0 1.99079514,0 L18.0092049,0 C19.1086907,0 20,0.898212381 20,1.99079514 L20,18.0092049 C20,19.1086907 19.1017876,20 18.0092049,20 L1.99079514,20 C0.891309342,20 0,19.1017876 0,18.0092049 L0,1.99079514 Z M5,9 L7,7 L9,9 L13,5 L15,7 L9,13 L5,9 Z" id="Combined-Shape"></path>
+                    </svg>
+                </a>
              </div>' ;
         }
         else
         {
             //verifying Gate::allows('validation-dossier')
-            if (true) {
+            if (Gate::allows('valider dossiers')) {
             return
             '<div class="mr-1">
                 <a
@@ -152,6 +260,7 @@ class Dossier extends Model
              </div>';  
 
              }  
+        }
         }
     }     
 

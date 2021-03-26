@@ -77,12 +77,9 @@ role="progressbar" :aria-valuenow="value" aria-valuemin="0" :aria-valuemax="tota
                           </div>
                           <div>
                             <p class="font-semibold">
-                <a
-                  class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
-                  href="/dossiers/{{ $p->dossier->id }}/paiements/{{ $p->id }}"
-                >
+
                   {{ $p->id }}
-                </a>
+       
                               </p>
 
                           </div>
@@ -99,12 +96,41 @@ role="progressbar" :aria-valuenow="value" aria-valuemin="0" :aria-valuemax="tota
                       </td> 
                       <td class="px-4 py-3 text-sm">
                         {{ $p->dossier->client->nom }} {{ $p->dossier->client->prenom }}
-                      </td>                                                               
+                      </td> 
+
+
+
+
+
+
+
+                      <td class="flex px-4 py-3 text-sm">
+            @can('editer paiements')
+                <div class="mr-1">
+                <a
+                  class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none focus:shadow-outline-gray"
+                  aria-label="Like"
+                  href="/dossiers/{{ $p->dossier->id }}/paiements/{{ $p->id }}"
+                >
+                  <svg
+                    class="w-4 h-4"
+                    aria-hidden="true"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                  <path d="M12.2928932,3.70710678 L0,16 L0,20 L4,20 L16.2928932,7.70710678 L12.2928932,3.70710678 Z M13.7071068,2.29289322 L16,0 L20,4 L17.7071068,6.29289322 L13.7071068,2.29289322 Z" id="Combined-Shape"></path>
+                  </svg>
+                </a>
+
+            </div>
+            @endcan
+
+
+                        @can('supprimer paiements')
+                      <div>
                       <form action="/dossiers/{{$p->dossier->id}}/paiements/{{$p->id}}" method="POST">
                         @csrf
                         @method('DELETE')
-                      <td class="px-4 py-3 text-sm">
-              <div>
                 <button
                   class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
                   aria-label="Like"
@@ -124,10 +150,10 @@ role="progressbar" :aria-valuenow="value" aria-valuemin="0" :aria-valuemax="tota
                     ></path>
                   </svg>
                 </button>
-              </div>
-              
-                      </td>
                       </form>
+              </div>
+                @endcan
+                      </td>
                     </tr>
                     @endforeach
                   </tbody>

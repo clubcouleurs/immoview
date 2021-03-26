@@ -5,20 +5,22 @@ namespace App\Http\Controllers;
 use App\Http\Requests\DossierRequest;
 use App\Http\Traits\PaginateTrait;
 use App\Models\Client;
+use App\Models\Delai;
 use App\Models\Dossier;
 use App\Models\Produit;
+use App\Models\Tranche;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
-use setasign\Fpdi\Fpdi;
 use NumberToWords\NumberToWords;
+use setasign\Fpdi\Fpdi;
+use setasign\Fpdi\Tcpdf\Fpdi as TCPDF;
 
 class DossierController extends Controller
 {
     use PaginateTrait ;
-
     /**
      * Display a listing of the resource.
      *
@@ -26,9 +28,19 @@ class DossierController extends Controller
      */
     public function index(Request $request)
     {
-
-        $dossiersAll = Dossier::with('produit')->with('client')
-                            ->with('paiements')->orderbyDesc('created_at')->get();
+        $constructible = $request['constructible'] ;
+        $tranche = $request['tranche'] ;
+        $tranches = Tranche::all();
+        $tranchesArray = ($tranche == 0) ? $tranches->pluck('id')->toArray() : [$tranche] ;
+        $dossiersAll = Dossier::whereHas('produit', function (Builder $query) use ($constructible)
+                            {
+                                $query->where('constructible_type', '=', $constructible);
+                            })
+                            ->with('produit')
+                            //->with($constructible)
+                            ->with('client')
+                            ->with('paiements')->orderbyDesc('created_at')
+                            ->get();
 
         //recherche par taux de paiement
         if (isset($request['sign']) && $request['sign'] != '' ) {
@@ -72,17 +84,6 @@ class DossierController extends Controller
             }
         }
 
-        //dd($dossiersAll) ;
-
-
-
-        //dd($dossiersAll) ;
-
-        //selectionner les lots 
-        //$lotsAll = $lotsAll->whereNotNull('lot.id' ); 
-
-        //$maxPrix = $lotsAll->max('prixM2Indicatif');
-        //$minPrix = $lotsAll->min('prixM2Indicatif');  
         $numsDossier = [];
 
         //recherche par numéro des dossiers
@@ -107,22 +108,40 @@ class DossierController extends Controller
 
         }        
 
-        //recherche par prix
-        if (isset($request['minPrix']) && $request['minPrix'] != '' ) {
-            $minPrix = intval($request['minPrix']) ;
-        }
-
-        //recherche par prix
-        if (isset($request['maxPrix']) && $request['maxPrix'] != '' ) {
-            $maxPrix = floatval($request['maxPrix']) ;
-        }
-
-        //$lotsAll = $lotsAll->whereBetween('prixM2Indicatif', [$minPrix, $maxPrix] ); 
 
         //recherche par tranche
-        if (isset($request['tranche']) && $request['tranche'] != '-' ) {
-            $tr = $request['tranche'] ;
-            $lotsAll = $lotsAll->where('lot.tranche_id', $tr); 
+        if (isset($tranche) && $tranche != '-' ) {
+            switch ($constructible) {
+                case 'appartement':
+                case 'magasin':
+                case 'box':
+                    $dossiersAll = $dossiersAll->filter(function ($dossier) use ($tranchesArray)
+                    {
+                        if(in_array($dossier->produit->constructible->immeuble->tranche_id, $tranchesArray))
+                        {
+                            return true ; 
+                        }
+                    });
+                    break;
+                case 'lot':
+                    $dossiersAll = $dossiersAll->filter(function ($dossier) use ($tranchesArray)
+                    {
+                        if(in_array($dossier->produit->constructible->tranche_id, $tranchesArray))
+                        {
+                            return true ; 
+                        }
+                    });
+                    break;
+                case 'bureau':
+                    $dossiersAll = $dossiersAll->filter(function ($dossier) use ($tranchesArray)
+                    {
+                        if(in_array($dossier->produit->constructible->situable->immeuble->tranche_id, $tranchesArray))
+                        {
+                            return true ; 
+                        }
+                    });
+                    break;
+            }
         }
 
         //recherche par commercial
@@ -144,9 +163,9 @@ class DossierController extends Controller
         }           
 
         //recherche par etat du lot
-        if (isset($request['etatProduit']) && $request['etatProduit'] != '-' ) {
-            $etat = $request['etatProduit'] ;
-            $lotsAll = $lotsAll->where('etiquette_id', $etat);  
+        if (isset($request['etatDossier']) && $request['etatDossier'] != '-' ) {
+            $etat = $request['etatDossier'] ;
+            $dossiersAll = $dossiersAll->where('isVente', $etat);  
         }           
 
             //$total = 0 ;
@@ -161,10 +180,10 @@ class DossierController extends Controller
             'totalDossier'          => $dossiersAll->count(),
             'clients'               =>   Client::all(),
             'users'                 => User::all(),
-            'dossiersParType'    => Dossier::dossiersParType(),
-            'tranches'              => '' ,
+            'dossiersParType'       => Dossier::dossiersParType(),
+            'tranches'              => $tranches ,
             'valeurTotal'           => 1000, //$prixTotalLots->sum(),
-            'SearchByTranche'       => '',//$request['tranche'] ,
+            'etatDossier'           => $request['etatDossier'],
             'SearchByUser'          => $request['user'] ,
             'SearchBySign'         => $request['sign'] ,
             'SearchByTauxComparateur'          => $request['tauxComparateur'] ,
@@ -173,6 +192,7 @@ class DossierController extends Controller
             'SearchByMax'           => '',//$request['maxPrix'] ,
             'SearchByNum'           => implode(',' , $numsDossier) ,
             'SearchByClient'        => $request['client'] ,
+            'constructible'         => '/' . $constructible ,
 
 
         ]);
@@ -239,23 +259,40 @@ class DossierController extends Controller
      */
     public function store(DossierRequest $request)
     {
+        //dd($request) ;
         $dossier = new Dossier([
-            'num'              => $request['num'] ,    
+            'num'               => $request['num'] ,    
             'date'              => $request['date'] ,
             'frais'             => $request['frais'] ,
             'detail'            => $request['detail'],
             'client_id'         => $request['client'],
             'produit_id'        => $request['produit'],
             'user_id'           => Auth::id(),
+            'isVente'           => $request['isVente'],
         ]) ;
+
         $produit = Produit::findOrFail($request['produit']) ;
             if(isset($produit) && $produit->etiquette_id === 2 )
             {
                 $dossier->save();
-                $dossier->produit->etiquette_id = 3 ;
+                if ($dossier->isVente) {
+                    $dossier->produit->etiquette_id = 3 ;
+                }else
+                {                    
+                    $dossier->produit->etiquette_id = 9 ;
+                }
                 $dossier->produit->update() ;
-                return redirect()->action([DossierController::class, 'index'])
-                    ->with('message','Dossier ajouté !');
+
+                if ($dossier->isVente == false) {
+                    $delai = new Delai([
+                        'date'              => $request['delai'] ,
+                    ]) ;
+                    $dossier->delais()->save($delai) ;
+                }
+
+                return redirect(
+                    $produit->constructible_type . '/0/dossiers'
+                )->with('message','Dossier ajouté !');
             }
 
             return Redirect::back()->withErrors(['msg', 'Attention : ' .
@@ -320,14 +357,43 @@ class DossierController extends Controller
      */
     public function update(DossierRequest $request, Dossier $dossier)
     {
+        if($request->hasFile('actePj'))
+        {
 
+            $client = $dossier->client->nom . '-' . $dossier->client->prenom ;
+
+            $pjName = 'acte-reservation' . '-dossierNum' 
+
+            . str_replace('.', '', $dossier->num) . '-' 
+
+            . str_replace('.', '',  $client ) . '-' 
+
+            . str_replace(' ', '-', date('Y-m-d-His')) ;
+
+            $pjExtension = $request->file('actePj')->extension() ;                 
+
+            $pdfPath = $request->file('actePj')
+            ->storeAs('public/actes', $pjName . '.' . $pjExtension) ;
+
+            $dossier->actePj = 'actes/' . $pjName . '.' . $pjExtension ;
+
+        }else
+        {
             $dossier->num = $request['num']; 
             $dossier->date = $request['date'];
             $dossier->frais = $request['frais'];
             $dossier->detail = $request['detail'];
+        }
             $dossier->update(); 
         return redirect()->action([DossierController::class, 'index'])
         ->with('message','Dossier modifié') ;
+    }
+
+    public function retour(Dossier $dossier)
+    {
+        return view('dossiers.retour', [
+            'dossier'       => $dossier
+        ]) ;
     }
 
     /**
@@ -349,7 +415,7 @@ class DossierController extends Controller
                 ->with('message','Dossier supprimé !');
     }
 
-    public function actes(Dossier $dossier)
+    public function actesLot(Dossier $dossier)
     {
 
         // create the number to words "manager" class
@@ -458,5 +524,103 @@ class DossierController extends Controller
         $pdf->Output('D', 'actes_reservation_lot_N_' . $dossier->produit->constructible->num
             . '_' . $dossier->client->nom . '_' . $dossier->client->prenom . '.pdf', true);
     }
-    
+
+    public function actes(Dossier $dossier)
+    {
+
+        // create the number to words "manager" class
+        $toWords = new NumberToWords();
+        // build a new number transformer using the RFC 3066 language identifier
+        $numberTransformer = $toWords->getNumberTransformer('fr');
+
+         // outputs "five thousand one hundred twenty"
+
+        // initiate FPDI
+        $pdf = new TCPDF();
+        $pdf->SetTextColor(0, 0, 255) ;
+        //$pdf->SetFont('Helvetica');
+        $pdf->setRTL(true);
+        $pdf->SetFont('aealarabiya', '', 14);
+
+        // get the page count
+
+        $pageCount = $pdf->setSourceFile(Storage_path('app/public/acte-reservation-'.
+         $dossier->produit->constructible_type .'.pdf'));
+
+        // iterate through all pages
+        for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+            $pdf->SetMargins(0, 0, 0 , 0) ;
+
+            // import a page
+            $templateId = $pdf->importPage($pageNo); //$pageNo
+            // get the size of the imported page
+            $size = $pdf->getTemplateSize($templateId);
+            //dd($size) ;
+            // create a page (landscape or portrait depending on the imported page size)
+            if ($size['width'] > $size['height']) {
+                $pdf->AddPage('L', array($size['width'], $size['height']));
+            } else {
+                $pdf->AddPage('P', array($size['width'], $size['height']));
+            }
+
+            // use the imported page
+            $pdf->useTemplate($templateId);
+            if ($pageNo == 1) // 1 
+            {
+            $prenom = stripslashes($dossier->client->prenomAr);
+            //$prenom = iconv('UTF-8', 'windows-1251//TRANSLIT//IGNORE', $prenom);
+            //    dd('مفعول') ;
+            $nom = stripslashes($dossier->client->nomAr);
+            //$nom = iconv("Windows-1256//TRANSLIT//IGNORE", "UTF-8//TRANSLIT//IGNORE", 'مفعول');
+
+            $pdf->SetXY(35, 95.75);
+            $nomC =  $nom . ' ' . $prenom ;
+            $pdf->Write(8, $nomC);
+
+            $adresse = stripslashes($dossier->client->adresseAr);
+            //$adresse = iconv('UTF-8', 'windows-1251//TRANSLIT//IGNORE', $adresse);
+
+            $pdf->SetXY(14, 117);
+            $pdf->Write(8, ucfirst(preg_replace( "/\r|\n/", " ", $adresse )));
+
+            $pdf->SetXY(69, 103);
+            $pdf->Write(8, ucfirst($dossier->client->cin));    
+            }    
+
+            if ($pageNo == 2) // 2
+            {
+                $pdf->SetFont('Helvetica', 12);
+
+                $pdf->SetXY(56, 41.5);
+                $pdf->Write(0,$dossier->produit->constructible->surface) ;
+
+                $pdf->SetXY(104, 41.5);
+                $pdf->Write(0,$dossier->produit->constructible->immeuble->tranche->num) ;
+
+                $pdf->SetXY(142, 41.5);
+                $pdf->Write(0,$dossier->produit->constructible->immeuble->num) ;
+
+                $pdf->SetXY(45, 48.5);
+                $pdf->Write(0,$dossier->produit->constructible->num) ;
+
+                $pdf->SetXY(20, 48.5);
+                $pdf->Write(0,$dossier->produit->constructible->etage) ;                
+            }  
+
+            if ($pageNo == 6) // 6
+            {
+
+            $pdf->SetXY(99, 194.5);
+            $pdf->Write(8, date("j/n/Y"));   
+          
+
+            }  
+
+        }
+        $pdf->Output('actes_reservation_lot_N_' . $dossier->produit->constructible->num
+            . '_' . $dossier->client->nom . '_' . $dossier->client->prenom . '.pdf', 'I'); 
+        // Output the new PDF
+        //$pdf->Output('D', 'actes_reservation_lot_N_' . $dossier->produit->constructible->num
+        //    . '_' . $dossier->client->nom . '_' . $dossier->client->prenom . '.pdf', true);
+    }    
 }

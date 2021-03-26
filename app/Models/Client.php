@@ -14,7 +14,7 @@ class Client extends Model
 	    'updated_at'
 	];
 
-    protected $fillable = ['nom', 'prenom','cin','mobile','adresse'];
+    protected $fillable = ['nom', 'prenom','cin','mobile','adresse', 'cinPj'];
 
     public function dossiers()
     {
@@ -23,6 +23,18 @@ class Client extends Model
     public function visites()
     {
         return $this->hasMany(Visite::class);
-    }      
+    }    
 
+    public static function tauxConversion()
+    {
+        $countClients = Client::count() ;
+        if( $countClients != 0 )
+        {
+            return round((Client::where('activer' , 1)->count() * 100) / $countClients , 2) ;
+        }
+        else
+        {
+            return 0 ;
+        }
+    }
 }

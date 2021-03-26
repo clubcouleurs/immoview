@@ -13,6 +13,10 @@ class DossierPolicy
 {
     use HandlesAuthorization;
 
+    public function createDelai(User $user)
+    {
+        dd('') ;
+    }
     /**
      * Determine whether the user can view any models.
      *

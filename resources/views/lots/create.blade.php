@@ -93,7 +93,7 @@
                     @if(old('tranche') == $tranche->id)
                       selected
                     @endif                    
-                    >Tranche {{$tranche->id}}</option>
+                    >Tranche {{$tranche->num}}</option>
                 @endforeach
 
                 </select>

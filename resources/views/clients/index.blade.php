@@ -87,6 +87,7 @@
                       <th class="px-4 py-3">@if($activer==1) Clients @else Prospects @endif</th>
                       
                       @if($activer==1) <th class="px-4 py-3">N° CIN</th> @endif
+                      @if($activer==1) <th class="px-4 py-3">CIN SCANNE</th> @endif
 
                       @if($activer==1) <th class="px-4 py-3">Adresse</th> @endif
                       <th class="px-4 py-3">Mobile</th>
@@ -137,7 +138,15 @@
                       <td class="px-4 py-3 text-sm">
                         {{ $client->cin }} 
                       </td>
-
+                      <td class="px-4 py-3 text-sm">
+                        @isset($client->cinPj)
+                        <a href="{{asset($client->cinPj)}}" target="_blank">
+                        <img class="h-8" src="{{asset($client->cinPj)}}">
+                        </a>
+                        @else
+                        Aucune pièce jointe
+                        @endisset
+                      </td> 
                       <td class="px-4 py-3 text-xs">
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
@@ -166,6 +175,7 @@
  
 
                       <td class="px-4 py-3 text-sm">
+                        @can('editer dossiers')
               <div class="flex px-1 py-1">
                 
                       @if($activer==1)
@@ -185,6 +195,7 @@
                   </svg>
                 </a>
               </div>
+              @can('editer clients')
                 <div class="mr-1">
                 <a
                   class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none focus:shadow-outline-gray"
@@ -200,7 +211,8 @@
                   <path d="M12.2928932,3.70710678 L0,16 L0,20 L4,20 L16.2928932,7.70710678 L12.2928932,3.70710678 Z M13.7071068,2.29289322 L16,0 L20,4 L17.7071068,6.29289322 L13.7071068,2.29289322 Z" id="Combined-Shape"></path>
                   </svg>
                 </a>
-            </div>
+              </div>
+              @endcan
             @else
                 <div class="mr-1">
                 <a
@@ -219,6 +231,7 @@
                 </a>
             </div>            
             @endif
+            @can('supprimer clients')
             <div>
                         <form action="/clients/{{$client->id}}" method="POST">
                         @csrf
@@ -243,10 +256,11 @@
                   </svg>
                 </button>
                       </form>
-                      </div>                
+                      </div>  
+            @endcan              
               </div>
 
-              
+                      @endcan
                       </td>
 
 
@@ -258,7 +272,7 @@
                 </table>
               </div>
               <div
-                class="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800"
+                class="grid py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t"
               >
                 {{$clients->links()}}
               </div>

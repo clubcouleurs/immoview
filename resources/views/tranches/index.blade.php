@@ -6,6 +6,7 @@
         <p class="block h-160 px-4 py-4 rounded-lg mx-auto w-full mt-4
         bg-red-200 text-red-600 text-xl"> Attention Il y'a des erreurs dans votre formulaire</p>
         @endif
+            @can('editer tranches')
 
             <h2
               class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
@@ -89,7 +90,7 @@
 
             </div>
             </form>
-
+            @endcan
 
             <h2
               class="my-6 text-4xl font-semibold text-gray-700 dark:text-gray-200"
@@ -154,6 +155,7 @@
 
 
                       <td class="flex px-4 py-3 text-sm">
+                        @can('editer tranches')
                 <div class="mr-1">
                 <a
                   class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none focus:shadow-outline-gray"
@@ -170,7 +172,8 @@
                   </svg>
                 </a>
                 </div>
-
+                @endcan
+                @can('supprimer tranches')
                       <form action="/tranches/{{$tranche->id}}" method="POST">
                         @csrf
                         @method('DELETE')
@@ -196,6 +199,8 @@
                 </button>
               </div>
               </form>
+
+              @endcan
                       </td>
 
                     </tr>
@@ -204,7 +209,7 @@
                 </table>
               </div>
               <div
-                class="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800"
+                class="grid py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t"
               >
                 {{--$produits->links()--}}
               </div>
