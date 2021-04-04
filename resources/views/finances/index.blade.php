@@ -4,7 +4,7 @@
             <h2
               class="my-6 text-4xl font-semibold text-gray-700 dark:text-gray-200"
             >
-              Récapitulatif des tranches
+              Récapitulatifs
 
             </h2>
             @foreach($constructibles as $header => $constructible)

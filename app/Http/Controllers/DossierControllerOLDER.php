@@ -393,7 +393,8 @@ class DossierController extends Controller
         $pdf = new FPDI();
         $pdf->SetTextColor(0, 0, 255) ;
         $pdf->SetFont('Helvetica');
-
+            $pdf->setPrintHeader(false);
+            $pdf->setPrintFooter(false);
         // get the page count
 
         $pageCount = $pdf->setSourceFile(Storage_path('app/public/acte-reservation-'.
@@ -505,7 +506,8 @@ class DossierController extends Controller
         //$pdf->SetFont('Helvetica');
         $pdf->setRTL(true);
         $pdf->SetFont('aealarabiya', '', 14);
-
+            $pdf->setPrintHeader(false);
+            $pdf->setPrintFooter(false);
         // get the page count
 
         $pageCount = $pdf->setSourceFile(Storage_path('app/public/acte-reservation-'.

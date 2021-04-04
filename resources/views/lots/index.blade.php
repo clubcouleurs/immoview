@@ -225,7 +225,8 @@
                   <option value="-">Type</option>
                 
                   <option value="Habitat"  @if ( $SearchByType == "Habitat") selected @endif>Habitat</option>
-                  <option value="Commercial" @if ( $SearchByType == "Commercial") selected @endif>Commercial</option>              
+                  <option value="Commercial" @if ( $SearchByType == "Commercial") selected @endif>Commercial</option>     
+                  <option value="showroom" @if ( $SearchByType == "showroom") selected @endif>Showroom</option>                             
                 </select> 
                 <input
                   class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input rounded-2xl"
@@ -511,12 +512,14 @@
                         </span>
                       </td>
                       <td class="px-4 py-3 text-sm">
-                        {{ $produit->constructible->type }}
+                        {{ ucfirst($produit->constructible->type) }}
                       </td>
 
                       <td class="px-4 py-3 text-sm">
-                        @can('editer dossiers')
+                        
+                @can('Ajouter dossiers lots')
               <div class="flex px-1 py-1">
+
                 @if(null == $produit->dossier && $produit->etiquette->label == 'En stock')
                 <div class="mr-1">
              

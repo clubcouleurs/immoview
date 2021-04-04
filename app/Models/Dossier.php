@@ -38,73 +38,30 @@ class Dossier extends Model
         return $this->hasMany(Paiement::class);
     }
 
+    public function bordereaux()
+    {
+        return $this->hasMany(Bordereau::class);
+    }
+
     public function delais()
     {
         return $this->hasMany(Delai::class);
     }
 
-/// à revoir 
-public function lot() {
-    return $this->hasOneThrough(
-        Lot::class, // the class that we want objects from
-        Produit::class, // foreign key in leave class
-        'constructible_id', // local key in this class
-        'id' // key of the leave in the request class
-        )
-        // we have to limit it to only Leave class
-        ->where('constructible_type', array_search(Produit::class, Relation::morphMap()) ?: Produit::class);
-}
-
-public function appartement() {
-    return $this->hasOneThrough(
-        Appartement::class, // the class that we want objects from
-        Produit::class, // foreign key in leave class
-        'constructible_id', // local key in this class
-        'id' // key of the leave in the request class
-        )
-        // we have to limit it to only Leave class
-        ->where('constructible_type', array_search(Appartement::class, Relation::morphMap()) ?: Produit::class);
-}
-
-public function box() {
-    return $this->hasOneThrough(
-        Box::class, // the class that we want objects from
-        Produit::class, // foreign key in leave class
-        'constructible_id', // local key in this class
-        'id' // key of the leave in the request class
-        )
-        // we have to limit it to only Leave class
-        ->where('constructible_type', array_search(Box::class, Relation::morphMap()) ?: Produit::class);
-}
-
-public function magasin() {
-    return $this->hasOneThrough(
-        Magasin::class, // the class that we want objects from
-        Produit::class, // foreign key in leave class
-        'constructible_id', // local key in this class
-        'id' // key of the leave in the request class
-        )
-        // we have to limit it to only Leave class
-        ->where('constructible_type', array_search(Magasin::class, Relation::morphMap()) ?: Produit::class);
-}
-
-public function bureau() {
-    return $this->hasOneThrough(
-        Office::class, // the class that we want objects from
-        Produit::class, // foreign key in leave class
-        'constructible_id', // local key in this class
-        'id' // key of the leave in the request class
-        )
-        // we have to limit it to only Leave class
-        ->where('constructible_type', array_search(Office::class, Relation::morphMap()) ?: Produit::class);
-}
-
-// fin à revoir
 
     public function validation()
     {
         return $this->hasOne(Validation::class);
     }
+
+
+    public function getAvanceNonEncAttribute()
+    {
+        $r = ($this->produit->total * 0.3) - $this->totalPaiementsV ;
+        return ($r < 0) ? 0 : $r ;
+
+    } 
+
 
             
     public function getTotalPaiementsAttribute()

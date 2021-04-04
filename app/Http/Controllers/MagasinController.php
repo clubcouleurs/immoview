@@ -12,6 +12,7 @@ use App\Models\Produit;
 use App\Models\Tranche;
 use App\Models\Voie;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class MagasinController extends Controller
 {
@@ -24,6 +25,9 @@ class MagasinController extends Controller
      */
     public function index(Request $request)
     {
+        if (! Gate::allows('voir magasins')) {
+                abort(403);
+        }        
         $magasinsAll = Produit::with('constructible')
                             ->where('constructible_type','magasin')
                             ->with('etiquette')
@@ -126,6 +130,9 @@ class MagasinController extends Controller
      */
     public function create()
     {
+        if (! Gate::allows('editer magasins')) {
+                abort(403);
+        }         
         return view('magasins.create', [
             'voies'         => Voie::all(),
             'immeubles'     => Immeuble::all(),
@@ -141,6 +148,9 @@ class MagasinController extends Controller
      */
     public function store(ProduitRequest $request)
     {
+        if (! Gate::allows('editer magasins')) {
+                abort(403);
+        }         
         $immeuble = Immeuble::findOrFail($request['immeuble']) ;
         $etiquette = Etiquette::findOrFail($request['etatProduit']) ;
 
@@ -189,6 +199,9 @@ class MagasinController extends Controller
      */
     public function edit(Magasin $magasin)
     {
+        if (! Gate::allows('editer magasins')) {
+                abort(403);
+        }         
         return view('magasins.edit', [
             'magasin'           => $magasin, 
             'voies'         => Voie::all(), 
@@ -205,6 +218,9 @@ class MagasinController extends Controller
      */
     public function update(ProduitRequest $request, Magasin $magasin)
     {
+        if (! Gate::allows('editer magasins')) {
+                abort(403);
+        }         
         $immeuble = Immeuble::findOrFail($request['immeuble']) ;
 
         if ($magasin->produit->dossier == null) {
@@ -239,6 +255,9 @@ class MagasinController extends Controller
      */
     public function destroy(Magasin $magasin)
     {
+        if (! Gate::allows('supprimer magasins')) {
+                abort(403);
+        }           
         $magasin->produit->voies()->detach() ;
         $magasin->delete() ;
         $magasin->produit()->delete() ;

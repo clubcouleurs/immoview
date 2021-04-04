@@ -410,7 +410,7 @@
                     <tr
                       class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border  dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
                     >
-                      <th class="py-3 px-3">Date du rappel</th>
+                      <th class="w-40 py-3 px-3">Date du rappel</th>
                       <th class="py-3 px-3">Raison du délai</th>
                     </tr>
                   </thead>
@@ -426,7 +426,7 @@
                 {{$delai->date->diffForHumans()}}
                </span>
                       @else
-                <span class="px-2 py-1 font-semibold leading-tight text-green-100 bg-green-700 rounded-full"
+                <span class="w-64 px-2 py-1 font-semibold leading-tight text-green-100 bg-green-700 rounded-full"
                 >
                 {{$delai->date->diffForHumans()}}
                </span>

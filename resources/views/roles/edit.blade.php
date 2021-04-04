@@ -43,8 +43,11 @@
                 <span class="text-gray-700 dark:text-gray-400">
                   Les autorisations ?
                 </span>
-            <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-5">
-                @foreach ($permissions as $permission)
+                @foreach ($families as $family)
+                <h2 class="mt-2 text-2xl font-semibold text-gray-700">{{$family->name}}</h2>
+            <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-6">
+
+                @foreach ($family->permissions as $permission)
 
               <div
                 class="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
@@ -71,9 +74,11 @@
                   </p>
                 </div>
               </div>
+                     @endforeach   
+              </div>
+              <hr class="mt-8">
                      @endforeach                             
 
-              </div>
 
 
 

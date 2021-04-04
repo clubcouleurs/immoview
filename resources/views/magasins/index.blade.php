@@ -480,7 +480,7 @@
                       <td class="px-4 py-3 text-sm">
 
               <div class="flex px-1 py-1">
-                @can('editer dossiers')
+                @can('Ajouter dossiers magasins')
                 @if(null == $produit->dossier && $produit->etiquette->label == 'En stock')
                 <div class="mr-1">
              

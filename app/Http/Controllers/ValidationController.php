@@ -25,6 +25,7 @@ class ValidationController extends Controller
      */
     public function create(Dossier $dossier)
     {
+      
         return view('validations.create', ['dossier' => $dossier]) ;
     }
 

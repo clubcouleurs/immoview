@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class UserController extends Controller
 {
@@ -15,6 +16,10 @@ class UserController extends Controller
      */
     public function index()
     {
+        if (! Gate::allows('voir utilisateurs')) {
+                abort(403);
+        } 
+
         $users = User::whereNotIn('ID', [1])->get() ;
         return view('users.index', 
             ['users' => User::whereNotIn('ID', [1])->orderBy('created_at')->paginate(20),
@@ -73,6 +78,9 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
+        if (! Gate::allows('editer utilisateurs')) {
+                abort(403);
+        }         
         $request->validate([
             'role' => 'required|integer',
         ]);
@@ -91,6 +99,9 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        if (! Gate::allows('supprimer utilisateurs')) {
+                abort(403);
+        }         
        $user->delete() ;
 
         return redirect()->action([UserController::class, 'index'])

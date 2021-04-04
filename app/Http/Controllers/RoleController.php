@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Family;
 use App\Models\Permission;
 use App\Models\Role;
 use Illuminate\Http\Request;
@@ -61,7 +62,7 @@ class RoleController extends Controller
     {
         return view('roles.edit', [
             'role' => $role,
-            'permissions' => Permission::all(),
+            'families' => Family::all(),
 
         ]);        
     }

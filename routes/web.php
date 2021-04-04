@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AppartementController;
+use App\Http\Controllers\BordereauController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DelaiController;
@@ -37,108 +38,194 @@ use Illuminate\Support\Facades\Route;
 */
 Route::middleware('auth')->group(function(){
 
-Route::get('/moi', function () {
+
+Route::get('/finances', [FinanceController::class, 'index'])->middleware('can:voir finance');
 
 
-});
+//Route::get('/{constructible?}/{tranche?}/dossiers', [DossierController::class, 'index']);
 
-Route::get('/finances', [FinanceController::class, 'index']);
-
-
-Route::get('/{constructible?}/{tranche?}/dossiers', [DossierController::class, 'index']);
-
+// cette route est utilisée par javascript sur le formulaire d'ajout de client
 Route::get('/produits_data/{num}/{type}/', [ProduitController::class, 'produits_data']);
 
-
+// Authorization OK, taking car of it in the controller
 Route::resource('lots', LotController::class);
-
+// Authorization OK, taking car of it in the controller
 Route::resource('appartements', AppartementController::class);
-
+// Authorization OK, taking car of it in the controller
 Route::resource('magasins', MagasinController::class);
-
+// Authorization OK, taking car of it in the controller
 Route::resource('offices', OfficeController::class);
-
+// Authorization OK, taking car of it in the controller
 Route::resource('clients', ClientController::class);
-
+// Authorization OK, taking car of it in the controller
 Route::resource('users', UserController::class);
 
-Route::resource('roles', RoleController::class);
+// Authorization OK, taking car of it in the middleware
+Route::resource('roles', RoleController::class)->middleware('can:voir roles');
 
-
-Route::resource('voies', VoieController::class);
-Route::resource('tranches', TrancheController::class);
-Route::resource('immeubles', ImmeubleController::class);
-
+// Authorization OK, taking car of it in the middleware
+Route::resource('voies', VoieController::class)->middleware('can:voir voies');
+// Authorization OK, taking car of it in the middleware
+Route::resource('tranches', TrancheController::class)->middleware('can:voir tranches');
+// Authorization OK, taking car of it in the middleware
+Route::resource('immeubles', ImmeubleController::class)->middleware('can:voir immeubles');
+// Authorization OK, taking car of it in the middleware
 Route::patch('/etiquettes/{etiquette}', [EtiquetteController::class, 'update'])
 				->middleware('can:update,etiquette');
 
-
+// Authorization OK, taking car of it in the middleware
 Route::resource('etiquettes', EtiquetteController::class)->except([
     'update'
-]);
+])->middleware('can:voir etiquettes');
 
+// Authorization OK, taking car of it in the middleware
+Route::resource('visites', VisiteController::class)->middleware('can:voir visites');
 
-Route::resource('visites', VisiteController::class);
-
-Route::get('/prospects/{activer?}', [ClientController::class, 'index'])->name('prospectsRoute');
-
-Route::get('/dossiers/create', [DossierController::class, 'createWithoutClient']);
-
-
-
-Route::get('/produits/{produit}/dossiers/create', [DossierController::class, 'create'])
-->middleware('can:create,produit');
-
-Route::get('/produits/{produit}/clients/{client}/dossiers/create', [DossierController::class, 'createWithClient'])->middleware('can:create,produit');
-
-Route::get('/clients/{client}/dossiers/create', [DossierController::class, 'createWithoutProduit']);
+Route::get('/prospects/{activer?}', [ClientController::class, 'index'])->name('prospectsRoute')
+->middleware('can:voir prospection');
 
 
 
 
 
-Route::resource('dossiers', DossierController::class)->except([
-    'create', 'createWithoutClient'
-])->middleware('can:voir dossiers');
-
-Route::get('/dossiers/{dossier}/actes', [DossierController::class, 'actes'])
-						->middleware('can:view,dossier');
-
-Route::get('/paiements', [PaiementController::class, 'historique']);
-
-//Route::patch('/paiements/{paiement}', [PaiementController::class, 'update']);
-
-Route::get('/dossiers/{dossier}/paiements', [PaiementController::class, 'index']);
-
-Route::get('/dossiers/{dossier}/paiements/{paiement}', [PaiementController::class, 'show']);
-
-Route::post('/dossiers/{dossier}/paiements', [PaiementController::class, 'store']);
-
-Route::patch('/dossiers/{dossier}/paiements/{paiement}', [PaiementController::class, 'update']);
-
-Route::delete('/dossiers/{dossier}/paiements/{paiement}', [PaiementController::class, 'destroy']);
-
-//Route::patch('/lots', [LotController::class, 'updateBatch']);
-
-Route::get('/dossiers/{dossier}/validation/create', [ValidationController::class, 'create'])
-			->middleware('can:create,dossier', 'can:valider dossiers');
 
 
+
+
+// Authorization OK, taking car of it in the controller
 Route::get('/dossiers/{dossier}/delais/create', [DelaiController::class, 'create']);
+
+// Authorization OK, taking car of it in the controller
 Route::post('/dossiers/{dossier}/delais', [DelaiController::class, 'store']);
 
 
-Route::get('/dossiers/{dossier}/retour', [DossierController::class, 'retour'])
-			->middleware('can:view,dossier');
+// DOSSIERS ROUTES
 
+// Authorization OK, taking car of it in the controller
+Route::get('/dossiers', [DossierController::class, 'index']);
+
+// Authorization OK, taking car of it in the controller
+Route::get('/dossiers/create', [DossierController::class, 'createWithoutClient']);
+
+// Authorization OK, taking car of it in the controller
+Route::post('/dossiers', [DossierController::class, 'store']);
+
+// Authorization OK, taking car of it in the middleware
+Route::get('/dossiers/{dossier}', [DossierController::class, 'show'])
+			->middleware('can:show,dossier');
+
+// Authorization OK, taking car of it in the middleware
+Route::get('/dossiers/{dossier}/edit', [DossierController::class, 'edit'])
+			->middleware('can:edit,dossier');
+
+// Authorization OK, taking car of it in the controller/middleware
+Route::put('/dossiers/{dossier}', [DossierController::class, 'update'])
+			->middleware('can:edit,dossier');
+
+// Authorization OK, taking car of it in the controller/middleware
+Route::delete('/dossiers/{dossier}', [DossierController::class, 'destroy'])
+				->middleware('can:supprimer,dossier');
+
+
+// Authorization OK, taking car of it in the middleware
+Route::middleware(['can:view,dossier'])->group(function () {
+	Route::get('/dossiers/{dossier}/retour', [DossierController::class, 'retour']);
+	Route::get('/dossiers/{dossier}/actes', [DossierController::class, 'actes']);	
+});
+
+// Authorization OK, taking car of it in the middleware
 Route::post('/dossiers/{dossier}/validation', [ValidationController::class, 'store'])
 			->middleware('can:valider dossiers');
 
+// Authorization OK, taking car of it in the middleware
+Route::get('/produits/{produit}/dossiers/create', [DossierController::class, 'create'])
+->middleware('can:create,produit');
 
+// Authorization OK, taking car of it in the middleware
+Route::get('/produits/{produit}/clients/{client}/dossiers/create', [DossierController::class, 'createWithClient'])->middleware('can:create,produit');
+
+// Authorization OK, taking car of it in the controller
+Route::get('/clients/{client}/dossiers/create', [DossierController::class, 'createWithoutProduit']);
+
+// Authorization OK in the middelware
+Route::get('/dossiers/{dossier}/validation/create', [ValidationController::class, 'create'])
+			->middleware('can:create,dossier', 'can:valider dossiers');
+
+// FIN DOSSIERS ROUTES
+
+
+
+// Route::resource('dossiers', DossierController::class)->except([
+//     'create', 'createWithoutClient'
+// ])->middleware('can:voir dossiers');
+
+
+
+// DEBUT PAIEMENTS DOSSIER ROUTES
+// Authorization OK in the middelware
+Route::get('/paiements', [PaiementController::class, 'historique'])
+			->middleware('can:voir paiements');
+
+// Authorization OK in the middelware
+Route::get('/dossiers/{dossier}/paiements', [PaiementController::class, 'index'])
+			->middleware('can:showPaiement,dossier');
+
+// Authorization OK in the middelware
+Route::get('/dossiers/{dossier}/paiements/{paiement}', [PaiementController::class, 'show'])
+			->middleware('can:edit,paiement');
+
+// Authorization OK in the middelware
+Route::post('/dossiers/{dossier}/paiements', [PaiementController::class, 'store'])
+			->middleware('can:ajoutPaiement,dossier');
+
+// Authorization OK in the middelware
+Route::patch('/dossiers/{dossier}/paiements/{paiement}', [PaiementController::class, 'update'])
+			->middleware('can:edit,paiement');
+
+// Authorization OK in the middelware
+Route::delete('/dossiers/{dossier}/paiements/{paiement}', [PaiementController::class, 'destroy'])
+			->middleware('can:delete,paiement');
+// FIN PAIEMENTS DOSSIER ROUTES
+
+// DEBUT PAIEMENTS DOSSIER ROUTES
+// Authorization OK in the middelware
+Route::get('/dossiers/{dossier}/bordereaux', [BordereauController::class, 'index'])
+			->middleware('can:showPaiement,dossier');
+
+// Authorization OK in the middelware
+Route::get('/dossiers/{dossier}/bordereaux/{bordereau}', [BordereauController::class, 'show'])
+			->middleware('can:edit,bordereau');
+
+// Authorization OK in the middelware
+Route::post('/dossiers/{dossier}/bordereaux', [BordereauController::class, 'store'])
+			->middleware('can:ajoutPaiement,dossier');
+
+// Authorization OK in the middelware
+Route::patch('/dossiers/{dossier}/bordereaux/{bordereau}', [BordereauController::class, 'update'])
+			->middleware('can:edit,bordereau');
+
+// Authorization OK in the middelware
+Route::delete('/dossiers/{dossier}/bordereaux/{bordereau}', [BordereauController::class, 'destroy'])
+			->middleware('can:delete,bordereau');
+
+// Authorization OK in the middelware
+Route::get('/dossiers/{dossier}/bordereaux/{bordereau}/generate', [BordereauController::class, 'bordereau'])
+			->middleware('can:edit,bordereau');
+// FIN PAIEMENTS DOSSIER ROUTES
+
+
+
+
+
+
+
+
+
+// Authorization OK in the middelware
 Route::get('/parametres', function () {
 	$totalEtiquettes = Etiquette::all() ;
     return view('settings', ['totalEtiquettes' => $totalEtiquettes->count()]);
-});
+})->middleware('can:voir parametres');
 
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard'); ;
 Route::get('/dashboard', [DashboardController::class, 'index']);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Traits\PaginateTrait;
 use App\Models\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 
 class ClientController extends Controller
@@ -18,6 +19,9 @@ class ClientController extends Controller
      */
     public function index(Request $request)
     {
+        if (! Gate::allows('voir clients')) {
+                abort(403);
+        }         
         $activer = (isset($request['activer'])) ? $request['activer'] : 1 ;
 
         $clientsAll = Client::with('dossiers')
@@ -57,6 +61,9 @@ class ClientController extends Controller
      */
     public function create()
     {
+        if (! Gate::allows('editer clients')) {
+                abort(403);
+        }         
         return view('clients.create') ;
     }
 
@@ -68,7 +75,9 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
-
+        if (! Gate::allows('editer clients')) {
+                abort(403);
+        } 
         $request->validate([
             'nom'       => 'required|string',
             'prenom'    => 'required|string',
@@ -80,7 +89,7 @@ class ClientController extends Controller
             'cin'    => 'required|alpha_num|unique:clients,cin',
             'idProduit' => 'numeric|nullable',
             'adresse' => 'required|string',
-            'cinPj' => 'sometimes|required|max:5000|mimetypes:application/pdf,image/png,image/jpeg,image/tiff,image/gif',
+            'cinPj' => 'required|max:5000|mimetypes:application/pdf,image/png,image/jpeg,image/tiff,image/gif',
         ]);
 
         $client = new Client() ;
@@ -145,6 +154,9 @@ class ClientController extends Controller
      */
     public function edit(Client $client)
     {
+        if (! Gate::allows('editer clients')) {
+                abort(403);
+        }         
         return view('clients.edit', ['client' => $client]) ;
     }
 
@@ -157,15 +169,22 @@ class ClientController extends Controller
      */
     public function update(Request $request, Client $client)
     {
+        //dd($request) ;
+
+        if (! Gate::allows('editer clients')) {
+                abort(403);
+        }         
         $request->validate([
             'cin'    => 'required|alpha_num|unique:clients,cin,' . $client->id,
             'nom'       => 'required|string',
             'prenom'    => 'required|string',
             'mobile'    => 'required|numeric|unique:clients,mobile,' . $client->id,
             'adresse' => 'required|string',
+
             'prenomAr'    => 'string',
             'nomAr'    => 'string',
-            'adresseAr'    => 'string',            
+            'adresseAr'    => 'string',    
+            'cinPj' => 'sometimes|required|max:5000|mimetypes:application/pdf,image/png,image/jpeg,image/tiff,image/gif',        
         ]);
 
         $client->nom        = strtoupper($request['nom']);
@@ -173,6 +192,11 @@ class ClientController extends Controller
         $client->mobile     = $request['mobile'];
         $client->cin        = strtoupper($request['cin']);
         $client->adresse    = strtoupper($request['adresse']);
+
+        $client->nomAr    = strtoupper($request['nomAr']);
+        $client->prenomAr = strtoupper($request['prenomAr']);        
+        $client->adresseAr = strtoupper($request['adresseAr']);
+
         $client->activer    = 1 ;
 
         if($request->hasFile('cinPj'))
@@ -193,6 +217,14 @@ class ClientController extends Controller
 
             $client->cinPj = 'cin/' . $pjName . '.' . $pjExtension ;
         }
+        else
+        {
+            if ($client->cinPj != null) {
+                Storage::delete('public/' . $client->cinPj);
+            }
+
+            $client->cinPj = null ;
+        }
 
         $client->update();
 
@@ -209,6 +241,10 @@ class ClientController extends Controller
      */
     public function destroy(Client $client)
     {
+        if (! Gate::allows('supprimer clients')) {
+                abort(403);
+        } 
+
         if (!$client->dossiers->isEmpty()) {
             return redirect()->action([ClientController::class, 'index'])
             ->with('error','Impossible de supprimer ce client, il a un dossier');

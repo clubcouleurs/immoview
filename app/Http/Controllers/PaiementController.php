@@ -11,9 +11,6 @@ use Illuminate\Http\Request;
 class PaiementController extends Controller
 {
 
-
-
-
     public function historique()
     {
         $collection = Produit::with('constructible')->get() ;
@@ -62,7 +59,6 @@ class PaiementController extends Controller
      */
     public function store(Request $request, Dossier $dossier)
     {
-
         $request->validate([
             'date'      => 'required|string',
             'type'      => 'required|string',
@@ -87,14 +83,11 @@ class PaiementController extends Controller
             return back()->withInput()->with('error', 'Vous avez dépasser le reste à payer!') ;
         }
 
-        if ($paiement->type != 'Espèce')
-        {
-            $paiement->num = $request['num'] ;
+        $paiement->num = $request['num'] ;
 
         if($request->hasFile('pj'))
         {
             $client = $dossier->client->nom . '-' . $dossier->client->prenom ;
-
             $pjName = str_replace(' ', '', $paiement->type) . '-' 
             . str_replace('.', '', $paiement->num) . '-DossierN' 
 
@@ -103,16 +96,12 @@ class PaiementController extends Controller
             . str_replace('.', '',  $client ) . '-' 
 
             . str_replace(' ', '-', date('Y-m-d-His')) ;
-
-            $pjExtension = $request->file('pj')->extension() ;                 
-
+            $pjExtension = $request->file('pj')->extension() ;
             $pdfPath = $request->file('pj')
             ->storeAs('public/pj', $pjName . '.' . $pjExtension) ;
-
             $paiement->pj = 'pj/' . $pjName . '.' . $pjExtension ;
         }
-
-        }        
+                
         $paiement->banque()->associate($banque) ;
         $paiement->dossier()->associate($dossier) ;
         $paiement->save();

@@ -10,10 +10,12 @@ use App\Models\Dossier;
 use App\Models\Produit;
 use App\Models\Tranche;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use NumberToWords\NumberToWords;
 use setasign\Fpdi\Fpdi;
 use setasign\Fpdi\Tcpdf\Fpdi as TCPDF;
@@ -28,20 +30,43 @@ class DossierController extends Controller
      */
     public function index(Request $request)
     {
+
         $constructible = $request['constructible'] ;
+        if (Gate::none(['voir dossiers ' . p($constructible), 'voir ses propres dossiers'])) {
+            abort(403);
+        }
+
         $tranche = $request['tranche'] ;
         $tranches = Tranche::all();
-        $tranchesArray = ($tranche == 0) ? $tranches->pluck('id')->toArray() : [$tranche] ;
-        $dossiersAll = Dossier::whereHas('produit', function (Builder $query) use ($constructible)
+        $tranchesArray = ($tranche == null) ? $tranches->pluck('id')->toArray() : [$tranche] ;
+        $constructiblesArray = ($constructible == null) ?
+                    ['lot','appartement','box','magasin','bureau'] : [$constructible] ;
+
+
+        if (Gate::allows('voir dossiers ' . p($constructible))) {
+        $dossiersAll = Dossier::whereHas('produit', function (Builder $query) use ($constructiblesArray)
                             {
-                                $query->where('constructible_type', '=', $constructible);
+                                $query->whereIn('constructible_type', $constructiblesArray);
                             })
                             ->with('produit')
-                            //->with($constructible)
+                            ->with('delais')
                             ->with('client')
                             ->with('paiements')->orderbyDesc('created_at')
-                            ->get();
-
+                            ->get(); 
+        }
+        elseif(Gate::allows('voir ses propres dossiers'))
+        {
+        $dossiersAll = Dossier::where('user_id' , Auth::user()->id)->
+        whereHas('produit', function (Builder $query) use ($constructiblesArray)
+                            {
+                                $query->whereIn('constructible_type', $constructiblesArray);
+                            })
+                            ->with('produit')
+                            ->with('delais')
+                            ->with('client')
+                            ->with('paiements')->orderbyDesc('created_at')
+                            ->get();           
+        }
         //recherche par taux de paiement
         if (isset($request['sign']) && $request['sign'] != '' ) {
 
@@ -150,6 +175,39 @@ class DossierController extends Controller
             $dossiersAll = $dossiersAll->where('user_id', $user); 
         }
 
+        //recherche par relance 
+        if (isset($request['relance']) && $request['relance'] != '-' ) {
+            $relance = $request['relance'] ;
+            switch ($relance) {
+                case 'today':
+                    $date = Carbon::now() ;
+                    $date = $date->toDateString() ;
+                    //dd($date) ;
+                    break;
+                case 'tomorrow':
+                    $date = Carbon::now() ;
+                    $date = $date->addDays(1);
+                    $date = $date->toDateString() ;
+                    break;
+                case 'afterTomorrow':
+                    $date = Carbon::now() ;
+                    $date = $date->addDays(2);
+                    $date = $date->toDateString() ;
+                    break;                                    
+                default:
+                    break;
+            }
+                    $dossiersAll = $dossiersAll->filter(function ($dossier) use ($date)
+                    {
+                        foreach ($dossier->delais as $delai) {
+                            if($delai->date->toDateString() == $date)
+                            {
+                                return true ; 
+                            }
+                        }
+                    });
+        }        
+
         //recherche par nombre d'etages
         if (isset($request['nombreEtagesLot']) && $request['nombreEtagesLot'] != '-' ) {
             $et = $request['nombreEtagesLot'] ;
@@ -174,7 +232,6 @@ class DossierController extends Controller
            // });
 
 
-
         return view('dossiers.index', [
             'dossiers'              => $this->paginate($dossiersAll),
             'totalDossier'          => $dossiersAll->count(),
@@ -185,14 +242,14 @@ class DossierController extends Controller
             'valeurTotal'           => 1000, //$prixTotalLots->sum(),
             'etatDossier'           => $request['etatDossier'],
             'SearchByUser'          => $request['user'] ,
-            'SearchBySign'         => $request['sign'] ,
+            'SearchBySign'          => $request['sign'] ,
             'SearchByTauxComparateur'          => $request['tauxComparateur'] ,
-            'SearchByType'          => '',//$request['typeLot'] ,
+            'SearchByTranche'       => $tranche,
             'SearchByMin'           => '',//$request['minPrix'] ,
-            'SearchByMax'           => '',//$request['maxPrix'] ,
+            'SearchByRelance'           => $request['relance'],
             'SearchByNum'           => implode(',' , $numsDossier) ,
             'SearchByClient'        => $request['client'] ,
-            'constructible'         => '/' . $constructible ,
+            'constructible'         => $constructible ,
 
 
         ]);
@@ -233,8 +290,19 @@ class DossierController extends Controller
             '. ' . ucfirst($produit->constructible_type) .' sur la tranche ' . $produit->constructible->tranche->id ;
     }
 
+
     public function createWithoutProduit(Client $client)
     {   
+        // On vérifie si l'utilisateur a droit de créer un dossier pour un type de produit
+        if (Gate::none(['Ajouter dossiers appartements',
+                       'Ajouter dossiers lots',
+                       'Ajouter dossiers boxes' ,
+                       'Ajouter dossiers bureaux' ,
+                       'Ajouter dossiers magasins']))
+        {
+            abort(403);
+        }
+
         // ici on connait que le client
         // Renvoyer le client et le produit sera retrouvé grâce au formulaire de recherche ...
         return view('dossiers.create', [
@@ -244,6 +312,16 @@ class DossierController extends Controller
 
     public function createWithoutClient()
     {
+        // On vérifie si l'utilisateur a droit de créer un dossier pour un type de produit
+        if (Gate::none(['Ajouter dossiers appartements',
+                       'Ajouter dossiers lots',
+                       'Ajouter dossiers boxes' ,
+                       'Ajouter dossiers bureaux' ,
+                       'Ajouter dossiers magasins']))
+        {
+            abort(403);
+        }
+
         // ici on connait ni le client ni le produit
         // Renvoyer tous les clients et le produit sera retrouvé grâce au formulaire de recherche ...
         return view('dossiers.create', [
@@ -259,7 +337,13 @@ class DossierController extends Controller
      */
     public function store(DossierRequest $request)
     {
-        //dd($request) ;
+        $produit = Produit::findOrFail($request['produit']) ;
+        $constructible = $produit->constructible_type ;
+        
+        if (! Gate::allows('Ajouter dossiers ' . p($constructible))) {
+                abort(403);
+        }
+
         $dossier = new Dossier([
             'num'               => $request['num'] ,    
             'date'              => $request['date'] ,
@@ -271,7 +355,6 @@ class DossierController extends Controller
             'isVente'           => $request['isVente'],
         ]) ;
 
-        $produit = Produit::findOrFail($request['produit']) ;
             if(isset($produit) && $produit->etiquette_id === 2 )
             {
                 $dossier->save();
@@ -291,7 +374,7 @@ class DossierController extends Controller
                 }
 
                 return redirect(
-                    $produit->constructible_type . '/0/dossiers'
+                    '/dossiers?constructible='. $produit->constructible_type
                 )->with('message','Dossier ajouté !');
             }
 
@@ -429,7 +512,8 @@ class DossierController extends Controller
         $pdf = new FPDI();
         $pdf->SetTextColor(0, 0, 255) ;
         $pdf->SetFont('Helvetica');
-
+            $pdf->setPrintHeader(false);
+            $pdf->setPrintFooter(false);
         // get the page count
 
         $pageCount = $pdf->setSourceFile(Storage_path('app/public/acte-reservation-'.
@@ -541,7 +625,8 @@ class DossierController extends Controller
         //$pdf->SetFont('Helvetica');
         $pdf->setRTL(true);
         $pdf->SetFont('aealarabiya', '', 14);
-
+            $pdf->setPrintHeader(false);
+            $pdf->setPrintFooter(false);
         // get the page count
 
         $pageCount = $pdf->setSourceFile(Storage_path('app/public/acte-reservation-'.

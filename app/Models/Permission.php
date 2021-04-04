@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Family;
 use App\Models\Role;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -16,5 +17,10 @@ class Permission extends Model
     {
     	return $this->belongsToMany(Role::class);
     }
+    
+    public function family()
+    {
+        return $this->belongsTo(Family::class);
+    }    
 
 }

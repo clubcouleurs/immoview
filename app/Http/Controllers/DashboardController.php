@@ -6,23 +6,25 @@ use App\Models\Client;
 use App\Models\Dossier;
 use App\Models\Paiement;
 use App\Models\Produit;
+use App\Models\User;
 use App\Models\Visite;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        //$dossiersARelancer = Dossier::with('delais')->get() ;
+        for ($i=0; $i <= 2; $i++) { 
+            $day = (Carbon::now())->addDays($i) ;
+            $today[$i] = Dossier::where('isVente', false)->whereHas('delais', function (Builder $query) use ($day) {
+                $query->whereDate('date', $day->toDateString());
+            })->get()->count();            
+        }
 
-        $dossiersARelancer = Dossier::whereHas('delais', function (Builder $query) {
-            $query->where('date', '>=', 'CURDATE()');
-        })->get();
-
-        //dd($dossiersARelancer) ;
 
     	$mois = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'September', 'October', 'November','Décembre'] ;
 
@@ -58,7 +60,47 @@ GROUP BY an, mois
 Limit 7
             ");
 
-         
+        $commerciaux = User::whereIn('role_id' , [2])->get()->pluck('name') ;
+        $len = count($commerciaux);
+        $len = $len - 1 ;
+        $maxStatement = '' ;
+        $i = 0;
+        foreach ($commerciaux as $value)
+        {
+            $maxStatement .= "max(case when (Commercial='" .$value."') then nbrVentes else 0 end)
+            as '" . $value . "'" ;
+                if ($i !== $len)
+                {
+                    $maxStatement .= ","  ;
+                }
+            $i++;
+        }
+        //dd($maxStatement) ;
+        $performanceCommercial = \DB::select("
+                SELECT an, mois," .
+                $maxStatement
+                .
+                "FROM
+                (SELECT u.name as Commercial, YEAR (t1.date) as an, MONTH(t1.date) as mois , COUNT(*) as nbrVentes 
+        from dossiers as t1
+        LEFT JOIN users as u
+        ON t1.user_id = u.id
+        join
+        (SELECT YEAR (dossiers.date) as an, MONTH(dossiers.date) as mois
+        from dossiers
+        group by YEAR (dossiers.date) ,MONTH(dossiers.date)
+        Order by YEAR (dossiers.date) desc, MONTH(dossiers.date) desc
+        limit 7
+        ) as dt
+        on dt.an=YEAR(t1.date) and dt.mois=MONTH(t1.date)
+        Group by MONTH(t1.date), YEAR(t1.date), u.name
+        Order by YEAR(t1.date) desc, MONTH(t1.date) desc
+        ) AS tt
+        GROUP BY an, mois
+            
+            ");
+        
+        //dd($performanceCommercial) ;
 
         $nombreVentesParMois = \DB::select("
                     SELECT * FROM (
@@ -192,11 +234,6 @@ Limit 7
         $produitsParType = Produit::produitsParType()->mapWithKeys(function ($item) {
             return [$item->constructible_type.'s' => $item->nombre];
         });
-        // $produitsParTypeParEtat = Produit::produitsParTypeParEtat()->mapWithKeys(function ($item) {
-        //     return [$item->constructible_type.'s' =>
-        //     [$item->label => $item->nombre] ];
-        // });        
-
 
         $dossiersParType = Dossier::dossiersParType()->mapWithKeys(function ($item) {
             return [$item->constructible_type => $item->nombre];
@@ -231,6 +268,9 @@ Limit 7
 
 
         return view('dashboard', [
+            'dossiersToday'         => $today[0] ,
+            'dossiersTomorrow' => $today[1],
+            'dossiersAfterTomorrow' =>  $today[2],
 			'reserved' 	=> $reserved, 
 	        'stocked' 	=> $stocked,
 	        'blocked' 	=> $blocked,
@@ -266,6 +306,9 @@ Limit 7
 
 	        'dossiers' => $dossiersAll,
 	        'nombreVisites' => $nombreVisites,
+            'performanceCommercial' => $performanceCommercial ,
+            'perfKeys' => array_keys(json_decode(json_encode($performanceCommercial), true)),
+            'commerciaux' => $commerciaux ,
 	        'mois' => $mois,
             'paiements' => number_format($paiements) ,
             'paiementsV' => number_format($paiementsV) ,
@@ -286,3 +329,5 @@ Limit 7
     ) ;
     }
 }
+
+

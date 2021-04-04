@@ -13,6 +13,7 @@ use App\Models\Produit;
 use App\Models\Tranche;
 use App\Models\Voie;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class OfficeController extends Controller
 {
@@ -26,7 +27,9 @@ class OfficeController extends Controller
      */
     public function index(Request $request)
     {
-
+        if (! Gate::allows('voir bureaux')) {
+                abort(403);
+        }   
         $officesAll = Produit::with('constructible')
                             ->where('constructible_type','bureau')
                             ->with('etiquette')
@@ -131,6 +134,9 @@ class OfficeController extends Controller
      */
     public function create()
     {
+        if (! Gate::allows('editer bureaux')) {
+                abort(403);
+        }          
         return view('offices.create', [
             'voies' => Voie::all(),
             'immeubles' => Immeuble::all(),
@@ -146,6 +152,9 @@ class OfficeController extends Controller
      */
     public function store(ProduitRequest $request)
     {
+        if (! Gate::allows('editer bureaux')) {
+                abort(403);
+        }             
         $immeuble = Immeuble::findOrFail($request['immeuble']) ;
         $etiquette = Etiquette::findOrFail($request['etatProduit']) ;
 
@@ -209,6 +218,9 @@ class OfficeController extends Controller
      */
     public function edit(Office $office)
     {
+        if (! Gate::allows('editer bureaux')) {
+                abort(403);
+        }           
         return view('offices.edit', [
             'office'           => $office, 
             'voies'         => Voie::all(), 
@@ -225,9 +237,9 @@ class OfficeController extends Controller
      */
     public function update(Request $request, Office $office)
     {
-        ////////////////////
-        //dd($request['voies']) ;
-
+        if (! Gate::allows('editer bureaux')) {
+                abort(403);
+        }   
         $immeuble = Immeuble::findOrFail($request['immeuble']) ;
         $etiquette = Etiquette::findOrFail($request['etatProduit']) ;
 
@@ -333,6 +345,9 @@ class OfficeController extends Controller
      */
     public function destroy(Office $office)
     {
+        if (! Gate::allows('supprimer bureaux')) {
+                abort(403);
+        }           
         $office->produit->voies()->detach() ;
         $office->delete() ;
         $office->produit()->delete() ;  

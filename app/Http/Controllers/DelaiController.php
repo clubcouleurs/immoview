@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Delai;
 use App\Models\Dossier;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class DelaiController extends Controller
 {
@@ -25,6 +26,16 @@ class DelaiController extends Controller
      */
     public function create(Dossier $dossier)
     {
+        if (! Gate::allows('Ajouter dossiers ' . p($dossier->produit->constructible_type))) 
+        {
+                abort(403);
+
+        }
+
+        if ($dossier->isVente)
+        {
+                abort(403, 'La vente est déjà conclue');
+        }
         return view('delais.create', ['dossier' => $dossier]) ;
     }
 
@@ -36,6 +47,10 @@ class DelaiController extends Controller
      */
     public function store(Request $request, Dossier $dossier)
     {
+        if (! Gate::allows('Ajouter dossiers ' . p($dossier->produit->constructible_type))) {
+                abort(403);
+        }
+
         $request->validate([
             'date'       => 'required|date|after:today',
             'raison'    => 'required|string',

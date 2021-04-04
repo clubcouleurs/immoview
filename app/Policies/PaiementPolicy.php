@@ -2,13 +2,13 @@
 
 namespace App\Policies;
 
-use App\Models\Produit;
+use App\Models\Paiement;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Illuminate\Auth\Access\Response;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Auth\Access\Response;
 
-class ProduitPolicy
+class PaiementPolicy
 {
     use HandlesAuthorization;
 
@@ -27,12 +27,17 @@ class ProduitPolicy
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Produit  $produit
+     * @param  \App\Models\Paiement  $paiement
      * @return mixed
      */
-    public function view(User $user, Produit $produit)
+    public function edit(User $user, Paiement $paiement)
     {
-        //
+        return ( ($user->id == $paiement->dossier->user_id
+                && Gate::allows('editer ses paiements'))
+                || (Gate::allows('editer paiements')) ) 
+
+                ? Response::allow()
+                : Response::deny('Vous n\'avez pas le droit d\'éditer ce paiement ou ce bordereau');
     }
 
     /**
@@ -41,26 +46,19 @@ class ProduitPolicy
      * @param  \App\Models\User  $user
      * @return mixed
      */
-    public function create(User $user, Produit $produit)
+    public function create(User $user)
     {
-        if (! Gate::allows('Ajouter dossiers ' . p($produit->constructible_type))) {
-                abort(403);
-        }
-
-        return $produit->etiquette->label === 'En stock'
-                ? Response::allow()
-                : Response::deny('Ce produit immobilier est déjà réservé ou vendu');
+        //
     }
-    
 
     /**
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Produit  $produit
+     * @param  \App\Models\Paiement  $paiement
      * @return mixed
      */
-    public function update(User $user, Produit $produit)
+    public function update(User $user, Paiement $paiement)
     {
         //
     }
@@ -69,22 +67,27 @@ class ProduitPolicy
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Produit  $produit
+     * @param  \App\Models\Paiement  $paiement
      * @return mixed
      */
-    public function delete(User $user, Produit $produit)
+    public function delete(User $user, Paiement $paiement)
     {
-        //
+        return ( ($user->id == $paiement->dossier->user_id
+                && Gate::allows('supprimer ses paiements'))
+                || (Gate::allows('supprimer paiements')) ) 
+
+                ? Response::allow()
+                : Response::deny('Vous n\'avez pas le droit de supprimer ce paiement ou ce bordereau');
     }
 
     /**
      * Determine whether the user can restore the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Produit  $produit
+     * @param  \App\Models\Paiement  $paiement
      * @return mixed
      */
-    public function restore(User $user, Produit $produit)
+    public function restore(User $user, Paiement $paiement)
     {
         //
     }
@@ -93,10 +96,10 @@ class ProduitPolicy
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Produit  $produit
+     * @param  \App\Models\Paiement  $paiement
      * @return mixed
      */
-    public function forceDelete(User $user, Produit $produit)
+    public function forceDelete(User $user, Paiement $paiement)
     {
         //
     }

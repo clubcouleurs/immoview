@@ -54,7 +54,7 @@ class EtiquettePolicy
      */
     public function update(User $user, Etiquette $etiquette)
     {
-        return in_array($etiquette->id, [2,3])
+        return in_array($etiquette->id, [2,3,9])
                 ? Response::deny('Impossible de modifier cette étiquette')
                 : Response::allow();
     }

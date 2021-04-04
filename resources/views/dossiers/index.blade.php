@@ -4,7 +4,7 @@
             <h2
               class="my-6 text-4xl font-semibold text-gray-700 dark:text-gray-200"
             >
-              Récapitulatif des dossiers
+              Récapitulatif des dossiers {{ucfirst($constructible)}}
 
             </h2>
 <hr>  
@@ -38,7 +38,8 @@
               </div>
               <!-- Card -->
               @foreach($dossiersParType as $type)
-
+                @isset($constructible)
+                  @if($type->constructible_type == $constructible)
                 <div
                   class="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800"
                 >
@@ -66,6 +67,36 @@
                     </p>
                   </div>
                 </div>
+                  @endif
+                @else
+                <div
+                  class="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800"
+                >
+                  <div
+                    class="p-3 mr-4 text-green-500 bg-green-100 rounded-full dark:text-green-100 dark:bg-green-500"
+                  >
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path
+                        fill-rule="evenodd"
+                        d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z"
+                        clip-rule="evenodd"
+                      ></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <p
+                      class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
+                    >
+                      {{ ucfirst($type->constructible_type) }}
+                    </p>
+                    <p
+                      class="text-lg font-semibold text-gray-700 dark:text-gray-200"
+                    >
+                    {{ $type->nombre }}
+                    </p>
+                  </div>
+                </div>
+                @endisset  
               @endforeach
               <!-- Card -->
               
@@ -83,13 +114,15 @@
               <div class="flex items-center gap-2">
                 @foreach ($tranches as $tranche)
                 <a
-                  class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-yellow-500 border border-transparent rounded-2xl active:bg-yellow-600 hover:bg-yellow-600 focus:outline-none focus:shadow-outline-yellow"
-                  href="{{$constructible}}/{{$tranche->id}}/dossiers/"
+                  class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 
+                  {{($tranche->num == $SearchByTranche)? 'bg-yellow-500' : 'bg-gray-400'}}
+                  border border-transparent rounded-2xl active:bg-yellow-600 hover:bg-yellow-600 focus:outline-none focus:shadow-outline-yellow"
+                  href="/dossiers?constructible={{$constructible}}&tranche={{$tranche->id}}"
                 >Tranche {{$tranche->num}}</a>
                 @endforeach
               </div>
             </div>
-                <form action="{{$constructible}}/0/dossiers">
+                <form action="/dossiers">
 
             <div
               class="flex items-center justify-between p-2 mb-2 text-sm font-semibold text-blue-600 bg-blue-100 rounded-lg shadow-sm focus:outline-none focus:shadow-outline-blue rounded-2xl"
@@ -98,8 +131,10 @@
               <div class="flex items-center gap-2">
                 <a
                   class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-2xl active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue"
-                  href="{{$constructible}}/0/dossiers"
+                  href="/dossiers?constructible={{$constructible}}"
                 >Tout</a>
+                <input type="hidden" name="constructible" value="{{$constructible}}"/>
+                <input type="hidden" name="tranche" value="{{$SearchByTranche}}"/>
 
                 <input
                   class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input rounded-2xl"
@@ -159,10 +194,7 @@
                   <option value="80" @if ( $SearchByTauxComparateur =="80" ) selected @endif>80%</option>
                   <option value="90" @if ( $SearchByTauxComparateur =="90" ) selected @endif>90%</option>
                   <option value="100" @if ( $SearchByTauxComparateur =="100" ) selected @endif>100%</option>
-             
-
                 </select>
-
                 <select
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
                   name="etatDossier"
@@ -170,36 +202,18 @@
                   <option value="-">Etat</option>
                   <option value="0" @if ( $etatDossier =="0" ) selected @endif>Réservation</option>
                   <option value="1" @if ( $etatDossier =="1" ) selected @endif>Vente</option>
-                
-
-              
                 </select>
-                <!--<select
+                <select
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
-                  name="typeLot"
+                  name="relance"
                 >
-                  <option value="-">Type</option>
-                
-                  <option value="Habitat"  @if ( $SearchByType == "Habitat") selected @endif>Habitat</option>
-                  <option value="Commercial" @if ( $SearchByType == "Commercial") selected @endif>Commercial</option>              
-                </select> 
-                <input
-                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input rounded-2xl"
-                  placeholder="prix min"
-                  type="number"
-                  step="0.1"
-                  name="minPrix"
-                  value={{$SearchByMin}}
-                />
-                <input
-                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input rounded-2xl"
-                  placeholder="prix max"
-                  type="number"
-                  step="0.1"
-                  name="maxPrix"
-                  value={{$SearchByMax}}
-                />-->
-                            <button
+                  <option value="-">A relancer</option>
+                  <option value="today" @if ( $SearchByRelance =="today" ) selected @endif>Aujourd'hui</option>
+                  <option value="tomorrow" @if ( $SearchByRelance =="tomorrow" ) selected @endif>Demain</option>
+                  <option value="afterTomorrow" @if ( $SearchByRelance =="afterTomorrow" ) selected @endif>Après-Demain</option>
+
+                </select>
+              <button
                   class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-2xl active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue"
                   type="submit"
                 >
@@ -295,6 +309,7 @@
                         <p class="mb-2 text-xs font-semibold text-gray-600 dark:text-gray-400">
                           Délai pour rappeler le client
                         </p>
+                      @isset($dossier->delais->last()->date)
                       @if(Carbon\Carbon::today() >= $dossier->delais->last()->date)
                 <span class="px-2 py-1 font-semibold leading-tight text-red-100 bg-red-700 rounded-full"
                 >
@@ -306,7 +321,12 @@
                 {{$dossier->delais->last()->date->diffForHumans()}}
                </span>
                       @endif
-
+                      @else
+                <span class="px-2 py-1 font-semibold leading-tight text-white bg-gray-500 rounded-full"
+                >
+                Aucune date n'est définie
+               </span>                      
+                      @endisset
                           @endif                        
                       </td>
                       <td class="px-1 py-3 text-xs">
@@ -407,12 +427,17 @@
                 @endif
 
 
-                @can('voir actes')
+                @canany(['voir actes', 'voir actes ses dossiers'])
                   {!!$dossier->acte!!}
                 @endcan
-                @can('voir dossiers')
+            @canany(['voir dossiers appartements',
+                     'voir dossiers lots',
+                     'voir dossiers boxes',
+                     'voir dossiers magasins',
+                     'voir dossiers bureaux',
+                     'voir ses propres dossiers'])
+
                 <div class="mr-1">
-             
                 <a
                   class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none focus:shadow-outline-gray"
                   aria-label="Like"
@@ -429,8 +454,10 @@
                 </a>
                 </div>
 
-                @endcan
-                @can('voir paiements')
+                @endcanany
+
+            @canany(['voir paiements',
+                     'voir ses paiements'])                
                 <div class="mr-1">
              
                 <a
@@ -449,8 +476,35 @@
                 </a>
 
             </div>
-            @endcan
-            @can('editer dossiers')
+                <div class="mr-1">
+             
+                <a
+                  class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none focus:shadow-outline-gray"
+                  aria-label="Like"
+                  href="/dossiers/{{$dossier->id}}/bordereaux"
+                >
+                  <svg
+                    class="w-4 h-4"
+                    aria-hidden="true"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+<path d="M0,6 L10,0 L20,6 L20,8 L0,8 L0,6 Z M0,18 L20,18 L20,20 L0,20 L0,18 Z M2,16 L18,16 L18,18 L2,18 L2,16 Z M2,8 L6,8 L6,16 L2,16 L2,8 Z M8,8 L12,8 L12,16 L8,16 L8,8 Z M14,8 L18,8 L18,16 L14,16 L14,8 Z" id="Combined-Shape"></path>
+                  </svg>
+                </a>
+
+            </div>
+      @endcanany
+
+
+
+
+            @canany(['editer dossiers appartements',
+                     'editer dossiers lots',
+                     'editer dossiers boxes',
+                     'editer dossiers magasins',
+                     'editer dossiers bureaux',
+                     'editer ses propres dossiers'])              
                 <div class="mr-1">
              
                 <a
@@ -469,8 +523,13 @@
                 </a>
 
             </div>
-            @endcan
-            @can('supprimer dossiers')
+            @endcanany
+            @canany(['supprimer dossiers appartements',
+                     'supprimer dossiers lots',
+                     'supprimer dossiers boxes',
+                     'supprimer dossiers magasins',
+                     'supprimer dossiers bureaux',
+                     'supprimer ses propres dossiers'])
             <div>
                         <form action="/dossiers/{{$dossier->id}}" method="POST">
                         @csrf

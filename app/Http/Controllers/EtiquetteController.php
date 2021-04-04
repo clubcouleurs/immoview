@@ -102,10 +102,16 @@ class EtiquetteController extends Controller
      */
     public function destroy(Etiquette $etiquette)
     {
-        $etiquette->delete() ;
-        return redirect()->action([EtiquetteController::class, 'index'])
-        ->with('message','Etiquette supprimé !');
-
-
+        if ($etiquette->produits->count() > 0 )
+        {
+            return redirect()->action([EtiquetteController::class, 'index'])
+            ->with('error','Impossible de supprimer. Elle en utilisation');
+        }
+        else
+        {
+            $etiquette->delete() ;
+            return redirect()->action([EtiquetteController::class, 'index'])
+            ->with('message','Etiquette supprimé !');
+        }
     }
 }

@@ -38,7 +38,7 @@ class VoieController extends Controller
     {
        //dd($request) ;      
         $request->validate([
-            'Largeur' => 'required|numeric',
+            'Largeur' => 'required|alpha_num',
         ]);
 
         $voie = new Voie([
@@ -85,7 +85,7 @@ class VoieController extends Controller
     public function update(Request $request, Voie $voie)
     {
         $request->validate([
-            'Largeur' => 'required|numeric',
+            'Largeur' => 'required|alpha_num',
         ]);
 
         $voie->Largeur = $request['Largeur'] ;

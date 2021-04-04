@@ -12,6 +12,7 @@ use App\Models\Tranche;
 use App\Models\Voie;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class AppartementController extends Controller
 {
@@ -24,7 +25,9 @@ class AppartementController extends Controller
      */
     public function index(Request $request)
     {
-        
+        if (! Gate::allows('voir appartements')) {
+                abort(403);
+        }           
         $appartementsAll = Produit::with('constructible')
                             ->where('constructible_type','appartement')
                             ->with('etiquette')
@@ -130,6 +133,9 @@ class AppartementController extends Controller
      */
     public function create()
     {
+        if (! Gate::allows('editer appartements')) {
+                abort(403);
+        }          
         return view('appartements.create', [
             'voies' => Voie::all(),
             'immeubles' => Immeuble::all(),
@@ -145,7 +151,9 @@ class AppartementController extends Controller
      */
     public function store(ProduitRequest $request)
     {
-        
+        if (! Gate::allows('editer appartements')) {
+                abort(403);
+        }         
         $immeuble = Immeuble::findOrFail($request['immeuble']) ;
         $etiquette = Etiquette::findOrFail($request['etatProduit']) ;
 
@@ -195,6 +203,9 @@ class AppartementController extends Controller
      */
     public function edit(Appartement $appartement)
     {
+        if (! Gate::allows('editer appartements')) {
+                abort(403);
+        }           
         return view('appartements.edit', [
             'appartement'           => $appartement, 
             'voies'         => Voie::all(), 
@@ -211,6 +222,9 @@ class AppartementController extends Controller
      */
     public function update(Request $request, Appartement $appartement)
     {
+        if (! Gate::allows('editer appartements')) {
+                abort(403);
+        }          
         if ($appartement->produit->dossier == null) {
             
             $appartement->produit->etiquette_id = $request['etatProduit']; 
@@ -247,6 +261,9 @@ class AppartementController extends Controller
      */
     public function destroy(Appartement $appartement)
     {
+        if (! Gate::allows('supprimer appartements')) {
+                abort(403);
+        }          
         $appartement->produit->voies()->detach() ;       
         $appartement->immeuble()->dissociate() ;
         $appartement->delete() ;

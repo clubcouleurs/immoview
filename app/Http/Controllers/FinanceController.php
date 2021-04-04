@@ -72,6 +72,8 @@ class FinanceController extends Controller
                             => ($item->dossier !=null) ? $item->dossier->tauxPaiementV : 0 ,
                'reliquat'. $constructible
                             => ($item->dossier !=null) ? $item->dossier->reliquat : 0 ,
+               'reliquatDu30Pourcent'. $constructible
+                            => ($item->dossier !=null) ? $item->dossier->avanceNonEnc : 0 ,                            
                     ];
             });
         });
@@ -110,9 +112,9 @@ class FinanceController extends Controller
                 'reliquat'
                     => $item->sum('reliquat'. $constructible),
                 'reliquatDu30Pourcent'
-                    => (($item->sum('CaReserve'. $constructible) * 30) / 100) - $item->sum('totalPaiementsV'. $constructible),
+                    => $item->sum('reliquatDu30Pourcent'. $constructible),
                 'reliquat70Pourcent'
-                    => $item->sum('totalCA'. $constructible) - $item->sum('CaReserve'. $constructible),                
+                    => $item->sum('totalCA'. $constructible) * 0.7 ,                
                 ]  ;    
            
         });
@@ -163,8 +165,9 @@ class FinanceController extends Controller
         ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}->mapWithKeys(function ($item, $key) {
             return ['Tranche '.$key => $item];
         });
-        //dd($groupedDossiers) ;
         }
+
+
         return view('finances.index',
 
             ['color' => [ 'red' ,'purple','blue' , 'green' , 'yellow'], 

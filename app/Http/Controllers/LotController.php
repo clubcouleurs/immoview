@@ -12,6 +12,7 @@ use App\Models\Voie;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class LotController extends Controller
 {
@@ -23,7 +24,9 @@ class LotController extends Controller
      */
     public function index(Request $request)
     {
-
+        if (! Gate::allows('voir lots')) {
+                abort(403);
+        }
         $lotsAll = Produit::with('constructible')
                             ->where('constructible_type','lot')
                             ->with('etiquette')
@@ -127,6 +130,9 @@ class LotController extends Controller
      */
     public function create()
     {
+        if (! Gate::allows('editer lots')) {
+                abort(403);
+        }        
         return view('lots.create', [
             'voies' => Voie::all(),
             'tranches' => Tranche::all(),
@@ -145,7 +151,9 @@ class LotController extends Controller
      */
     public function store(ProduitRequest $request)
     {   
-        //dd($request) ;
+        if (! Gate::allows('editer lots')) {
+                abort(403);
+        }
         $tranche = Tranche::findOrFail($request['tranche']) ;
         $etiquette = Etiquette::findOrFail($request['etatProduit']) ;
 
@@ -184,6 +192,9 @@ class LotController extends Controller
      */
     public function show(Lot $lot)
     {
+        if (! Gate::allows('voir lots')) {
+                abort(403);
+        }        
             return view('lots.show', ['lot' => $lot]) ;
     }
 
@@ -195,52 +206,14 @@ class LotController extends Controller
      */
     public function edit(Lot $lot)
     {
+        if (! Gate::allows('editer lots')) {
+                abort(403);
+        }        
         return view('lots.edit', [
             'lot'           => $lot, 
             'voies'         => Voie::all(), 
             'etiquettes'    => Etiquette::all(),
             'tranches'      => Tranche::all()]) ;
-    }
-
-    /**
-     * Batch update the specified resources in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function updateBatch(ProduitRequest $Request)
-    {
-        dd($request['SearchByNum']) ;
-        
-        if (isset($request['SearchByNum']) && $request['SearchByNum'] != '' ) {
-            $numsLot = preg_split("/[\s,\.]+/", $request['SearchByNum']);
-            $numsLot = array_map('trim', $numsLot);
-            $lotsAll = $lotsAll->whereIn('lot.num', $numsLot);
-        }
-
-        Produit::upsert([
-            ['id' => 21, 'etiquette_id' => 3, 'prixM2Definitif' => 99],
-            ['id' => 31, 'etiquette_id' => 3, 'prixM2Definitif' => 150]
-        ], ['id', 'etiquette_id'], ['prixM2Definitif']);
-
-        /*$tranche = Tranche::findOrFail($request['tranche']) ;
-        $lot->produit->etiquette_id      = $request['etatProduit']; 
-        $lot->produit->prixM2Indicatif  = $request['prixM2Indicatif'];
-        $lot->produit->prixM2Definitif  = $request['prixM2Definitif'];
-        $lot->produit->update() ;
-        $lot->produit->voies()->detach() ; 
-        $lot->produit->voies()->attach($request['voies']) ;
-
-        $lot->numLot            = $request['numLot'];
-        $lot->surfaceLot            = $request['surfaceLot'];
-        $lot->typeLot               = $request['typeLot'];
-        $lot->nombreEtagesLot       = $request['nombreEtagesLot'];
-        $lot->descriptionLot        = $request['descriptionLot'];
-        $lot->update();
-        $tranche->lots()->save($lot) ;
-
-        return redirect()->action([LotController::class, 'index']);*/
     }
 
 
@@ -253,6 +226,10 @@ class LotController extends Controller
      */
     public function update(ProduitRequest $request, Lot $lot)
     {
+        if (! Gate::allows('editer lots')) {
+                abort(403);
+        }
+
         $tranche = Tranche::findOrFail($request['tranche']) ;
 
         if ($lot->produit->dossier == null) {
@@ -289,6 +266,10 @@ class LotController extends Controller
      */
     public function destroy(Lot $lot)
     {
+        if (! Gate::allows('supprimer lots')) {
+                abort(403);
+        }
+
         $lot->produit->voies()->detach() ;
         $lot->delete() ;
         $lot->produit()->delete() ;

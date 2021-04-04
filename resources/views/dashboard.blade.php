@@ -155,6 +155,8 @@
 
             </div>
             @endcan
+
+
             @can('voir prospection')
             <h2
               class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
@@ -296,7 +298,7 @@
 
                   <svg class="w-5 h-5" viewBox="0 0 20 20">
 
-<path d="M2.92893219,17.0710678 C6.83417511,20.9763107 13.1658249,20.9763107 17.0710678,17.0710678 C20.9763107,13.1658249 20.9763107,6.83417511 17.0710678,2.92893219 C13.1658249,-0.976310729 6.83417511,-0.976310729 2.92893219,2.92893219 C-0.976310729,6.83417511 -0.976310729,13.1658249 2.92893219,17.0710678 Z M9,5 L11,5 L11,11 L9,11 L9,5 Z M9,13 L11,13 L11,15 L9,15 L9,13 Z" id="Combined-Shape"></path>
+<path d="M8.02739671,2.33180314 C5.68271203,3.14769073 4,5.37733614 4,8 L4,14 L1,16 L1,17 L19,17 L19,16 L16,14 L16,8 C16,5.37733614 14.317288,3.14769073 11.9726033,2.33180314 C11.9906226,2.22388264 12,2.11303643 12,2 C12,0.8954305 11.1045695,0 10,0 C8.8954305,0 8,0.8954305 8,2 C8,2.11303643 8.0093774,2.22388264 8.02739671,2.33180314 L8.02739671,2.33180314 Z M12,18 C12,19.1045695 11.1045695,20 10,20 C8.8954305,20 8,19.1045695 8,18 L12,18 L12,18 Z" id="Combined-Shape"></path>
                   </svg>
                 </div>
                 <div>
@@ -315,7 +317,119 @@
 
             </div>
             @endcan
+            <!--  fin prospection -->
+            <!--  début relance -->
+            @can('voir relance')
+            <h2
+              class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
+            >
+              Relance Clients 
+            </h2>
+            <!-- Cards -->
+            <div class="grid gap-6 mb-2 md:grid-cols-2 xl:grid-cols-3">
+              <!-- Card -->
+              
+              <div
+                class="flex items-center p-4
+                {{ ($dossiersToday > 0) ? 'bg-red-600' : 'bg-gray-300' }}
+                rounded-lg shadow-md dark:bg-gray-800"
+              >
+                <div
+                  class="p-3 mr-4 text-white
+                  {{ ($dossiersToday > 0) ? 'bg-red-600' : 'bg-gray-200' }}
+                  rounded-full dark:text-orange-100 dark:bg-orange-500"
+                >
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+<path d="M8.02739671,2.33180314 C5.68271203,3.14769073 4,5.37733614 4,8 L4,14 L1,16 L1,17 L19,17 L19,16 L16,14 L16,8 C16,5.37733614 14.317288,3.14769073 11.9726033,2.33180314 C11.9906226,2.22388264 12,2.11303643 12,2 C12,0.8954305 11.1045695,0 10,0 C8.8954305,0 8,0.8954305 8,2 C8,2.11303643 8.0093774,2.22388264 8.02739671,2.33180314 L8.02739671,2.33180314 Z M12,18 C12,19.1045695 11.1045695,20 10,20 C8.8954305,20 8,19.1045695 8,18 L12,18 L12,18 Z" id="Combined-Shape"></path>
+                  </svg>
+                </div>
+                <div>
+                  <p
+                    class="mb-2 text-sm font-medium text-white dark:text-gray-400"
+                  >
+                    Dossiers à relancer Aujourd'hui :
+                  </p>
+                  <p
+                    class="text-lg font-semibold text-white dark:text-gray-200"
+                  >
+                  <a href="">
+                   {{$dossiersToday}} Dossiers
+                 </a>
+                  </p>
+                </div>
+              </div>
 
+              <!-- Card -->
+              <!-- Card -->
+              
+              <div
+                class="flex items-center p-4
+                {{ ($dossiersTomorrow > 0) ? 'bg-yellow-600' : 'bg-gray-300' }}
+                 rounded-lg shadow-md dark:bg-gray-800"
+              >
+                <div
+                  class="p-3 mr-4 text-white
+                {{ ($dossiersTomorrow > 0) ? 'bg-yellow-400' : 'bg-gray-200' }}
+
+                  rounded-full dark:text-orange-100 dark:bg-orange-500"
+                >
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+<path d="M8.02739671,2.33180314 C5.68271203,3.14769073 4,5.37733614 4,8 L4,14 L1,16 L1,17 L19,17 L19,16 L16,14 L16,8 C16,5.37733614 14.317288,3.14769073 11.9726033,2.33180314 C11.9906226,2.22388264 12,2.11303643 12,2 C12,0.8954305 11.1045695,0 10,0 C8.8954305,0 8,0.8954305 8,2 C8,2.11303643 8.0093774,2.22388264 8.02739671,2.33180314 L8.02739671,2.33180314 Z M12,18 C12,19.1045695 11.1045695,20 10,20 C8.8954305,20 8,19.1045695 8,18 L12,18 L12,18 Z" id="Combined-Shape"></path>
+                  </svg>
+                </div>
+                <div>
+                  <p
+                    class="mb-2 text-sm font-medium text-white dark:text-gray-400"
+                  >
+                    Dossiers à relancer Demain :
+                  </p>
+                  <p
+                    class="text-lg font-semibold text-white dark:text-gray-200"
+                  >
+                  <a href="">
+                    {{$dossiersTomorrow}} Dossiers
+                  </a>
+                  </p>
+                </div>
+              </div>
+                <!-- Card -->
+              
+              <div
+                class="flex items-center p-4
+                {{ ($dossiersAfterTomorrow > 0) ? 'bg-yellow-500' : 'bg-gray-300' }}
+
+                rounded-lg shadow-md dark:bg-gray-800"
+              >
+                <div
+                  class="p-3 mr-4 text-white
+                {{ ($dossiersAfterTomorrow > 0) ? 'bg-yellow-400' : 'bg-gray-200' }}
+
+                  rounded-full dark:text-orange-100 dark:bg-orange-500"
+                >
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+<path d="M2.92893219,17.0710678 C6.83417511,20.9763107 13.1658249,20.9763107 17.0710678,17.0710678 C20.9763107,13.1658249 20.9763107,6.83417511 17.0710678,2.92893219 C13.1658249,-0.976310729 6.83417511,-0.976310729 2.92893219,2.92893219 C-0.976310729,6.83417511 -0.976310729,13.1658249 2.92893219,17.0710678 Z M9,5 L11,5 L11,11 L9,11 L9,5 Z M9,13 L11,13 L11,15 L9,15 L9,13 Z" id="Combined-Shape"></path>
+                  </svg>
+                </div>
+                <div>
+                  <p
+                    class="mb-2 text-sm font-medium text-white dark:text-gray-400"
+                  >
+                    Dossiers à relancer Après-Demain
+                  </p>
+                  <p
+                    class="text-lg font-semibold text-white dark:text-gray-200"
+                  >
+                  <a href="">
+                    {{$dossiersAfterTomorrow}} Dossiers
+                    </a>
+                  </p>
+                </div>
+              </div>
+
+            </div>
+            @endcan
+
+            <!-- fin relance -->
             @can('editer lots')
             <h2
               class="my-6 text-2xl font-semibold text-gray-700 dark:text-purple-200"
@@ -455,168 +569,6 @@
               </div> 
 
 
-              @can('voir finance')
-              <!-- Card -->
-              <div
-                class="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
-              >
-                <div
-                  class="p-3 mr-4 text-red-500 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-500"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-<path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p
-                    class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-400"
-                  >
-                    Valeur totale lots
-                  </p>
-                  <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
-                  >
-                    {{number_format($valeurTotalLots)}} Dhs
-
-                  </p>
-                </div>
-              </div> 
-
-              <!-- Card -->
-              <div
-                class="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
-              >
-                <div
-                  class="p-3 mr-4 text-red-500 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-500"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-<path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p
-                    class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-400"
-                  >
-                    CA Réservé
-                  </p>
-                  <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
-                  >
-                  @isset($lotFinance['CaReserve']){{number_format($lotFinance['CaReserve'])}}@else 0 @endisset
-                  Dhs  
-
-                  </p>
-                </div>
-              </div> 
-
-              <!-- Card -->
-              <div
-                class="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
-              >
-                <div
-                  class="p-3 mr-4 text-red-500 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-500"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-<path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p
-                    class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-400"
-                  >
-                    Total Avances Encaissées
-                  </p>
-                  <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
-                  >
-                  @isset($lotFinance['totalPaiementsV']){{number_format($lotFinance['totalPaiementsV'])}}@else 0 @endisset
-                  Dhs                     
-
-                  </p>
-                </div>
-              </div> 
-
-              <!-- Card -->
-              <div
-                class="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
-              >
-                <div
-                  class="p-3 mr-4 text-red-500 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-500"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-<path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p
-                    class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-400"
-                  >
-                    Total Avances non-Encaissées
-                  </p>
-                  <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
-                  >
-                  @isset($lotFinance['totalPaiementsNV']){{number_format($lotFinance['totalPaiementsNV'])}}@else 0 @endisset
-                  Dhs                     
-                  </p>
-                </div>
-              </div> 
-
-              <!-- Card -->
-              <div
-                class="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
-              >
-                <div
-                  class="p-3 mr-4 text-red-500 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-500"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-<path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p
-                    class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-400"
-                  >
-                    Taux d'Avance
-                  </p>
-                  <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
-                  >
-                  @isset($lotFinance['tauxPaiement']){{number_format($lotFinance['tauxPaiement'])}}@else 0 @endisset
-                  %
-
-                  </p>
-                </div>
-              </div> 
-
-
-              <!-- Card -->
-              <div
-                class="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
-              >
-                <div
-                  class="p-3 mr-4 text-red-500 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-500"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-<path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p
-                    class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-400"
-                  >
-                    Total Reliquat
-                  </p>
-                  <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
-                  >
-                  @isset($lotFinance['reliquat']){{number_format($lotFinance['reliquat'])}}@else 0 @endisset
-                  Dhs                     
-
-                  </p>
-                </div>
-              </div>                                           
-              @endcan
               </div>
               @endcan
 
@@ -759,196 +711,7 @@
                 </div>
               </div> 
               <!-- Card -->
-              @can('voir finance')
-              <div
-                class="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-purple-800"
-              >
-                <div
-                  class="p-3 mr-4 text-purple-500 bg-purple-100 rounded-full dark:text-green-100 dark:bg-green-500"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-<path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p
-                    class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-400"
-                  >
-                    Valeur totale appartement
-                  </p>
-                  <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
-                  >
-                  
-                    {{number_format($valeurTotalAppartements)}} Dhs
-
-                  </p>
-                </div>
-              </div> 
-<!-- Card -->
-              <div
-                class="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
-              >
-                <div
-                  class="p-3 mr-4 text-red-500 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-500"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-<path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p
-                    class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-400"
-                  >
-                    CA Réservé
-                  </p>
-                  <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
-                  >
-                  @isset($appartementFinance['CaReserve']){{number_format($appartementFinance['CaReserve'])}}@else 0 @endisset
-                  Dhs                  
-
-                  </p>
-                </div>
-              </div> 
-
-              <!-- Card -->
-              <div
-                class="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
-              >
-                <div
-                  class="p-3 mr-4 text-red-500 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-500"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-<path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p
-                    class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-400"
-                  >
-                    Total Avances Encaissées
-                  </p>
-                  <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
-                  >
-                  @isset($appartementFinance['totalPaiementsV']){{number_format($appartementFinance['totalPaiementsV'])}}@else 0 @endisset
-                  Dhs                  
-
-                  </p>
-                </div>
-              </div> 
-
-              <!-- Card -->
-              <div
-                class="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
-              >
-                <div
-                  class="p-3 mr-4 text-red-500 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-500"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-<path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p
-                    class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-400"
-                  >
-                    Total Paiements non-Validés
-                  </p>
-                  <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
-                  >
-                  @isset($appartementFinance['totalPaiementsNV']){{number_format($appartementFinance['totalPaiementsNV'])}}@else 0 @endisset
-                  Dhs                  
-
-                  </p>
-                </div>
-              </div> 
-              <!-- Card -->
-              <div
-                class="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
-              >
-                <div
-                  class="p-3 mr-4 text-red-500 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-500"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-<path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p
-                    class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-400"
-                  >
-                    Total Avances non-encaissées
-                  </p>
-                  <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
-                  >
-                  @isset($appartementFinance['totalPaiementsNV'])
-                  {{number_format( ( ($appartementFinance['CaReserve'] * 30 )/ 100) - ($appartementFinance['totalPaiementsNV'] + $appartementFinance['totalPaiementsV'])     )  }}
-                  @else
-                   0 
-                  @endisset
-                  Dhs                  
-
-                  </p>
-                </div>
-              </div> 
-              <!-- Card -->
-              <div
-                class="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
-              >
-                <div
-                  class="p-3 mr-4 text-red-500 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-500"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-<path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p
-                    class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-400"
-                  >
-                    Taux d'Avance
-                  </p>
-                  <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
-                  >
-                  @isset($appartementFinance['tauxPaiement']){{number_format($appartementFinance['tauxPaiement'])}}@else 0 @endisset
-                  %
-                  </p>
-                </div>
-              </div> 
-
-
-              <!-- Card -->
-              <div
-                class="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
-              >
-                <div
-                  class="p-3 mr-4 text-red-500 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-500"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-<path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p
-                    class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-400"
-                  >
-                    Total Reliquat
-                  </p>
-                  <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
-                  >
-                  @isset($appartementFinance['reliquat']){{number_format($appartementFinance['reliquat'])}}@else 0 @endisset
-                  Dhs                  
-
-                  </p>
-                </div>
-              </div>                            
-              @endcan
+              
               </div>
               @endcan
 
@@ -1090,167 +853,6 @@
                 </div>
               </div> 
               <!-- Card -->
-              @can('voir finance')
-              <div
-                class="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
-              >
-                <div
-                  class="p-3 mr-4 text-blue-500 bg-blue-100 rounded-full dark:text-blue-100 dark:bg-blue-500"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-<path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p
-                    class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-400"
-                  >
-                    Valeur totale magasins
-                  </p>
-                  <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
-                  >
-
-                    {{number_format($valeurTotalMagasins)}} Dhs
-
-                  </p>
-                </div>
-              </div> 
-<!-- Card -->
-              <div
-                class="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
-              >
-                <div
-                  class="p-3 mr-4 text-red-500 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-500"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-<path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p
-                    class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-400"
-                  >
-                    CA Réservé
-                  </p>
-                  <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
-                  >
-                  @isset($magasinsFinance['CaReserve']){{number_format($magasinsFinance['CaReserve'])}}@else 0 @endisset
-                  Dhs                  
-                  </p>
-                </div>
-              </div> 
-
-              <!-- Card -->
-              <div
-                class="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
-              >
-                <div
-                  class="p-3 mr-4 text-red-500 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-500"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-<path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p
-                    class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-400"
-                  >
-                    Total Avances Encaissées
-                  </p>
-                  <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
-                  >
-                  @isset($magasinsFinance['totalPaiementsV']){{number_format($magasinsFinance['totalPaiementsV'])}}@else 0 @endisset
-                  Dhs                  
-
-                  </p>
-                </div>
-              </div> 
-
-              <!-- Card -->
-              <div
-                class="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
-              >
-                <div
-                  class="p-3 mr-4 text-red-500 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-500"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-<path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p
-                    class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-400"
-                  >
-                    Total Avances non-Encaissées
-                  </p>
-                  <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
-                  >
-                  @isset($magasinFinance['totalPaiementsNV']){{number_format($magasinFinance['totalPaiementsNV'])}}@else 0 @endisset
-                  Dhs                  
-
-                  </p>
-                </div>
-              </div> 
-
-              <!-- Card -->
-              <div
-                class="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
-              >
-                <div
-                  class="p-3 mr-4 text-red-500 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-500"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-<path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p
-                    class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-400"
-                  >
-                    Taux d'Avance
-                  </p>
-                  <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
-                  >
-                  @isset($magasinFinance['reliquat']){{number_format($magasinFinance['reliquat'])}}@else 0 @endisset
-                  %                  
-
-                  </p>
-                </div>
-              </div> 
-
-
-              <!-- Card -->
-              <div
-                class="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
-              >
-                <div
-                  class="p-3 mr-4 text-red-500 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-500"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-<path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p
-                    class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-400"
-                  >
-                    Total Reliquat
-                  </p>
-                  <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
-                  >
-                  @isset($magasinFinance['reliquat']){{number_format($magasinFinance['reliquat'])}}@else 0 @endisset
-                  Dhs                  
-
-                  </p>
-                </div>
-              </div>                            
-              @endcan
               </div>
               @endcan
 
@@ -1392,166 +994,7 @@
                 </div>
               </div> 
               <!-- Card -->
-              @can('voir finance')
-              <div
-                class="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
-              >
-                <div
-                  class="p-3 mr-4 text-green-500 bg-green-100 rounded-full dark:text-green-100 dark:bg-green-500"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-<path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p
-                    class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-400"
-                  >
-                    Valeur totale Bureaux
-                  </p>
-                  <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
-                  >
-                    {{number_format($valeurTotalBureaux)}} Dhs
-
-                  </p>
-                </div>
-              </div> 
-<!-- Card -->
-              <div
-                class="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
-              >
-                <div
-                  class="p-3 mr-4 text-red-500 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-500"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-<path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p
-                    class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-400"
-                  >
-                    CA Réservé
-                  </p>
-                  <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
-                  >
-                  @isset($bureauFinance['CaReserve']){{number_format($bureauFinance['CaReserve'])}}@else 0 @endisset
-                  Dhs                  
-
-                  </p>
-                </div>
-              </div> 
-
-              <!-- Card -->
-              <div
-                class="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
-              >
-                <div
-                  class="p-3 mr-4 text-red-500 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-500"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-<path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p
-                    class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-400"
-                  >
-                    Total Avances Encaissées
-                  </p>
-                  <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
-                  >
-                  @isset($bureauFinance['totalPaiementsV']){{number_format($bureauFinance['totalPaiementsV'])}}@else 0 @endisset
-                  Dhs                  
-
-                  </p>
-                </div>
-              </div> 
-
-              <!-- Card -->
-              <div
-                class="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
-              >
-                <div
-                  class="p-3 mr-4 text-red-500 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-500"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-<path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p
-                    class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-400"
-                  >
-                    Total Avances non-Encaissées
-                  </p>
-                  <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
-                  >
-                  @isset($bureauFinance['totalPaiementsNV']){{number_format($bureauFinance['totalPaiementsNV'])}}@else 0 @endisset
-                  Dhs                  
-
-                  </p>
-                </div>
-              </div> 
-
-              <!-- Card -->
-              <div
-                class="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
-              >
-                <div
-                  class="p-3 mr-4 text-red-500 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-500"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-<path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p
-                    class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-400"
-                  >
-                    Taux d'Avance
-                  </p>
-                  <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
-                  >
-                  @isset($bureauFinance['tauxPaiement']){{number_format($bureauFinance['tauxPaiement'])}}@else 0 @endisset
-                  %                  
-
-                  </p>
-                </div>
-              </div> 
-
-
-              <!-- Card -->
-              <div
-                class="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
-              >
-                <div
-                  class="p-3 mr-4 text-red-500 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-500"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-<path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p
-                    class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-400"
-                  >
-                    Total Reliquat
-                  </p>
-                  <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
-                  >
-                  @isset($bureauFinance['reliquat']){{number_format($bureauFinance['reliquat'])}}@else 0 @endisset
-                  Dhs
-                  </p>
-                </div>
-              </div>                            
-              @endcan
+              
               </div>
               @endcan
 
@@ -1693,166 +1136,7 @@
                 </div>
               </div> 
               <!-- Card -->
-              @can('voir finance')
-              <div
-                class="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
-              >
-                <div
-                  class="p-3 mr-4 text-yellow-500 bg-yellow-100 rounded-full dark:text-yellow-100 dark:bg-yellow-500"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-<path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p
-                    class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-400"
-                  >
-                    Valeur totale Boxes
-                  </p>
-                  <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
-                  >
-                    {{number_format($valeurTotalBoxes)}} Dhs
-
-                  </p>
-                </div>
-              </div> 
-<!-- Card -->
-              <div
-                class="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
-              >
-                <div
-                  class="p-3 mr-4 text-red-500 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-500"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-<path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p
-                    class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-400"
-                  >
-                    CA Réservé
-                  </p>
-                  <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
-                  >
-                  @isset($boxFinance['CaReserve']){{number_format($boxFinance['CaReserve'])}}@else 0 @endisset
-                  Dhs
-                  </p>
-                </div>
-              </div> 
-
-              <!-- Card -->
-              <div
-                class="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
-              >
-                <div
-                  class="p-3 mr-4 text-red-500 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-500"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-<path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p
-                    class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-400"
-                  >
-                    Total Avances Encaissées
-                  </p>
-                  <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
-                  >
-                  @isset($boxFinance['totalPaiementsV']){{number_format($boxFinance['totalPaiementsV'])}}@else 0 @endisset                  
-                  Dhs
-
-                  </p>
-                </div>
-              </div> 
-
-              <!-- Card -->
-              <div
-                class="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
-              >
-                <div
-                  class="p-3 mr-4 text-red-500 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-500"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-<path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p
-                    class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-400"
-                  >
-                    Total Avances non-Encaissées
-                  </p>
-                  <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
-                  >
-                  @isset($boxFinance['totalPaiementsNV']){{number_format($boxFinance['totalPaiementsNV'])}}@else 0 @endisset                  
-                    Dhs
-
-                  </p>
-                </div>
-              </div> 
-
-              <!-- Card -->
-              <div
-                class="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
-              >
-                <div
-                  class="p-3 mr-4 text-red-500 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-500"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-<path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p
-                    class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-400"
-                  >
-                    Taux d'Avance
-                  </p>
-                  <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
-                  >
-                  @isset($boxFinance['tauxPaiement']){{number_format($boxFinance['tauxPaiement'])}}@else 0 @endisset                  
-                  %
-
-                  </p>
-                </div>
-              </div> 
-
-
-              <!-- Card -->
-              <div
-                class="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
-              >
-                <div
-                  class="p-3 mr-4 text-red-500 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-500"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-<path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p
-                    class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-400"
-                  >
-                    Total Reliquat
-                  </p>
-                  <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
-                  >
-                  @isset($boxFinance['reliquat']){{number_format($boxFinance['reliquat'])}}@else 0 @endisset                  
-                  Dhs
-
-                  </p>
-                </div>
-              </div>                            
-              @endcan
+              
               </div>
               @endcan
 
@@ -2057,10 +1341,31 @@
                       class="inline-block w-3 h-3 mr-1 bg-yellow-600 rounded-full"
                     ></span>
                     <span>Box</span>
-                  </div>                                                      
+                  </div> 
+                                                      
                 </div>
               </div>
               @endcan
+@can('voir dossiers')
+              <!-- Bars chart -->
+              <div
+                class="min-w-0 p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800"
+              >
+                <h4 class="mb-4 font-semibold text-gray-800 dark:text-gray-300">
+                  Ventes par mois et par type
+                </h4>
+                <canvas id="barsPerformance"></canvas>
+                <div
+                  class="flex justify-center mt-4 space-x-3 text-sm text-gray-600 dark:text-gray-400"
+                >
+ 
+                  <!-- Chart legend -->
+                  <div class="flex items-center">
+                      <span>Performances des commerciaux</span>
+                  </div>
+                </div>
+              </div>
+              @endcan              
               <!-- Lines chart -->
               @can('voir dossiers')
               <div
@@ -2259,7 +1564,13 @@
             @endcan
           </div>
         </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" defer></script>
+
+
 <script>
+
+
 // déclarer les types constructibles avant affectation de % interets au cas ou 
 // y'a pas d'interêt pour un type de constructible donné
 var lot = 0 ;
@@ -2301,7 +1612,7 @@ var appartementsStocked={{ $appartementsStocked }}
 var appartementsBlocked={{ $appartementsBlocked }}
 var appartementsReserved={{ $appartementsReserved }}
 
-
+// définier le graph BAR ventes par type et par mois
 {{$i = 0 }}
 @foreach ($nombreVentes as $ventes)
   var lot{{$loop->iteration}}={{$ventes->lot}}
@@ -2323,8 +1634,11 @@ var appartementsReserved={{ $appartementsReserved }}
   var da{{$i}}='{{ $mois[ ($i) ] }}'
   @endfor
 @endif
+// fin BAR
 
 
+
+// définir evolution de vente par mois
 {{$i = 0 }}
 @foreach ($nombreVentesParMois as $ventes)
   var vvpm{{$loop->iteration}}={{$ventes->nombreVentes}}
@@ -2341,10 +1655,9 @@ var appartementsReserved={{ $appartementsReserved }}
 
 
 </script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"
-      defer
-    ></script>
+
+
+
     <script src="{{config('app.url')}}/js/charts-pie.js" defer></script>
     <script src="{{config('app.url')}}/js/charts-pieAppartement.js" defer></script>
 
@@ -2352,5 +1665,111 @@ var appartementsReserved={{ $appartementsReserved }}
     <script src="{{config('app.url')}}/js/charts-bars.js" defer></script>
     <script src="{{config('app.url')}}/js/charts-linesV.js" defer></script>
     <script src="{{config('app.url')}}/js/pie-interet-visites.js" defer></script>
-            
+
+
+<!-- here graph bar ventes par commercial -->
+  <script>
+    window.chartColors = {
+      red: '#DC2626',
+      teal: '#14B8A6',
+      yellow: '#EAB308',
+      green: '#22C55E',
+      blue: '#06B6D4',
+      purple: '#A855F7',
+      grey: '#52525B'
+    };
+
+    var config = {
+      type: 'bar',
+      data: {
+        labels: [da1, da2, da3, da4, da5, da6, da7],
+        datasets: []
+      },
+
+  options: {
+      scales: {
+      yAxes: [{
+                  scaleLabel: {
+                    display: true
+                  },
+                  ticks: {
+                    beginAtZero: true,
+                    min: 0,
+                    stepSize: 1,
+                  }
+                }],
+      },
+    responsive: true,
+    legend: {
+      display: false,
+    },
+  },
+    };
+   
+
+
+
+
+
+
+
+window.onload = function() {
+var com = [] ;
+
+const barsCtxVentesParCommercials = document.getElementById('barsPerformance');
+window.myLine = getNewChart(barsCtxVentesParCommercials, config);
+
+  @foreach ($commerciaux as $commercial) // = execution 8 times/commerciaux
+
+    @foreach ($performanceCommercial as $performance) // = execution 4 times/mois
+
+      nom = '{{$commercial}}' ;
+
+    com.push({{$performance->$commercial}}) // = execution 8 times/commerciaux
+
+  @endforeach
+    push(com, nom) 
+
+    com = [] ;
+
+
+  var da{{$loop->iteration}}='{{ $mois[ ($performance->mois - 1) ] }}'
+  {{$i = $loop->iteration}}
+
+@endforeach
+
+    };
+    
+        function getNewChart(canvas, config) {
+            return new Chart(canvas, config);
+        }
+    
+
+    var colorNames = Object.keys(window.chartColors);
+    
+    function push(com, nom) {
+      size = {{sizeof($performanceCommercial)}} ;
+      sizeA = {{sizeof($performanceCommercial)}} ;
+
+      var colorName = colorNames[config.data.datasets.length % colorNames.length];
+      var newColor = window.chartColors[colorName];
+      var newDataset = {
+        label: nom,
+        backgroundColor: newColor,
+        borderColor: newColor,
+        borderWidth: 1,
+        data: [],
+      };
+
+      for (var index = 0; index < size ; ++index) {
+        //alert(com) ;
+          newDataset.data.push(com[index]);
+      }
+      config.data.datasets.push(newDataset);
+      window.myLine.update();
+    }
+
+  </script>
+
+
 </x-master>

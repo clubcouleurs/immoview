@@ -536,8 +536,9 @@
                       </td>
 
                       <td class="px-4 py-3 text-sm">
-                        @can('editer appartements')
+                        
               <div class="flex px-1 py-1">
+                @can('Ajouter dossiers appartements')
                 @if(null == $produit->dossier && $produit->etiquette->label == 'En stock')
                 <div class="mr-1">
              
@@ -557,8 +558,9 @@
                 </a>
 
               </div>
+              @endcan
             @endif
-
+            @can('editer appartements')
                 <div class="mr-1">
              
                 <a
@@ -577,6 +579,8 @@
                 </a>
 
             </div>
+            @endcan
+            @can('supprimer appartements')
             <div>
                         <form action="/appartements/{{$produit->constructible->id}}" method="POST">
                         @csrf

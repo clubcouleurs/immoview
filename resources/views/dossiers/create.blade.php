@@ -20,8 +20,8 @@
               </div>
               @else
              
+             @canany(['Ajouter dossiers lots', 'Ajouter dossiers appartements', 'Ajouter dossiers magasins', 'Ajouter dossiers bureaux', 'Ajouter dossiers boxes'])
             <!-- la boite pour rechercher un produit avant son affectation -->
-
 <div class="bg-blue-100 rounded-lg px-4 py-4 mb-4 text-sm">
 <div x-data="produitSearch()">
                 <span class="text-gray-700 dark:text-gray-400">Quelle produit voudriez vous attachez à ce dossier ?</span>
@@ -33,8 +33,9 @@
     x-model="produitSearch">
 
                     <div class="mt-2">
+                   @can('Ajouter dossiers lots')   
                   <label
-                    class="inline-flex items-center text-gray-600 dark:text-gray-400"
+                    class="inline-flex items-center mr-6 text-gray-600 dark:text-gray-400"
                   >
                     <input
                       type="radio"
@@ -45,8 +46,11 @@
                     />
                     <span class="ml-2">Lot</span>
                   </label>
+                  @endcan
+
+                   @can('Ajouter dossiers appartements')   
                   <label
-                    class="inline-flex items-center ml-6 text-gray-600 dark:text-gray-400"
+                    class="inline-flex items-center mr-6 text-gray-600 dark:text-gray-400"
                   >
                     <input
                       type="radio"
@@ -56,8 +60,11 @@
                     />
                     <span class="ml-2">Appartement</span>
                   </label>
+                  @endcan
+
+                   @can('Ajouter dossiers magasins')   
                   <label
-                    class="inline-flex items-center ml-6 text-gray-600 dark:text-gray-400"
+                    class="inline-flex items-center mr-6 text-gray-600 dark:text-gray-400"
                   >
                     <input
                       type="radio"
@@ -67,8 +74,11 @@
                     />
                     <span class="ml-2">Magasin</span>
                   </label>
+                  @endcan
+                   @can('Ajouter dossiers bureaux')   
+
                   <label
-                    class="inline-flex items-center ml-6 text-gray-600 dark:text-gray-400"
+                    class="inline-flex items-center mr-6 text-gray-600 dark:text-gray-400"
                   >
                     <input
                       type="radio"
@@ -78,8 +88,10 @@
                     />
                     <span class="ml-2">Bureau</span>
                   </label>
+                  @endcan
+                   @can('Ajouter dossiers boxes')   
                   <label
-                    class="inline-flex items-center ml-6 text-gray-600 dark:text-gray-400"
+                    class="inline-flex items-center mr-6 text-gray-600 dark:text-gray-400"
                   >
                     <input
                       type="radio"
@@ -89,6 +101,7 @@
                     />
                     <span class="ml-2">Box</span>
                   </label>
+                  @endcan
                 </div>
 
     <button
@@ -116,7 +129,7 @@
 </div>
             </div>
 <!-- fin boite recherche produit immo  -->
-
+@endcanany
             @endisset
 
             <form action="/dossiers" method="POST">

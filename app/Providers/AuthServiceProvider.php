@@ -27,13 +27,18 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::before(function($user, $permission)
         {   
+            //echo $user->isAdministrator() ;
             if ($user->isAdministrator()) {
-                return true ; 
+                return true ;
             }
+                 
+
         });
 
         Gate::after(function($user, $permission)
         {   
+            //echo $user->permissions()->contains($permission);
+
             if ($user->permissions()->contains($permission))
             {
                 return true ;
