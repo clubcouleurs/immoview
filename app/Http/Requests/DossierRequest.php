@@ -33,7 +33,7 @@ public function rules()
 
             'frais' => 'sometimes|required|numeric',
             'detail' => 'string|nullable',         
-            'client' => 'sometimes|required|integer|exists:clients,id',
+            'client.*' => 'required|integer|exists:clients,id',
             'produit' => 'sometimes|required|integer|exists:produits,id',
             'actePj' => 'sometimes|required|max:5000|mimetypes:application/pdf,image/png,image/jpeg,image/tiff,image/gif',
             'isVente'    => 'required|boolean',

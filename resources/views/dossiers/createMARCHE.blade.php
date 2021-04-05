@@ -1,11 +1,11 @@
 <x-master>
       <main class="h-full overflow-y-auto">
           <div class="container px-6 mx-auto grid">
-
+            {{ old('isVente') }}
         @if(!$errors->isEmpty())
         <p class="block h-160 px-4 py-4 rounded-lg mx-auto w-full mt-4
         bg-red-200 text-red-600 text-xl"> Attention Il y'a des erreurs dans votre formulaire</p>
-        <h4>{{$errors->first()}}</h4>
+        <h4>{{--$errors->first()--}}</h4>
         @endif
 
             <h2
@@ -187,7 +187,7 @@
                       value="1"
                       required
                       x-on:click=" isOpen = false"
-                {{ old('isVente', $dossier->isVente ?? '')== "1" ? 'checked' : '' }}                      
+                {{ old('type', $dossier->isVente ?? '')== "1" ? 'checked' : '' }}                      
                       />
                     
                     <span class="ml-2">Vente</span>
@@ -309,7 +309,8 @@
                 </span>
                 <select
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
-                  name="client[]"
+                  name="client"
+                  value="{{old('client')}}"
                 >
                 @foreach ($clients as $client)
                   <option value="{{ $client->id }}"
@@ -324,7 +325,6 @@
 <!-- ajouter un autre client au dossier de vente -->
 <section
 x-data="{
-client:[],
 todos:[
 
 
@@ -332,11 +332,11 @@ todos:[
       $i = 0 ;
       @endphp
 
-   @while (null !== old('client.'.$i) )
+   @while (null !== old('client'.$i) )
     {
       id: {{$i}} ,
       name : 'client{{$i}}' , 
-      client : '{{old('client.'.$i)}}',
+      client : '{{old('client'.$i)}}',
     },
       @php
       $i++;
@@ -348,7 +348,7 @@ newTodo:'',
 addTodo(){
 this.todos.push({
 id: this.todos.length +1,
-name : this.client.push(this.todos.length) ,
+name : 'client' + (this.todos.length) ,
 
 });
 },
@@ -388,9 +388,9 @@ this.todos.splice(this.todos.indexOf(todo), 1 );
 
                 <select
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
-                  name="client[]"
+                  name="client"
                  :key="todo.id"
-
+                 :name="todo.name"
                  :id="todo.name"
                  :value="todo.client"
                 >

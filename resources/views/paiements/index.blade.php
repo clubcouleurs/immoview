@@ -394,7 +394,9 @@ id: this.logos.length +1,
                               
                             >
                             <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                              Client : {{ $dossier->client->nom}} {{ $dossier->client->prenom}} {{ $dossier->client->cin}} - 
+                            @foreach($dossier->clients as $client)
+                              Client : {{ $client->nom}} {{ $client->prenom}} {{ $client->cin}} - 
+                            @endforeach  
                               Produit : {{ $dossier->produit->constructible_type}} N°{{ $dossier->produit->constructible->num}}
                             </p> 
                           </div>

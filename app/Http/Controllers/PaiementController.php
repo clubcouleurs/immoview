@@ -87,13 +87,11 @@ class PaiementController extends Controller
 
         if($request->hasFile('pj'))
         {
-            $client = $dossier->client->nom . '-' . $dossier->client->prenom ;
+            $produit = $dossier->produit->constructible_type . '-Num-' . $dossier->produit->constructible->num ;
             $pjName = str_replace(' ', '', $paiement->type) . '-' 
-            . str_replace('.', '', $paiement->num) . '-DossierN' 
+            . str_replace('.', '', $paiement->num) . '-' 
 
-            . str_replace('.', '', $dossier->num) . '-' 
-
-            . str_replace('.', '',  $client ) . '-' 
+            . str_replace('.', '',  $produit ) . '-' 
 
             . str_replace(' ', '-', date('Y-m-d-His')) ;
             $pjExtension = $request->file('pj')->extension() ;
@@ -107,6 +105,9 @@ class PaiementController extends Controller
         $paiement->save();
 
         $dossier->isVente = true ;
+        $dossier->produit->etiquette_id = 3 ;
+        $dossier->produit->update() ;
+        
         $dossier->update() ;
         return redirect()->action([PaiementController::class, 'index'] , ['dossier' => $dossier])
         ->with('message','Paiement ajouté !');

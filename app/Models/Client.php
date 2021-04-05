@@ -18,7 +18,7 @@ class Client extends Model
 
     public function dossiers()
     {
-        return $this->hasMany(Dossier::class);
+        return $this->belongsToMany(Dossier::class, 'dossier_client');
     }
     public function visites()
     {

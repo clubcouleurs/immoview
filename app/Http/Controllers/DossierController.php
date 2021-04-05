@@ -50,7 +50,7 @@ class DossierController extends Controller
                             })
                             ->with('produit')
                             ->with('delais')
-                            ->with('client')
+                            ->with('clients')
                             ->with('paiements')->orderbyDesc('created_at')
                             ->get(); 
         }
@@ -349,29 +349,30 @@ class DossierController extends Controller
             'date'              => $request['date'] ,
             'frais'             => $request['frais'] ,
             'detail'            => $request['detail'],
-            'client_id'         => $request['client'],
             'produit_id'        => $request['produit'],
             'user_id'           => Auth::id(),
             'isVente'           => $request['isVente'],
         ]) ;
+  
 
             if(isset($produit) && $produit->etiquette_id === 2 )
             {
                 $dossier->save();
+                $dossier->clients()->attach($request['client']);
+
                 if ($dossier->isVente) {
                     $dossier->produit->etiquette_id = 3 ;
                 }else
                 {                    
                     $dossier->produit->etiquette_id = 9 ;
-                }
-                $dossier->produit->update() ;
 
-                if ($dossier->isVente == false) {
                     $delai = new Delai([
                         'date'              => $request['delai'] ,
                     ]) ;
                     $dossier->delais()->save($delai) ;
                 }
+
+                $dossier->produit->update() ;
 
                 return redirect(
                     '/dossiers?constructible='. $produit->constructible_type
@@ -395,23 +396,7 @@ class DossierController extends Controller
 
         return view('dossiers.show', [
             'dossier'              => $dossier,
-
-
             'clients'               =>   Client::all(),
-            'users'                 => User::all(),
-            'tranches'              => '' ,
-            'valeurTotal'           => 1000, //$prixTotalLots->sum(),
-            'SearchByTranche'       => '',//$request['tranche'] ,
-            'SearchByUser'          => '',//$request['user'] ,
-            'SearchBySign'         => '',//$request['sign'] ,
-            'SearchByTauxComparateur'          => '',//$request['tauxComparateur'] ,
-            'SearchByType'          => '',//$request['typeLot'] ,
-            'SearchByMin'           => '',//$request['minPrix'] ,
-            'SearchByMax'           => '',//$request['maxPrix'] ,
-            'SearchByNum'           =>  '',//implode(',' , $numsDossier) ,
-            'SearchByClient'        => '',//$request['client'] ,
-
-
         ]);
     }
 
@@ -423,10 +408,11 @@ class DossierController extends Controller
      */
     public function edit(Dossier $dossier)
     {
-        return view('dossiers.edit' , [ 
-            'dossier' => $dossier,
-            'produit' => $dossier->produit,
-            'client'  => $dossier->client,
+        return view('dossiers.edit' , [
+            'clients'   => Client::orderBy('nom', 'desc')->get(), 
+            'dossier'   => $dossier,
+            'produit'   => $dossier->produit,
+            'client'    => $dossier->client,
             'dataRecap' => $this->recap($dossier->produit)
         ]);
     }
@@ -440,6 +426,8 @@ class DossierController extends Controller
      */
     public function update(DossierRequest $request, Dossier $dossier)
     {
+        //dd($request) ;
+
         if($request->hasFile('actePj'))
         {
 
@@ -462,14 +450,36 @@ class DossierController extends Controller
 
         }else
         {
+            $dossier->clients()->detach();            
+            $dossier->clients()->attach($request['client']);
+
             $dossier->num = $request['num']; 
             $dossier->date = $request['date'];
             $dossier->frais = $request['frais'];
             $dossier->detail = $request['detail'];
+            $dossier->isVente = $request['isVente'] ;
         }
+
             $dossier->update(); 
-        return redirect()->action([DossierController::class, 'index'])
-        ->with('message','Dossier modifié') ;
+
+                if ($dossier->isVente) {
+                    $dossier->produit->etiquette_id = 3 ;
+                }else
+                {                    
+                    $dossier->produit->etiquette_id = 9 ;
+                    
+                    $delai = new Delai([
+                        'date'              => $request['delai'] ,
+                    ]) ;
+                    $dossier->delais()->save($delai) ;
+                }
+
+                $dossier->produit->update() ;
+
+                return redirect(
+                    '/dossiers?constructible='. $dossier->produit->constructible_type
+                )->with('message','Dossier modifié !');
+
     }
 
     public function retour(Dossier $dossier)
@@ -491,8 +501,10 @@ class DossierController extends Controller
         $dossier->produit->etiquette_id = 2 ; // étiquette -> En stock
         $dossier->produit->update() ; // étiquette -> En stock
 
-        $dossier->delete() ;
+        $dossier->clients()->detach();
         $dossier->paiements()->delete() ;
+
+        $dossier->delete() ;
 
         return redirect()->action([DossierController::class, 'index'])
                 ->with('message','Dossier supprimé !');

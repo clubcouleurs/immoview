@@ -340,14 +340,16 @@
 
                                                                   
                       <td class="px-1 py-3 text-xs">
+                        @foreach ($dossier->clients as $client)
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
                         >
-                        {{$dossier->client->nom}} {{$dossier->client->prenom}}                       
+                        {{$client->nom}} {{$client->prenom}}                       
                         </span>
                             <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                              CIN : {{ $dossier->client->cin }}
-                            </p>                         
+                              CIN : {{ $client->cin }}
+                            </p>  
+                        @endforeach                           
                       </td>
                       <td class="px-1 py-3 text-sm">
                         {{ $dossier->user->name }}

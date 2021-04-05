@@ -162,7 +162,7 @@ Limit 7
         $boxesBlocked = $boxesAll->whereNotIn('etiquette_id', [3,2,9])->count() ;
 
 
-        $dossiersAll = Dossier::with('produit')->with('client')->with('paiements')
+        $dossiersAll = Dossier::with('produit')->with('clients')->with('paiements')
         ->orderByDesc('created_at')->paginate(15);
 
         // pour compter les taux d'avances 30%

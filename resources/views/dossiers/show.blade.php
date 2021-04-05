@@ -203,7 +203,7 @@
                           {{$dossier->produit->constructible->surface}} m<sup>2</sup>
                       </td>
                     </tr> 
-                    @if($dossier->produit->constructible_type = 'appartement')
+                    @if($dossier->produit->constructible_type == 'appartement')
                     <tr class="text-gray-700 dark:text-gray-400">
                       <td class="px-1 py-3">
                         <div class="flex items-center text-sm">
@@ -461,36 +461,21 @@
               >
                   <table class="w-full">
                   <tbody class="divide-y dark:divide-gray-700 dark:bg-gray-800">
+                    @foreach($dossier->clients as $client)
                     <tr class="text-gray-700 dark:text-gray-400">
                       <td class="px-1 py-3">
                         <div class="flex items-center text-sm">
                           <div><p class="font-semibold">
                             <span
                               class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-md dark:bg-green-700 dark:text-green-100">
-                              Nom Client :
+                              Client :
                             </span>
                             </p>
                           </div>
                         </div>
                       </td>
                       <td class="px-1 py-3 text-sm">
-                          {{$dossier->client->nom}}
-                      </td>
-                    </tr>
-                    <tr class="text-gray-700 dark:text-gray-400">
-                      <td class="px-1 py-3">
-                        <div class="flex items-center text-sm">
-                          <div><p class="font-semibold">
-                            <span
-                              class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-md dark:bg-green-700 dark:text-green-100">
-                              Prénom Client :                      
-                            </span>
-                            </p>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="px-4 py-3 text-sm">
-                          {{$dossier->client->prenom}}
+                          {{$client->nom}} {{$client->prenom}}
                       </td>
                     </tr> 
                     <tr class="text-gray-700 dark:text-gray-400">
@@ -506,7 +491,7 @@
                         </div>
                       </td>
                       <td class="px-1 py-3 text-sm">
-                          {{$dossier->client->cin }}
+                          {{$client->cin }}
                       </td>
                     </tr>  
                     <tr class="text-gray-700 dark:text-gray-400">
@@ -522,7 +507,7 @@
                         </div>
                       </td>
                       <td class="px-1 py-3 text-sm">
-                          {{$dossier->client->mobile}}
+                          {{$client->mobile}}
                       </td>
                     </tr>   
                     <tr class="text-gray-700 dark:text-gray-400">
@@ -532,7 +517,7 @@
                             
                                   <a
                                     class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-green-600 border border-transparent rounded-lg active:bg-green-600 hover:bg-green-700 focus:outline-none focus:shadow-outline-green"
-                                    href="/clients/{{$dossier->client->id}}/edit"
+                                    href="/clients/{{$client->id}}/edit"
                                   >
                                     Modifier
                                   </a>                                                     
@@ -541,7 +526,8 @@
                         </div>
                       </td>
                      
-                    </tr>                                                                            
+                    </tr>   
+                    @endforeach                                                                         
                   </tbody>
                 </table>
                 

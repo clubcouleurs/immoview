@@ -19,16 +19,22 @@ use Illuminate\Support\Facades\Gate;
 class Dossier extends Model
 {
     use HasFactory;
-    protected $fillable = ['num', 'date', 'frais','detail','client_id','user_id', 'produit_id', 'isVente'];
+    protected $fillable = ['num', 'date', 'frais','detail', 'user_id', 'produit_id', 'isVente'];
     
     public function produit()
     {
         return $this->belongsTo(Produit::class);
     }
-    public function client()
+    public function clients()
     {
-        return $this->belongsTo(Client::class);
+        return $this->belongsToMany(Client::class, 'dossier_client');
     }  
+
+    // public function client()
+    // {
+    //     return $this->belongsTo(Client::class);
+    // }  
+
     public function user()
     {
         return $this->belongsTo(User::class);
