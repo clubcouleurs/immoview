@@ -334,7 +334,7 @@
                         </div>
                       </td>
                       <td class="px-1 py-3 text-sm">
-                          {{$dossier->produit->remise}} %                     
+                          {{abs($dossier->produit->remise)}} %
                       </td>
                     </tr>                     
 

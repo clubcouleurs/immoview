@@ -524,8 +524,8 @@ class DossierController extends Controller
         $pdf = new FPDI();
         $pdf->SetTextColor(0, 0, 255) ;
         $pdf->SetFont('Helvetica');
-            $pdf->setPrintHeader(false);
-            $pdf->setPrintFooter(false);
+            // $pdf->setPrintHeader(false);
+            // $pdf->setPrintFooter(false);
         // get the page count
 
         $pageCount = $pdf->setSourceFile(Storage_path('app/public/acte-reservation-'.
@@ -551,56 +551,87 @@ class DossierController extends Controller
             $pdf->useTemplate($templateId);
             if ($pageNo == 1)
             {
-            $prenom = stripslashes($dossier->client->prenom);
-            $prenom = iconv('UTF-8', 'windows-1252', $prenom);
+                    $txt = '' ;
+                    $i = 0 ;
+                foreach ($dossier->clients as $client)
+                {  
 
-            $nom = stripslashes($dossier->client->nom);
+                    $i += 1 ;
+                    $txt .= '- Monsieur : ' ;
+                    $prenom = stripslashes($client->prenom);
+                    $nom = iconv('UTF-8', 'windows-1252', $prenom);
+
+            $nom = stripslashes($client->nom);
             $nom = iconv('UTF-8', 'windows-1252', $nom);
-
-            $pdf->SetXY(75, 93.75);
             $nomC = ucfirst($nom) . ' ' . ucfirst($prenom) ;
-            $pdf->Write(8, $nomC);
-
-            $adresse = stripslashes($dossier->client->adresse);
+            $txt .= $nomC . chr(10) ;
+            $txt .= 'Demeurant à : ' ;
+            $adresse = stripslashes($client->adresse);
+            $adresse = ucfirst(preg_replace( "/\r|\n/", " ", $adresse )) ;
             $adresse = iconv('UTF-8', 'windows-1252', $adresse);
 
-            $pdf->SetXY(83, 99);
-            $pdf->Write(8, ucfirst(preg_replace( "/\r|\n/", " ", $adresse )));
+            $ad = str_split($adresse, 45) ;
 
-            $pdf->SetXY(147, 104.25);
-            $pdf->Write(8, ucfirst($dossier->client->cin));    
+            $txt .= implode(chr(10) , $ad) . chr(10) ;
 
-            $pdf->SetXY(120, 266.25);
-            $pdf->Write(8, ucfirst($dossier->produit->constructible->num));   
+            $txt .= 'Titulaire de la carte d’identité nationale N° : ' ;
 
-            $pdf->SetXY(180, 266.25);
-            $pdf->Write(8, ucfirst($dossier->produit->constructible->tranche_id));    
+            $txt .= $client->cin  ;
+                if ($i !== $dossier->clients->count() )
+                {
+                   $txt .= chr(10) ;
+                }
+            }
+            $txt = iconv('UTF-8', 'windows-1252', $txt) ;
+            switch ($i) {
+                case 1:
+                    $i = 93.75 + 25 ;
+                    break;
+                case 2:
+                    $i = 93.75 + 20 ;
+                    break;
+                case 3:
+                    $i = 93.75 + 15 ;
+                    break;  
+                                      
+                default:
+                    break;
+            }
+            $pdf->SetXY(50, $i);
 
-            $pdf->SetXY(105.25, 275.8);
-            $pdf->Write(0, 
-                ucfirst($dossier->produit->constructible->surface) .
-                'm2 (R+' . $dossier->produit->constructible->etage . ').'
-            );   
+            $pdf->MultiCell(0,5, $txt);
+
             }    
 
             if ($pageNo == 2)
             {
+            $pdf->SetXY(120, 46);
+            $pdf->Write(8, ucfirst($dossier->produit->constructible->num));   
 
-            $pdf->SetXY(49, 32);
+            $pdf->SetXY(180, 46);
+            $pdf->Write(8, ucfirst($dossier->produit->constructible->tranche_id));    
+
+            $pdf->SetXY(105.25, 55.5);
+            $pdf->Write(0, 
+                ucfirst($dossier->produit->constructible->surface) .
+                'm2 (R+' . $dossier->produit->constructible->etage . ').'
+            );
+
+            $pdf->SetXY(49, 82);
             $pdf->Write(8, number_format($dossier->produit->total));   
 
-            $pdf->SetXY(80, 32);
+            $pdf->SetXY(80, 82);
             $pdf->Write(8, ucfirst($numberTransformer->toWords($dossier->produit->total)) . ' dirhams');  
 
-            $pdf->SetXY(50.25, 37.25);
+            $pdf->SetXY(50.25, 87.25);
             $pdf->Write(8, $dossier->produit->prix);    
 
             // affichage du 30% du prix en chiffre
-            $pdf->SetXY(49, 56);
+            $pdf->SetXY(49, 106);
             $pdf->Write(0, number_format((($dossier->produit->total) * 30) /100 ));   
 
             // affichage du 30% du prix en lettre
-            $pdf->SetXY(80, 56);
+            $pdf->SetXY(80, 106);
             $pdf->Write(0, ucfirst($numberTransformer->toWords((($dossier->produit->total) * 30) /100 )) . ' dirhams');  
 
             }  
@@ -608,7 +639,7 @@ class DossierController extends Controller
             if ($pageNo == 4)
             {
 
-            $pdf->SetXY(113, 101.5);
+            $pdf->SetXY(113, 153);
             $pdf->Write(8, date("j/n/Y"));   
           
 
@@ -618,10 +649,10 @@ class DossierController extends Controller
 
         // Output the new PDF
         $pdf->Output('D', 'actes_reservation_lot_N_' . $dossier->produit->constructible->num
-            . '_' . $dossier->client->nom . '_' . $dossier->client->prenom . '.pdf', true);
+            . '_' . '.pdf', true);
     }
 
-    public function actes(Dossier $dossier)
+    public function actesApp(Dossier $dossier)
     {
 
         // create the number to words "manager" class
@@ -664,24 +695,29 @@ class DossierController extends Controller
             $pdf->useTemplate($templateId);
             if ($pageNo == 1) // 1 
             {
-            $prenom = stripslashes($dossier->client->prenomAr);
-            //$prenom = iconv('UTF-8', 'windows-1251//TRANSLIT//IGNORE', $prenom);
-            //    dd('مفعول') ;
-            $nom = stripslashes($dossier->client->nomAr);
-            //$nom = iconv("Windows-1256//TRANSLIT//IGNORE", "UTF-8//TRANSLIT//IGNORE", 'مفعول');
+                foreach ($dossier->clients as $client)
+                {
 
-            $pdf->SetXY(35, 95.75);
-            $nomC =  $nom . ' ' . $prenom ;
-            $pdf->Write(8, $nomC);
+                    $prenom = stripslashes($client->prenomAr);
+                    //$prenom = iconv('UTF-8', 'windows-1251//TRANSLIT//IGNORE', $prenom);
+                    //    dd('مفعول') ;
+                    $nom = stripslashes($client->nomAr);
+                    //$nom = iconv("Windows-1256//TRANSLIT//IGNORE", "UTF-8//TRANSLIT//IGNORE", 'مفعول');
 
-            $adresse = stripslashes($dossier->client->adresseAr);
-            //$adresse = iconv('UTF-8', 'windows-1251//TRANSLIT//IGNORE', $adresse);
+                    $pdf->SetXY(35, 95.75);
+                    $nomC =  $nom . ' ' . $prenom . ' ';
+                    $pdf->Write(8, $nomC);
 
-            $pdf->SetXY(14, 117);
-            $pdf->Write(8, ucfirst(preg_replace( "/\r|\n/", " ", $adresse )));
+                    $adresse = stripslashes($client->adresseAr);
+                    //$adresse = iconv('UTF-8', 'windows-1251//TRANSLIT//IGNORE', $adresse);
 
-            $pdf->SetXY(69, 103);
-            $pdf->Write(8, ucfirst($dossier->client->cin));    
+                    $pdf->SetXY(14, 117);
+                    $pdf->Write(8, ucfirst(preg_replace( "/\r|\n/", " ", $adresse )));
+
+                    $pdf->SetXY(69, 103);
+                    $pdf->Write(8, ucfirst($client->cin));    
+                    # code...
+                }                
             }    
 
             if ($pageNo == 2) // 2
@@ -691,16 +727,16 @@ class DossierController extends Controller
                 $pdf->SetXY(56, 41.5);
                 $pdf->Write(0,$dossier->produit->constructible->surface) ;
 
-                $pdf->SetXY(104, 41.5);
+                $pdf->SetXY(109, 41.5);
                 $pdf->Write(0,$dossier->produit->constructible->immeuble->tranche->num) ;
 
-                $pdf->SetXY(142, 41.5);
+                $pdf->SetXY(150, 41.5);
                 $pdf->Write(0,$dossier->produit->constructible->immeuble->num) ;
 
-                $pdf->SetXY(45, 48.5);
+                $pdf->SetXY(55, 48.5);
                 $pdf->Write(0,$dossier->produit->constructible->num) ;
 
-                $pdf->SetXY(20, 48.5);
+                $pdf->SetXY(32, 48.5);
                 $pdf->Write(0,$dossier->produit->constructible->etage) ;                
             }  
 
@@ -715,9 +751,15 @@ class DossierController extends Controller
 
         }
         $pdf->Output('actes_reservation_lot_N_' . $dossier->produit->constructible->num
-            . '_' . $dossier->client->nom . '_' . $dossier->client->prenom . '.pdf', 'I'); 
+            . '_' .  '_' . '.pdf', 'I'); 
         // Output the new PDF
         //$pdf->Output('D', 'actes_reservation_lot_N_' . $dossier->produit->constructible->num
         //    . '_' . $dossier->client->nom . '_' . $dossier->client->prenom . '.pdf', true);
+
+        // $pdf->Output('actes_reservation_lot_N_' . $dossier->produit->constructible->num
+        //     . '_' . $dossier->client->nom . '_' . $dossier->client->prenom . '.pdf', 'I'); 
+        // // Output the new PDF
+        // //$pdf->Output('D', 'actes_reservation_lot_N_' . $dossier->produit->constructible->num
+        // //    . '_' . $dossier->client->nom . '_' . $dossier->client->prenom . '.pdf', true);
     }    
 }

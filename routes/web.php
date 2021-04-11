@@ -130,7 +130,9 @@ Route::delete('/dossiers/{dossier}', [DossierController::class, 'destroy'])
 // Authorization OK, taking car of it in the middleware
 Route::middleware(['can:view,dossier'])->group(function () {
 	Route::get('/dossiers/{dossier}/retour', [DossierController::class, 'retour']);
-	Route::get('/dossiers/{dossier}/actes', [DossierController::class, 'actes']);	
+	Route::get('/dossiers/{dossier}/appartement/actes', [DossierController::class, 'actesApp']);
+	Route::get('/dossiers/{dossier}/lot/actes', [DossierController::class, 'actesLot']);	
+
 });
 
 // Authorization OK, taking car of it in the middleware

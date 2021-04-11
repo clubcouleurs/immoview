@@ -245,6 +245,10 @@ class ClientController extends Controller
                 abort(403);
         } 
 
+        if ($client->cinPj != null) {
+            Storage::delete('public/' . $client->cinPj);
+        }
+
         if (!$client->dossiers->isEmpty()) {
             return redirect()->action([ClientController::class, 'index'])
             ->with('error','Impossible de supprimer ce client, il a un dossier');

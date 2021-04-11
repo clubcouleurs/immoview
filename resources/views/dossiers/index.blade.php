@@ -99,11 +99,8 @@
                 @endisset  
               @endforeach
               <!-- Card -->
-              
-
-              
-
             </div>
+
             <!-- filtre -->
               <p class="text-sm text-gray-600 dark:text-gray-400 ml-2 mb-2">Filtres</p>   
 
@@ -122,6 +119,7 @@
                 @endforeach
               </div>
             </div>
+
                 <form action="/dossiers">
 
             <div
@@ -240,12 +238,11 @@
                       <th class="py-3">Date du dossier</th>
                       <th class="py-3">Frais</th>
                       <th class="py-3">Client</th>
-                      <th class="py-3">Commercial</th>
+                      <th class="py-3">Com</th>
                       <th class="py-3">Total Paiements</th>
                       <th class="py-3">Total dû</th>
                       <th class="py-3">Taux</th>
 
-                      <th class="py-3">Détail</th>
                       <th class="py-3">Actions</th>
 
 
@@ -307,7 +304,7 @@
                           @if(!$dossier->isVente)
                         <br>
                         <p class="mb-2 text-xs font-semibold text-gray-600 dark:text-gray-400">
-                          Délai pour rappeler le client
+                          Rappeler le client :
                         </p>
                       @isset($dossier->delais->last()->date)
                       @if(Carbon\Carbon::today() >= $dossier->delais->last()->date)
@@ -346,13 +343,14 @@
                         >
                         {{$client->nom}} {{$client->prenom}}                       
                         </span>
-                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                        <br> 
+                            <!-- <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">
                               CIN : {{ $client->cin }}
-                            </p>  
+                            </p>   -->
                         @endforeach                           
                       </td>
                       <td class="px-1 py-3 text-sm">
-                        {{ $dossier->user->name }}
+                        {{ substr($dossier->user->name, 0, strpos($dossier->user->name, ' ')+2) }}.
                       </td>                      
                       <td class="px-1 py-3 text-sm">
                         <span
@@ -402,9 +400,6 @@
                           {{ $dossier->tauxPaiementV }} %
                         </span>
                       </td>                                       
-                      <td class="px-1 py-3 text-sm w-24">
-                        {{ substr($dossier->detail, 0, 40) }}
-                      </td>
 
                       <td class="px-1 py-3 text-sm">
               <div class="flex px-1 py-1">

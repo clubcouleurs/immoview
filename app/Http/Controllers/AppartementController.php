@@ -101,10 +101,12 @@ class AppartementController extends Controller
                return $total = $total + $item->totalIndicatif;
         });
 
-
+           $appartementsParPage = $this->paginate($appartementsAll) ;
+           $appartementsParPage->withPath('/appartements');
+           //$appartementsParPage->withPath('/appartements');
 
         return view('appartements.index', [
-            'appartements'              => $this->paginate($appartementsAll),
+            'appartements'              => $appartementsParPage->withQueryString(),
             'totalappartements'         => $appartementsAll->count(),
             'immeubles'                 =>Immeuble::all(),
             'etiquettes'                =>Etiquette::all(),

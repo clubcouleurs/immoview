@@ -149,7 +149,7 @@ class Dossier extends Model
                   class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
                   aria-label="Like"
                   target="_blank"
-                  href="/dossiers/' . $this->id . '/actes"
+                  href="/dossiers/' . $this->id . '/' . $this->produit->constructible_type . '/actes"
                 >
                     <svg
                     class="w-4 h-4"

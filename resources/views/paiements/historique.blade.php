@@ -31,6 +31,36 @@ role="progressbar" :aria-valuenow="value" aria-valuemin="0" :aria-valuemax="tota
               Historique des paiements
             </h2>
 
+                <form action="/paiements">
+
+            <div
+              class="flex items-center justify-between p-2 mb-2 text-sm font-semibold text-blue-600 bg-blue-100 rounded-lg shadow-sm focus:outline-none focus:shadow-outline-blue rounded-2xl"
+              
+            >
+              <div class="flex items-center gap-2">
+
+                <select
+                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
+                  name="status"
+                >
+                  <option value="" @if ( $status == '') selected @endif>Tout</option>
+                
+                  <option value="1"     @if ( $status == '1') selected @endif>Validé</option>
+                  <option value="0"     @if ( $status == '0') selected @endif>Non validé</option>
+              
+                </select>  
+              <button
+                  class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-2xl active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue"
+                  type="submit"
+                >
+                  <svg class="w-4 h-4" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
+                  </svg>
+                </button>
+
+              </div>
+            </div>
+              </form>
 
                                     
             <!-- New Table -->
@@ -47,6 +77,7 @@ role="progressbar" :aria-valuenow="value" aria-valuemin="0" :aria-valuemax="tota
                       <th class="px-4 py-3">Date du paiement</th>
                       <th class="px-4 py-3">Moyen de paiement</th>
                       <th class="px-4 py-3">Client</th>
+                      <th class="px-4 py-3">Status</th>
 
                       <th class="px-4 py-3">Action</th>
 
@@ -95,15 +126,17 @@ role="progressbar" :aria-valuenow="value" aria-valuemin="0" :aria-valuemax="tota
                         {{ $p->dossier->produit->constructible_type }} N° {{ $p->dossier->produit->constructible->num }}
                       </td> 
                       <td class="px-4 py-3 text-sm">
-                        {{ $p->dossier->client->nom }} {{ $p->dossier->client->prenom }}
+                            @foreach($p->dossier->clients as $client)
+                              Client : {{ $client->nom}} {{ $client->prenom}} 
+                            @endforeach  
                       </td> 
-
-
-
-
-
-
-
+                      <td class="px-4 py-3 text-sm">
+                        <form action="/dossiers/{{$p->dossier->id}}/paiements/{{$p->id}}" method="POST">
+                          @csrf
+                          @method('PATCH')
+                    {!!$p->validate!!}
+                    </form>
+                  </td>
                       <td class="flex px-4 py-3 text-sm">
             @can('editer paiements')
                 <div class="mr-1">

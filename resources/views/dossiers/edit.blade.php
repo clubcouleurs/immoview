@@ -191,7 +191,7 @@
                       value="0"
                       required
                       x-on:click=" isOpen = true"
-                      {{ old('isVente', $dossier->type ?? '')== "0" ? 'checked' : '' }}
+                      {{ old('isVente', $dossier->isVente ?? '')== "0" ? 'checked' : '' }}
                       />
                    
                     

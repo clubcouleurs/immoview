@@ -95,7 +95,7 @@ class LotController extends Controller
 
         $total = 0 ;
            $prixTotalLots = $lotsAll->map(function ($item, $key) use ($total) {
-                return $total = $total + $item->totalIndicatif;
+                return $total = $total + $item->total;
         });
 
 

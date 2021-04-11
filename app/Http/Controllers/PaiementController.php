@@ -11,16 +11,26 @@ use Illuminate\Http\Request;
 class PaiementController extends Controller
 {
 
-    public function historique()
+    public function historique(Request $request)
     {
+        $status = $request['status'] ;
+
+        $statusArray = ($status == null || $status == '') ?
+                    [0,1] : [$status] ;
+
         $collection = Produit::with('constructible')->get() ;
         $multiplied = $collection->map(function ($item, $key) {
-            return $item->prixM2Definitif * $item->constructible->surface;
+            return $item->total;
         });
+
         $ca = $multiplied->sum() ;
+
         $totalPaiements = Paiement::sum('montant') ;
+
+
         return view('paiements.historique', [
-            'paiements' => Paiement::paginate(15),
+            'status'    => $status,
+            'paiements' => Paiement::whereIn('valider', $statusArray)->paginate(15),
             'ca' => $ca,
             'toatalPaiements' => $totalPaiements
 
@@ -211,7 +221,10 @@ class PaiementController extends Controller
         }
         $paiement->update() ;
         $dossier = ($dossier != null) ? $dossier : $paiement->$dossier ;
-        return redirect()->action([PaiementController::class, 'index'] , ['dossier' => $dossier])->with('message','Paiement modifié !');
+        
+        return redirect()->back()->with('message','Paiement modifié !');
+
+        // return redirect()->action([PaiementController::class, 'index'] , ['dossier' => $dossier])->with('message','Paiement modifié !');
     }
 
     /**
