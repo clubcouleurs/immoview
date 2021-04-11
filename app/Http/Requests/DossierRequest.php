@@ -36,7 +36,7 @@ public function rules()
             'client.*' => 'required|integer|exists:clients,id',
             'produit' => 'sometimes|required|integer|exists:produits,id',
             'actePj' => 'sometimes|required|max:5000|mimetypes:application/pdf,image/png,image/jpeg,image/tiff,image/gif',
-            'isVente'    => 'required|boolean',
+            'isVente'    => 'sometimes|required|boolean',
 
 
         ];

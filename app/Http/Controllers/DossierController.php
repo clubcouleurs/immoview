@@ -431,13 +431,18 @@ class DossierController extends Controller
         if($request->hasFile('actePj'))
         {
 
-            $client = $dossier->client->nom . '-' . $dossier->client->prenom ;
+            $clientN = '' ;
+            foreach ($dossier->clients as $client)
+            {
+                $clientN .= $client->nom . '-' . $client->prenom . '-' ;
+            }
+            $clientN = str_replace(' ', '', $clientN) ;
 
-            $pjName = 'acte-reservation' . '-dossierNum' 
+            $pjName = 'acte-reservation' . '-' . $dossier->produit->constructible_type . '-Num' 
 
-            . str_replace('.', '', $dossier->num) . '-' 
+            . str_replace('.', '', $dossier->produit->constructible->num) . '-' 
 
-            . str_replace('.', '',  $client ) . '-' 
+            . str_replace('.', '',  $clientN ) . '-' 
 
             . str_replace(' ', '-', date('Y-m-d-His')) ;
 

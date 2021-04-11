@@ -4,6 +4,7 @@
         @if(!$errors->isEmpty())
         <p class="block h-160 px-4 py-4 rounded-lg mx-auto w-full mt-4
         bg-red-200 text-red-600 text-xl"> Attention Il y'a des erreurs dans votre formulaire</p>
+        {{$errors}}
         @endif
             <h2
               class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
@@ -17,7 +18,11 @@
 
               <div
                 class="flex items-center justify-between p-2 mb-4 text-sm font-semibold text-blue-600 bg-blue-100 rounded-lg shadow-sm focus:outline-none focus:shadow-outline-blue rounded-2xl">
-            Ce dossier concerne : {{ucfirst($dossier->produit->constructible_type)}} N° {{$dossier->produit->constructible->num}}, d'une superficie totale de {{$dossier->produit->constructible->surface}} m2. Le prix total est de : {{number_format($dossier->produit->total)}} Dhs ({{number_format($dossier->produit->prix)}} Dhs/m2). <br> Attribué au client {{$dossier->client->nom}} {{$dossier->client->prenom}} depuis le {{$dossier->date}}.
+            Ce dossier concerne : {{ucfirst($dossier->produit->constructible_type)}} N° {{$dossier->produit->constructible->num}}, d'une superficie totale de {{$dossier->produit->constructible->surface}} m2. Le prix total est de : {{number_format($dossier->produit->total)}} Dhs ({{number_format($dossier->produit->prix)}} Dhs/m2). <br> Attribué aux clients:
+            @foreach($dossier->clients as $client)
+            {{$client->nom}} {{$client->prenom}},
+            @endforeach 
+            depuis le {{$dossier->date}}.
 
            </div>                     
             <div class="grid gap-6 mb-6 sm:grid-cols-1 md:grid-cols-1 xl:grid-cols-4">
@@ -54,7 +59,7 @@
 
             <form action="/dossiers/{{$dossier->id}}" method="POST" enctype="multipart/form-data">
               @csrf
-              @method('PATCH')
+              @method('PUT')
 
 <!-- début upload pièce jointe -->
               <div class="mt-4 text-sm" x-show="isOpen">
