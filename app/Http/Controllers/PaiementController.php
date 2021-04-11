@@ -7,6 +7,7 @@ use App\Models\Dossier;
 use App\Models\Paiement;
 use App\Models\Produit;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Builder;
 
 class PaiementController extends Controller
 {
@@ -18,21 +19,34 @@ class PaiementController extends Controller
         $statusArray = ($status == null || $status == '') ?
                     [0,1] : [$status] ;
 
+        $constructible = $request['constructible'] ;
+        $constructibleArray = ($constructible == null || $constructible == '') ?
+                    ['lot','appartement','box','magasin','bureau'] : [$constructible] ;
+
         $collection = Produit::with('constructible')->get() ;
         $multiplied = $collection->map(function ($item, $key) {
             return $item->total;
         });
 
         $ca = $multiplied->sum() ;
+        $paiements = Produit::with('paiements')
+                        ->whereHas('paiements', function (Builder $query) use ($statusArray)
+                            {
+                                $query->whereIn('valider', $statusArray);
+                            })
+                        ->whereIn('constructible_type', $constructibleArray)
+                        ->paginate(25);
+// dd($paiements) ;
 
-        $totalPaiements = Paiement::sum('montant') ;
-
-
+        $constructibles = ['lot','appartement','box','magasin','bureau'] ;
         return view('paiements.historique', [
+            'constructibles' => $constructibles ,
+            'constructible' => $constructible,
+
             'status'    => $status,
-            'paiements' => Paiement::whereIn('valider', $statusArray)->paginate(15),
+            'paiements' => $paiements,
             'ca' => $ca,
-            'toatalPaiements' => $totalPaiements
+            'toatalPaiements' => Paiement::sum('montant'),
 
         ]) ;
     }
@@ -221,7 +235,7 @@ class PaiementController extends Controller
         }
         $paiement->update() ;
         $dossier = ($dossier != null) ? $dossier : $paiement->$dossier ;
-        
+
         return redirect()->back()->with('message','Paiement modifié !');
 
         // return redirect()->action([PaiementController::class, 'index'] , ['dossier' => $dossier])->with('message','Paiement modifié !');

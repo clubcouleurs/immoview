@@ -236,7 +236,7 @@ class DossierController extends Controller
             'dossiers'              => $this->paginate($dossiersAll),
             'totalDossier'          => $dossiersAll->count(),
             'clients'               =>   Client::all(),
-            'users'                 => User::all(),
+            'users'                 => User::whereIn('role_id',[2,5,6])->get(),
             'dossiersParType'       => Dossier::dossiersParType(),
             'tranches'              => $tranches ,
             'valeurTotal'           => 1000, //$prixTotalLots->sum(),
@@ -557,7 +557,7 @@ class DossierController extends Controller
                 {  
 
                     $i += 1 ;
-                    $txt .= '- Monsieur : ' ;
+                    $txt .= '- Monsieur/Madame : ' ;
                     $prenom = stripslashes($client->prenom);
                     $nom = iconv('UTF-8', 'windows-1252', $prenom);
 

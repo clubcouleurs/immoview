@@ -31,7 +31,31 @@ role="progressbar" :aria-valuenow="value" aria-valuemin="0" :aria-valuemax="tota
               Historique des paiements
             </h2>
 
+              <div
+              class="flex items-center justify-between p-2 mb-2 text-sm font-semibold text-blue-600 bg-yellow-100 rounded-lg shadow-sm focus:outline-none focus:shadow-outline-blue rounded-2xl"
+              
+            >
+              <div class="flex items-center gap-2">
+                <a
+                  class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 
+                  {{($constructible == '' )? 'bg-yellow-500' : 'bg-gray-400'}}
+                  border border-transparent rounded-2xl active:bg-yellow-600 hover:bg-yellow-600 focus:outline-none focus:shadow-outline-yellow"
+                  href="/paiements"
+                >Tout</a>
+
+                @foreach ($constructibles as $c)
+                <a
+                  class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 
+                  {{($c == $constructible)? 'bg-yellow-500' : 'bg-gray-400'}}
+                  border border-transparent rounded-2xl active:bg-yellow-600 hover:bg-yellow-600 focus:outline-none focus:shadow-outline-yellow"
+                  href="/paiements?constructible={{$c}}"
+                >{{ucfirst($c)}}</a>
+                @endforeach
+              </div>
+            </div>
+
                 <form action="/paiements">
+                <input type="hidden" name="constructible" value="{{$constructible}}"/>
 
             <div
               class="flex items-center justify-between p-2 mb-2 text-sm font-semibold text-blue-600 bg-blue-100 rounded-lg shadow-sm focus:outline-none focus:shadow-outline-blue rounded-2xl"
@@ -87,7 +111,8 @@ role="progressbar" :aria-valuenow="value" aria-valuemin="0" :aria-valuemax="tota
                   <tbody
                     class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800"
                   >
-                  @foreach($paiements as $p)
+                  @foreach($paiements as $produit)
+                  @foreach($produit->paiements as $p)
                     <tr class="text-gray-700 dark:text-gray-400">
                       <td class="px-4 py-3">
                         <div class="flex items-center text-sm">
@@ -189,6 +214,8 @@ role="progressbar" :aria-valuenow="value" aria-valuemin="0" :aria-valuemax="tota
                       </td>
                     </tr>
                     @endforeach
+                    @endforeach
+
                   </tbody>
                 </table>
               </div>

@@ -127,19 +127,6 @@ class Paiement extends Model
              }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
      
     }      
 }

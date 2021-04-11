@@ -236,7 +236,9 @@
                     >
                       <th class="py-3">N° du dossier</th>
                       <th class="py-3">Date du dossier</th>
+                      @if($constructible != 'lot')
                       <th class="py-3">Frais</th>
+                      @endif
                       <th class="py-3">Client</th>
                       <th class="py-3">Com</th>
                       <th class="py-3">Total Paiements</th>
@@ -326,6 +328,7 @@
                       @endisset
                           @endif                        
                       </td>
+                      @if($dossier->produit->constructible_type != 'lot')
                       <td class="px-1 py-3 text-xs">
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
@@ -334,7 +337,7 @@
                         </span>
                         
                       </td>
-
+                      @endif
                                                                   
                       <td class="px-1 py-3 text-xs">
                         @foreach ($dossier->clients as $client)
