@@ -10,7 +10,7 @@
             <h2
               class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
             >
-              Modification d'un dossier de vente : 
+              Modification d'un dossier du vente {{$dossier->produit->constructible_type}} N° {{$dossier->produit->constructible->num}} 
             </h2>
 
             @isset($produit)
@@ -138,22 +138,6 @@
             <div
               class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800"
             >
-              <label class="block text-sm">
-                <span class="text-gray-700 dark:text-gray-400">N° du dossier</span>
-                <input
-                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                  placeholder=""
-                  type="number"
-                  name="num"
-                  value="{{$dossier->num}}"
-                  required
-                />
-                    @error('num')
-                    <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
-                    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
-                    @enderror
-              </label>
-
 
 
 <div class="mt-4 text-sm">
@@ -448,7 +432,7 @@ this.todos.splice(this.todos.indexOf(todo), 1 );
                  :key="todo.id"
 
                  :id="todo.name"
-              
+            
                 >
                 @foreach ($clients as $client)
                   <option value="{{ $client->id }}">{{$client->nom}} {{$client->prenom}} - {{$client->cin}}</option>

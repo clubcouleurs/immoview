@@ -345,7 +345,6 @@ class DossierController extends Controller
         }
 
         $dossier = new Dossier([
-            'num'               => $request['num'] ,    
             'date'              => $request['date'] ,
             'frais'             => $request['frais'] ,
             'detail'            => $request['detail'],
@@ -458,7 +457,6 @@ class DossierController extends Controller
             $dossier->clients()->detach();            
             $dossier->clients()->attach($request['client']);
 
-            $dossier->num = $request['num']; 
             $dossier->date = $request['date'];
             $dossier->frais = $request['frais'];
             $dossier->detail = $request['detail'];

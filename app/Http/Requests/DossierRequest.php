@@ -23,11 +23,7 @@ class DossierRequest extends FormRequest
      */
 public function rules()
     {
-        $idDossier = (isset($this->dossier->id)) ? $this->dossier->id : Null ;
-
         return [
-            'num' => 'sometimes|required|numeric',
-            'num' => 'unique:dossiers,num,'.$idDossier,
             'date' => 'sometimes|date|required',
             'delai' => 'sometimes|date|required', //|after:today',
 
@@ -44,8 +40,6 @@ public function rules()
     public function messages()
     {
         return [
-            'num.unique' => 'Ce numéro de dossier existe déjà',
-            'num.required' => 'Il faut un numéro à ce dossier',
             'date.required' => 'Il faut une date à ce dossier',
             'date.date' => 'Il faut une date à ce dossier',
             'frais.required' => 'Il faut saisir les frais de ce dossier',

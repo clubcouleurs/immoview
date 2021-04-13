@@ -387,7 +387,7 @@ id: this.logos.length +1,
             <h2
               class="mb-2 text-4xl font-semibold text-gray-700 dark:text-gray-200"
             >
-              Récapitulatif des paiements du dossier N°{{$dossier->num}}
+              Récapitulatif des paiements du vente {{$dossier->produit->constructible_type}} N° {{$dossier->produit->constructible->num}}
             </h2>
                             <div
                               class="flex items-center justify-between p-3 mb-2 text-sm font-bold text-blue-600 bg-blue-100 rounded-lg shadow-sm focus:outline-none focus:shadow-outline-blue rounded-2xl"

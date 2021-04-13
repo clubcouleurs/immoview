@@ -234,7 +234,7 @@
                     <tr
                       class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border  dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
                     >
-                      <th class="py-3">N° du dossier</th>
+                      <th class="py-3">Vente</th>
                       <th class="py-3">Date du dossier</th>
                       @if($constructible != 'lot')
                       <th class="py-3">Frais</th>
@@ -280,14 +280,12 @@
                            
                             <p class="font-bold">
                             
-                              {{ $dossier->num }} 
-
-                            </p>
-                            <p class="mb-2 text-xs text-gray-600 dark:text-gray-400">
+                              <!-- {{ $dossier->num }}  -->
                           <a href="{{ $dossier->produit->constructible_type }}s/{{ $dossier->produit->constructible->id }}">
                           {{ ucfirst($dossier->produit->constructible_type) }} N°
                           {{ $dossier->produit->constructible->num }}
-                        </a>
+                        </a>                              
+
                       </p>
                           @if(!$dossier->isVente)
                         <span

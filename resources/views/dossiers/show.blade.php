@@ -7,7 +7,7 @@
             <h2
               class="my-6 text-4xl font-semibold text-gray-700 dark:text-gray-200"
             >
-              Récapitulatif du dossier de N° {{$dossier->num}}
+              Récapitulatif du vente {{$dossier->produit->constructible_type}} N° {{$dossier->produit->constructible->num}}
               @if(!$dossier->isVente)
                 <span class="px-2 py-1 font-semibold leading-tight text-red-100 bg-red-700 rounded-full"
                 >
@@ -67,7 +67,7 @@
                   <table class="w-full">
                   <tbody class="divide-y dark:divide-gray-700 dark:bg-gray-800">
                     <tr class="text-gray-700 dark:text-gray-400">
-                      <td class="px-1 py-1 w-36">
+<!--                       <td class="px-1 py-1 w-36">
                         <div class="flex items-center text-sm">
                           <div><p class="font-semibold">
                             <span
@@ -78,9 +78,9 @@
                           </div>
                         </div>
                       </td>
-                      <td class="px-1 py-1 text-sm">
+                       <td class="px-1 py-1 text-sm">
                           {{$dossier->num}}
-                      </td>
+                      </td> -->
                     </tr>
                     <tr class="text-gray-700 dark:text-gray-400">
                       <td class="px-1 py-1">
