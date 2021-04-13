@@ -34,9 +34,12 @@ class AppartementController extends Controller
                             ->withCount('voies')
                             ->orderByDesc('created_at')
                             ->get();
+
         $appartementsReserved = $appartementsAll->where('etiquette_id', 3)->count() ;
         $appartementsStocked = $appartementsAll->where('etiquette_id', 2)->count() ;
-        $appartementsBlocked = $appartementsAll->whereNotIn('etiquette_id', [3,2])->count() ;
+        $appartementsR = $appartementsAll->where('etiquette_id', 9)->count() ;
+
+        $appartementsBlocked = $appartementsAll->whereNotIn('etiquette_id', [3,2,9])->count() ;
 
         //selectionner les appartements 
         //$appartementsAll = $appartementsAll->whereNotNull('appartement.id' ); 
@@ -115,6 +118,7 @@ class AppartementController extends Controller
             'appartementsReserved'      => $appartementsReserved,
             'appartementsBlocked'       => $appartementsBlocked,
             'appartementsStocked'       => $appartementsStocked,
+            'appartementsR'            => $appartementsR,
 
             'SearchByImm'           => $request['immeuble'] ,
             'SearchByFacade'        => $request['nombreFacadesappartement'] ,
@@ -265,7 +269,13 @@ class AppartementController extends Controller
     {
         if (! Gate::allows('supprimer appartements')) {
                 abort(403);
-        }          
+        }     
+
+        if ($appartement->produit->dossier != Null ) {
+            return redirect()->back()
+            ->with('error','Supression impossible. Déjà vendu.');
+        }
+
         $appartement->produit->voies()->detach() ;       
         $appartement->immeuble()->dissociate() ;
         $appartement->delete() ;

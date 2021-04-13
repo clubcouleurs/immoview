@@ -8,6 +8,7 @@ use App\Models\Dossier;
 use Illuminate\Http\Request;
 use NumberToWords\NumberToWords;
 use setasign\Fpdi\Tcpdf\Fpdi as TCPDF;
+use setasign\Fpdi\Fpdi;
 
 class BordereauController extends Controller
 {
@@ -84,8 +85,13 @@ class BordereauController extends Controller
 
          // outputs "five thousand one hundred twenty"
 
+        // // initiate FPDI
+        // $pdf = new TCPDF();
+        // $pdf->SetTextColor(0, 0, 255) ;
+        // $pdf->SetFont('Helvetica');
+
         // initiate FPDI
-        $pdf = new TCPDF();
+        $pdf = new FPDI();
         $pdf->SetTextColor(0, 0, 255) ;
         $pdf->SetFont('Helvetica');
 
@@ -96,8 +102,8 @@ class BordereauController extends Controller
         // iterate through all pages
 
             $pdf->SetMargins(0, 0, 0 , 0) ;
-            $pdf->setPrintHeader(false);
-            $pdf->setPrintFooter(false);
+            // $pdf->setPrintHeader(false);
+            // $pdf->setPrintFooter(false);
             // import a page
             $templateId = $pdf->importPage(1); //$pageNo
             // get the size of the imported page
@@ -113,63 +119,119 @@ class BordereauController extends Controller
             // use the imported page
             $pdf->useTemplate($templateId);
 
-            $pdf->SetXY(141, 101);
-            $pdf->Write(0, ucfirst($dossier->client->mobile)); 
 
-                $pdf->SetXY(20, 62.5);
-                $pdf->Write(0,$dossier->produit->constructible->immeuble->tranche->num) ;
 
-                $pdf->SetXY(53, 62.5);
-                $pdf->Write(0,$dossier->produit->constructible->immeuble->num) ;
+                $pdf->SetXY(20, 65.5);
+                $pdf->Write(0,$dossier->produit->tranche) ;
 
-                $pdf->SetXY(87, 62.5);
-                $pdf->Write(0,$dossier->produit->constructible->etage) ; 
+                $pdf->SetXY(53, 65.5);
+                $pdf->Write(0,$dossier->produit->immeuble) ;
 
-                $pdf->SetXY(127, 62.5);
+                $pdf->SetXY(87, 65.5);
+                $pdf->Write(0,$dossier->produit->etage) ; 
+
+                $pdf->SetXY(127, 65.5);
                 $pdf->Write(0,$dossier->produit->constructible->num) ;
 
 
-                $pdf->SetXY(157, 62.5);
+                $pdf->SetXY(157, 65.5);
                 $pdf->Write(0,$dossier->produit->constructible->surface) ;
-
-
-                $pdf->SetXY(47 , 73.25);
+                $pdf->SetXY(47 , 76.25);
                 $pdf->Write(0,$dossier->user->name) ;
 
-            $pdf->SetXY(19, 101);
-            $pdf->Write(0, ucfirst($dossier->client->cin));
-                
-            $prenom = stripslashes($dossier->client->prenom);
-            $nom = stripslashes($dossier->client->nom);
-            $nomC =  $nom . ' ' . $prenom ;
-            $pdf->SetXY(50, 101);
-            $pdf->Write(0, $nomC);               
- 
 
-            $adresse = stripslashes($dossier->client->adresse);
+            // $pdf->SetXY(141, 101);
+            // $pdf->Write(0, ucfirst($dossier->client->mobile)); 
+            // $pdf->SetXY(19, 101);
+            // $pdf->Write(0, ucfirst($dossier->client->cin));
+            // $prenom = stripslashes($dossier->client->prenom);
+            // $nom = stripslashes($dossier->client->nom);
+            // $nomC =  $nom . ' ' . $prenom ;
+            // $pdf->SetXY(50, 101);
+            // $pdf->Write(0, $nomC);               
+            // $adresse = stripslashes($dossier->client->adresse);
+            // $pdf->SetXY(19, 117);
+            // $pdf->Write(8, ucfirst(preg_replace( "/\r|\n/", " ", $adresse )));
 
-            $pdf->SetXY(19, 117);
-            $pdf->Write(8, ucfirst(preg_replace( "/\r|\n/", " ", $adresse )));
 
-            $pdf->SetXY(195 , 57.5);
-            $pdf->Write(0, "Banque ". strtoupper($bordereau->banque->abreviation) ." COMPTE  N° :") ;
+            $txt = '' ;
+                    $i = 0 ;
+                foreach ($dossier->clients as $client)
+                {  
 
-            $pdf->SetXY(195 , 62.5);
+                    $i += 1 ;
+                    $txt .= '- Monsieur/Madame : ' ;
+                    $prenom = stripslashes($client->prenom);
+                    $nom = iconv('UTF-8', 'windows-1252', $prenom);
+
+            $nom = stripslashes($client->nom);
+            $nom = iconv('UTF-8', 'windows-1252', $nom);
+            $nomC = ucfirst($nom) . ' ' . ucfirst($prenom) ;
+            $nomC .= ' - Mobile : ' . $client->mobile ;
+            $txt .= $nomC . chr(10) ;
+            $txt .= 'Demeurant à : ' ;
+            $adresse = stripslashes($client->adresse);
+            $adresse = ucfirst(preg_replace( "/\r|\n/", " ", $adresse )) ;
+            $adresse = iconv('UTF-8', 'windows-1252', $adresse);
+
+            $ad = str_split($adresse, 45) ;
+
+            $txt .= implode(chr(10) , $ad) . chr(10) ;
+
+            $txt .= 'Titulaire de la carte d’identité nationale N° : ' ;
+
+            $txt .= $client->cin  ;
+                if ($i !== $dossier->clients->count() )
+                {
+                   $txt .= chr(10) ;
+                }
+            }
+            $txt = iconv('UTF-8', 'windows-1252', $txt) ;
+            switch ($i) {
+                case 1:
+                    $i = 70 + 25 ;
+                    break;
+                case 2:
+                    $i = 70 + 20 ;
+                    break;
+                case 3:
+                    $i = 70 + 15 ;
+                    break;  
+                                      
+                default:
+                    break;
+            }
+            $pdf->SetXY(20, $i);
+            $pdf->MultiCell(130, 5, $txt);
+            //$pdf->MultiCell(8,  $txt);
+
+
+
+
+
+            $pdf->SetXY(195 , 60.5);
+
+            $b = "Banque ". strtoupper($bordereau->banque->abreviation) ." COMPTE  N° :" ; 
+            $b  = iconv('UTF-8', 'windows-1252', $b );
+
+            $pdf->Write(0, $b ) ;
+
+            $pdf->SetXY(195 , 65.5);
             $pdf->Write(0, $bordereau->banque->num) ;
 
-            $pdf->SetXY(47, 145.5);
+            $pdf->SetXY(47, 148.5);
             $pdf->Write(0, date("j/n/Y"));   
 
-            $pdf->SetXY(17, 158);
+            $pdf->SetXY(17, 161);
             $pdf->Write(0, number_format($bordereau->montant) . ' Dirhams');
 
-            $pdf->SetXY(17, 172);
+            $pdf->SetXY(17, 175);
             $pdf->Write(0, ucfirst($numberTransformer->toWords($bordereau->montant)) . ' Dirhams');
 
 
         
         $pdf->Output('Bordereau_Versement_' . $dossier->produit->constructible->num
-            . '_' . $dossier->client->nom . '_' . $dossier->client->prenom . '.pdf', 'I'); 
+            . '_' . '.pdf', 'I'); 
     }    
 
 

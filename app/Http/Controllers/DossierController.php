@@ -63,7 +63,7 @@ class DossierController extends Controller
                             })
                             ->with('produit')
                             ->with('delais')
-                            ->with('client')
+                            ->with('clients')
                             ->with('paiements')->orderbyDesc('created_at')
                             ->get();           
         }
@@ -511,8 +511,11 @@ class DossierController extends Controller
 
         $dossier->delete() ;
 
-        return redirect()->action([DossierController::class, 'index'])
+        return redirect()->back()
                 ->with('message','Dossier supprimé !');
+
+        // return redirect()->action([DossierController::class, 'index'])
+        //         ->with('message','Dossier supprimé !');
     }
 
     public function actesLot(Dossier $dossier)

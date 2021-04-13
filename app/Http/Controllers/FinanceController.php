@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Dossier;
+use App\Models\Lot;
 use App\Models\Paiement;
 use App\Models\Produit;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Builder;
 
 class FinanceController extends Controller
 {
@@ -17,20 +19,43 @@ class FinanceController extends Controller
     public function index()
     {
         //créer un tableau contenant tout les types de constructibles
-        $constructibleArray = ['appartement' ,'lot',  'bureau' , 'magasin' , 'box'] ;
+        $constructibleArray = ['appartement' ,'lot',  'bureau' , 'magasin' , 'box', 'showroom'] ;
 
         //une boucle pour collecter la data selon le type de constructible
         foreach ($constructibleArray as $constructible) {
-        ${$constructible . 'Dossiers'} = Produit::where('constructible_type', $constructible)
-                        ->with('dossier')
-                        ->with('constructible')
-                        ->with('paiements')
-                        ->get();
-
+        if ($constructible !== 'showroom') {   
+            ${$constructible . 'Dossiers'} = Produit::where('constructible_type', $constructible)
+                            ->with('dossier')
+                            ->with('constructible')
+                            ->whereHasMorph(
+                                    'constructible',
+                                    [Lot::class],
+                                    function (Builder $query) {
+                                        $query->where('type', '=', 'commercial');
+                                    }
+                                )
+                            ->with('paiements')
+                            ->get();
+        }else
+        {
+            ${$constructible . 'Dossiers'} = Produit::where('constructible_type', 'lot')
+                            ->with('dossier')
+                            ->with('constructible')
+                            ->whereHasMorph(
+                                    'constructible',
+                                    [Lot::class],
+                                    function (Builder $query) {
+                                        $query->where('type', '=', 'showroom');
+                                    }
+                                )
+                            ->with('paiements')
+                            ->get();            
+        }
         // faire un groupement par tranche selon le type de constructible
             switch ($constructible)
             {
                  case 'lot':
+                 case 'showroom':
                     ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}
                             ->groupBy('constructible.tranche_id');
 
@@ -161,22 +186,54 @@ class FinanceController extends Controller
              'reliquatDu30Pourcent' => $reliquatDu30Pourcent, 'reliquat' => $reliquat, 'reliquat70Pourcent' => $reliquat70Pourcent]) ; 
 
         //dd(${$constructible. 's' . 'Dossiers'}) ;
-
-        ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}->mapWithKeys(function ($item, $key) {
-            return ['Tranche '.$key => $item];
-        });
+        if ($constructible !== 'showroom')
+        {
+            ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}->mapWithKeys(function ($item, $key) {
+                return ['Tranche '.$key => $item];
+            });
+            
+        }else
+        {
+            ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}->mapWithKeys(function ($item, $key) {
+                return ['Showroom' => $item];
+            });
+            }            
         }
+
+
+        $cl = $lotsDossiers->map(function ($item1, $key1) use ($showroomsDossiers){
+            $a = 0 ;
+            $showroomsDossiers->map(function ($item2, $key2) use ($item1, $key1, $a){
+                if($key2 === $key1)
+                {
+                    var_dump($key2) ;
+                }
+                else
+                {
+
+                }
+            });
+
+            return $item1 + $a ;
+            
+        });
+        //dd($cl); 
+        $lotDossiers = $lotDossiers->merge($showroomDossiers);
+        //$lotsD = collect($lotsDossiers],[$showroomsDossiers] ) ;
+
+        //dd($lotsD) ;
 
 
         return view('finances.index',
 
-            ['color' => [ 'red' ,'purple','blue' , 'green' , 'yellow'], 
+            ['color' => [ 'green' ,'purple','blue' , 'red' , 'yellow','indigo'], 
                 'constructibles' => [
                 'Lots' => 'lot',
                 'Appartements'=>'appartement',
                 'Bureaux' => 'bureau',
                 'Magasins' =>'magasin',
-                'Boxes' => 'box'
+                'Boxes' => 'box',
+                'Showrooms' => 'showroom'
             ]
             ] +
             ['appartement' => $appartementDossiers] +
@@ -191,7 +248,9 @@ class FinanceController extends Controller
                                     ['Boxes' => $boxsDossiers] +
 
                                     ['bureau' => $bureauDossiers] +
-                                    ['Bureaux' => $bureausDossiers]
+                                    ['Bureaux' => $bureausDossiers] +
+                                    ['showroom' => $showroomDossiers] +
+                                    ['Showrooms' => $showroomsDossiers]                                    
 
         ) ;
     }

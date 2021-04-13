@@ -118,8 +118,19 @@
 <!-- fin boite recherche produit immo  -->
 
             @endisset
-
-            <form action="/dossiers/{{$dossier->id}}" method="POST">
+<div x-data="{
+@if ( old('isVente') != null && (old('isVente') == '0' ))
+  isOpen: true,
+@else
+  @if (isset($dossier->isVente) && ($dossier->isVente == '0' ))
+    isOpen: true,
+  @else
+   isOpen: false,
+  @endif
+@endif
+ }">
+            <form action="/dossiers/{{$dossier->id}}" method="POST" x-on:submit.prevent
+              id="DossierForm">
               @csrf
               @method('PUT')
               <input type="hidden" id="idProduit" name="produit" value="@isset($produit->id){{$produit->id}}@endisset">
@@ -144,17 +155,7 @@
               </label>
 
 
-<div x-data="{
-@if ( old('isVente') != null && (old('isVente') == '0' ))
-  isOpen: true,
-@else
-  @if (isset($dossier->isVente) && ($dossier->isVente == '0' ))
-    isOpen: true,
-  @else
-   isOpen: false,
-  @endif
-@endif
- }">
+
 <div class="mt-4 text-sm">
 
                     @error('isVente')
@@ -289,29 +290,92 @@
       <hr class="mt-4">
 </div>
 <!-- fin date picker-->
-</div>
+
 
 
               @isset($clients)
+
               <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">
                   Pour quel client ?
                 </span>
+
+
                 @foreach ($dossier->clients as $c)
+<div class="mb-2" id="{{ $c->id }}">
+      <div class="flex -mx-2">
+
+ <div class="w-1/3 px-2 w-full ">
+
+ <div
+ class="relative focus-within:text-purple-600"
+ >
+
+
+                <select
+                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+                  name="client[]"
+                >
+                  @foreach ($clients as $client)
+                    <option value="{{ $client->id }}"
+                      @if($c->id === $client->id)
+                        selected
+                      @endif
+                      >{{$client->nom}} {{$client->prenom}} - {{$client->cin}}
+                    </option>
+                  @endforeach
+                </select>
+@if (!$loop->first)
+ <button
+ class="absolute inset-y-0 right-0 px-4 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-r-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+ @click="supprimer({{ $c->id }});">
+ Supprimer
+</button>
+@endif
+</div>    
+
+</div>
+</div>
+<hr class="mt-4">
+</div>
+
+  @endforeach
+
+
+<!-- 
+
+                @foreach ($dossier->clients as $c)
+
+
+                <div id="{{ $c->id }}">
                   <select
                     class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
                     name="client[]"
+                    
                   >
                   @foreach ($clients as $client)
                     <option value="{{ $client->id }}"
                       @if($c->id === $client->id)
                         selected
                       @endif
-                      >{{$client->nom}} {{$client->prenom}} - {{$client->cin}}</option>
+                      >{{$client->nom}} {{$client->prenom}} - {{$client->cin}}
+                    </option>
                   @endforeach
                   </select>
-                @endforeach
+ <button
+ class="absolute inset-y-0 mb-2 mt-2 right-2 px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-r-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+ @click="supprimer({{ $c->id }});">
+ Supprimer
+</button>
+
+</div>
+
+                @endforeach -->
               </label>  
+
+
+
+
 
 <!-- ajouter un autre client au dossier de vente -->
 <section
@@ -384,7 +448,7 @@ this.todos.splice(this.todos.indexOf(todo), 1 );
                  :key="todo.id"
 
                  :id="todo.name"
-                 :value="todo.client"
+              
                 >
                 @foreach ($clients as $client)
                   <option value="{{ $client->id }}">{{$client->nom}} {{$client->prenom}} - {{$client->cin}}</option>
@@ -647,6 +711,7 @@ here was the form to delete the logo
                 <button
                   class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-green-600 border border-transparent rounded-lg active:bg-green-600 hover:bg-green-700 focus:outline-none focus:shadow-outline-green"
                   type="submit"
+                  @click="submit();"
                 >
                   Modifier
                 </button>
@@ -655,6 +720,9 @@ here was the form to delete the logo
 
             </div>
             </form>
+
+            </div>
+
           </div>
         </main>
 
@@ -711,6 +779,18 @@ here was the form to delete the logo
     }
 </script>    
   <script type="text/javascript">
+function removeElement(element) {
+    element && element.parentNode && element.parentNode.removeChild(element);
+}
+
+function supprimer(id) {
+  removeElement( document.getElementById(id) );
+}
+
+function submit() {
+  document.getElementById("DossierForm").submit();
+}
+
     function produitSearch() {
       return {
         produitSearch: 0,

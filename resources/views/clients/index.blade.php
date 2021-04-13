@@ -175,7 +175,7 @@
  
 
                       <td class="px-4 py-3 text-sm">
-                        @can('editer dossiers')
+  
               <div class="flex px-1 py-1">
                 
                       @if($activer==1)
@@ -260,7 +260,7 @@
             @endcan              
               </div>
 
-                      @endcan
+                      
                       </td>
 
 

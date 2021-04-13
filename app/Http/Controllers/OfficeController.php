@@ -39,7 +39,8 @@ class OfficeController extends Controller
 
         $officesReserved = $officesAll->where('etiquette_id', 3)->count() ;
         $officesStocked = $officesAll->where('etiquette_id', 2)->count() ;
-        $officesBlocked = $officesAll->whereNotIn('etiquette_id', [3,2])->count() ;
+        $officesBlocked = $officesAll->whereNotIn('etiquette_id', [3,2,9])->count() ;
+        $officesR = $officesAll->whereNotIn('etiquette_id', [9])->count() ;
         
         //dd($officesAll) ;
         //selectionner les appartements 
@@ -114,7 +115,7 @@ class OfficeController extends Controller
             'officesReserved'       => $officesReserved,
             'officesBlocked'        => $officesBlocked,
             'officesStocked'        => $officesStocked,
-
+            'officesR'              => $officesR,
             'SearchByImm'       => $request['immeuble'] ,
             'SearchByFacade'        => $request['nombreFacadesappartement'] ,
             'SearchByEtage'         => $request['etage'] ,
@@ -237,11 +238,13 @@ class OfficeController extends Controller
      */
     public function update(Request $request, Office $office)
     {
+
+
         if (! Gate::allows('editer bureaux')) {
                 abort(403);
         }   
+
         $immeuble = Immeuble::findOrFail($request['immeuble']) ;
-        $etiquette = Etiquette::findOrFail($request['etatProduit']) ;
 
         // l'utilisateur ne change pas le type du bureau 
             // le bureau était un appartement et il reste un appartement
@@ -269,13 +272,15 @@ class OfficeController extends Controller
             // le bureau était un magasin et il devient un appartement
 
         if ($office->situable_type == 'magasin' && $request['type'] === 'Appartement') {
+
             // supprimer le magasin
             // supprimer le produit
                     //$office->produit->voies()->detach() ;
                     //$office->delete() ;
                     //$office->produit()->delete() ;  
-                    $office->situable()->delete() ;  
+                    //dd('here') ;
 
+            $office->situable()->delete() ;  
             // on crée une nouvelle instance de l'appartement                     
 
             $situable = new Appartement() ;
@@ -287,6 +292,9 @@ class OfficeController extends Controller
             $immeuble->appartements()->save($situable) ;
 
             $situable->office()->save($office) ;
+            // $office->situable()->save($situable) ;  
+            // $office->update() ;
+            //$situable->office()->save($office) ;
 
         }
             // le bureau était un appartement et il devient un magasin
@@ -315,7 +323,6 @@ class OfficeController extends Controller
 
         $office->num =  $request['numBur']; 
         $office->update() ;
-
         if ($office->produit->dossier == null) {
 
             $office->produit->etiquette_id = $request['etatProduit']; 
@@ -347,11 +354,17 @@ class OfficeController extends Controller
     {
         if (! Gate::allows('supprimer bureaux')) {
                 abort(403);
-        }           
+        }
+        if ($office->produit->dossier != Null ) {
+            return redirect()->back()
+            ->with('error','Supression impossible. Déjà vendu.');
+        }
+       
         $office->produit->voies()->detach() ;
-        $office->delete() ;
         $office->produit()->delete() ;  
-        $office->situable()->delete() ;  
+        $office->situable()->delete() ;
+        $office->delete() ;
+
         return redirect()->action([OfficeController::class, 'index'])
         ->with('message','Bureau supprimé !');
     }

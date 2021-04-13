@@ -42,7 +42,6 @@ class DelaiPolicy
      */
     public function create(User $user)
     {
-        dd('') ;
         return (!$dossier->isVente) 
                 ? Response::allow()
                 : Response::deny('Cette vente est déjà conclue'); 

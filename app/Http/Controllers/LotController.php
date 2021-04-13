@@ -36,7 +36,9 @@ class LotController extends Controller
 
         $lotsReserved = $lotsAll->where('etiquette_id', 3)->count() ;
         $lotsStocked = $lotsAll->where('etiquette_id', 2)->count() ;
-        $lotsBlocked = $lotsAll->whereNotIn('etiquette_id', [3,2])->count() ;                            
+        $lotsR = $lotsAll->where('etiquette_id', 9)->count() ;
+
+        $lotsBlocked = $lotsAll->whereNotIn('etiquette_id', [3,2,9])->count() ;                            
         //selectionner les lots 
         //$lotsAll = $lotsAll->whereNotNull('lot.id' ); 
 
@@ -110,7 +112,8 @@ class LotController extends Controller
             'lotsReserved'       => $lotsReserved,
             'lotsBlocked'        => $lotsBlocked,
             'lotsStocked'        => $lotsStocked,
-
+            'lotsR'             => $lotsR,
+            
             'SearchByTranche'   => $request['tranche'] ,
             'SearchByFacade'    => $request['nombreFacadesLot'] ,
             'SearchByEtage'     => $request['etage'] ,
@@ -269,7 +272,10 @@ class LotController extends Controller
         if (! Gate::allows('supprimer lots')) {
                 abort(403);
         }
-
+        if ($lot->produit->dossier != Null ) {
+            return redirect()->back()
+            ->with('error','Supression impossible. Déjà vendu.');
+        }
         $lot->produit->voies()->detach() ;
         $lot->delete() ;
         $lot->produit()->delete() ;

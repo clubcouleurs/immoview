@@ -271,8 +271,13 @@
              @isset($office->produit->dossier)
               <div
                 class="flex items-center justify-between p-2 mt-4 mb-2 text-sm font-semibold text-red-600 bg-red-100 rounded-lg shadow-sm focus:outline-none focus:shadow-outline-red rounded-2xl">
-                Attention : Vous pourrez pas modifier l'état de ce produit car déjà réservé pour le client {{ $office->produit->dossier->client->nom . ' ' . $office->produit->dossier->client->prenom}}
+                Attention : Vous ne pourrez pas modifier l'état de ce produit car déjà réservé
+                pour le(s) client(s)
+                @foreach ($office->produit->dossier->clients as $client)
+                {{ $client->nom . ' ' . $client->prenom}} |  
+                @endforeach
               </div>
+
               @else             
               <div class="mt-4 text-sm">
 

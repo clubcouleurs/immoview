@@ -60,6 +60,82 @@ class Produit extends Model
         }                
     }
 
+    public function getTrancheAttribute()
+    {
+        switch ($this->constructible_type) {
+            case 'appartement':
+            case 'box':
+            case 'magasin':
+                return $this->constructible->immeuble->tranche->num ;
+                break;
+
+            case 'lot':
+                return $this->constructible->tranche->num ;
+                break;  
+
+            case 'bureau':
+                return $this->constructible->situable->immeuble->tranche->num ;
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    public function getEtageAttribute()
+    {
+        switch ($this->constructible_type) {
+            case 'appartement':
+            case 'box':
+                return $this->constructible->etage ;
+                break;
+
+            case 'magasin':
+                return 'RDC' ;
+                break;
+
+            case 'lot':
+                return 'R+'. $this->constructible->etage ;
+                break;  
+
+            case 'bureau':
+            if ($this->constructible->situable_type == 'magasin') {
+                return 'RDC' ;
+                break;
+            }
+            else
+            {
+                return $this->constructible->etage ;
+                break;   
+            }
+
+
+            default:
+                break;
+        }
+    }
+
+    public function getImmeubleAttribute()
+    {
+        switch ($this->constructible_type) {
+            case 'appartement':
+            case 'box':
+            case 'magasin':
+                return $this->constructible->immeuble->num ;
+                break;
+
+            case 'lot':
+                return 'LOT' ;
+                break;  
+
+            case 'bureau':
+                return $this->constructible->situable->immeuble->num ;
+                break;
+                
+            default:
+                break;
+        }
+    }
     public static function produitsParType()
     {       
         return \DB::table('produits')
@@ -85,7 +161,6 @@ class Produit extends Model
         }
       
         $prix = ($this->prixM2Definitif === 0 || $this->prixM2Definitif == Null) ? $this->prixM2Indicatif : $this->prixM2Definitif ;
-        //dd($prix) ;
         return $prix ;
     }
     public function getTotalDefinitifAttribute()

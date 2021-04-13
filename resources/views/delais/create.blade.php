@@ -18,7 +18,13 @@
 
               <div
                 class="flex items-center justify-between p-2 mb-4 text-sm font-semibold text-blue-600 bg-blue-100 rounded-lg shadow-sm focus:outline-none focus:shadow-outline-blue rounded-2xl">
-            Ce dossier concerne : {{ucfirst($dossier->produit->constructible_type)}} N° {{$dossier->produit->constructible->num}}, d'une superficie totale de {{$dossier->produit->constructible->surface}} m2. Le prix total est de : {{number_format($dossier->produit->total)}} Dhs ({{number_format($dossier->produit->prix)}} Dhs/m2). <br> Attribué au client {{$dossier->client->nom}} {{$dossier->client->prenom}} depuis le {{$dossier->date}}.
+            Ce dossier concerne : {{ucfirst($dossier->produit->constructible_type)}} N° {{$dossier->produit->constructible->num}}, d'une superficie totale de {{$dossier->produit->constructible->surface}} m2. Le prix total est de : {{number_format($dossier->produit->total)}} Dhs ({{number_format($dossier->produit->prix)}} Dhs/m2). <br> Attribué au(x) client(s) 
+
+                            @foreach($dossier->clients as $client)
+                             {{ $client->nom}} {{ $client->prenom}} - 
+                            @endforeach 
+
+            depuis le {{$dossier->date}}.
 
            </div>                     
             

@@ -36,7 +36,9 @@ class MagasinController extends Controller
                             ->get();
         $magasinsReserved = $magasinsAll->where('etiquette_id', 3)->count() ;
         $magasinsStocked = $magasinsAll->where('etiquette_id', 2)->count() ;
-        $magasinsBlocked = $magasinsAll->whereNotIn('etiquette_id', [3,2])->count() ;
+        $magasinsBlocked = $magasinsAll->whereNotIn('etiquette_id', [3,2,9])->count() ;
+        $magasinsR = $magasinsAll->whereNotIn('etiquette_id', [9])->count() ;
+
         //selectionner les appartements 
         //$magasinsAll = $magasinsAll->whereNotNull('appartement.id' ); 
 
@@ -110,7 +112,7 @@ class MagasinController extends Controller
             'magasinsReserved'       => $magasinsReserved,
             'magasinsBlocked'        => $magasinsBlocked,
             'magasinsStocked'        => $magasinsStocked,
-
+            'magasinsR' => $magasinsR, 
             'SearchByImm'       => $request['immeuble'] ,
             'SearchByFacade'        => $request['nombreFacadesappartement'] ,
             'SearchByEtage'         => $request['etage'] ,
@@ -257,7 +259,11 @@ class MagasinController extends Controller
     {
         if (! Gate::allows('supprimer magasins')) {
                 abort(403);
-        }           
+        }          
+        if ($magasin->produit->dossier != Null ) {
+            return redirect()->back()
+            ->with('error','Supression impossible. Déjà vendu.');
+        }         
         $magasin->produit->voies()->detach() ;
         $magasin->delete() ;
         $magasin->produit()->delete() ;

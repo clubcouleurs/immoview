@@ -2,7 +2,7 @@
       <main class="h-full overflow-y-auto">
           <div class="container px-6 mx-auto grid">
             <h2
-              class="my-6 text-4xl font-semibold text-gray-700 dark:text-gray-200"
+              class="my-6 text-4xl font-semibold text-black dark:text-gray-200"
             >
               Récapitulatifs
 
@@ -10,13 +10,13 @@
             @foreach($constructibles as $header => $constructible)
 <hr>  
             <h3
-              class="my-6 text-lg font-semibold text-gray-700 dark:text-gray-200"
+              class="my-6 text-lg font-semibold text-black dark:text-gray-200"
             >
               Récapitulatif des {{$header}}
 
             </h3>
             @if($$constructible->count() == 0)
-                        <p class="text-xs text-gray-600 mb-4">
+                        <p class="text-xs text-black mb-4">
                           Aucune donnée à afficher.
                         </p>            
               @continue
@@ -27,7 +27,7 @@
                 <table class="w-full whitespace-no-wrap table-auto">
                   <thead>
                     <tr
-                      class="text-xs font-semibold bg-{{$color[$loop->index]}}-300 tracking-wide text-left text-gray-500 border  dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
+                      class="text-xs font-semibold bg-{{$color[$loop->index]}}-300 tracking-wide text-left text-black border  dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
                     >
                       <th class="py-3 bg-{{$color[$loop->index]}}-400">Tranche</th>
 
@@ -95,17 +95,17 @@
                     class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800"
                   >
                   @foreach ($$constructible as $key => $data)
-                    <tr class="text-gray-700 dark:text-gray-400">
+                    <tr class="text-black dark:text-gray-400">
 
                       <td class="px-1 py-3 bg-{{$color[$loop->parent->index]}}-300">
-                        <p class="text-xs text-gray-600 dark:text-gray-400">
+                        <p class="text-xs text-black dark:text-gray-400">
                           {{$key}}
                         </p>
                       </td>    
 
                       @can('afficher nombre de constructible')
                       <td class="px-1 py-3">
-                        <p class="text-xs text-gray-600 dark:text-gray-400">
+                        <p class="text-xs text-black dark:text-gray-400">
                           {{$data['total'] }}
                         </p>
                       </td>
@@ -113,7 +113,7 @@
 
                       @can('afficher constructible réservés')
                       <td class="px-1 py-3">
-                        <p class="text-xs text-gray-600 dark:text-gray-400">
+                        <p class="text-xs text-black dark:text-gray-400">
                           {{$data['nbrVendus'] }}
 
                         </p>
@@ -122,7 +122,7 @@
 
                       @can('afficher superficie totale')
                       <td class="px-1 py-3">
-                        <p class="text-xs text-gray-600 dark:text-gray-400">
+                        <p class="text-xs text-black dark:text-gray-400">
                           {{$data['totalSurface'] }} m<sup>2</sup>
 
                         </p>
@@ -131,7 +131,7 @@
 
                       @can('afficher superficie réservée')
                       <td class="px-1 py-3">
-                        <p class="text-xs text-gray-600 dark:text-gray-400">
+                        <p class="text-xs text-black dark:text-gray-400">
                           {{$data['totalSurfaceReserve'] }} m<sup>2</sup>
 
                         </p>
@@ -140,7 +140,7 @@
 
                       @can('afficher taux réservation')
                       <td class="px-1 py-3">
-                        <p class="text-xs text-gray-600 dark:text-gray-400">
+                        <p class="text-xs text-black dark:text-gray-400">
                           {{$data['tauxReservation'] }}%
 
                         </p>
@@ -149,7 +149,7 @@
                     
                       @can('afficher CA prévisionnel')
                       <td class="px-1 py-3">
-                        <p class="text-xs text-gray-600 dark:text-gray-400">
+                        <p class="text-xs text-black dark:text-gray-400">
                           {{number_format($data['totalCA']) }} Dhs
 
                         </p>
@@ -158,7 +158,7 @@
 
                       @can('afficher CA réservé')
                       <td class="px-1 py-3">
-                        <p class="text-xs text-gray-600 dark:text-gray-400">
+                        <p class="text-xs text-black dark:text-gray-400">
                           {{number_format($data['CaReserve']) }} Dhs
 
                         </p>
@@ -167,7 +167,7 @@
                                 
                       @can('afficher taux de réalisation CA')
                       <td class="px-1 py-3">
-                        <p class="text-xs text-gray-600 dark:text-gray-400">
+                        <p class="text-xs text-black dark:text-gray-400">
                           {{$data['tauxRealisationCA'] }}%
 
                         </p>
@@ -176,7 +176,7 @@
                     
                       @can('afficher montant avances versées')
                       <td class="px-1 py-3">
-                        <p class="text-xs text-gray-600 dark:text-gray-400">
+                        <p class="text-xs text-black dark:text-gray-400">
                           {{number_format($data['totalPaiementsV']) }} Dhs
 
                         </p>
@@ -185,7 +185,7 @@
 
                       @can('afficher 30% du CA réservé')
                       <td class="px-1 py-3">
-                        <p class="text-xs text-gray-600 dark:text-gray-400">
+                        <p class="text-xs text-black dark:text-gray-400">
                           {{number_format($data['avance30']) }} Dhs
 
                         </p>
@@ -194,7 +194,7 @@
 
                       @can('afficher taux avance')
                       <td class="px-1 py-3">
-                        <p class="text-xs text-gray-600 dark:text-gray-400">
+                        <p class="text-xs text-black dark:text-gray-400">
                           {{$data['tauxPaiement'] }}%
 
                         </p>
@@ -203,7 +203,7 @@
 
                       @can('afficher reliquat avance non encaissée')
                       <td class="px-1 py-3">
-                        <p class="text-xs text-gray-600 dark:text-gray-400">
+                        <p class="text-xs text-black dark:text-gray-400">
                           {{number_format($data['reliquatDu30Pourcent']) }} Dhs
 
                         </p>        
@@ -212,7 +212,7 @@
 
                       @can('afficher reliquat du CA réservé')
                       <td class="px-1 py-3">
-                        <p class="text-xs text-gray-600 dark:text-gray-400">
+                        <p class="text-xs text-black dark:text-gray-400">
                           {{number_format($data['reliquat']) }} Dhs
 
                         </p>
@@ -221,7 +221,7 @@
 
                       @can('afficher 70% du CA total')                    
                       <td class="px-1 py-3">
-                        <p class="text-xs text-gray-600 dark:text-gray-400">
+                        <p class="text-xs text-black dark:text-gray-400">
                           {{number_format($data['reliquat70Pourcent']) }} Dhs
 
                         </p>
@@ -239,8 +239,7 @@
                         <p class="text-xs text-gray-600 dark:text-gray-400">
                           Total
                         </p>
-                      </td>    
-
+                      </td>
                       @can('afficher nombre de constructible')
                       <td class="px-1 py-3">
                         <p class="text-xs text-gray-600 dark:text-gray-400">
