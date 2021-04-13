@@ -95,18 +95,42 @@ class ProduitController extends Controller
 
     public function produits_data(Request $request, $num, $type)
     {
+
         $produit = Produit::with('constructible')->where('etiquette_id' , '2')
         ->whereHasMorph('constructible', strtolower($type) , function (Builder $query) use($num) {
             $query->where('num' ,'=' , $num);
                 })->first();
-        
-        if (isset($produit->constructible->type)) {
-            $name =  'Détails du produit : ' . $produit->constructible_type . 
-            ' ' . $produit->constructible->type .
-            '. D\'une surface total de : ' . $produit->constructible->surface .
-            ' m2. Le prix total est de : ' . number_format($produit->total) . ' Dhs' .
-            ' (' . $produit->prix. 'Dhs m2)' ;
+
+        if (isset($produit)) {
             $id = $produit->id;
+
+            switch ($produit->constructible_type) {
+                case 'appartement':
+                case 'bureau':
+                case 'magasin':
+                case 'box' :                 
+                    $name =  'Détails du produit : ' . $produit->constructible_type . 
+                    ' (' . $produit->constructible->type . ')' .
+                    ', Etage : ' . $produit->etage .
+                    ', Immeuble : ' . $produit->constructible->immeuble->num .
+                    ', Tranche : ' . $produit->constructible->immeuble->num . '.';
+
+                    break;
+                case 'lot':
+                    $name =  'Détails du produit : ' . $produit->constructible_type . 
+                    ' ' . $produit->constructible->type .
+                    ', Surface : ' . $produit->constructible->surface .
+                    'm2, R+' . $produit->etage .
+                    ', Tranche : ' . $produit->constructible->tranche->num . 
+                    '. Le prix total est de : ' . number_format($produit->total) . ' Dhs' .
+                    ' (' . $produit->prix. 'Dhs/m2)';
+                    break;                    
+
+                default:
+                    # code...
+                    break;
+            }
+
 
         }else {
             $name = 'Produit inexistant ou déjà vendu' ;
