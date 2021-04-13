@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Gate;
 class Dossier extends Model
 {
     use HasFactory;
+    // y'avait 'num' dans les fillables
     protected $fillable = ['date', 'frais','detail', 'user_id', 'produit_id', 'isVente'];
     
     public function produit()
