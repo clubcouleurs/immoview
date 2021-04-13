@@ -1454,7 +1454,7 @@
                     <tr
                       class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
                     >
-                      <th class="px-4 py-3">N° du dossier</th>
+                      <th class="px-4 py-3">Dossier Vente</th>
                       <th class="px-4 py-3">Date du dossier</th>
                       <th class="px-4 py-3">Frais</th>
                       <th class="px-4 py-3">Client</th>
@@ -1492,17 +1492,18 @@
                           </div>
                           <div>
                            
-                            <p class="font-semibold">
+<!--                             <p class="font-semibold">
                              <a href="/dossiers/{{ $dossier->id }}">
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-blue-700 bg-blue-100 rounded-full dark:bg-blue-700 dark:text-blue-100"
                         >                              
-                              {{ $dossier->num }} 
+                              {{ $dossier->num }}
                         </span></a>
-                            </p>
+                            </p> -->
                             <p class="text-xs text-gray-600 dark:text-gray-400">
-                          <a href="{{ $dossier->produit->constructible_type }}s/{{ $dossier->produit->constructible->id }}">
-                          {{ $dossier->produit->constructible_type }} N°
+                          <!-- <a href="{{ $dossier->produit->constructible_type }}s/{{ $dossier->produit->constructible->id }}"> -->
+                            <a href="/dossiers/{{ $dossier->id }}">
+                          {{ ucfirst($dossier->produit->constructible_type) }} N°
                           {{ $dossier->produit->constructible->num }}
                         </a>
                             </p>

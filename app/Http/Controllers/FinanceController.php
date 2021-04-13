@@ -23,7 +23,21 @@ class FinanceController extends Controller
 
         //une boucle pour collecter la data selon le type de constructible
         foreach ($constructibleArray as $constructible) {
-        if ($constructible !== 'showroom') {   
+        if ($constructible == 'showroom') {  
+            ${$constructible . 'Dossiers'} = Produit::where('constructible_type', 'lot')
+                            ->with('dossier')
+                            ->with('constructible')
+                            ->whereHasMorph(
+                                    'constructible',
+                                    [Lot::class],
+                                    function (Builder $query) {
+                                        $query->where('type', '=', 'showroom');
+                                    }
+                                )
+                            ->with('paiements')
+                            ->get();           
+        }elseif($constructible == 'lot')
+        {
             ${$constructible . 'Dossiers'} = Produit::where('constructible_type', $constructible)
                             ->with('dossier')
                             ->with('constructible')
@@ -38,18 +52,11 @@ class FinanceController extends Controller
                             ->get();
         }else
         {
-            ${$constructible . 'Dossiers'} = Produit::where('constructible_type', 'lot')
+            ${$constructible . 'Dossiers'} = Produit::where('constructible_type', $constructible)
                             ->with('dossier')
                             ->with('constructible')
-                            ->whereHasMorph(
-                                    'constructible',
-                                    [Lot::class],
-                                    function (Builder $query) {
-                                        $query->where('type', '=', 'showroom');
-                                    }
-                                )
                             ->with('paiements')
-                            ->get();            
+                            ->get();
         }
         // faire un groupement par tranche selon le type de constructible
             switch ($constructible)
@@ -201,23 +208,16 @@ class FinanceController extends Controller
         }
 
 
-        $cl = $lotsDossiers->map(function ($item1, $key1) use ($showroomsDossiers){
-            $a = 0 ;
-            $showroomsDossiers->map(function ($item2, $key2) use ($item1, $key1, $a){
-                if($key2 === $key1)
-                {
-                    var_dump($key2) ;
+        $lotsDossiers = $lotsDossiers->map(function ($item1, $key1) use ($showroomsDossiers){
+            foreach ($showroomsDossiers as $key => $value) {
+                if ($key == $key1) {
+                    $a = 0 ;
+                    $a = ($item1 + $value) ;
                 }
-                else
-                {
-
-                }
-            });
-
-            return $item1 + $a ;
-            
+            }
+            return $a ;            
         });
-        //dd($cl); 
+
         $lotDossiers = $lotDossiers->merge($showroomDossiers);
         //$lotsD = collect($lotsDossiers],[$showroomsDossiers] ) ;
 
@@ -233,7 +233,7 @@ class FinanceController extends Controller
                 'Bureaux' => 'bureau',
                 'Magasins' =>'magasin',
                 'Boxes' => 'box',
-                'Showrooms' => 'showroom'
+                //'Showrooms' => 'showroom'
             ]
             ] +
             ['appartement' => $appartementDossiers] +
@@ -248,9 +248,9 @@ class FinanceController extends Controller
                                     ['Boxes' => $boxsDossiers] +
 
                                     ['bureau' => $bureauDossiers] +
-                                    ['Bureaux' => $bureausDossiers] +
-                                    ['showroom' => $showroomDossiers] +
-                                    ['Showrooms' => $showroomsDossiers]                                    
+                                    ['Bureaux' => $bureausDossiers]// +
+                                    //['showroom' => $showroomDossiers] +
+                                    //['Showrooms' => $showroomsDossiers]                                    
 
         ) ;
     }

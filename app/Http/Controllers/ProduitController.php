@@ -95,11 +95,11 @@ class ProduitController extends Controller
 
     public function produits_data(Request $request, $num, $type)
     {
-$produit = Produit::with('constructible')->where('etiquette_id' , '2')
+        $produit = Produit::with('constructible')->where('etiquette_id' , '2')
         ->whereHasMorph('constructible', strtolower($type) , function (Builder $query) use($num) {
             $query->where('num' ,'=' , $num);
                 })->first();
-
+        
         if (isset($produit->constructible->type)) {
             $name =  'Détails du produit : ' . $produit->constructible_type . 
             ' ' . $produit->constructible->type .

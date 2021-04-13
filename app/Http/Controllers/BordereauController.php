@@ -162,7 +162,7 @@ class BordereauController extends Controller
                     $i += 1 ;
                     $txt .= '- Monsieur/Madame : ' ;
                     $prenom = stripslashes($client->prenom);
-                    $nom = iconv('UTF-8', 'windows-1252', $prenom);
+                    $prenom = iconv('UTF-8', 'windows-1252', $prenom);
 
             $nom = stripslashes($client->nom);
             $nom = iconv('UTF-8', 'windows-1252', $nom);
@@ -172,7 +172,7 @@ class BordereauController extends Controller
             $txt .= 'Demeurant à : ' ;
             $adresse = stripslashes($client->adresse);
             $adresse = ucfirst(preg_replace( "/\r|\n/", " ", $adresse )) ;
-            $adresse = iconv('UTF-8', 'windows-1252', $adresse);
+            //$adresse = iconv('UTF-8', 'windows-1252', $adresse);
 
             $ad = str_split($adresse, 45) ;
 

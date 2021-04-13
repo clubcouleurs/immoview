@@ -6,8 +6,9 @@ use App\Models\Banque;
 use App\Models\Dossier;
 use App\Models\Paiement;
 use App\Models\Produit;
-use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PaiementController extends Controller
 {
@@ -100,7 +101,7 @@ class PaiementController extends Controller
         ]) ;
 
         $totalPaiement = $dossier->totalPaiements + $paiement->montant ;
-        $restePaiement = $paiement->montant - $dossier->totalPaiements ;
+        //$restePaiement = $paiement->montant - $dossier->totalPaiements ;
 
         if($totalPaiement > $dossier->produit->total)
         {
@@ -117,8 +118,11 @@ class PaiementController extends Controller
 
             . str_replace('.', '',  $produit ) . '-' 
 
+
             . str_replace(' ', '-', date('Y-m-d-His')) ;
+
             $pjExtension = $request->file('pj')->extension() ;
+
             $pdfPath = $request->file('pj')
             ->storeAs('public/pj', $pjName . '.' . $pjExtension) ;
             $paiement->pj = 'pj/' . $pjName . '.' . $pjExtension ;
@@ -177,7 +181,7 @@ class PaiementController extends Controller
             'date'      => 'sometimes|required|string',
             'type'      => 'sometimes|required|string',
             'num'       => 'sometimes|required|string',
-            'montant'   => 'sometimes|required|integer',
+            'montant'   => 'sometimes|required|numeric',
             'valider'   => 'sometimes|required|boolean',
             'banque'    => 'sometimes|required|integer',
             'pj' => 'sometimes|required|max:5000|mimetypes:application/pdf,image/png,image/jpeg,image/tiff,image/gif',
@@ -186,31 +190,36 @@ class PaiementController extends Controller
 
         if (isset($request['montant']))
         {
+            $totalPaiement = $dossier->totalPaiements - $paiement->montant + $request['montant'] ;
+
             $paiement->date     = $request['date'] ;
             $paiement->type     = $request['type'] ;
             $paiement->montant  = $request['montant']; 
             $paiement->banque_id = $request['banque']; 
+
             
         if($totalPaiement > $dossier->produit->total)
         {
             return back()->withInput()->with('error', 'Vous avez dépasser le reste à payer!') ;
         }
 
-            if ($paiement->type != 'Espèce')
-            {
                 $paiement->num = $request['num'] ;
 
                 if($request->hasFile('pj'))
                 {
-                    $client = $dossier->client->nom . '-' . $dossier->client->prenom ;
+                    $file = 'public/' . $paiement->pj ;
 
+                    if (Storage::exists($file))
+                     {
+                        Storage::delete($file);
+                    }
+
+                    $produit = $dossier->produit->constructible_type . '-Num-' . $dossier->produit->constructible->num ;
                     $pjName = str_replace(' ', '', $paiement->type) . '-' 
-                    . str_replace('.', '', $paiement->num) . '-DossierN' 
+                    . str_replace('.', '', $paiement->num) . '-' 
 
-                    . str_replace('.', '', $dossier->num) . '-' 
-
-                    . str_replace('.', '',  $client ) . '-' 
-
+                    . str_replace('.', '',  $produit ) . '-' 
+                    
                     . str_replace(' ', '-', date('Y-m-d-His')) ;
 
                     $pjExtension = $request->file('pj')->extension() ;                 
@@ -220,14 +229,8 @@ class PaiementController extends Controller
 
                     $paiement->pj = 'pj/' . $pjName . '.' . $pjExtension ;
 
-                    //$paiement->pj = $pjName . '.' . $pjExtension ;
                 }
 
-            }else
-            {
-                $paiement->num  = NULL ;
-                $paiement->pj   = NULL ;
-            }
         }
         elseif(isset($request['valider']))
         {
