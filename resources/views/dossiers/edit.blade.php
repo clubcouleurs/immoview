@@ -216,9 +216,9 @@
 
         <label for="datepicker" class="block text-sm text-red-500">Délai pour rappeler le client</label>
         <div class="relative">
-          <input type="hidden" name="delai" x-ref="date" :value="datepickerValue"
+          <input type="hidden" name="delai" x-ref="date" :value="datepickerDelai"
           >
-          <input type="text" readonly x-model="datepickerValue" @click="showDatepicker = !showDatepicker" @keydown.escape="showDatepicker = false"
+          <input type="text" readonly x-model="datepickerDelai" @click="showDatepicker = !showDatepicker" @keydown.escape="showDatepicker = false"
           class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
           placeholder="Date du dossier"
           >
@@ -233,7 +233,7 @@
             <div x-text="32 - new Date(year, month, 32).getDate()"></div>
             <div x-text="new Date(year, month).getDay()"></div> -->
 
-          <div class="bg-white mt-12 rounded-lg shadow p-4 absolute top-0 left-0" style="width: 17rem" x-show.transition="showDatepicker" @click.away="showDatepicker = false">
+          <div class="z-10 bg-white mt-12 rounded-lg shadow p-4 absolute top-0 left-0" style="width: 17rem" x-show.transition="showDatepicker" @click.away="showDatepicker = false">
 
             <div class="flex justify-between items-center mb-2">
               <div>
@@ -747,6 +747,9 @@ here was the form to delete the logo
           //this.datepickerValue = new Date(this.year, this.month, today.getDate()).toISOString().slice(0, 10);
           this.datepickerValue = '@isset($dossier->date){{ $dossier->date }}@else' + new Date(this.year, this.month, today.getDate()).toISOString().slice(0, 10) + '@endisset';
 
+          this.datepickerDelai = '@isset($dossier->delais->first()->date){{ $dossier->delais->first()->date->format('Y-m-d') }}@else' + new Date(this.year, this.month, today.getDate()).toISOString().slice(0, 10) + '@endisset';
+
+
         },
         isToday(date) {
           const today = new Date();
@@ -754,8 +757,10 @@ here was the form to delete the logo
           return today.toDateString() === d.toDateString() ? true : false;
         },
         getDateValue(date) {
-          let selectedDate = new Date(this.year, this.month, date + 1 );
+          let selectedDate = new Date(this.year, this.month, date );
           this.datepickerValue = selectedDate.toISOString().slice(0, 10);
+          this.datepickerDelai = selectedDate.toISOString().slice(0, 10);
+
           this.$refs.date.value = selectedDate.getFullYear() + "-" + ('0' + selectedDate.getMonth()).slice(-2) + "-" + ('0' + selectedDate.getDate()).slice(-2);
           console.log(this.$refs.date.value);
           this.showDatepicker = false;

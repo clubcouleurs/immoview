@@ -111,7 +111,8 @@ class ProduitController extends Controller
                 case 'box' :                 
                     $name =  'Détails du produit : ' . $produit->constructible_type . 
                     ' (' . $produit->constructible->type . ')' .
-                    ', Etage : ' . $produit->etage .
+                    ', Surface : ' . $produit->constructible->surface .
+                    'm2, Etage : ' . $produit->etage .
                     ', Immeuble : ' . $produit->constructible->immeuble->num .
                     ', Tranche : ' . $produit->constructible->immeuble->num . '.';
 
