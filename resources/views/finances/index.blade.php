@@ -31,59 +31,59 @@
                     >
                       <th class="py-3 bg-{{$color[$loop->index]}}-400">Tranche</th>
 
-                      @can('afficher nombre de constructible')
+                      @can('afficher nombre ' . $constructible)
                       <th class="py-3">Nombre de {{$header}}</th>
                       @endcan
 
-                      @can('afficher constructible réservés')
+                      @can('afficher ' . $constructible . ' réservés')
                       <th class="py-3">{{$header}} Réservés</th>
                       @endcan
 
-                      @can('afficher superficie totale')
+                      @can('afficher superficie totale '. $constructible)
                       <th class="py-3">Superficie Totale</th>
                       @endcan
 
-                      @can('afficher superficie réservée')
+                      @can('afficher superficie réservée '. $constructible)
                       <th class="py-3">Superficie Réservée</th>
                       @endcan
 
-                      @can('afficher taux réservation')
+                      @can('afficher taux réservation ' . $constructible)
                       <th class="py-3">Taux Réservation</th>
                       @endcan
 
-                      @can('afficher CA prévisionnel')
+                      @can('afficher CA prévisionnel '. $constructible)
                       <th class="py-3">C.A Prévisionnel</th>
                       @endcan
 
-                      @can('afficher CA réservé')
+                      @can('afficher CA réservé '. $constructible)
                       <th class="py-3">C.A Réservé</th>
                       @endcan
 
-                      @can('afficher taux de réalisation CA')
+                      @can('afficher taux de réalisation CA '. $constructible)
                       <th class="py-3">Taux réalisation CA</th>
                       @endcan
 
-                      @can('afficher montant avances versées')
+                      @can('afficher montant avances versées '. $constructible)
                       <th class="py-3">Montant Avances Versées</th>
                       @endcan
 
-                      @can('afficher 30% du CA réservé')
+                      @can('afficher 30% du CA réservé '. $constructible)
                       <th class="py-3">30% du CA Réservé</th>
                       @endcan
 
-                      @can('afficher taux avance')
+                      @can('afficher taux avance '. $constructible)
                       <th class="py-3">Taux d'Avance</th>
                       @endcan
 
-                      @can('afficher reliquat avance non encaissée')
+                      @can('afficher reliquat avance non encaissée '. $constructible)
                       <th class="py-3">Reliquat Avance Non Encaissées</th>
                       @endcan
 
-                      @can('afficher reliquat du CA réservé')
+                      @can('afficher reliquat du CA réservé '. $constructible)
                       <th class="py-3">Reliquat du CA Réservé</th>
                       @endcan
 
-                      @can('afficher 70% du CA total')
+                      @can('afficher 70% du CA total '. $constructible)
                       <th class="py-3">70% du CA total</th>
                       @endcan
 
@@ -103,7 +103,7 @@
                         </p>
                       </td>    
 
-                      @can('afficher nombre de constructible')
+                      @can('afficher nombre '. $constructible)
                       <td class="px-1 py-3">
                         <p class="text-xs text-black dark:text-gray-400">
                           {{$data['total'] }}
@@ -111,7 +111,7 @@
                       </td>
                       @endcan
 
-                      @can('afficher constructible réservés')
+                      @can('afficher '. $constructible .' réservés')
                       <td class="px-1 py-3">
                         <p class="text-xs text-black dark:text-gray-400">
                           {{$data['nbrVendus'] }}
@@ -120,7 +120,7 @@
                       </td>
                       @endcan
 
-                      @can('afficher superficie totale')
+                      @can('afficher superficie totale '. $constructible)
                       <td class="px-1 py-3">
                         <p class="text-xs text-black dark:text-gray-400">
                           {{$data['totalSurface'] }} m<sup>2</sup>
@@ -129,7 +129,7 @@
                       </td>
                       @endcan
 
-                      @can('afficher superficie réservée')
+                      @can('afficher superficie réservée '. $constructible)
                       <td class="px-1 py-3">
                         <p class="text-xs text-black dark:text-gray-400">
                           {{$data['totalSurfaceReserve'] }} m<sup>2</sup>
@@ -138,7 +138,7 @@
                       </td>                      
                       @endcan
 
-                      @can('afficher taux réservation')
+                      @can('afficher taux réservation '. $constructible)
                       <td class="px-1 py-3">
                         <p class="text-xs text-black dark:text-gray-400">
                           {{$data['tauxReservation'] }}%
@@ -147,7 +147,7 @@
                       </td>
                       @endcan
                     
-                      @can('afficher CA prévisionnel')
+                      @can('afficher CA prévisionnel '. $constructible)
                       <td class="px-1 py-3">
                         <p class="text-xs text-black dark:text-gray-400">
                           {{number_format($data['totalCA']) }} Dhs
@@ -156,7 +156,7 @@
                       </td>
                       @endcan
 
-                      @can('afficher CA réservé')
+                      @can('afficher CA réservé '. $constructible)
                       <td class="px-1 py-3">
                         <p class="text-xs text-black dark:text-gray-400">
                           {{number_format($data['CaReserve']) }} Dhs
@@ -165,7 +165,7 @@
                       </td>
                       @endcan
                                 
-                      @can('afficher taux de réalisation CA')
+                      @can('afficher taux de réalisation CA '. $constructible)
                       <td class="px-1 py-3">
                         <p class="text-xs text-black dark:text-gray-400">
                           {{$data['tauxRealisationCA'] }}%
@@ -174,7 +174,7 @@
                       </td>
                       @endcan
                     
-                      @can('afficher montant avances versées')
+                      @can('afficher montant avances versées '. $constructible)
                       <td class="px-1 py-3">
                         <p class="text-xs text-black dark:text-gray-400">
                           {{number_format($data['totalPaiementsV']) }} Dhs
@@ -183,7 +183,7 @@
                       </td>
                       @endcan
 
-                      @can('afficher 30% du CA réservé')
+                      @can('afficher 30% du CA réservé '. $constructible)
                       <td class="px-1 py-3">
                         <p class="text-xs text-black dark:text-gray-400">
                           {{number_format($data['avance30']) }} Dhs
@@ -192,7 +192,7 @@
                       </td>
                       @endcan
 
-                      @can('afficher taux avance')
+                      @can('afficher taux avance '. $constructible)
                       <td class="px-1 py-3">
                         <p class="text-xs text-black dark:text-gray-400">
                           {{$data['tauxPaiement'] }}%
@@ -201,7 +201,7 @@
                       </td>
                       @endcan
 
-                      @can('afficher reliquat avance non encaissée')
+                      @can('afficher reliquat avance non encaissée '. $constructible)
                       <td class="px-1 py-3">
                         <p class="text-xs text-black dark:text-gray-400">
                           {{number_format($data['reliquatDu30Pourcent']) }} Dhs
@@ -210,7 +210,7 @@
                       </td>
                       @endcan
 
-                      @can('afficher reliquat du CA réservé')
+                      @can('afficher reliquat du CA réservé '. $constructible)
                       <td class="px-1 py-3">
                         <p class="text-xs text-black dark:text-gray-400">
                           {{number_format($data['reliquat']) }} Dhs
@@ -219,7 +219,7 @@
                       </td>
                       @endcan
 
-                      @can('afficher 70% du CA total')                    
+                      @can('afficher 70% du CA total '. $constructible)                    
                       <td class="px-1 py-3">
                         <p class="text-xs text-black dark:text-gray-400">
                           {{number_format($data['reliquat70Pourcent']) }} Dhs
@@ -240,7 +240,7 @@
                           Total
                         </p>
                       </td>
-                      @can('afficher nombre de constructible')
+                      @can('afficher nombre '. $constructible)
                       <td class="px-1 py-3">
                         <p class="text-xs text-gray-600 dark:text-gray-400">
                           @php
@@ -250,7 +250,7 @@
                       </td>
                       @endcan
 
-                      @can('afficher constructible réservés')
+                      @can('afficher '. $constructible .' réservés')
                       <td class="px-1 py-3">
                         <p class="text-xs text-gray-600 dark:text-gray-400">
                           @php
@@ -260,7 +260,7 @@
                       </td>
                       @endcan
 
-                      @can('afficher superficie totale')
+                      @can('afficher superficie totale '. $constructible)
                       <td class="px-1 py-3">
                         <p class="text-xs text-gray-600 dark:text-gray-400">
                           @php
@@ -271,7 +271,7 @@
                       </td>
                       @endcan
 
-                      @can('afficher superficie réservée')
+                      @can('afficher superficie réservée '. $constructible)
                       <td class="px-1 py-3">
                         <p class="text-xs text-gray-600 dark:text-gray-400">
                           @php
@@ -282,7 +282,7 @@
                       </td>                      
                       @endcan
 
-                      @can('afficher taux réservation')
+                      @can('afficher taux réservation '. $constructible)
                       <td class="px-1 py-3">
                         <p class="text-xs text-gray-600 dark:text-gray-400">
                           @php
@@ -293,7 +293,7 @@
                       </td>
                       @endcan
                     
-                      @can('afficher CA prévisionnel')
+                      @can('afficher CA prévisionnel '. $constructible)
                       <td class="px-1 py-3">
                         <p class="text-xs text-gray-600 dark:text-gray-400">
                           @php
@@ -304,7 +304,7 @@
                       </td>
                       @endcan
 
-                      @can('afficher CA réservé')
+                      @can('afficher CA réservé '. $constructible)
                       <td class="px-1 py-3">
                         <p class="text-xs text-gray-600 dark:text-gray-400">
                           @php
@@ -315,7 +315,7 @@
                       </td>
                       @endcan
                                 
-                      @can('afficher taux de réalisation CA')
+                      @can('afficher taux de réalisation CA '. $constructible)
                       <td class="px-1 py-3">
                         <p class="text-xs text-gray-600 dark:text-gray-400">
                           @php
@@ -326,7 +326,7 @@
                       </td>
                       @endcan
                     
-                      @can('afficher montant avances versées')
+                      @can('afficher montant avances versées '. $constructible)
                       <td class="px-1 py-3">
                         <p class="text-xs text-gray-600 dark:text-gray-400">
                           @php
@@ -337,7 +337,7 @@
                       </td>
                       @endcan
 
-                      @can('afficher 30% du CA réservé')
+                      @can('afficher 30% du CA réservé '. $constructible)
                       <td class="px-1 py-3">
                         <p class="text-xs text-gray-600 dark:text-gray-400">
                           @php
@@ -348,7 +348,7 @@
                       </td>
                       @endcan
 
-                      @can('afficher taux avance')
+                      @can('afficher taux avance '. $constructible)
                       <td class="px-1 py-3">
                         <p class="text-xs text-gray-600 dark:text-gray-400">
                           @php
@@ -359,7 +359,7 @@
                       </td>
                       @endcan
 
-                      @can('afficher reliquat avance non encaissée')
+                      @can('afficher reliquat avance non encaissée '. $constructible)
                       <td class="px-1 py-3">
                         <p class="text-xs text-gray-600 dark:text-gray-400">
                           @php
@@ -370,7 +370,7 @@
                       </td>
                       @endcan
 
-                      @can('afficher reliquat du CA réservé')
+                      @can('afficher reliquat du CA réservé '. $constructible)
                       <td class="px-1 py-3">
                         <p class="text-xs text-gray-600 dark:text-gray-400">
                           @php
@@ -381,7 +381,7 @@
                       </td>
                       @endcan
 
-                      @can('afficher 70% du CA total')                    
+                      @can('afficher 70% du CA total '. $constructible)                    
                       <td class="px-1 py-3">
                         <p class="text-xs text-gray-600 dark:text-gray-400">
                           @php

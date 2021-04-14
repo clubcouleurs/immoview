@@ -30,6 +30,7 @@ class DossierController extends Controller
      */
     public function index(Request $request)
     {
+        //dd($request) ; 
 
         $constructible = $request['constructible'] ;
         if (Gate::none(['voir dossiers ' . p($constructible), 'voir ses propres dossiers'])) {
@@ -206,21 +207,21 @@ class DossierController extends Controller
                             }
                         }
                     });
-        }        
+        }                 
 
-        //recherche par nombre d'etages
-        if (isset($request['nombreEtagesLot']) && $request['nombreEtagesLot'] != '-' ) {
-            $et = $request['nombreEtagesLot'] ;
-            $lotsAll = $lotsAll->where('lot.nombreEtagesLot', $et); 
-        }  
+        //recherche par prix
+        if (isset($request['dateStart']) && $request['dateStart'] != '' ) {
+            $dateStart = $request['dateStart']  ;
+        }
 
-        //recherche par type de lot
-        if (isset($request['typeLot']) && $request['typeLot'] != '-' ) {
-            $ty = $request['typeLot'] ;
-            $lotsAll = $lotsAll->where('lot.typeLot', $ty);  
-        }           
+        //recherche par prix
+        if (isset($request['dateEnd']) && $request['dateEnd'] != '' ) {
+            $dateEnd = $request['dateEnd'] ;
+            $dossiersAll = $dossiersAll->whereBetween('date', [$dateStart, $dateEnd] ); 
 
-        //recherche par etat du lot
+        }
+
+        //recherche par etat du dossier
         if (isset($request['etatDossier']) && $request['etatDossier'] != '-' ) {
             $etat = $request['etatDossier'] ;
             $dossiersAll = $dossiersAll->where('isVente', $etat);  
@@ -242,13 +243,13 @@ class DossierController extends Controller
             'users'                 => User::whereIn('role_id',[2,5,6])->get(),
             'dossiersParType'       => Dossier::dossiersParType(),
             'tranches'              => $tranches ,
-            'valeurTotal'           => 1000, //$prixTotalLots->sum(),
             'etatDossier'           => $request['etatDossier'],
             'SearchByUser'          => $request['user'] ,
             'SearchBySign'          => $request['sign'] ,
             'SearchByTauxComparateur'          => $request['tauxComparateur'] ,
             'SearchByTranche'       => $tranche,
-            'SearchByMin'           => '',//$request['minPrix'] ,
+            'dateEnd'               => $request['dateEnd'],
+            'dateStart'               => $request['dateStart'],
             'SearchByRelance'           => $request['relance'],
             'SearchByNum'           => implode(',' , $numsDossier) ,
             'SearchByClient'        => $request['client'] ,

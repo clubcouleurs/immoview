@@ -114,7 +114,7 @@ class ProduitController extends Controller
                     ', Surface : ' . $produit->constructible->surface .
                     'm2, Etage : ' . $produit->etage .
                     ', Immeuble : ' . $produit->constructible->immeuble->num .
-                    ', Tranche : ' . $produit->constructible->immeuble->num . '.';
+                    ', Tranche : ' . $produit->constructible->tranche->num . '.';
 
                     break;
                 case 'lot':
