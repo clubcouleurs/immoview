@@ -100,10 +100,12 @@ class LotController extends Controller
                 return $total = $total + $item->total;
         });
 
-
+           $lotsParPage = $this->paginate($lotsAll) ;
+           $lotsParPage->withPath('/lots');
+           $lotsParPage->withQueryString() ;
 
         return view('lots.index', [
-            'lots'              => $this->paginate($lotsAll),
+            'lots'              => $lotsParPage,
             'totalLots'         => $lotsAll->count(),
             'tranches'          =>Tranche::all(),
             'etiquettes'          =>Etiquette::all(),

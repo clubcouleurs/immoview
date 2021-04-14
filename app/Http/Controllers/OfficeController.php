@@ -104,10 +104,12 @@ class OfficeController extends Controller
                 return $total = $total + $item->totalIndicatif;
         });
 
-
+           $officesParPage = $this->paginate($officesAll) ;
+           $officesParPage->withPath('/magasins');
+           $officesParPage->withQueryString() ;
 
         return view('offices.index', [
-            'offices'               => $this->paginate($officesAll),
+            'offices'               => $officesAll,
             'totalOffices'          => $officesAll->count(),
             'immeubles'              => Immeuble::all(),
             'etiquettes'            => Etiquette::all(),

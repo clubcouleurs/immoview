@@ -100,10 +100,12 @@ class MagasinController extends Controller
                     return $total = $total + $item->totalIndicatif;
         });
 
-
+           $magasinsParPage = $this->paginate($magasinsAll) ;
+           $magasinsParPage->withPath('/magasins');
+           $magasinsParPage->withQueryString() ;
 
         return view('magasins.index', [
-            'magasins'              => $this->paginate($magasinsAll),
+            'magasins'              => $magasinsParPage,
             'totalMagasins'         => $magasinsAll->count(),
             'immeubles'              =>Immeuble::all(),
             'etiquettes'            =>Etiquette::all(),
@@ -112,8 +114,8 @@ class MagasinController extends Controller
             'magasinsReserved'       => $magasinsReserved,
             'magasinsBlocked'        => $magasinsBlocked,
             'magasinsStocked'        => $magasinsStocked,
-            'magasinsR' => $magasinsR, 
-            'SearchByImm'       => $request['immeuble'] ,
+            'magasinsR'             => $magasinsR, 
+            'SearchByImm'           => $request['immeuble'] ,
             'SearchByFacade'        => $request['nombreFacadesappartement'] ,
             'SearchByEtage'         => $request['etage'] ,
             'SearchByEtat'          => $request['etatProduit'] ,

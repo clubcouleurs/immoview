@@ -21,7 +21,7 @@ class BordereauController extends Controller
     {
         return view('bordereaux.index', [
             'dossier' => $dossier ,
-            'bordereaux' => $dossier->bordereaux()->paginate(15),
+            'bordereaux' => $dossier->bordereaux()->paginate(25),
             'banques' => Banque::all(),
         ]);
     }

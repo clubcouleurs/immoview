@@ -22,7 +22,7 @@ class UserController extends Controller
 
         $users = User::whereNotIn('ID', [1])->get() ;
         return view('users.index', 
-            ['users' => User::whereNotIn('ID', [1])->orderBy('created_at')->paginate(20),
+            ['users' => User::whereNotIn('ID', [1])->orderBy('created_at')->paginate(25),
             'roles' => Role::all(),
             'countUsers' => $users->count() ]);
     }

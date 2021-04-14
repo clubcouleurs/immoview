@@ -44,9 +44,12 @@ class ClientController extends Controller
 
         } 
 
+           $clientsParPage = $this->paginate($clientsAll) ;
+           $clientsParPage->withPath('/clients');
+           $clientsParPage->withQueryString() ;
 
         return view('clients.index', [
-            'clients'              => $this->paginate($clientsAll),
+            'clients'              => $clientsParPage,
             'totalClients'         => $clientsAll->count(),
             'activer'          => $activer,
             'SearchByClient'   => '', // $request['tranche'] ,

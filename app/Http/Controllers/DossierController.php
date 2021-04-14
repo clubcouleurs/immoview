@@ -231,9 +231,12 @@ class DossierController extends Controller
            //     return $total = $total + $item->lot->surfaceLot * $item->prixM2Definitif;
            // });
 
+           $dossiersParPage = $this->paginate($dossiersAll) ;
+           $dossiersParPage->withPath('/dossiers');
+           $dossiersParPage->withQueryString() ;
 
         return view('dossiers.index', [
-            'dossiers'              => $this->paginate($dossiersAll),
+            'dossiers'              => $dossiersParPage,
             'totalDossier'          => $dossiersAll->count(),
             'clients'               =>   Client::all(),
             'users'                 => User::whereIn('role_id',[2,5,6])->get(),

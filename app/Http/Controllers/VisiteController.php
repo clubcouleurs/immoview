@@ -98,6 +98,10 @@ class VisiteController extends Controller
                     ORDER BY an asc, mois asc            
             ");        
 
+           $visitesParPage = $this->paginate($visitesAll) ;
+           $visitesParPage->withPath('/visites');
+           $visitesParPage->withQueryString() ;
+
         return view('visites.index', [
             'visites'       => $this->paginate($visitesAll),
             'totalVisites'  => Visite::all(),

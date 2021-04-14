@@ -609,7 +609,6 @@ id: this.logos.length +1,
         },
         getDateValue(date) {
           let selectedDate = new Date(this.year, this.month, date);
-          alert(selectedDate);
           this.datepickerValue = selectedDate.toISOString().slice(0, 10);
           this.$refs.date.value = selectedDate.getFullYear() + "-" + ('0' + selectedDate.getMonth()).slice(-2) + "-" + ('0' + selectedDate.getDate()).slice(-2);
           console.log(this.$refs.date.value);
