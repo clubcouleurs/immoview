@@ -36,6 +36,7 @@ class OfficeController extends Controller
                             ->withCount('voies')
                             ->orderByDesc('created_at')
                             ->get();
+        $officesAll = $officesAll->sortBy('constructible.num') ;
 
         $officesReserved = $officesAll->where('etiquette_id', 3)->count() ;
         $officesStocked = $officesAll->where('etiquette_id', 2)->count() ;

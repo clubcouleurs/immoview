@@ -208,18 +208,48 @@ class DossierController extends Controller
                         }
                     });
         }                 
+        $dateStartExist = false ;
+        $dateEndExist = false ;
 
         //recherche par prix
         if (isset($request['dateStart']) && $request['dateStart'] != '' ) {
-            $dateStart = $request['dateStart']  ;
+            $ds =  $request['dateStart'] ;
+            $dateSt = str_replace('/', '-', $ds);
+            $dateStart = date('Y-m-d', strtotime($dateSt));
+            $dateStartExist = true ;
+
         }
 
         //recherche par prix
         if (isset($request['dateEnd']) && $request['dateEnd'] != '' ) {
-            $dateEnd = $request['dateEnd'] ;
+            $de =  $request['dateEnd'] ;
+            $dateEd = str_replace('/', '-', $de);
+            $dateEnd = date('Y-m-d', strtotime($dateEd));
+            $dateEndExist = true ;
+        }
+
+
+        if ($dateStartExist == true && $dateEndExist == true)
+        {
+            if ($dateEnd < $dateStart) {
+                $d = $dateStart ;
+                $dateStart = $dateEnd ;
+                $dateEnd = $d ;
+            }
+        }
+
+        if ($dateStartExist == true && $dateEndExist == true)
+        {
             $dossiersAll = $dossiersAll->whereBetween('date', [$dateStart, $dateEnd] ); 
 
+        }elseif ($dateStartExist == true && $dateEndExist == false) {
+            $dossiersAll = $dossiersAll->where('date' , $dateStart); 
+
+        }elseif ($dateStartExist == false && $dateEndExist == true) {
+            $dossiersAll = $dossiersAll->where('date' , $dateEnd); 
         }
+
+
 
         //recherche par etat du dossier
         if (isset($request['etatDossier']) && $request['etatDossier'] != '-' ) {

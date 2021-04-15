@@ -34,6 +34,7 @@ class AppartementController extends Controller
                             ->withCount('voies')
                             ->orderByDesc('created_at')
                             ->get();
+        $appartementsAll = $appartementsAll->sortBy('constructible.num') ;
 
         $appartementsReserved = $appartementsAll->where('etiquette_id', 3)->count() ;
         $appartementsStocked = $appartementsAll->where('etiquette_id', 2)->count() ;

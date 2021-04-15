@@ -34,6 +34,8 @@ class MagasinController extends Controller
                             ->withCount('voies')
                             ->orderByDesc('created_at')
                             ->get();
+        $magasinsAll = $magasinsAll->sortBy('constructible.num') ;
+                            
         $magasinsReserved = $magasinsAll->where('etiquette_id', 3)->count() ;
         $magasinsStocked = $magasinsAll->where('etiquette_id', 2)->count() ;
         $magasinsBlocked = $magasinsAll->whereNotIn('etiquette_id', [3,2,9])->count() ;

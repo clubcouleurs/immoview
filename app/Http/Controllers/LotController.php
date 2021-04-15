@@ -33,6 +33,7 @@ class LotController extends Controller
                             ->withCount('voies')
                             ->orderByDesc('created_at')
                             ->get();
+        $lotsAll = $lotsAll->sortBy('constructible.num') ;
 
         $lotsReserved = $lotsAll->where('etiquette_id', 3)->count() ;
         $lotsStocked = $lotsAll->where('etiquette_id', 2)->count() ;

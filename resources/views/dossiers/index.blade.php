@@ -141,9 +141,9 @@
       <div class="w-36">
 
         <div class="relative">
-          <input type="hidden" name="dateStart" x-ref="date" :value="datepickerEnd"
+          <input type="hidden" name="dateStart" x-ref="date" :value="datepickerStart"
           >
-          <input type="text" readonly x-model="datepickerEnd" @click="showDatepicker = !showDatepicker" @keydown.escape="showDatepicker = false"
+          <input type="text" readonly x-model="datepickerStart" @click="showDatepicker = !showDatepicker" @keydown.escape="showDatepicker = false"
           class="block w-full mt-1 text-sm focus:outline-none focus:shadow-outline-purple rounded-2xl form-input"
           placeholder="Date début"
           >
@@ -217,9 +217,9 @@
       <div class="w-36">
 
         <div class="relative">
-          <input type="hidden" name="dateEnd" x-ref="date" :value="datepickerStart"
+          <input type="hidden" name="dateEnd" x-ref="date" :value="datepickerEnd"
           >
-          <input type="text" readonly x-model="datepickerStart" @click="showDatepicker = !showDatepicker" @keydown.escape="showDatepicker = false"
+          <input type="text" readonly x-model="datepickerEnd" @click="showDatepicker = !showDatepicker" @keydown.escape="showDatepicker = false"
           class="block w-full mt-1 text-sm focus:outline-none focus:shadow-outline-purple rounded-2xl form-input"
           placeholder="Date fin"
           >
@@ -759,9 +759,9 @@
           return today.toDateString() === d.toDateString() ? true : false;
         },
         getDateValue(date) {
-          let selectedDate = new Date(this.year, this.month, date);
-          this.datepickerStart = selectedDate.toISOString().slice(0, 10);
-          this.datepickerEnd = selectedDate.toISOString().slice(0, 10);
+          let selectedDate = new Date(this.year, this.month, date,0,0,0);
+          this.datepickerStart = selectedDate.toLocaleDateString().slice(0, 10);
+          this.datepickerEnd = selectedDate.toLocaleDateString().slice(0, 10);
           //alert(selectedDate);
 
           this.$refs.date.value = selectedDate.getFullYear() + "-" + ('0' + selectedDate.getMonth()).slice(-2) + "-" + ('0' + selectedDate.getDate()).slice(-2);
