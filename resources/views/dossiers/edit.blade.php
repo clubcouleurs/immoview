@@ -208,6 +208,12 @@
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror
 
+@isset($dossier->delais->last()->date)
+<input type="hidden" name="delai_id" value={{ $dossier->delais->first()->id }}>
+
+@endisset
+
+
 <!-- date picker -->
 <div class="antialiased sans-serif" x-show="isOpen">
   <div x-data="app()" x-init="[initDate(), getNoOfDays()]" x-cloak>
@@ -743,11 +749,23 @@ here was the form to delete the logo
           let today = new Date();
           this.month = today.getMonth();
           this.year = today.getFullYear();
-          //this.datepickerValue = new Date(this.year, this.month, today.getDate()).toDateString();
-          //this.datepickerValue = new Date(this.year, this.month, today.getDate()).toISOString().slice(0, 10);
-          this.datepickerValue = '@isset($dossier->date){{ $dossier->date }}@else' + new Date(this.year, this.month, today.getDate()).toISOString().slice(0, 10) + '@endisset';
 
-          this.datepickerDelai = '@isset($dossier->delais->first()->date){{ $dossier->delais->first()->date->format('Y-m-d') }}@else' + new Date(this.year, this.month, today.getDate()).toISOString().slice(0, 10) + '@endisset';
+          this.datepickerValue = '@isset($dossier->date){{ $dossier->date }}@else' + 
+            var str = new Date(this.year, this.month, today.getDate()).toLocaleDateString().slice(0, 10) 
+            var an = str.substring(str.length - 4, str.length);
+            var mois = str.substring(3,5);
+            var jour = str.substring(0,2);
+            this.datepickerValue = an + '-' + mois + '-' + jour; 
+          + '@endisset';
+
+          this.datepickerDelai = '@isset($dossier->delais->first()->date){{ $dossier->delais->first()->date->format('Y-m-d') }}@else'
+          +
+            var str = new Date(this.year, this.month, today.getDate()).toLocaleDateString().slice(0, 10)
+            var an = str.substring(str.length - 4, str.length);
+            var mois = str.substring(3,5);
+            var jour = str.substring(0,2);
+            this.datepickerValue = an + '-' + mois + '-' + jour; 
+          + '@endisset';
 
 
         },
@@ -757,12 +775,20 @@ here was the form to delete the logo
           return today.toDateString() === d.toDateString() ? true : false;
         },
         getDateValue(date) {
-          let selectedDate = new Date(this.year, this.month, date );
-          this.datepickerValue = selectedDate.toISOString().slice(0, 10);
-          this.datepickerDelai = selectedDate.toISOString().slice(0, 10);
+          // let selectedDate = new Date(this.year, this.month, date );
+          //this.datepickerValue = selectedDate.toLocaleDateString().slice(0, 10);
+          //this.datepickerDelai = selectedDate.toLocaleDateString().slice(0, 10);
 
-          this.$refs.date.value = selectedDate.getFullYear() + "-" + ('0' + selectedDate.getMonth()).slice(-2) + "-" + ('0' + selectedDate.getDate()).slice(-2);
-          console.log(this.$refs.date.value);
+             var str = new Date(this.year, this.month, date).toLocaleDateString().slice(0, 10) 
+             var an = str.substring(str.length - 4, str.length);
+             var mois = str.substring(3,5);
+             var jour = str.substring(0,2);
+
+            this.datepickerValue = an + '-' + mois + '-' + jour;
+            this.datepickerDelai = an + '-' + mois + '-' + jour;
+
+          // this.$refs.date.value = selectedDate.getFullYear() + "-" + ('0' + selectedDate.getMonth()).slice(-2) + "-" + ('0' + selectedDate.getDate()).slice(-2);
+          // console.log(this.$refs.date.value);
           this.showDatepicker = false;
         },
         getNoOfDays() {

@@ -229,7 +229,7 @@
             <div x-text="32 - new Date(year, month, 32).getDate()"></div>
             <div x-text="new Date(year, month).getDay()"></div> -->
 
-          <div class="bg-white mt-12 rounded-lg shadow p-4 absolute top-0 left-0" style="width: 17rem" x-show.transition="showDatepicker" @click.away="showDatepicker = false">
+          <div class="z-10 bg-white mt-12 rounded-lg shadow p-4 absolute top-0 left-0" style="width: 17rem" x-show.transition="showDatepicker" @click.away="showDatepicker = false">
 
             <div class="flex justify-between items-center mb-2">
               <div>
@@ -571,9 +571,12 @@ this.todos.splice(this.todos.indexOf(todo), 1 );
           let today = new Date();
           this.month = today.getMonth();
           this.year = today.getFullYear();
-          //this.datepickerValue = new Date(this.year, this.month, today.getDate()).toDateString();
-          //this.datepickerValue = new Date(this.year, this.month, today.getDate()).toISOString().slice(0, 10);
-          this.datepickerValue = '@isset($paiement->date){{ $paiement->date }}@else' + new Date(this.year, this.month, today.getDate()).toISOString().slice(0, 10) + '@endisset';
+            var str = new Date(this.year, this.month, today.getDate()).toLocaleDateString().slice(0, 10) 
+            var an = str.substring(str.length - 4, str.length);
+            var mois = str.substring(3,5);
+            var jour = str.substring(0,2);
+            this.datepickerValue = an + '-' + mois + '-' + jour;
+          ;
 
         },
         isToday(date) {
@@ -582,10 +585,16 @@ this.todos.splice(this.todos.indexOf(todo), 1 );
           return today.toDateString() === d.toDateString() ? true : false;
         },
         getDateValue(date) {
-          let selectedDate = new Date(this.year, this.month, date );
-          this.datepickerValue = selectedDate.toISOString().slice(0, 10);
-          this.$refs.date.value = selectedDate.getFullYear() + "-" + ('0' + selectedDate.getMonth()).slice(-2) + "-" + ('0' + selectedDate.getDate()).slice(-2);
-          console.log(this.$refs.date.value);
+            //let selectedDate = new Date(this.year, this.month, date );
+             var str = new Date(this.year, this.month, date).toLocaleDateString().slice(0, 10) 
+             var an = str.substring(str.length - 4, str.length);
+             var mois = str.substring(3,5);
+             var jour = str.substring(0,2);
+             this.datepickerValue = an + '-' + mois + '-' + jour;
+
+          //this.datepickerValue = selectedDate.toLocaleDateString().slice(0, 10);
+          // this.$refs.date.value = selectedDate.getFullYear() + "-" + ('0' + selectedDate.getMonth()).slice(-2) + "-" + ('0' + selectedDate.getDate()).slice(-2);
+          // console.log(this.$refs.date.value);
           this.showDatepicker = false;
         },
         getNoOfDays() {

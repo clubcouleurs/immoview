@@ -52,7 +52,7 @@ class Dossier extends Model
 
     public function delais()
     {
-        return $this->hasMany(Delai::class);
+        return $this->hasMany(Delai::class)->latest();
     }
 
 

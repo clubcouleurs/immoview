@@ -66,7 +66,7 @@ class DelaiController extends Controller
         $dossier->delais()->save($delai) ;
         $dossier->isVente = false ;
         $dossier->update() ;
-        return redirect($dossier->produit->constructible_type . '/0/dossiers')
+        return redirect('dossiers/?constructible='.$dossier->produit->constructible_type)
                     ->with('message','Délai ajouté !');
     }
 

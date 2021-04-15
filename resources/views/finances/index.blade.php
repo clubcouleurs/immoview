@@ -83,9 +83,9 @@
                       <th class="py-3">Reliquat du CA Réservé</th>
                       @endcan
 
-                      @can('afficher 70% du CA total '. $constructible)
+<!--                  @can('afficher 70% du CA total '. $constructible)
                       <th class="py-3">70% du CA total</th>
-                      @endcan
+                      @endcan -->
 
 
 
@@ -219,14 +219,14 @@
                       </td>
                       @endcan
 
-                      @can('afficher 70% du CA total '. $constructible)                    
+<!--                  @can('afficher 70% du CA total '. $constructible)                    
                       <td class="px-1 py-3">
                         <p class="text-xs text-black dark:text-gray-400">
                           {{number_format($data['reliquat70Pourcent']) }} Dhs
 
                         </p>
                       </td> 
-                      @endcan
+                      @endcan -->
                     </tr>
 
                     @endforeach
@@ -381,7 +381,7 @@
                       </td>
                       @endcan
 
-                      @can('afficher 70% du CA total '. $constructible)                    
+<!--                       @can('afficher 70% du CA total '. $constructible)                    
                       <td class="px-1 py-3">
                         <p class="text-xs text-gray-600 dark:text-gray-400">
                           @php
@@ -390,7 +390,7 @@
                           Dhs
                         </p>
                       </td> 
-                      @endcan
+                      @endcan -->
                     </tr>
 
                   </tbody>

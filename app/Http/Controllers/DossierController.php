@@ -505,10 +505,23 @@ class DossierController extends Controller
                 {                    
                     $dossier->produit->etiquette_id = 9 ;
                     
-                    $delai = new Delai([
-                        'date'              => $request['delai'] ,
-                    ]) ;
-                    $dossier->delais()->save($delai) ;
+                    $id_delai = $request['delai_id'] ;
+                        //dd( is_numeric($id_delai) ) ;
+
+                    if (is_numeric($id_delai)) {
+                        $delai = Delai::find($id_delai) ;
+                        if ($delai != null ) {
+                            $delai->date = $request['delai'];
+                            $delai->update() ;
+                        }
+
+                    }else
+                    {
+                        $delai = new Delai([
+                            'date'  => $request['delai'] ,
+                        ]) ;
+                        $dossier->delais()->save($delai) ;
+                    }
                 }
 
                 $dossier->produit->update() ;

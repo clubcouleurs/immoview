@@ -167,9 +167,14 @@
           let today = new Date();
           this.month = today.getMonth();
           this.year = today.getFullYear();
-          //this.datepickerValue = new Date(this.year, this.month, today.getDate()).toDateString();
-          //this.datepickerValue = new Date(this.year, this.month, today.getDate()).toISOString().slice(0, 10);
-          this.datepickerValue = '@isset($paiement->date){{ $paiement->date }}@else' + new Date(this.year, this.month, today.getDate()).toISOString().slice(0, 10) + '@endisset';
+
+            var str = new Date(this.year, this.month, today.getDate()).toLocaleDateString().slice(0, 10) 
+            var an = str.substring(str.length - 4, str.length);
+            var mois = str.substring(3,5);
+            var jour = str.substring(0,2);
+            this.datepickerValue = an + '-' + mois + '-' + jour; 
+
+          // this.datepickerValue = '@isset($paiement->date){{ $paiement->date }}@else' + new Date(this.year, this.month, today.getDate()).toISOString().slice(0, 10) + '@endisset';
 
         },
         isToday(date) {
@@ -178,10 +183,16 @@
           return today.toDateString() === d.toDateString() ? true : false;
         },
         getDateValue(date) {
-          let selectedDate = new Date(this.year, this.month, date + 1 );
-          this.datepickerValue = selectedDate.toISOString().slice(0, 10);
-          this.$refs.date.value = selectedDate.getFullYear() + "-" + ('0' + selectedDate.getMonth()).slice(-2) + "-" + ('0' + selectedDate.getDate()).slice(-2);
-          console.log(this.$refs.date.value);
+             var str = new Date(this.year, this.month, date).toLocaleDateString().slice(0, 10) 
+             var an = str.substring(str.length - 4, str.length);
+             var mois = str.substring(3,5);
+             var jour = str.substring(0,2);
+             this.datepickerValue = an + '-' + mois + '-' + jour;
+                       
+          // let selectedDate = new Date(this.year, this.month, date + 1 );
+          // this.datepickerValue = selectedDate.toISOString().slice(0, 10);
+          // this.$refs.date.value = selectedDate.getFullYear() + "-" + ('0' + selectedDate.getMonth()).slice(-2) + "-" + ('0' + selectedDate.getDate()).slice(-2);
+          // console.log(this.$refs.date.value);
           this.showDatepicker = false;
         },
         getNoOfDays() {
