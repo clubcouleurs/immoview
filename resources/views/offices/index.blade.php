@@ -60,7 +60,7 @@
                   <p
                     class="text-lg font-semibold text-gray-700 dark:text-gray-200"
                   >
-                  {{number_format($valeurTotal, 2)}} Dhs
+                  {{numberFormat($valeurTotal, 2)}} Dhs
                   </p>
                 </div>
               </div>
@@ -502,7 +502,7 @@
                           {{ $produit->prixM2Indicatif }} Dhs
                         </span>
                             <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                              Total : {{ number_format($produit->totalIndicatif)}} Dhs
+                              Total : {{ numberFormat($produit->totalIndicatif)}} Dhs
                             </p>                        
                       </td>
                       <td class="px-4 py-3 text-xs">
@@ -512,7 +512,7 @@
                           {{ $produit->prixM2Definitif }} Dhs
                         </span>
                             <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                              Total : {{ number_format($produit->totalDefinitif)}} Dhs
+                              Total : {{ numberFormat($produit->totalDefinitif)}} Dhs
                             </p>                         
                       </td>                                                                  
                       <td class="px-4 py-3 text-xs">

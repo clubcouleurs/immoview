@@ -150,7 +150,7 @@
                       @can('afficher CA prévisionnel '. $constructible)
                       <td class="px-1 py-3">
                         <p class="text-xs text-black dark:text-gray-400">
-                          {{number_format($data['totalCA']) }} Dhs
+                          {{numberFormat($data['totalCA']) }} Dhs
 
                         </p>
                       </td>
@@ -159,7 +159,7 @@
                       @can('afficher CA réservé '. $constructible)
                       <td class="px-1 py-3">
                         <p class="text-xs text-black dark:text-gray-400">
-                          {{number_format($data['CaReserve']) }} Dhs
+                          {{numberFormat($data['CaReserve']) }} Dhs
 
                         </p>
                       </td>
@@ -177,7 +177,7 @@
                       @can('afficher montant avances versées '. $constructible)
                       <td class="px-1 py-3">
                         <p class="text-xs text-black dark:text-gray-400">
-                          {{number_format($data['totalPaiementsV']) }} Dhs
+                          {{numberFormat($data['totalPaiementsV']) }} Dhs
 
                         </p>
                       </td>
@@ -186,7 +186,7 @@
                       @can('afficher 30% du CA réservé '. $constructible)
                       <td class="px-1 py-3">
                         <p class="text-xs text-black dark:text-gray-400">
-                          {{number_format($data['avance30']) }} Dhs
+                          {{numberFormat($data['avance30']) }} Dhs
 
                         </p>
                       </td>
@@ -204,7 +204,7 @@
                       @can('afficher reliquat avance non encaissée '. $constructible)
                       <td class="px-1 py-3">
                         <p class="text-xs text-black dark:text-gray-400">
-                          {{number_format($data['reliquatDu30Pourcent']) }} Dhs
+                          {{numberFormat($data['reliquatDu30Pourcent']) }} Dhs
 
                         </p>        
                       </td>
@@ -213,7 +213,7 @@
                       @can('afficher reliquat du CA réservé '. $constructible)
                       <td class="px-1 py-3">
                         <p class="text-xs text-black dark:text-gray-400">
-                          {{number_format($data['reliquat']) }} Dhs
+                          {{numberFormat($data['reliquat']) }} Dhs
 
                         </p>
                       </td>
@@ -222,7 +222,7 @@
 <!--                  @can('afficher 70% du CA total '. $constructible)                    
                       <td class="px-1 py-3">
                         <p class="text-xs text-black dark:text-gray-400">
-                          {{number_format($data['reliquat70Pourcent']) }} Dhs
+                          {{numberFormat($data['reliquat70Pourcent']) }} Dhs
 
                         </p>
                       </td> 
@@ -297,7 +297,7 @@
                       <td class="px-1 py-3">
                         <p class="text-xs text-gray-600 dark:text-gray-400">
                           @php
-                            echo number_format($$header['totalCA']); 
+                            echo numberFormat($$header['totalCA']); 
                           @endphp
                           Dhs
                         </p>
@@ -308,7 +308,7 @@
                       <td class="px-1 py-3">
                         <p class="text-xs text-gray-600 dark:text-gray-400">
                           @php
-                            echo number_format($$header['CaReserve']); 
+                            echo numberFormat($$header['CaReserve']); 
                           @endphp
                           Dhs
                         </p>
@@ -330,7 +330,7 @@
                       <td class="px-1 py-3">
                         <p class="text-xs text-gray-600 dark:text-gray-400">
                           @php
-                            echo number_format($$header['totalPaiementsV']); 
+                            echo numberFormat($$header['totalPaiementsV']); 
                           @endphp
                           Dhs
                         </p>
@@ -341,7 +341,7 @@
                       <td class="px-1 py-3">
                         <p class="text-xs text-gray-600 dark:text-gray-400">
                           @php
-                            echo number_format($$header['avance30']); 
+                            echo numberFormat($$header['avance30']); 
                           @endphp
                           Dhs
                         </p>
@@ -363,7 +363,7 @@
                       <td class="px-1 py-3">
                         <p class="text-xs text-gray-600 dark:text-gray-400">
                           @php
-                            echo number_format($$header['reliquatDu30Pourcent']); 
+                            echo numberFormat($$header['reliquatDu30Pourcent']); 
                           @endphp
                           Dhs
                         </p>        
@@ -374,7 +374,7 @@
                       <td class="px-1 py-3">
                         <p class="text-xs text-gray-600 dark:text-gray-400">
                           @php
-                            echo number_format($$header['reliquat']); 
+                            echo numberFormat($$header['reliquat']); 
                           @endphp
                           Dhs
                         </p>
@@ -385,7 +385,7 @@
                       <td class="px-1 py-3">
                         <p class="text-xs text-gray-600 dark:text-gray-400">
                           @php
-                            echo number_format($$header['reliquat70Pourcent']); 
+                            echo numberFormat($$header['reliquat70Pourcent']); 
                           @endphp
                           Dhs
                         </p>

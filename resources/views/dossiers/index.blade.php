@@ -434,7 +434,7 @@
                             <p class="font-bold">
                             
                               <!-- {{ $dossier->num }}  -->
-                          <a href="{{ $dossier->produit->constructible_type }}s/{{ $dossier->produit->constructible->id }}">
+                          <a href="{{ $dossier->produit->constructible_type }}s/{{ $dossier->produit->constructible->id }}/edit">
                           {{ ucfirst($dossier->produit->constructible_type) }} N°
                           {{ $dossier->produit->constructible->num }}
                         </a>                              
@@ -484,7 +484,7 @@
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
                         >
-                          {{ number_format($dossier->frais) }} Dhs
+                          {{ numberFormat($dossier->frais) }} Dhs
                         </span>
                         
                       </td>
@@ -519,7 +519,7 @@
 
                           "
                         >
-                          {{number_format($dossier->totalPaiementsV)}} Dhs
+                          {{numberFormat($dossier->totalPaiementsV)}} Dhs
                         </span>
                       </td>
                       <td class="px-1 py-3 text-sm">
@@ -535,7 +535,7 @@
 
                           "
                         >
-                           {{ number_format($dossier->produit->totalDefinitif)}} Dhs
+                           {{ numberFormat($dossier->produit->totalDefinitif)}} Dhs
                         </span>
                       </td>     
                       <td class="px-1 py-3 text-sm">

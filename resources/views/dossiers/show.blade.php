@@ -25,14 +25,14 @@
                     <p class="text-white font-bold">
                       Prix total {{ $dossier->produit->constructible_type }} :</p>
                             <p class="font-semibold text-2xl text-white dark:text-gray-400">
-                          {{ number_format($dossier->produit->total) }} Dhs
+                          {{ numberFormat($dossier->produit->total) }} Dhs
                             </p>                             
                 </div>
                 <div class="p-2 bg-green-500 rounded-lg dark:bg-gray-800">              
                     <p class="text-white font-bold">
                       Total des avances :</p>
                             <p class="font-semibold text-2xl text-white dark:text-gray-400">
-                          {{ number_format($dossier->totalPaiements) }} Dhs
+                          {{ numberFormat($dossier->totalPaiements) }} Dhs
                             </p>                   
                 </div>
                 <div class="p-2 bg-blue-500 rounded-lg dark:bg-gray-800">              
@@ -46,7 +46,7 @@
                     <p class="text-white font-bold">
                       Reste à payer :</p>
                             <p class="font-semibold text-2xl text-white dark:text-gray-400">
-                          {{ number_format($dossier->Reliquat) }} Dhs
+                          {{ numberFormat($dossier->Reliquat) }} Dhs
                             </p>                    
                 </div> 
                 @endcan                             
@@ -111,7 +111,7 @@
                         </div>
                       </td>
                       <td class="px-1 py-1 text-sm">
-                          {{number_format($dossier->frais)}} Dhs
+                          {{numberFormat($dossier->frais)}} Dhs
                       </td>
                     </tr>  
                     <tr class="text-gray-700 dark:text-gray-400">
@@ -270,7 +270,7 @@
                         </div>
                       </td>
                       <td class="px-1 py-3 text-sm">
-                          {{number_format($dossier->produit->prixM2Definitif)}} Dhs 
+                          {{numberFormat($dossier->produit->prixM2Definitif)}} Dhs 
                       </td>
                     </tr>
                     <tr class="text-gray-700 dark:text-gray-400">
@@ -286,7 +286,7 @@
                         </div>
                       </td>
                       <td class="px-1 py-3 text-sm">
-                          {{number_format($dossier->produit->prixM2Indicatif)}} Dhs 
+                          {{numberFormat($dossier->produit->prixM2Indicatif)}} Dhs 
                       </td>
                     </tr> 
                     <tr class="text-gray-700 dark:text-gray-400">
@@ -302,7 +302,7 @@
                         </div>
                       </td>
                       <td class="px-1 py-3 text-sm">
-                          {{number_format($dossier->produit->totalDefinitif)}} Dhs 
+                          {{numberFormat($dossier->produit->totalDefinitif)}} Dhs 
                       </td>
                     </tr>
                     <tr class="text-gray-700 dark:text-gray-400">
@@ -318,7 +318,7 @@
                         </div>
                       </td>
                       <td class="px-1 py-3 text-sm">
-                          {{number_format($dossier->produit->totalIndicatif)}} Dhs
+                          {{numberFormat($dossier->produit->totalIndicatif)}} Dhs
                       </td>
                     </tr> 
                     <tr class="text-gray-700 dark:text-gray-400">

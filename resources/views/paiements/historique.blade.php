@@ -142,7 +142,7 @@ role="progressbar" :aria-valuenow="value" aria-valuemin="0" :aria-valuemax="tota
                         </div>
                       </td>
                       <td class="px-4 py-3 text-sm">
-                        {{ number_format($p->montant) }}
+                        {{ numberFormat($p->montant) }}
                       </td>
                       <td class="px-4 py-3 text-sm">
                         {{ $p->date }}

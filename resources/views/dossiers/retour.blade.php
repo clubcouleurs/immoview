@@ -18,7 +18,7 @@
 
               <div
                 class="flex items-center justify-between p-2 mb-4 text-sm font-semibold text-blue-600 bg-blue-100 rounded-lg shadow-sm focus:outline-none focus:shadow-outline-blue rounded-2xl">
-            Ce dossier concerne : {{ucfirst($dossier->produit->constructible_type)}} N° {{$dossier->produit->constructible->num}}, d'une superficie totale de {{$dossier->produit->constructible->surface}} m2. Le prix total est de : {{number_format($dossier->produit->total)}} Dhs ({{number_format($dossier->produit->prix)}} Dhs/m2). <br> Attribué aux clients:
+            Ce dossier concerne : {{ucfirst($dossier->produit->constructible_type)}} N° {{$dossier->produit->constructible->num}}, d'une superficie totale de {{$dossier->produit->constructible->surface}} m2. Le prix total est de : {{numberFormat($dossier->produit->total)}} Dhs ({{numberFormat($dossier->produit->prix)}} Dhs/m2). <br> Attribué aux clients:
             @foreach($dossier->clients as $client)
             {{$client->nom}} {{$client->prenom}},
             @endforeach 
@@ -31,14 +31,14 @@
                     <p class="text-white font-bold">
                       Prix total {{ $dossier->produit->constructible_type }} :</p>
                             <p class="font-semibold text-2xl text-white dark:text-gray-400">
-                          {{ number_format($dossier->produit->total) }} Dhs
+                          {{ numberFormat($dossier->produit->total) }} Dhs
                             </p>                             
                 </div>
                 <div class="p-2 bg-green-500 rounded-lg dark:bg-gray-800">              
                     <p class="text-white font-bold">
                       Total des avances :</p>
                             <p class="font-semibold text-2xl text-white dark:text-gray-400">
-                          {{ number_format($dossier->totalPaiements) }} Dhs
+                          {{ numberFormat($dossier->totalPaiements) }} Dhs
                             </p>                   
                 </div>
                 <div class="p-2 bg-blue-500 rounded-lg dark:bg-gray-800">              
@@ -52,7 +52,7 @@
                     <p class="text-white font-bold">
                       Reste à payer :</p>
                             <p class="font-semibold text-2xl text-white dark:text-gray-400">
-                          {{ number_format($dossier->Reliquat) }} Dhs
+                          {{ numberFormat($dossier->Reliquat) }} Dhs
                             </p>                    
                 </div>            
 </div>

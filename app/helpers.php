@@ -34,3 +34,13 @@ if(! function_exists('s'))
 		return strtolower($value) ;
 	}
 }
+
+if(! function_exists('numberFormat'))
+{
+	function numberFormat($value)
+	{
+		$floor = floor($value) ;
+		$rslt = $value - $floor ;
+		return ($rslt > 0) ? number_format($value,2) : number_format($value);
+	}
+}

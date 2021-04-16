@@ -84,16 +84,16 @@ class PaiementController extends Controller
      */
     public function store(Request $request, Dossier $dossier)
     {
+
         $request->validate([
             'date'      => 'required|string',
             'type'      => 'required|string',
-            'num'       => 'sometimes|required|string',
+            'num'       => 'sometimes|required|string|nullable',
             'montant'   => 'required|integer',
-            'banque'   => 'required|integer',
+            'banque'   => 'sometimes|required|integer',
             'pj' => 'sometimes|required|max:5000|mimetypes:application/pdf,image/png,image/jpeg,image/tiff,image/gif',
 
         ]);
-        $banque = Banque::findOrFail($request['banque']) ;
         $paiement = new Paiement([
             'date'              => $request['date'],
             'type'              => $request['type'],
@@ -101,14 +101,18 @@ class PaiementController extends Controller
         ]) ;
 
         $totalPaiement = $dossier->totalPaiements + $paiement->montant ;
-        //$restePaiement = $paiement->montant - $dossier->totalPaiements ;
 
         if($totalPaiement > $dossier->produit->total)
         {
             return back()->withInput()->with('error', 'Vous avez dépasser le reste à payer!') ;
         }
 
-        $paiement->num = $request['num'] ;
+        if ($paiement->type != "Compensation") {
+            $paiement->num = $request['num'] ;
+        }else
+        {
+            $paiement->num = Null ;
+        }
 
         if($request->hasFile('pj'))
         {
@@ -127,8 +131,12 @@ class PaiementController extends Controller
             ->storeAs('public/pj', $pjName . '.' . $pjExtension) ;
             $paiement->pj = 'pj/' . $pjName . '.' . $pjExtension ;
         }
-                
-        $paiement->banque()->associate($banque) ;
+
+        if ($request['banque'] != null ) {
+            $banque = Banque::findOrFail($request['banque']) ;
+            $paiement->banque()->associate($banque) ;
+        }
+
         $paiement->dossier()->associate($dossier) ;
         $paiement->save();
 
