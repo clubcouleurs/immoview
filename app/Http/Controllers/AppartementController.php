@@ -39,7 +39,6 @@ class AppartementController extends Controller
         $appartementsReserved = $appartementsAll->where('etiquette_id', 3)->count() ;
         $appartementsStocked = $appartementsAll->where('etiquette_id', 2)->count() ;
         $appartementsR = $appartementsAll->where('etiquette_id', 9)->count() ;
-
         $appartementsBlocked = $appartementsAll->whereNotIn('etiquette_id', [3,2,9])->count() ;
 
         //selectionner les appartements 
@@ -146,7 +145,7 @@ class AppartementController extends Controller
         return view('appartements.create', [
             'voies' => Voie::all(),
             'immeubles' => Immeuble::all(),
-            'etiquettes' => Etiquette::all(),
+            'etiquettes' => Etiquette::whereNotIn('label', ['Vendu'])->get(),
         ]) ;
     }
 
@@ -216,7 +215,7 @@ class AppartementController extends Controller
         return view('appartements.edit', [
             'appartement'           => $appartement, 
             'voies'         => Voie::all(), 
-            'etiquettes'    => Etiquette::all(),
+            'etiquettes'    => Etiquette::whereNotIn('label', ['Vendu'])->get(),
             'immeubles'      => Immeuble::all()]) ;
     }
 

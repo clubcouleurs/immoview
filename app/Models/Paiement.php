@@ -18,14 +18,17 @@ class Paiement extends Model
         return $this->belongsTo(Dossier::class);
     }
 
+    public function produit()
+    {
+        return $this->hasOneThrough(Produit::class, Dossier::class);
+    }
+
     public function banque()
     {
         return $this->belongsTo(Banque::class);
     } 
     public function getValidateAttribute()
     {       
-
-
             //verifying Gate::allows('validation-dossier')
         if (Gate::allows('valider paiements')) {
 

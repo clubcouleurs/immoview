@@ -132,15 +132,6 @@
 <!-- fin boite recherche produit immo  -->
 @endcanany
             @endisset
-
-            <form action="/dossiers" method="POST">
-              @csrf
-              <input type="hidden" id="idProduit" name="produit" value="@isset($produit->id){{$produit->id}}@endisset">
-
-            <div
-              class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800"
-            >
-
 <div x-data="{
 @if ( old('isVente') != null && (old('isVente') == '0' ))
   isOpen: true,
@@ -152,6 +143,15 @@
   @endif
 @endif
  }">
+            <form action="/dossiers" method="POST" x-on:submit.prevent id="DossierForm">
+              @csrf
+              <input type="hidden" id="idProduit" name="produit" value="@isset($produit->id){{$produit->id}}@endisset">
+
+            <div
+              class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800"
+            >
+
+
 <div class="mt-4 text-sm">
 
                     @error('isVente')
@@ -286,7 +286,7 @@
       <hr class="mt-4">
 </div>
 <!-- fin date picker-->
-</div>
+
 
               @isset($clients)
               <label class="block mt-4 text-sm">
@@ -315,7 +315,7 @@ todos:[
 
 
       @php
-      $i = 0 ;
+      $i = 1 ;
       @endphp
 
    @while (null !== old('client.'.$i) )
@@ -376,10 +376,10 @@ this.todos.splice(this.todos.indexOf(todo), 1 );
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
                   name="client[]"
                  :key="todo.id"
-
                  :id="todo.name"
-                 :value="todo.client"
                 >
+                <!-- :value pour récupérer les données old('client.' numéro) -->
+                <!-- :value="todo.client" -->
                 @foreach ($clients as $client)
                   <option value="{{ $client->id }}">{{$client->nom}} {{$client->prenom}}</option>
                 @endforeach
@@ -543,6 +543,7 @@ this.todos.splice(this.todos.indexOf(todo), 1 );
                 <button
                   class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
                   type="submit"
+                  @click="submit();"
                 >
                   Sauvegarder
                 </button>
@@ -551,6 +552,7 @@ this.todos.splice(this.todos.indexOf(todo), 1 );
 
             </div>
             </form>
+            </div>
           </div>
         </main>
 
@@ -590,7 +592,11 @@ this.todos.splice(this.todos.indexOf(todo), 1 );
              var an = str.substring(str.length - 4, str.length);
              var mois = str.substring(3,5);
              var jour = str.substring(0,2);
-             this.datepickerValue = an + '-' + mois + '-' + jour;
+
+             this.datepickerValue = '@if(old("delai") != null ){{ old("delai") }}@else' + 
+            an + '-' + mois + '-' + jour; 
+          + '@endif';
+             
 
           //this.datepickerValue = selectedDate.toLocaleDateString().slice(0, 10);
           // this.$refs.date.value = selectedDate.getFullYear() + "-" + ('0' + selectedDate.getMonth()).slice(-2) + "-" + ('0' + selectedDate.getDate()).slice(-2);
@@ -616,6 +622,10 @@ this.todos.splice(this.todos.indexOf(todo), 1 );
     }
 </script>    
   <script type="text/javascript">
+function submit() {
+  document.getElementById("DossierForm").submit();
+}
+
     function produitSearch() {
       return {
         produitSearch: 0,

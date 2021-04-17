@@ -17,7 +17,7 @@ class PaiementController extends Controller
     {
         $status = $request['status'] ;
 
-        $statusArray = ($status == null || $status == '') ?
+        $statusArray = ($status == null || $status == '' || !is_numeric($status)) ?
                     [0,1] : [$status] ;
 
         $constructible = $request['constructible'] ;
@@ -30,14 +30,23 @@ class PaiementController extends Controller
         });
 
         $ca = $multiplied->sum() ;
-        $paiements = Produit::with('paiements')
-                        ->whereHas('paiements', function (Builder $query) use ($statusArray)
+        // $paiements = Produit::with('paiements')
+        //                 ->whereHas('paiements', function (Builder $query) use ($statusArray)
+        //                     {
+        //                         $query->whereIn('valider', $statusArray);
+        //                     })
+        //                 ->whereIn('constructible_type', $constructibleArray)
+        //                 ->paginate(25);
+
+        $paiements = Paiement::whereHas('dossier.produit', function (Builder $query) use ($constructibleArray)
                             {
-                                $query->whereIn('valider', $statusArray);
+                                $query->whereIn('constructible_type', $constructibleArray);
                             })
-                        ->whereIn('constructible_type', $constructibleArray)
-                        ->paginate(25);
-// dd($paiements) ;
+                        ->whereIn('valider', $statusArray)
+                        ->paginate(25);        
+
+           $paiements->withPath('/paiements');
+           $paiements->withQueryString() ;
 
         $constructibles = ['lot','appartement','box','magasin','bureau'] ;
         return view('paiements.historique', [
@@ -89,7 +98,7 @@ class PaiementController extends Controller
             'date'      => 'required|string',
             'type'      => 'required|string',
             'num'       => 'sometimes|required|string|nullable',
-            'montant'   => 'required|integer',
+            'montant'   => 'required|numeric',
             'banque'   => 'sometimes|required|integer',
             'pj' => 'sometimes|required|max:5000|mimetypes:application/pdf,image/png,image/jpeg,image/tiff,image/gif',
 
@@ -185,6 +194,7 @@ class PaiementController extends Controller
      */
     public function update(Request $request, Dossier $dossier, Paiement $paiement)
     {
+
         $request->validate([
             'date'      => 'sometimes|required|string',
             'type'      => 'sometimes|required|string',
@@ -205,7 +215,6 @@ class PaiementController extends Controller
             $paiement->montant  = $request['montant']; 
             $paiement->banque_id = $request['banque']; 
 
-            
         if($totalPaiement > $dossier->produit->total)
         {
             return back()->withInput()->with('error', 'Vous avez dépasser le reste à payer!') ;

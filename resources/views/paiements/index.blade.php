@@ -6,7 +6,7 @@
         @if(!$errors->isEmpty())
         <p class="block h-160 px-4 py-4 rounded-lg mx-auto w-full mt-4
         bg-red-200 text-red-600 text-xl"> Attention Il y'a des erreurs dans votre formulaire
-      {{$errors}}</p>
+      </p>
         @endif
 
             <h2
@@ -31,7 +31,7 @@
               @if ( old('type') != null && (old('type') == 'Compensation' ))
                 isOpen: true,
               @else
-                @if (isset($paiement->type) && ($paiement->type != 'Compensation' ))
+                @if (isset($paiement->type) && ($paiement->type == 'Compensation' ))
                   isOpen: true,
                 @else
                  isOpen: false,
@@ -231,10 +231,6 @@
 
 <!-- début upload pièce jointe -->
               <div class="mt-4 text-sm">
-                    @error('pj')
-                    <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
-                    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
-                    @enderror
 
                 <span class="text-gray-700 dark:text-gray-400">
                   La pièce scanné
@@ -316,6 +312,7 @@ id: this.logos.length +1,
                   placeholder="Le montant du paiement"
                   type="number"
                   name="montant"
+                  step="0.01"
                   required
                   value="{{ old('montant') ?? $paiement->montant ?? '' }}"
 

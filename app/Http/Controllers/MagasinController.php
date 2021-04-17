@@ -142,7 +142,7 @@ class MagasinController extends Controller
         return view('magasins.create', [
             'voies'         => Voie::all(),
             'immeubles'     => Immeuble::all(),
-            'etiquettes'    => Etiquette::all(),
+            'etiquettes'    => Etiquette::whereNotIn('label', ['Vendu'])->get(),
         ]) ;
     }
 
@@ -211,7 +211,7 @@ class MagasinController extends Controller
         return view('magasins.edit', [
             'magasin'           => $magasin, 
             'voies'         => Voie::all(), 
-            'etiquettes'    => Etiquette::all(),
+            'etiquettes'    => Etiquette::whereNotIn('label', ['Vendu'])->get(),
             'immeubles'      => Immeuble::all()]) ;
     }
 

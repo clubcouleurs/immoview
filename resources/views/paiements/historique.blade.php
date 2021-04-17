@@ -111,8 +111,8 @@ role="progressbar" :aria-valuenow="value" aria-valuemin="0" :aria-valuemax="tota
                   <tbody
                     class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800"
                   >
-                  @foreach($paiements as $produit)
-                  @foreach($produit->paiements as $p)
+                  @foreach($paiements as $p)
+                  <!-- @ foreach($produit->paiements as $p) -->
                     <tr class="text-gray-700 dark:text-gray-400">
                       <td class="px-4 py-3">
                         <div class="flex items-center text-sm">
@@ -214,13 +214,12 @@ role="progressbar" :aria-valuenow="value" aria-valuemin="0" :aria-valuemax="tota
                       </td>
                     </tr>
                     @endforeach
-                    @endforeach
-
+                    <!--@ endforeach -->
                   </tbody>
                 </table>
               </div>
               <div
-                class="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800"
+                class="grid py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t"
               >
                 {{$paiements->links()}}
               </div>

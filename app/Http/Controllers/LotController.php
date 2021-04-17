@@ -38,8 +38,8 @@ class LotController extends Controller
         $lotsReserved = $lotsAll->where('etiquette_id', 3)->count() ;
         $lotsStocked = $lotsAll->where('etiquette_id', 2)->count() ;
         $lotsR = $lotsAll->where('etiquette_id', 9)->count() ;
-
         $lotsBlocked = $lotsAll->whereNotIn('etiquette_id', [3,2,9])->count() ;                            
+        
         //selectionner les lots 
         //$lotsAll = $lotsAll->whereNotNull('lot.id' ); 
 
@@ -98,7 +98,7 @@ class LotController extends Controller
 
         $total = 0 ;
            $prixTotalLots = $lotsAll->map(function ($item, $key) use ($total) {
-                return $total = $total + $item->total;
+                return $total = $total + $item->totalIndicatif;
         });
 
            $lotsParPage = $this->paginate($lotsAll) ;
@@ -142,7 +142,7 @@ class LotController extends Controller
         return view('lots.create', [
             'voies' => Voie::all(),
             'tranches' => Tranche::all(),
-            'etiquettes' => Etiquette::all(),
+            'etiquettes' => Etiquette::whereNotIn('label', ['Vendu'])->get(),
         ]) ;
 
     }
@@ -218,7 +218,7 @@ class LotController extends Controller
         return view('lots.edit', [
             'lot'           => $lot, 
             'voies'         => Voie::all(), 
-            'etiquettes'    => Etiquette::all(),
+            'etiquettes'    => Etiquette::whereNotIn('label', ['Vendu'])->get(),
             'tranches'      => Tranche::all()]) ;
     }
 

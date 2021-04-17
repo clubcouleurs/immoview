@@ -110,7 +110,7 @@ class OfficeController extends Controller
            $officesParPage->withQueryString() ;
 
         return view('offices.index', [
-            'offices'               => $officesAll,
+            'offices'               => $officesParPage,
             'totalOffices'          => $officesAll->count(),
             'immeubles'              => Immeuble::all(),
             'etiquettes'            => Etiquette::all(),
@@ -144,7 +144,7 @@ class OfficeController extends Controller
         return view('offices.create', [
             'voies' => Voie::all(),
             'immeubles' => Immeuble::all(),
-            'etiquettes' => Etiquette::all(),
+            'etiquettes' => Etiquette::whereNotIn('label', ['Vendu'])->get(),
         ]) ;
     }
 
@@ -228,7 +228,7 @@ class OfficeController extends Controller
         return view('offices.edit', [
             'office'           => $office, 
             'voies'         => Voie::all(), 
-            'etiquettes'    => Etiquette::all(),
+            'etiquettes'    => Etiquette::whereNotIn('label', ['Vendu'])->get(),
             'immeubles'      => Immeuble::all()]) ;
     }
 

@@ -452,9 +452,8 @@ this.todos.splice(this.todos.indexOf(todo), 1 );
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
                   name="client[]"
                  :key="todo.id"
-
+                  :value="todo.client"
                  :id="todo.name"
-            
                 >
                 @foreach ($clients as $client)
                   <option value="{{ $client->id }}">{{$client->nom}} {{$client->prenom}} - {{$client->cin}}</option>
@@ -750,20 +749,22 @@ here was the form to delete the logo
           this.month = today.getMonth();
           this.year = today.getFullYear();
 
-          this.datepickerValue = '@isset($dossier->date){{ $dossier->date }}@else' + 
             var str = new Date(this.year, this.month, today.getDate()).toLocaleDateString().slice(0, 10) 
             var an = str.substring(str.length - 4, str.length);
             var mois = str.substring(3,5);
             var jour = str.substring(0,2);
+
+          this.datepickerValue = '@isset($dossier->date){{ $dossier->date }}@else' + 
             this.datepickerValue = an + '-' + mois + '-' + jour; 
           + '@endisset';
 
-          this.datepickerDelai = '@isset($dossier->delais->first()->date){{ $dossier->delais->first()->date->format('Y-m-d') }}@else'
-          +
             var str = new Date(this.year, this.month, today.getDate()).toLocaleDateString().slice(0, 10)
             var an = str.substring(str.length - 4, str.length);
             var mois = str.substring(3,5);
             var jour = str.substring(0,2);
+          this.datepickerDelai = '@isset($dossier->delais->first()->date){{ $dossier->delais->first()->date->format('Y-m-d') }}@else'
+          +
+
             this.datepickerValue = an + '-' + mois + '-' + jour; 
           + '@endisset';
 

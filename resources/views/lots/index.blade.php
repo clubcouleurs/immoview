@@ -117,31 +117,7 @@
                   </p>
                 </div>
               </div>              
-              <!-- Card -->
-              <div
-                class="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800"
-              >
-                <div
-                  class="p-3 mr-4 text-green-700 bg-green-100 rounded-full dark:text-teal-100 dark:bg-teal-500"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-<path fill-rule="evenodd" d="M0,2 C0,0.8954305 0.898212381,0 1.99079514,0 L18.0092049,0 C19.1086907,0 20,0.887729645 20,2 L20,4 L0,4 L0,2 Z M1,5 L19,5 L19,18.0081158 C19,19.1082031 18.1073772,20 17.0049107,20 L2.99508929,20 C1.8932319,20 1,19.1066027 1,18.0081158 L1,5 Z M7,7 L13,7 L13,9 L7,9 L7,7 Z" clip-rule="evenodd"></path>
 
-                  </svg>
-                </div>
-                <div>
-                  <p
-                    class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
-                  >
-                    Lots en stock
-                  </p>
-                  <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
-                  >
-                    {{$lotsStocked}}
-                  </p>
-                </div>
-              </div>
               @can('voir etat bloque')
               <div
                 class="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800"
@@ -167,6 +143,31 @@
                 </div>
               </div>              
               @endcan
+              <!-- Card -->
+              <div
+                class="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800"
+              >
+                <div
+                  class="p-3 mr-4 text-green-700 bg-green-100 rounded-full dark:text-teal-100 dark:bg-teal-500"
+                >
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+<path fill-rule="evenodd" d="M0,2 C0,0.8954305 0.898212381,0 1.99079514,0 L18.0092049,0 C19.1086907,0 20,0.887729645 20,2 L20,4 L0,4 L0,2 Z M1,5 L19,5 L19,18.0081158 C19,19.1082031 18.1073772,20 17.0049107,20 L2.99508929,20 C1.8932319,20 1,19.1066027 1,18.0081158 L1,5 Z M7,7 L13,7 L13,9 L7,9 L7,7 Z" clip-rule="evenodd"></path>
+
+                  </svg>
+                </div>
+                <div>
+                  <p
+                    class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
+                  >
+                    Lots en stock
+                  </p>
+                  <p
+                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
+                  >
+                    {{$lotsStocked}}
+                  </p>
+                </div>
+              </div>              
             </div>
             <!-- filtre -->
               <p class="text-sm text-gray-600 dark:text-gray-400 ml-2 mb-2">Filtres</p>   
@@ -294,7 +295,7 @@
               </form>
 
               <!-- actions groupées -->
-              <p class="text-sm text-gray-600 dark:text-gray-400 ml-2 mb-2">Actions groupées</p>   
+<!--               <p class="text-sm text-gray-600 dark:text-gray-400 ml-2 mb-2">Actions groupées</p>   
           <form action="/lots/" method="POST">
             @csrf
             @method('PATCH')
@@ -403,7 +404,7 @@
 
               </div>
             </div>
-              </form>              
+              </form>    -->           
 
             <!-- New Table -->
             <div class="w-full overflow-hidden rounded-lg shadow-xs">

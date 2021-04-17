@@ -87,7 +87,7 @@ class FinanceController extends Controller
             return $item->map(function ($item, $key) use ($constructible){
                     return
                     [
-                'totalCA' . $constructible => $item->totalDefinitif ,
+                'totalCA' . $constructible => $item->totalIndicatif ,//$item->totalDefinitif , 
                 'total' . $constructible   => 1 ,
                'totalSurface'. $constructible => $item->constructible->surface ,
                'totalSurfaceReserve'. $constructible
