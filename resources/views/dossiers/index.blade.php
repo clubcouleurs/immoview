@@ -60,7 +60,7 @@
                   <p
                     class="text-lg font-semibold text-gray-700 dark:text-gray-200"
                   >
-                    {{$solded}}
+                    {{$reserved}}
                   </p>
                 </div>
               </div>
@@ -86,7 +86,7 @@
                   <p
                     class="text-lg font-semibold text-gray-700 dark:text-gray-200"
                   >
-                    {{$reserved}}
+                    {{$r}}
                   </p>
                 </div>
               </div>              

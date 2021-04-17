@@ -51,7 +51,7 @@ class DossierController extends Controller
 
         $reserved = $All->where('etiquette_id', 3)->count() ;
         $stocked = $All->where('etiquette_id', 2)->count() ;
-        $solded = $All->where('etiquette_id', 9)->count() ;
+        $r = $All->where('etiquette_id', 9)->count() ;
         $blocked = $All->whereNotIn('etiquette_id', [3,2,9])->count() ;
 
 
@@ -298,7 +298,7 @@ class DossierController extends Controller
 
             'reserved' => $reserved , 
             'stocked' => $stocked , 
-            'solded' => $solded , 
+            'r' => $r , 
             'blocked' => $blocked
         ]);
     }

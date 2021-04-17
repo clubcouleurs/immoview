@@ -41,6 +41,6 @@ if(! function_exists('numberFormat'))
 	{
 		$floor = floor($value) ;
 		$rslt = $value - $floor ;
-		return ($rslt > 0) ? number_format($value,2) : number_format($value);
+		return ($rslt > 0) ? number_format($value,2) : number_format($value) ;
 	}
 }

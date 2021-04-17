@@ -43,7 +43,7 @@
                   class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
                   placeholder=""
                   type="number"
-                  step="0.1"
+                  step="0.01"
                   name="surfaceApp"
                   value="{{$appartement->surfaceApp }}"
 
@@ -60,7 +60,7 @@
                   class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
                   placeholder=""
                   type="number"
-                  step="0.1"
+                  step="0.01"
                   name="surfaceTerrasse"
                   value="{{$appartement->surfaceTerrasse }}"
 
