@@ -73,6 +73,13 @@ role="progressbar" :aria-valuenow="value" aria-valuemin="0" :aria-valuemax="tota
                   <option value="0"     @if ( $status == '0') selected @endif>Non validé</option>
               
                 </select>  
+                <input
+                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input rounded-2xl"
+                  placeholder="Numéros de produits séparés par (,)"
+                  type="text"
+                  name="num"
+                  value="{{--$SearchByNum--}}"
+                />                
               <button
                   class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-2xl active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue"
                   type="submit"
@@ -99,7 +106,7 @@ role="progressbar" :aria-valuenow="value" aria-valuemin="0" :aria-valuemax="tota
 
                       <th class="px-4 py-3">Montant</th>
                       <th class="px-4 py-3">Date du paiement</th>
-                      <th class="px-4 py-3">Moyen de paiement</th>
+                      <th class="px-4 py-3">N° produit Immo</th>
                       <th class="px-4 py-3">Client</th>
                       <th class="px-4 py-3">Status</th>
 

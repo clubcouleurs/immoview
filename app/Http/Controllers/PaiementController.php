@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Appartement;
 use App\Models\Banque;
+use App\Models\Box;
 use App\Models\Dossier;
+use App\Models\Lot;
+use App\Models\Magasin;
+use App\Models\Office;
 use App\Models\Paiement;
 use App\Models\Produit;
 use Illuminate\Database\Eloquent\Builder;
@@ -30,13 +35,6 @@ class PaiementController extends Controller
         });
 
         $ca = $multiplied->sum() ;
-        // $paiements = Produit::with('paiements')
-        //                 ->whereHas('paiements', function (Builder $query) use ($statusArray)
-        //                     {
-        //                         $query->whereIn('valider', $statusArray);
-        //                     })
-        //                 ->whereIn('constructible_type', $constructibleArray)
-        //                 ->paginate(25);
 
         $paiements = Paiement::whereHas('dossier.produit', function (Builder $query) use ($constructibleArray)
                             {
@@ -44,6 +42,39 @@ class PaiementController extends Controller
                             })
                         ->whereIn('valider', $statusArray)
                         ->paginate(25);        
+
+        //recherche par numéro des appartement
+        if (isset($request['num']) && $request['num'] != '' ) {
+            $nums = preg_split("/[\s,\.]+/", $request['num']);
+            $nums = array_map('trim', $nums);
+
+            $paiements = Paiement::whereHas('dossier.produit', function (Builder $query) use ($constructibleArray, $nums)
+                            {
+                                $query->whereIn('constructible_type', $constructibleArray)
+                                ->whereHasMorph(
+                                    'constructible',
+                                    [Lot::class,
+                                    Office::class,
+                                    Magasin::class,
+                                    Appartement::class,
+                                    Box::class],
+
+                                    function (Builder $query) use ($nums){
+                                        $query->whereIn('num', $nums);
+                                    }
+                                );
+                            })
+                        ->whereIn('valider', $statusArray)
+                        ->paginate(25);             
+        }else
+        {
+        $paiements = Paiement::whereHas('dossier.produit', function (Builder $query) use ($constructibleArray)
+                            {
+                                $query->whereIn('constructible_type', $constructibleArray);
+                            })
+                        ->whereIn('valider', $statusArray)
+                        ->paginate(25);             
+        }
 
            $paiements->withPath('/paiements');
            $paiements->withQueryString() ;

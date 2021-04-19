@@ -755,7 +755,7 @@ here was the form to delete the logo
             var jour = str.substring(0,2);
 
           this.datepickerValue = '@isset($dossier->date){{ $dossier->date }}@else' + 
-            this.datepickerValue = an + '-' + mois + '-' + jour; 
+            an + '-' + mois + '-' + jour; 
           + '@endisset';
 
             var str = new Date(this.year, this.month, today.getDate()).toLocaleDateString().slice(0, 10)
@@ -764,8 +764,7 @@ here was the form to delete the logo
             var jour = str.substring(0,2);
           this.datepickerDelai = '@isset($dossier->delais->first()->date){{ $dossier->delais->first()->date->format('Y-m-d') }}@else'
           +
-
-            this.datepickerValue = an + '-' + mois + '-' + jour; 
+            an + '-' + mois + '-' + jour; 
           + '@endisset';
 
 
