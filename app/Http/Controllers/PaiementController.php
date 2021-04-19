@@ -88,6 +88,7 @@ class PaiementController extends Controller
             'paiements' => $paiements,
             'ca' => $ca,
             'toatalPaiements' => Paiement::sum('montant'),
+            'SearchByNum' => $request['num'] ,
 
         ]) ;
     }
