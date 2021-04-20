@@ -161,7 +161,6 @@ Limit 7
         $boxesPromised = $boxesAll->where('etiquette_id', 9)->count();
         $boxesBlocked = $boxesAll->whereNotIn('etiquette_id', [3,2,9])->count() ;
 
-
         $dossiersAll = Dossier::with('produit')->with('clients')->with('paiements')
         ->orderByDesc('created_at')->paginate(15);
 
@@ -175,7 +174,6 @@ Limit 7
                return true ;    
             }
         });
-
 
         $groupedDossiers = $groupedDossiers->groupBy('constructible_type');
 
@@ -207,8 +205,6 @@ Limit 7
         $groupedDossiers = $groupedDossiers->mapWithKeys(function ($item, $key) {
             return [$key.'Finance' => $item];
         });
-
-
 
         $total = 0 ;
            $CAdossiers = $dossiers->map(function ($item, $key) use ($total) {
@@ -310,11 +306,11 @@ Limit 7
             'perfKeys' => array_keys(json_decode(json_encode($performanceCommercial), true)),
             'commerciaux' => $commerciaux ,
 	        'mois' => $mois,
-            'paiements' => number_format($paiements) ,
-            'paiementsV' => number_format($paiementsV) ,
-            'paiementsN' => number_format($paiementsN) ,
-            'CA'        => number_format($CA),
-            'reliquat' => number_format($reliquat), 
+            'paiements' => numberFormat($paiements) ,
+            'paiementsV' => numberFormat($paiementsV) ,
+            'paiementsN' => numberFormat($paiementsN) ,
+            'CA'        => numberFormat($CA),
+            'reliquat' => numberFormat($reliquat), 
             'dossiersUnder30' => $dossiersUnder30->count(),
             'dossiersOver30' => $dossiersOver30->count(),
             'nombreVentes' => $nombreVentes,

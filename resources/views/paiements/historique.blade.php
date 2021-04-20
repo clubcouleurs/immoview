@@ -3,26 +3,24 @@
           <div class="container px-6 mx-auto grid">
 
 
-<div
+<!-- <div
 
 x-data="{
-    value: {{$toatalPaiements}},
+    value: {{$totalPaiements}},
     total: {{$ca}}
 }"
-
 class="w-full rounded-lg bg-red-100 p-6 mt-6"
 role="progressbar" :aria-valuenow="value" aria-valuemin="0" :aria-valuemax="total"
 >
   L'objectif atteint du chiffre d'affaire
-    <!-- Progress bar -->
+     Progress bar 
     <div class="flex flex-col items-end">
         <span class="text-xs text-gray-600 mb-1" x-text="`${Math.round(value/total * 100)}% complete`"></span>
         <span class="p-3 w-full rounded-md bg-red-200 overflow-hidden relative flex items-center">
             <span class="absolute h-full w-full bg-red-500 left-0 transition-all duration-300" :style="`width: ${ value/total * 100 }%`"></span>
         </span>
     </div>
- 
-</div>
+ </div> -->
 
 
             <h2
@@ -30,6 +28,97 @@ role="progressbar" :aria-valuenow="value" aria-valuemin="0" :aria-valuemax="tota
             >
               Historique des paiements
             </h2>
+
+            <!-- Cards -->
+            <div class="mb-4 grid gap-6 md:grid-cols-2 xl:grid-cols-5">
+
+            <!-- Card -->
+            
+              <div
+                class="flex items-center p-4 bg-green-500 rounded-lg shadow-md dark:bg-gray-800"
+              >
+                <div
+                  class="p-3 mr-4 text-green-500 bg-green-100 rounded-full dark:text-green-100 dark:bg-green-500"
+                >
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                      fill-rule="evenodd"
+                      d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z"
+                      clip-rule="evenodd"
+                    ></path>
+                  </svg>
+                </div>
+                <div>
+                  <p
+                    class="mb-2 text-sm font-medium text-white dark:text-gray-400"
+                  >
+                    Avances encaissées
+                  </p>
+                  <p
+                    class="text-lg font-semibold text-white dark:text-gray-200"
+                  >
+                    {{numberFormat($paiementsV)}} Dhs
+                  </p>
+                </div>
+              </div>
+              <!-- Card -->
+              <div
+                class="flex items-center p-4 bg-red-500 rounded-lg shadow-md dark:bg-gray-800"
+              >
+                <div
+                  class="p-3 mr-4 text-red-500 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-500"
+                >
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                      fill-rule="evenodd"
+                      d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z"
+                      clip-rule="evenodd"
+                    ></path>
+                  </svg>
+                </div>
+                <div>
+                  <p
+                    class="mb-2 text-sm font-medium text-white dark:text-gray-400"
+                  >
+                    Avances non-encaissées
+                  </p>
+                  <p
+                    class="text-lg font-semibold text-white dark:text-gray-200"
+                  >
+                    {{numberFormat($paiementsN)}} Dhs
+                  </p>
+                </div>
+              </div>              
+              <!-- Card -->
+              <div
+                class="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
+              >
+                <div
+                  class="p-3 mr-4 text-green-500 bg-green-100 rounded-full dark:text-green-100 dark:bg-green-500"
+                >
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                      fill-rule="evenodd"
+                      d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z"
+                      clip-rule="evenodd"
+                    ></path>
+                  </svg>
+                </div>
+                <div>
+                  <p
+                    class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
+                  >
+                    Total avances
+                  </p>
+                  <p
+                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
+                  >
+                    {{numberFormat($paiementsT)}} Dhs
+                  </p>
+                </div>
+              </div>              
+
+            </div>
 
               <div
               class="flex items-center justify-between p-2 mb-2 text-sm font-semibold text-blue-600 bg-yellow-100 rounded-lg shadow-sm focus:outline-none focus:shadow-outline-blue rounded-2xl"
@@ -220,7 +309,7 @@ role="progressbar" :aria-valuenow="value" aria-valuemin="0" :aria-valuemax="tota
               <div
                 class="grid py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t"
               >
-                {{$paiements->links()}}
+                {{--$paiements->links()--}}
               </div>
             </div>
 

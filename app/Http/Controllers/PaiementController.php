@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Traits\PaginateTrait;
 use App\Models\Appartement;
 use App\Models\Banque;
 use App\Models\Box;
@@ -17,6 +18,8 @@ use Illuminate\Support\Facades\Storage;
 
 class PaiementController extends Controller
 {
+        use PaginateTrait ;
+
 
     public function historique(Request $request)
     {
@@ -65,7 +68,7 @@ class PaiementController extends Controller
                                 );
                             })
                         ->whereIn('valider', $statusArray)
-                        ->paginate(25);             
+                        ->get();             
         }else
         {
         $paiements = Paiement::whereHas('dossier.produit', function (Builder $query) use ($constructibleArray)
@@ -73,21 +76,29 @@ class PaiementController extends Controller
                                 $query->whereIn('constructible_type', $constructibleArray);
                             })
                         ->whereIn('valider', $statusArray)
-                        ->paginate(25);             
+                        ->get();             
         }
 
-           $paiements->withPath('/paiements');
-           $paiements->withQueryString() ;
+        $paiementsT = $paiements->sum('montant') ;
+        $paiementsV = $paiements->where('valider', 1)->sum('montant') ;
+        $paiementsN = $paiementsT - $paiementsV ;
+
+           $paiementsParPage = $this->paginate($paiements) ;
+           $paiementsParPage->withPath('/paiements');
+           $paiementsParPage->withQueryString() ;
 
         $constructibles = ['lot','appartement','box','magasin','bureau'] ;
+
         return view('paiements.historique', [
             'constructibles' => $constructibles ,
             'constructible' => $constructible,
-
             'status'    => $status,
-            'paiements' => $paiements,
+            'paiements' => $paiementsParPage,
+            'paiementsT' => $paiementsT,
+            'paiementsN' => $paiementsN,
+            'paiementsV' => $paiementsV,
+            'totalPaiements' => Paiement::sum('montant'),
             'ca' => $ca,
-            'toatalPaiements' => Paiement::sum('montant'),
             'SearchByNum' => $request['num'] ,
 
         ]) ;
@@ -326,7 +337,6 @@ class PaiementController extends Controller
 
         }
         //$dossier = ($dossier != null) ? $dossier : $paiement->$dossier ;
-
         return redirect()->back()->with('message','Paiement modifié !');
 
         // return redirect()->action([PaiementController::class, 'index'] , ['dossier' => $dossier])->with('message','Paiement modifié !');
