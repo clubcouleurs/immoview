@@ -198,10 +198,13 @@ class PaiementController extends Controller
      */
     public function show(Dossier $dossier, Paiement $paiement)
     {
+        $produits = Produit::has('dossier')->get() ;
+        //dd($produits) ;
         return view('paiements.index', [
+            'produits' => $produits,
             'dossier' => $dossier ,
             'paiement' => $paiement ,
-            'paiements' => $dossier->paiements()->paginate(15),
+            'paiements' => $dossier->paiements()->paginate(25),
             'banques' => Banque::all(),
         ]) ;
     }
@@ -226,7 +229,6 @@ class PaiementController extends Controller
      */
     public function update(Request $request, Dossier $dossier, Paiement $paiement)
     {
-
         $request->validate([
             'date'      => 'sometimes|required|string',
             'type'      => 'sometimes|required|string',
@@ -235,8 +237,36 @@ class PaiementController extends Controller
             'valider'   => 'sometimes|required|boolean',
             'banque'    => 'sometimes|required|integer',
             'pj' => 'sometimes|required|max:5000|mimetypes:application/pdf,image/png,image/jpeg,image/tiff,image/gif',
-
+            'produitDossier'    => 'string|nullable',
         ]);
+
+        $produitDossier = $request['produitDossier'] ;
+        if ($produitDossier !== '' && $produitDossier !== null)
+        {
+            $type = completion(substr($produitDossier, 0,3)) ;
+            $num = substr($produitDossier, 3,strlen($produitDossier)) ;
+            $dossierTarget = Dossier::whereHas('produit', function (Builder $query) use ($type, $num)
+                            {
+                                $query->where('constructible_type', $type)
+                                      ->whereHasMorph(
+                                    'constructible',
+                                    [Lot::class,
+                                    Office::class,
+                                    Magasin::class,
+                                    Appartement::class,
+                                    Box::class],
+                                    function (Builder $query) use ($num){
+                                        $query->where('num', $num);
+                                    }
+                                );
+                            })->first() ;
+
+            if (!$dossierTarget instanceof \Illuminate\Database\Eloquent\Model) {
+               return redirect()->back()
+                    ->withInput($request->input())
+                    ->withErrors(['produitDossier'=>'Merci de choisir un dossier valide !']);
+            }
+        }
 
         if (isset($request['montant']))
         {
@@ -286,7 +316,16 @@ class PaiementController extends Controller
             $paiement->valider = boolval($request['valider']) ;
         }
         $paiement->update() ;
-        $dossier = ($dossier != null) ? $dossier : $paiement->$dossier ;
+
+        if (isset($dossierTarget))
+        {
+            $paiement->dossier()->dissociate();
+            $paiement->dossier()->associate($dossierTarget);
+            $paiement->save();
+        return redirect()->action([PaiementController::class, 'index'] , ['dossier' => $dossierTarget])->with('message','Paiement modifié !');            
+
+        }
+        //$dossier = ($dossier != null) ? $dossier : $paiement->$dossier ;
 
         return redirect()->back()->with('message','Paiement modifié !');
 

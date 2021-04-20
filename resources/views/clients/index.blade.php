@@ -87,7 +87,7 @@
                       <th class="px-4 py-3">@if($activer==1) Clients @else Prospects @endif</th>
                       
                       @if($activer==1) <th class="px-4 py-3">N° CIN</th> @endif
-                      @if($activer==1) <th class="px-4 py-3">CIN SCANNE</th> @endif
+                      @if($activer==1) <th class="px-4 py-3">CIN SCAN</th> @endif
 
                       @if($activer==1) <th class="px-4 py-3">Adresse</th> @endif
                       <th class="px-4 py-3">Mobile</th>
@@ -141,7 +141,11 @@
                       <td class="px-4 py-3 text-sm">
                         @isset($client->cinPj)
                         <a href="{{asset($client->cinPj)}}" target="_blank">
-                        <img class="h-8" src="{{asset($client->cinPj)}}">
+                            @if(substr($client->cinPj,-3) == 'pdf')
+                            <img class="h-8" src="{{asset('pdf.png')}}">
+                            @else
+                            <img class="h-8" src="{{asset('id-card-icon.png')}}">
+                            @endif
                         </a>
                         @else
                         Aucune pièce jointe

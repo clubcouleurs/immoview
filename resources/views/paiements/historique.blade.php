@@ -102,11 +102,10 @@ role="progressbar" :aria-valuenow="value" aria-valuemin="0" :aria-valuemax="tota
                     <tr
                       class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
                     >
-                      <th class="px-4 py-3">N° du paiement</th>
+                      <th class="px-4 py-3">N° produit Immo</th>
 
                       <th class="px-4 py-3">Montant</th>
                       <th class="px-4 py-3">Date du paiement</th>
-                      <th class="px-4 py-3">N° produit Immo</th>
                       <th class="px-4 py-3">Client</th>
                       <th class="px-4 py-3">Status</th>
 
@@ -139,12 +138,7 @@ role="progressbar" :aria-valuenow="value" aria-valuemin="0" :aria-valuemax="tota
                             ></div>
                           </div>
                           <div>
-                            <p class="font-semibold">
-
-                  {{ $p->id }}
-       
-                              </p>
-
+                        {{ $p->dossier->produit->constructible_type }} N° {{ $p->dossier->produit->constructible->num }}
                           </div>
                         </div>
                       </td>
@@ -154,12 +148,10 @@ role="progressbar" :aria-valuenow="value" aria-valuemin="0" :aria-valuemax="tota
                       <td class="px-4 py-3 text-sm">
                         {{ $p->date }}
                       </td>    
-                      <td class="px-4 py-3 text-sm">
-                        {{ $p->dossier->produit->constructible_type }} N° {{ $p->dossier->produit->constructible->num }}
-                      </td> 
+
                       <td class="px-4 py-3 text-sm">
                             @foreach($p->dossier->clients as $client)
-                              Client : {{ $client->nom}} {{ $client->prenom}} 
+                              Client : {{ $client->nom}} {{ $client->prenom}} <br>
                             @endforeach  
                       </td> 
                       <td class="px-4 py-3 text-sm">

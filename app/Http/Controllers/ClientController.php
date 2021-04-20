@@ -82,10 +82,10 @@ class ClientController extends Controller
                 abort(403);
         } 
         $request->validate([
-            'nom'       => 'required|string',
-            'prenom'    => 'required|string',
-            'prenomAr'    => 'string',
-            'nomAr'    => 'string',
+            'nom'       => 'required|string|max:50',
+            'prenom'    => 'required|string|max:50',
+            'prenomAr'    => 'string|max:50',
+            'nomAr'    => 'string|max:50',
             'adresseAr'    => 'string',
 
             'mobile'    => 'required|numeric|unique:clients,mobile',
@@ -179,13 +179,13 @@ class ClientController extends Controller
         }         
         $request->validate([
             'cin'    => 'required|alpha_num|unique:clients,cin,' . $client->id,
-            'nom'       => 'required|string',
-            'prenom'    => 'required|string',
+            'nom'       => 'required|string|max:50',
+            'prenom'    => 'required|string|max:50',
             'mobile'    => 'required|numeric|unique:clients,mobile,' . $client->id,
             'adresse' => 'required|string',
 
-            'prenomAr'    => 'string',
-            'nomAr'    => 'string',
+            'prenomAr'    => 'string|max:50',
+            'nomAr'    => 'string|max:50',
             'adresseAr'    => 'string',    
             'cinPj' => 'sometimes|required|max:5000|mimetypes:application/pdf,image/png,image/jpeg,image/tiff,image/gif',        
         ]);

@@ -12,7 +12,11 @@
             <h2
               class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
             >
+            @isset($paiement)
+              Modifier un paiement 
+            @else 
               Ajouter un nouveau paiement 
+            @endisset
 
             </h2>
 
@@ -125,6 +129,33 @@
 <div>
 
 <div class="mt-4 text-sm">
+
+@isset($produits)
+             <label class="block text-sm mt-4 mb-4">
+                <span class="text-gray-700 dark:text-gray-400">Affecter ce paiement à un autre dossier</span>
+                <input
+                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                  placeholder="Choisir un autre dossier"
+                  type="text"
+                  name="produitDossier"
+                  list="produits"
+                  id="produitDossier"
+                />
+
+                <datalist id="produits">
+                  @foreach($produits as $produit)
+                    <option value="{{substr($produit->constructible_type,0,3) . $produit->constructible->num}}">
+                    </option>
+                  @endforeach
+                </datalist>
+                    @error('produitDossier')
+                    <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
+                    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
+                    @enderror  
+              </label>
+
+@endisset
+
 
                     @error('type')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2

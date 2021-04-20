@@ -44,3 +44,34 @@ if(! function_exists('numberFormat'))
 		return ($rslt > 0) ? number_format($value,2) : number_format($value) ;
 	}
 }
+
+
+
+if(! function_exists('completion'))
+{
+	function completion($value)
+	{
+		switch ($value) {
+			case 'app':
+				return 'appartement' ;
+				break;
+			case 'lot':
+				return $value ;
+				break;
+			case 'mag':
+				return 'magasin' ;
+				break;
+
+			case 'bur':
+				return 'bureau' ;
+				break;
+
+			case 'box':
+				return $value ;
+				break;
+			default:
+				return $value ;
+				break;
+		}
+	}
+}
