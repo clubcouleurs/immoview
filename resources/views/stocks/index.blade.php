@@ -37,10 +37,10 @@
 
                       <th class="py-3">{{$header}} Réservés</th>
 
-                      <th class="py-3">{{$header}} En Stock</th>
 
                       <th class="py-3">{{$header}} Bloqués</th>
 
+                      <th class="py-3">{{$header}} En Stock</th>
 
                     </tr>
                   </thead>
@@ -78,17 +78,16 @@
 
                       <td class="px-1 py-3">
                         <p class="text-xs text-black dark:text-gray-400">
-                          {{$data['stocked'] }}
-
-                        </p>
-                      </td>                      
-
-                      <td class="px-1 py-3">
-                        <p class="text-xs text-black dark:text-gray-400">
                           {{$data['blocked'] }}
 
                         </p>
                       </td>
+                      <td class="px-1 py-3">
+                        <p class="text-xs text-black dark:text-gray-400">
+                          {{$data['stocked'] }}
+
+                        </p>
+                      </td>                        
                     </tr>
 
                     @endforeach
@@ -123,20 +122,22 @@
                           @endphp
                         </p>
                       </td>
-                      <td class="px-1 py-3">
-                        <p class="text-xs text-gray-600 dark:text-gray-400">
-                          @php
-                            echo $$header['stocked']; 
-                          @endphp
-                        </p>
-                      </td>
+
                       <td class="px-1 py-3">
                         <p class="text-xs text-gray-600 dark:text-gray-400">
                           @php
                             echo $$header['blocked']; 
                           @endphp
                         </p>
-                      </td>                                                                                        
+                      </td>
+
+                      <td class="px-1 py-3">
+                        <p class="text-xs text-gray-600 dark:text-gray-400">
+                          @php
+                            echo $$header['stocked']; 
+                          @endphp
+                        </p>
+                      </td>                      
 
                     </tr>
 

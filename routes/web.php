@@ -44,6 +44,8 @@ Route::get('/finances', [FinanceController::class, 'index'])->middleware('can:vo
 
 Route::get('/stocks', [StockController::class, 'index'])->middleware('can:voir stock');
 
+Route::get('finances/export/', [FinanceController::class, 'export'])->middleware('can:export finance');
+
 //Route::get('/{constructible?}/{tranche?}/dossiers', [DossierController::class, 'index']);
 
 // cette route est utilisée par javascript sur le formulaire d'ajout de client

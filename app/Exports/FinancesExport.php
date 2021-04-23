@@ -1,24 +1,22 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Exports;
 
-use App\Exports\FinancesExport;
-use App\Models\Dossier;
 use App\Models\Lot;
-use App\Models\Paiement;
 use App\Models\Produit;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
 
-class FinanceController extends Controller
+use Illuminate\Contracts\View\View;
+use Maatwebsite\Excel\Concerns\FromView;
+
+
+class FinancesExport implements FromView
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    * @return \Illuminate\Support\Collection
+    */
+	public function view(): View
     {
         //créer un tableau contenant tout les types de constructibles
         $constructibleArray = ['appartement' ,'lot',  'bureau' , 'magasin' , 'box', 'showroom'] ;
@@ -209,7 +207,6 @@ class FinanceController extends Controller
             }            
         }
 
-
         $lotsDossiers = $lotsDossiers->map(function ($item1, $key1) use ($showroomsDossiers){
             foreach ($showroomsDossiers as $key => $value) {
                 if ($key == $key1) {
@@ -221,21 +218,15 @@ class FinanceController extends Controller
         });
 
         $lotDossiers = $lotDossiers->merge($showroomDossiers);
-        //$lotsD = collect($lotsDossiers],[$showroomsDossiers] ) ;
+        return view('exports.finances',
 
-        //dd($lotsD) ;
-
-
-        return view('finances.index',
-
-            ['color' => [ 'green' ,'purple','blue' , 'red' , 'yellow','indigo'], 
+            [ 
                 'constructibles' => [
                 'Lots' => 'lot',
                 'Appartements'=>'appartement',
                 'Bureaux' => 'bureau',
                 'Magasins' =>'magasin',
                 'Boxes' => 'box',
-                //'Showrooms' => 'showroom'
             ]
             ] +
             ['appartement' => $appartementDossiers] +
@@ -250,16 +241,7 @@ class FinanceController extends Controller
                                     ['Boxes' => $boxsDossiers] +
 
                                     ['bureau' => $bureauDossiers] +
-                                    ['Bureaux' => $bureausDossiers]// +
-                                    //['showroom' => $showroomDossiers] +
-                                    //['Showrooms' => $showroomsDossiers]                                    
-
+                                    ['Bureaux' => $bureausDossiers]
         ) ;
     }
-
-    public function export() 
-    {
-        return Excel::download(new FinancesExport, 'Récap-finances-DSD.xlsx');
-    }
-
 }
