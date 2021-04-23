@@ -133,11 +133,14 @@ class DossierController extends Controller
         //recherche par nom, prénom ou CIN client
         if (isset($request['client']) && $request['client'] != '' ) {
             $value = strtolower($request['client']) ;
+                $clientSearch = '' ;
 
-            $dossiersAll = $dossiersAll->filter(function ($item) use ($value)  {
-            $client = strtolower(trim($item->client->cin . ' ' . $item->client->nom . ' ' . $item->client->prenom . ' ' ));
+            $dossiersAll = $dossiersAll->filter(function ($item) use ($value, $clientSearch)  {
+                foreach ($item->clients as $client) {
+                $clientSearch .= strtolower(trim($client->cin . ' ' . $client->nom . ' ' . $client->prenom . ' ' ));
+                }
 
-                    if (strpos($client , $value) !== false) {
+                    if (strpos($clientSearch , $value) !== false) {
                         return true;
                     }
                         return false;

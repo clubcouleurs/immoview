@@ -140,20 +140,6 @@ class BordereauController extends Controller
                 $pdf->Write(0,$dossier->user->name) ;
 
 
-            // $pdf->SetXY(141, 101);
-            // $pdf->Write(0, ucfirst($dossier->client->mobile)); 
-            // $pdf->SetXY(19, 101);
-            // $pdf->Write(0, ucfirst($dossier->client->cin));
-            // $prenom = stripslashes($dossier->client->prenom);
-            // $nom = stripslashes($dossier->client->nom);
-            // $nomC =  $nom . ' ' . $prenom ;
-            // $pdf->SetXY(50, 101);
-            // $pdf->Write(0, $nomC);               
-            // $adresse = stripslashes($dossier->client->adresse);
-            // $pdf->SetXY(19, 117);
-            // $pdf->Write(8, ucfirst(preg_replace( "/\r|\n/", " ", $adresse )));
-
-
             $txt = '' ;
                     $i = 0 ;
                 foreach ($dossier->clients as $client)
@@ -161,9 +147,9 @@ class BordereauController extends Controller
 
                     $i += 1 ;
                     $txt .= '- Monsieur/Madame : ' ;
+
                     $prenom = stripslashes($client->prenom);
                     $prenom = iconv('UTF-8', 'windows-1252', $prenom);
-
             $nom = stripslashes($client->nom);
             $nom = iconv('UTF-8', 'windows-1252', $nom);
             $nomC = ucfirst($nom) . ' ' . ucfirst($prenom) ;
@@ -172,8 +158,6 @@ class BordereauController extends Controller
             $txt .= 'Demeurant à : ' ;
             $adresse = stripslashes($client->adresse);
             $adresse = ucfirst(preg_replace( "/\r|\n/", " ", $adresse )) ;
-            //$adresse = iconv('UTF-8', 'windows-1252', $adresse);
-
             $ad = str_split($adresse, 45) ;
 
             $txt .= implode(chr(10) , $ad) . chr(10) ;
