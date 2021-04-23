@@ -15,6 +15,7 @@ use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\PaiementController;
 use App\Http\Controllers\ProduitController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\StockController;
 use App\Http\Controllers\TrancheController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ValidationController;
@@ -41,6 +42,7 @@ Route::middleware('auth')->group(function(){
 
 Route::get('/finances', [FinanceController::class, 'index'])->middleware('can:voir finance');
 
+Route::get('/stocks', [StockController::class, 'index'])->middleware('can:voir stock');
 
 //Route::get('/{constructible?}/{tranche?}/dossiers', [DossierController::class, 'index']);
 
