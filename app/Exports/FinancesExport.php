@@ -220,7 +220,7 @@ class FinancesExport implements FromView
         $lotDossiers = $lotDossiers->merge($showroomDossiers);
         return view('exports.finances',
 
-            [ 
+            ['color' => [ 'green' ,'purple','blue' , 'red' , 'yellow','indigo'],
                 'constructibles' => [
                 'Lots' => 'lot',
                 'Appartements'=>'appartement',

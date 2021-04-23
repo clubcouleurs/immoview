@@ -1,34 +1,34 @@
             @foreach($constructibles as $header => $constructible)
                 <table>
                   <thead>
-                    <tr>
-                      <th width="15">Tranche</th>
+                    <tr height="25" valign="center">
+                      <th bgcolor="{{$color[$loop->index]}}" width="15">Tranche</th>
 
-                      <th width="22">Nombre de {{$header}}</th>
+                      <th bgcolor="{{$color[$loop->index]}}" width="22">Nombre de {{$header}}</th>
 
-                      <th width="20">{{$header}} Réservés</th>
+                      <th bgcolor="{{$color[$loop->index]}}" width="20">{{$header}} Réservés</th>
 
-                      <th width="20">Superficie Totale</th>
+                      <th bgcolor="{{$color[$loop->index]}}" width="20">Superficie Totale</th>
 
-                      <th width="20">Superficie Réservée</th>
+                      <th bgcolor="{{$color[$loop->index]}}" width="20">Superficie Réservée</th>
 
-                      <th width="20">Taux Réservation</th>
+                      <th bgcolor="{{$color[$loop->index]}}" width="20">Taux Réservation</th>
 
-                      <th width="20">C.A Prévisionnel</th>
+                      <th bgcolor="{{$color[$loop->index]}}" width="20">C.A Prévisionnel</th>
 
-                      <th width="20">C.A Réservé</th>
+                      <th bgcolor="{{$color[$loop->index]}}" width="20">C.A Réservé</th>
 
-                      <th width="20">Taux réalisation CA</th>
+                      <th bgcolor="{{$color[$loop->index]}}" width="20">Taux réalisation CA</th>
 
-                      <th width="20">Montant Avances Versées</th>
+                      <th bgcolor="{{$color[$loop->index]}}" width="20">Montant Avances Versées</th>
 
-                      <th width="20">30% du CA Réservé</th>
+                      <th bgcolor="{{$color[$loop->index]}}" width="20">30% du CA Réservé</th>
 
-                      <th width="20">Taux d'Avance</th>
+                      <th bgcolor="{{$color[$loop->index]}}" width="20">Taux d'Avance</th>
 
-                      <th width="25">Reliquat Avance Non Encaissées</th>
+                      <th bgcolor="{{$color[$loop->index]}}" width="25">Reliquat Avance Non Encaissées</th>
 
-                      <th width="20">Reliquat du CA Réservé</th>
+                      <th bgcolor="{{$color[$loop->index]}}" width="20">Reliquat du CA Réservé</th>
 
                     </tr>
                   </thead>
@@ -37,7 +37,7 @@
                   @foreach ($$constructible as $key => $data)
                     <tr align="center">
 
-                      <td>
+                      <td bgcolor="{{$color[$loop->parent->index]}}" >
                         <p>
                           {{$key}}
                         </p>
@@ -141,13 +141,13 @@
 
                     <tr>
 
-                      <td>
+                      <td bgcolor="#dbdbdb">
                         <p>
                           Total
                         </p>
                       </td>
 
-                      <td>
+                      <td bgcolor="#dbdbdb">
                         <p>
                           @php
                             echo $$header['total']; 
@@ -155,7 +155,7 @@
                         </p>
                       </td>
 
-                      <td>
+                      <td bgcolor="#dbdbdb">
                         <p>
                           @php
                             echo $$header['nbrVendus']; 
@@ -163,7 +163,7 @@
                         </p>
                       </td>
 
-                      <td>
+                      <td bgcolor="#dbdbdb">
                         <p>
                           @php
                             echo $$header['totalSurface']; 
@@ -172,7 +172,7 @@
                         </p>
                       </td>
 
-                      <td >
+                      <td  bgcolor="#dbdbdb">
                         <p>
                           @php
                             echo $$header['totalSurfaceReserve']; 
@@ -181,7 +181,7 @@
                         </p>
                       </td>                      
 
-                      <td >
+                      <td  bgcolor="#dbdbdb">
                         <p>
                           @php
                             echo $$header['tauxReservation']; 
@@ -190,7 +190,7 @@
                         </p>
                       </td>
 
-                      <td >
+                      <td  bgcolor="#dbdbdb">
                         <p>
                           @php
                             echo numberFormat($$header['totalCA']); 
@@ -199,7 +199,7 @@
                         </p>
                       </td>
 
-                      <td >
+                      <td  bgcolor="#dbdbdb">
                         <p>
                           @php
                             echo numberFormat($$header['CaReserve']); 
@@ -208,7 +208,7 @@
                         </p>
                       </td>
 
-                      <td >
+                      <td  bgcolor="#dbdbdb">
                         <p>
                           @php
                             echo $$header['tauxRealisationCA']; 
@@ -217,7 +217,7 @@
                         </p>
                       </td>
 
-                      <td >
+                      <td  bgcolor="#dbdbdb">
                         <p>
                           @php
                             echo numberFormat($$header['totalPaiementsV']); 
@@ -226,7 +226,7 @@
                         </p>
                       </td>
 
-                      <td>
+                      <td bgcolor="#dbdbdb">
                         <p>
                           @php
                             echo numberFormat($$header['avance30']); 
@@ -235,7 +235,7 @@
                         </p>
                       </td>
 
-                      <td>
+                      <td bgcolor="#dbdbdb">
                         <p>
                           @php
                             echo $$header['tauxPaiement']; 
@@ -244,7 +244,7 @@
                         </p>
                       </td>
 
-                      <td>
+                      <td bgcolor="#dbdbdb">
                         <p>
                           @php
                             echo numberFormat($$header['reliquatDu30Pourcent']); 
@@ -253,7 +253,7 @@
                         </p>        
                       </td>
 
-                      <td>
+                      <td bgcolor="#dbdbdb">
                         <p>
                           @php
                             echo numberFormat($$header['reliquat']); 
