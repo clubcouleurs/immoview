@@ -6,6 +6,7 @@ use App\Models\Bordereau;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Auth\Access\Response as Response;
 
 class BordereauPolicy
 {

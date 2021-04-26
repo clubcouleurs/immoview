@@ -1,12 +1,17 @@
 <x-master>
       <main class="h-full overflow-y-auto">
           <div class="container px-6 mx-auto grid">
-            <h2
-              class="my-6 text-4xl font-semibold text-gray-700 dark:text-gray-200"
-            >
-              Récapitulatif des dossiers {{ucfirst($constructible)}}
-
-            </h2>
+            <div class="flex justify-between">
+              <div>
+              <h2
+                class="my-6 text-4xl font-semibold text-black dark:text-gray-200"
+              >
+                Récapitulatif des dossiers {{ucfirst($constructible)}}
+              </h2></div>
+              <div class="my-6">
+                <img class="h-8" src="{{asset('printer.png')}}" onclick="window.print()">
+            </div>
+          </div>
 <hr>  
             <!-- Cards -->
             <div class="grid gap-6 mb-2 md:grid-cols-2 xl:grid-cols-6">
@@ -486,7 +491,7 @@
          
 
             <!-- New Table -->
-            <div class="w-full overflow-hidden rounded-lg shadow-xs">
+            <div class="w-full overflow-hidden rounded-lg shadow-xs" id="section-to-print">
               <div class="w-full overflow-x-auto">
                 <table class="w-full whitespace-no-wrap">
                   <thead>
@@ -494,17 +499,17 @@
                       class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border  dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
                     >
                       <th class="py-3">Vente</th>
-                      <th class="py-3">Date du dossier</th>
+                      <th class="py-3" id="section-not-to-print">Date du dossier</th>
                       @if($constructible != 'lot')
                       <th class="py-3">Frais</th>
                       @endif
                       <th class="py-3">Client</th>
-                      <th class="py-3">Com</th>
+                      <th class="py-3" id="section-not-to-print">Com</th>
                       <th class="py-3">Total Paiements</th>
                       <th class="py-3">Total dû</th>
                       <th class="py-3">Taux</th>
 
-                      <th class="py-3">Actions</th>
+                      <th class="py-3" id="section-not-to-print">Actions</th>
 
 
                     </tr>
@@ -558,7 +563,7 @@
                           </div>
                         </div>
                       </td>
-                      <td class="px-1 py-3 text-sm">
+                      <td class="px-1 py-3 text-sm" id="section-not-to-print">
                         {{ $dossier->date }}
                           @if(!$dossier->isVente)
                         <br>
@@ -609,7 +614,7 @@
                             </p>   -->
                         @endforeach                           
                       </td>
-                      <td class="px-1 py-3 text-sm">
+                      <td class="px-1 py-3 text-sm" id="section-not-to-print">
                         {{ substr($dossier->user->name, 0, strpos($dossier->user->name, ' ')+2) }}.
                       </td>                      
                       <td class="px-1 py-3 text-sm">
@@ -661,7 +666,7 @@
                         </span>
                       </td>                                       
 
-                      <td class="px-1 py-3 text-sm">
+                      <td class="px-1 py-3 text-sm" id="section-not-to-print">
               <div class="flex px-1 py-1">
                 @if(!$dossier->isVente)
                 <!-- icon prolongation délai -->
@@ -891,6 +896,7 @@
         }
       }
     }
+
 </script>    
 
 </x-master>
