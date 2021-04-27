@@ -236,7 +236,12 @@ class AppartementController extends Controller
             $appartement->produit->etiquette_id = $request['etatProduit']; 
             
         }
-        $appartement->produit->prixM2Indicatif  = $request['prixM2Indicatif'];
+        // controller si l'utilisateur a le droit de modifier le prix indicatif
+        if (Gate::allows('editer prix produits'))
+        {
+            $appartement->produit->prixM2Indicatif  = $request['prixM2Indicatif'];
+        }
+
         $appartement->produit->prixM2Definitif  = $request['prixM2Definitif'];
         $appartement->produit->update() ;
         $appartement->produit->voies()->detach() ; 
@@ -250,7 +255,7 @@ class AppartementController extends Controller
         $appartement->surfaceTerrasse   = $request['surfaceTerrasse'];
         $appartement->type              = $request['type'];
         $appartement->etage             = $request['etage'];
-        $appartement->description       = $request['descriptionApp'];
+        $appartement->description       = $request['description'];
         $appartement->update();
 
         $immeuble->appartements()->save($appartement) ;

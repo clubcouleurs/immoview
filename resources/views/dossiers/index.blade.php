@@ -7,10 +7,18 @@
                 class="my-6 text-4xl font-semibold text-black dark:text-gray-200"
               >
                 Récapitulatif des dossiers {{ucfirst($constructible)}}
-              </h2></div>
-              <div class="my-6">
-                <img class="h-8" src="{{asset('printer.png')}}" onclick="window.print()">
+              </h2>
             </div>
+            <div class="flex justify-between">
+              <div class="my-6 mr-2">
+              <a href="/dossiers/export{{$urlWithQueryString}}">
+                <img class="h-6" src="{{asset('excel.png')}}">
+              </a>
+            </div>
+              <div class="my-6">
+                <img class="h-6" src="{{asset('printer.png')}}" onclick="window.print()">
+            </div>  
+            </div>          
           </div>
 <hr>  
             <!-- Cards -->

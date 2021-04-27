@@ -10,7 +10,7 @@
               </h2></div>
               <div class="my-6">
               <a href="/finances/export">
-                <img class="h-8" src="{{asset('excel.png')}}">
+                <img class="h-6" src="{{asset('excel.png')}}">
               </a>
             </div>
           </div>

@@ -234,9 +234,14 @@ class MagasinController extends Controller
             $magasin->produit->etiquette_id      = $request['etatProduit'];  
             
         }
+        // controller si l'utilisateur a le droit de modifier le prix indicatif
+        if (Gate::allows('editer prix produits'))
+        {
+            $magasin->produit->prixM2Indicatif  = $request['prixM2Indicatif'];
+
+        }
 
         $magasin->produit->etiquette_id      = $request['etatProduit']; 
-        $magasin->produit->prixM2Indicatif  = $request['prixM2Indicatif'];
         $magasin->produit->prixM2Definitif  = $request['prixM2Definitif'];
         $magasin->produit->update() ;
         $magasin->produit->voies()->detach() ; 

@@ -244,8 +244,12 @@ class LotController extends Controller
             
         }
 
-        
-        $lot->produit->prixM2Indicatif  = $request['prixM2Indicatif'];
+        // controller si l'utilisateur a le droit de modifier le prix indicatif
+        if (Gate::allows('editer prix produits'))
+        {
+            $lot->produit->prixM2Indicatif  = $request['prixM2Indicatif'];
+        }
+
         $lot->produit->prixM2Definitif  = $request['prixM2Definitif'];
         $lot->produit->update() ;
         $lot->produit->voies()->detach() ; 

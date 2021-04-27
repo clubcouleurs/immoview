@@ -330,8 +330,12 @@ class OfficeController extends Controller
 
             $office->produit->etiquette_id = $request['etatProduit']; 
         }
+        // controller si l'utilisateur a le droit de modifier le prix indicatif
+        if (Gate::allows('editer prix produits'))
+        {
+            $office->produit->prixM2Indicatif  = $request['prixM2Indicatif'];
+        }
 
-        $office->produit->prixM2Indicatif  = $request['prixM2Indicatif'];
         $office->produit->prixM2Definitif  = $request['prixM2Definitif'];
         $office->produit->update() ;
         $office->produit->voies()->detach() ; 

@@ -124,6 +124,9 @@
                   step="0.01"
                   value="{{$magasin->produit->prixM2Indicatif}}"
                   required
+                  @cannot('editer prix produits')    
+                    readonly
+                  @endcannot                   
                 />
                     @error('prixM2Indicatif')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2

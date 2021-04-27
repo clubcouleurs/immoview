@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\DossiersExport;
 use App\Http\Requests\DossierRequest;
 use App\Http\Traits\PaginateTrait;
 use App\Models\Client;
@@ -16,6 +17,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Maatwebsite\Excel\Facades\Excel;
 use NumberToWords\NumberToWords;
 use setasign\Fpdi\Fpdi;
 use setasign\Fpdi\Tcpdf\Fpdi as TCPDF;
@@ -87,8 +89,11 @@ class DossierController extends Controller
             $tauxComparateur = $request['tauxComparateur'] ;
             $sign = $request['sign'] ;
             $dossiersAll = $dossiersAll->filter(function ($dossier) use ($sign, $tauxComparateur)  {
-            $taux = $dossier->paiements->sum('montant') * 100 /
-                            ($dossier->produit->Total) ;
+            // $taux = $dossier->paiements->sum('montant') * 100 /
+            //                 ($dossier->produit->Total) ;
+
+            $taux = $dossier->tauxPaiementV ;   
+
                 switch ($sign) {
                     case '>':
                     if ($taux > $tauxComparateur) {
@@ -280,6 +285,9 @@ class DossierController extends Controller
            $dossiersParPage->withPath('/dossiers');
            $dossiersParPage->withQueryString() ;
 
+           $urlWithQueryString = $request->fullUrl();
+           $urlWithQueryString = substr($urlWithQueryString, strlen($request->url())) ;
+
         return view('dossiers.index', [
             'dossiers'              => $dossiersParPage,
             'totalDossier'          => $dossiersAll->count(),
@@ -298,12 +306,17 @@ class DossierController extends Controller
             'SearchByNum'           => implode(',' , $numsDossier) ,
             'SearchByClient'        => $request['client'] ,
             'constructible'         => $constructible ,
-
             'reserved' => $reserved , 
             'stocked' => $stocked , 
             'r' => $r , 
-            'blocked' => $blocked
+            'blocked' => $blocked,
+            'urlWithQueryString' => $urlWithQueryString
         ]);
+    }
+
+    public function export(Request $request) 
+    {
+        return Excel::download(new DossiersExport($request), 'Récap-ventes-DSD.xlsx');
     }
 
     /**

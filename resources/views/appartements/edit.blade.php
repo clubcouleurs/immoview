@@ -180,7 +180,10 @@
                   step="0.01"
                   value="{{$appartement->produit->prixM2Indicatif}}"
                   :required="isOpenPrix"
-                  :disabled="!isOpenPrix"    
+                  :disabled="!isOpenPrix"
+                  @cannot('editer prix produits')    
+                    readonly
+                  @endcannot                   
                 />
                     @error('prixM2Indicatif')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
