@@ -43,7 +43,6 @@
                   type="text"
                   name="nomAr"
                   value="{{$client->nomAr}}"
-                  required
                 />
                     @error('nomAr')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
@@ -73,7 +72,6 @@
                   type="text"
                   name="prenomAr"
                   value="{{$client->prenomAr}}"
-                  required
                 />
                     @error('prenomAr')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
@@ -196,7 +194,6 @@ id: this.logos.length +1,
                   name="mobile"
                   maxlength="10"
                   value="{{$client->mobile}}"
-                  required
                 />
 
                     @error('mobile')
@@ -229,8 +226,6 @@ id: this.logos.length +1,
                   rows="3"
                   placeholder="العنوان"
                   name="adresseAr"
-                  required
-
                 >{{$client->adresseAr}}</textarea>
                     @error('adresseAr')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2

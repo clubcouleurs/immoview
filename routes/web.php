@@ -21,6 +21,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ValidationController;
 use App\Http\Controllers\VisiteController;
 use App\Http\Controllers\VoieController;
+use App\Http\Controllers\ContactController;
+
 use App\Models\Dossier;
 use App\Models\Etiquette;
 use Illuminate\Support\Facades\Route;
@@ -37,6 +39,9 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('/formulaire-concours', [ContactController::class, 'index']) ;
+Route::post('/formulaire-concours', [ContactController::class, 'store']) ;
+
 Route::middleware('auth')->group(function(){
 
 

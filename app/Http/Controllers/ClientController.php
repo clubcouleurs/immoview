@@ -88,7 +88,7 @@ class ClientController extends Controller
             'nomAr'    => 'string|max:50',
             'adresseAr'    => 'string',
 
-            'mobile'    => 'required|numeric|unique:clients,mobile',
+            'mobile'    => 'numeric|unique:clients,mobile',
             'cin'    => 'required|alpha_num|unique:clients,cin',
             'idProduit' => 'numeric|nullable',
             'adresse' => 'required|string',
@@ -181,7 +181,7 @@ class ClientController extends Controller
             'cin'    => 'required|alpha_num|unique:clients,cin,' . $client->id,
             'nom'       => 'required|string|max:50',
             'prenom'    => 'required|string|max:50',
-            'mobile'    => 'required|numeric|unique:clients,mobile,' . $client->id,
+            'mobile'    => 'numeric|unique:clients,mobile,' . $client->id,
             'adresse' => 'required|string',
 
             'prenomAr'    => 'string|max:50',

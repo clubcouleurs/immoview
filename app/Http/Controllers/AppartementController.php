@@ -226,7 +226,7 @@ class AppartementController extends Controller
      * @param  \App\Models\Appartement  $appartement
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Appartement $appartement)
+    public function update(ProduitRequest $request, Appartement $appartement)
     {
         if (! Gate::allows('editer appartements')) {
                 abort(403);

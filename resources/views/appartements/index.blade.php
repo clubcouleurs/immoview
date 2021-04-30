@@ -439,7 +439,7 @@
                   >
 
                   @foreach ($appartements as $produit)
-                    @if (!in_array($produit->etiquette_id, [2,3]))
+                    @if (!in_array($produit->etiquette_id, [2,3,9]))
                           @cannot('voir etat bloque')
                             @continue
                           @endcannot

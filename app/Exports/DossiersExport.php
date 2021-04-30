@@ -12,6 +12,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Gate;
 use Maatwebsite\Excel\Concerns\FromView;
+use Illuminate\Support\Facades\Auth;
 
 
 class DossiersExport implements FromView
@@ -83,8 +84,7 @@ class DossiersExport implements FromView
             $tauxComparateur = $this->request['tauxComparateur'] ;
             $sign = $this->request['sign'] ;
             $dossiersAll = $dossiersAll->filter(function ($dossier) use ($sign, $tauxComparateur)  {
-            $taux = $dossier->paiements->sum('montant') * 100 /
-                            ($dossier->produit->Total) ;
+            $taux = $dossier->tauxPaiementV ;
                 switch ($sign) {
                     case '>':
                     if ($taux > $tauxComparateur) {
