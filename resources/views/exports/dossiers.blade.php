@@ -12,8 +12,9 @@
                       <th width="18" bgcolor="#ffdc73">Total Paiements</th>
                       <th width="18" bgcolor="#ffdc73">Total dû</th>
                       <th width="10" bgcolor="#ffdc73">Taux</th>
-
-
+                      <th width="10" bgcolor="#ffdc73">Tranche</th>
+                      <th width="10" bgcolor="#ffdc73">Surface</th>
+                      <th width="10" bgcolor="#ffdc73">Etage</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -78,7 +79,16 @@
                       </td>     
                       <td>
                           {{ $dossier->tauxPaiementV }} %
-                      </td>                                       
+                      </td>      
+                      <td>
+                          {{ $dossier->produit->tranche }}
+                      </td>  
+                      <td>
+                          {{ $dossier->produit->constructible->surface }}
+                      </td>                        
+                      <td>
+                          {{ $dossier->produit->etage }}
+                      </td>                                                                             
                     </tr>
                     @endforeach
                   </tbody>

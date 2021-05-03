@@ -285,7 +285,6 @@ class DossiersExport implements FromView
             'SearchByNum'           => implode(',' , $numsDossier) ,
             'SearchByClient'        => $this->request['client'] ,
             'constructible'         => $constructible ,
-
             'reserved' => $reserved , 
             'stocked' => $stocked , 
             'r' => $r , 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\PaiementsExport;
 use App\Http\Traits\PaginateTrait;
 use App\Models\Appartement;
 use App\Models\Banque;
@@ -15,6 +16,7 @@ use App\Models\Produit;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PaiementController extends Controller
 {
@@ -87,7 +89,10 @@ class PaiementController extends Controller
            $paiementsParPage->withPath('/paiements');
            $paiementsParPage->withQueryString() ;
 
-        $constructibles = ['lot','appartement','box','magasin','bureau'] ;
+            $constructibles = ['lot','appartement','box','magasin','bureau'] ;
+
+           $urlWithQueryString = $request->fullUrl();
+           $urlWithQueryString = substr($urlWithQueryString, strlen($request->url())) ;
 
         return view('paiements.historique', [
             'constructibles' => $constructibles ,
@@ -100,9 +105,15 @@ class PaiementController extends Controller
             'totalPaiements' => Paiement::sum('montant'),
             'ca' => $ca,
             'SearchByNum' => $request['num'] ,
-
+            'urlWithQueryString'  => $urlWithQueryString,
         ]) ;
     }
+
+    public function export(Request $request) 
+    {
+        return Excel::download(new PaiementsExport($request), 'Etats-encaissements-DSD.xlsx');
+    }
+
 
     /**
      * Display a listing of the resource.

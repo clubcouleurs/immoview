@@ -22,13 +22,22 @@ role="progressbar" :aria-valuenow="value" aria-valuemin="0" :aria-valuemax="tota
     </div>
  </div> -->
 
-
-            <h2
-              class="my-6 text-4xl font-semibold text-gray-700 dark:text-gray-200"
-            >
+            <div class="flex justify-between">
+              <div>
+              <h2
+                class="my-6 text-4xl font-semibold text-black dark:text-gray-200"
+              >
               Historique des paiements
-            </h2>
-
+              </h2>
+            </div>
+            <div class="flex justify-between">
+              <div class="my-6 mr-2">
+              <a href="/paiements/export{{$urlWithQueryString}}">
+                <img class="h-6" src="{{asset('excel.png')}}">
+              </a>
+            </div>
+            </div>          
+          </div>
             <!-- Cards -->
             <div class="mb-4 grid gap-6 md:grid-cols-2 xl:grid-cols-5">
 
@@ -196,6 +205,8 @@ role="progressbar" :aria-valuenow="value" aria-valuemin="0" :aria-valuemax="tota
                       <th class="px-4 py-3">Montant</th>
                       <th class="px-4 py-3">Date du paiement</th>
                       <th class="px-4 py-3">Client</th>
+                      <th class="px-4 py-3">Banque</th>
+
                       <th class="px-4 py-3">Status</th>
 
                       <th class="px-4 py-3">Action</th>
@@ -243,6 +254,11 @@ role="progressbar" :aria-valuenow="value" aria-valuemin="0" :aria-valuemax="tota
                               Client : {{ $client->nom}} {{ $client->prenom}} <br>
                             @endforeach  
                       </td> 
+                      <td class="px-4 py-3 text-sm">
+                        @isset($p->banque)
+                            {{$p->banque->abreviation}}
+                        @endisset
+                      </td>                       
                       <td class="px-4 py-3 text-sm">
                         <form action="/dossiers/{{$p->dossier->id}}/paiements/{{$p->id}}" method="POST">
                           @csrf
@@ -309,7 +325,7 @@ role="progressbar" :aria-valuenow="value" aria-valuemin="0" :aria-valuemax="tota
               <div
                 class="grid py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t"
               >
-                {{--$paiements->links()--}}
+                {{$paiements->links()}}
               </div>
             </div>
 
