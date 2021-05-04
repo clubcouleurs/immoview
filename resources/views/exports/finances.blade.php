@@ -79,14 +79,14 @@
 
                       <td>
                         <p>
-                          {{numberFormat($data['totalCA']) }} Dhs
+                          {{number_format($data['totalCA'],2,",",".") }}
 
                         </p>
                       </td>
 
                       <td>
                         <p>
-                          {{numberFormat($data['CaReserve']) }} Dhs
+                          {{number_format($data['CaReserve'],2,",",".") }}
 
                         </p>
                       </td>
@@ -100,14 +100,14 @@
 
                       <td>
                         <p>
-                          {{numberFormat($data['totalPaiementsV']) }} Dhs
+                          {{number_format($data['totalPaiementsV'],2,",",".") }} 
 
                         </p>
                       </td>
 
                       <td>
                         <p>
-                          {{numberFormat($data['avance30']) }} Dhs
+                          {{number_format($data['avance30'],2,",",".") }}
 
                         </p>
                       </td>
@@ -121,14 +121,14 @@
 
                       <td >
                         <p>
-                          {{numberFormat($data['reliquatDu30Pourcent']) }} Dhs
+                          {{number_format($data['reliquatDu30Pourcent'],2,",",".") }} 
 
                         </p>        
                       </td>
 
                       <td >
                         <p>
-                          {{numberFormat($data['reliquat']) }} Dhs
+                          {{number_format($data['reliquat'],2,",",".") }} 
 
                         </p>
                       </td>
@@ -193,7 +193,7 @@
                       <td  bgcolor="#dbdbdb">
                         <p>
                           @php
-                            echo numberFormat($$header['totalCA']); 
+                            echo number_format($$header['totalCA'],2,",","."); 
                           @endphp
                           Dhs
                         </p>
@@ -202,7 +202,7 @@
                       <td  bgcolor="#dbdbdb">
                         <p>
                           @php
-                            echo numberFormat($$header['CaReserve']); 
+                            echo number_format($$header['CaReserve'],2,",","."); 
                           @endphp
                           Dhs
                         </p>
@@ -220,7 +220,7 @@
                       <td  bgcolor="#dbdbdb">
                         <p>
                           @php
-                            echo numberFormat($$header['totalPaiementsV']); 
+                            echo number_format($$header['totalPaiementsV'],2,",","."); 
                           @endphp
                           Dhs
                         </p>
@@ -229,7 +229,7 @@
                       <td bgcolor="#dbdbdb">
                         <p>
                           @php
-                            echo numberFormat($$header['avance30']); 
+                            echo number_format($$header['avance30'],2,",","."); 
                           @endphp
                           Dhs
                         </p>
@@ -247,7 +247,7 @@
                       <td bgcolor="#dbdbdb">
                         <p>
                           @php
-                            echo numberFormat($$header['reliquatDu30Pourcent']); 
+                            echo number_format($$header['reliquatDu30Pourcent'],2,",","."); 
                           @endphp
                           Dhs
                         </p>        
@@ -256,7 +256,7 @@
                       <td bgcolor="#dbdbdb">
                         <p>
                           @php
-                            echo numberFormat($$header['reliquat']); 
+                            echo number_format($$header['reliquat'],2,",","."); 
                           @endphp
                           Dhs
                         </p>

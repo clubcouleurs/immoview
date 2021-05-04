@@ -12,10 +12,15 @@ use App\Models\Produit;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Illuminate\Database\Eloquent\Builder;
+// pour le formattage des colonnes 
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
 
-
-class PaiementsExport implements FromView
+class PaiementsExport implements FromView, WithColumnFormatting, WithMapping, ShouldAutoSize
 {
     protected $request;
 
@@ -23,7 +28,22 @@ class PaiementsExport implements FromView
         $this->request = $request;
  }
 
-
+    public function map($invoice): array
+    {
+        return [
+            $invoice->invoice_number,
+            Date::dateTimeToExcel($invoice->created_at),
+            $invoice->total
+        ];
+    }
+    
+    public function columnFormats(): array
+    {
+        return [
+            'B' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
+            'C' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+        ];
+    }
     /**
     * @return \Illuminate\Support\Collection
     */

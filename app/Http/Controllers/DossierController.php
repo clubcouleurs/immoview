@@ -721,7 +721,7 @@ class DossierController extends Controller
             if (in_array($dossier->produit->constructible->tranche->num, [1,2])) {
                 $delai = 24 ;
             }elseif (in_array($dossier->produit->constructible->tranche->num, [3,4])) {
-                $delai = 48 ;
+                $delai = 36 ;
             }
             $pdf->SetXY(142, 263.25);
             $pdf->Write(0, $delai);  

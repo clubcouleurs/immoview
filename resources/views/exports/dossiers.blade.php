@@ -10,7 +10,7 @@
                       <th width="25" bgcolor="#ffdc73">Client</th>
                       <th width="15" bgcolor="#ffdc73">Com</th>
                       <th width="18" bgcolor="#ffdc73">Total Paiements</th>
-                      <th width="18" bgcolor="#ffdc73">Total dû</th>
+                      <th width="18" bgcolor="#ffdc73">Prix Total</th>
                       <th width="10" bgcolor="#ffdc73">Taux</th>
                       <th width="10" bgcolor="#ffdc73">Tranche</th>
                       <th width="10" bgcolor="#ffdc73">Surface</th>
@@ -55,7 +55,7 @@
 
                       <td>
 
-                          {{ numberFormat($dossier->frais) }} Dhs
+                          {{ number_format($dossier->frais,2,",",".") }} 
 
                       </td>
                       @endif
@@ -72,10 +72,10 @@
                       </td>                      
                       <td>
 
-                          {{numberFormat($dossier->totalPaiementsV)}} Dhs
+                          {{number_format($dossier->totalPaiementsV,2,",",".")}} 
                       </td>
                       <td>
-                           {{ numberFormat($dossier->produit->totalDefinitif)}} Dhs
+                           {{ number_format($dossier->produit->totalDefinitif,2,",",".")}} 
                       </td>     
                       <td>
                           {{ $dossier->tauxPaiementV }} %

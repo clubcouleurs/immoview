@@ -19,15 +19,19 @@
 
                       </td>
                       <td>
-                        {{ numberFormat($p->montant) }} Dhs
+                        {{ $p->montant }}
                       </td>
                       <td>
-                        {{ $p->date }}
+                        @php
+                        $date=date_create($p->date);
+                        @endphp
+                        {{ date_format($date,"d/m/Y") }}
+
                       </td>    
 
                       <td>
                             @foreach($p->dossier->clients as $client)
-                              Client : {{ $client->nom}} {{ $client->prenom}} <br>
+                            {{ $client->nom}} {{ $client->prenom}} <br>
                             @endforeach  
                       </td> 
                       <td>
