@@ -16,75 +16,56 @@ class VisiteController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //dd(Visite::interets()) ;
         $visitesAll = Visite::with('client')
                             ->with('user')
                             ->latest('created_at')->get();
-        /*                            
-        //selectionner les lots 
-        //$lotsAll = $lotsAll->whereNotNull('lot.id' ); 
 
-        $maxPrix = $lotsAll->max('prixM2Indicatif');
-        $minPrix = $lotsAll->min('prixM2Indicatif');  
-        $nums = [];
+        //dd($visitesAll);
+        $dateStartExist = false ;
+        $dateEndExist = false ;
 
-        //recherche par numéro des lot
-        if (isset($request['numsLot']) && $request['numsLot'] != '' ) {
-            $numsLot = preg_split("/[\s,\.]+/", $request['numsLot']);
-            $numsLot = array_map('trim', $numsLot);
-            $lotsAll = $lotsAll->whereIn('constructible.num', $numsLot);
+        //recherche par prix
+        if (isset($request['dateStart']) && $request['dateStart'] != '' ) {
+            $ds =  $request['dateStart'] ;
+            $dateSt = str_replace('/', '-', $ds);
+            $dateStart = date('Y-m-d', strtotime($dateSt));
+            $dateStartExist = true ;
+
         }
 
         //recherche par prix
-        if (isset($request['minPrix']) && $request['minPrix'] != '' ) {
-            $minPrix = intval($request['minPrix']) ;
+        if (isset($request['dateEnd']) && $request['dateEnd'] != '' ) {
+            $de =  $request['dateEnd'] ;
+            $dateEd = str_replace('/', '-', $de);
+            $dateEnd = date('Y-m-d', strtotime($dateEd));
+            $dateEndExist = true ;
         }
 
-        //recherche par prix
-        if (isset($request['maxPrix']) && $request['maxPrix'] != '' ) {
-            $maxPrix = floatval($request['maxPrix']) ;
+
+        if ($dateStartExist == true && $dateEndExist == true)
+        {
+            if ($dateEnd < $dateStart) {
+                $d = $dateStart ;
+                $dateStart = $dateEnd ;
+                $dateEnd = $d ;
+            }
         }
 
-        $lotsAll = $lotsAll->whereBetween('prixM2Indicatif', [$minPrix, $maxPrix] ); 
+        if ($dateStartExist == true && $dateEndExist == true)
+        {
+            $visitesAll = $visitesAll->whereBetween('date', [$dateStart, $dateEnd] ); 
 
-        //recherche par tranche
-        if (isset($request['tranche']) && $request['tranche'] != '-' ) {
-            $tr = $request['tranche'] ;
-            $lotsAll = $lotsAll->where('constructible.tranche_id', $tr); 
+        }elseif ($dateStartExist == true && $dateEndExist == false) {
+            $visitesAll = $visitesAll->where('date' , $dateStart); 
+
+        }elseif ($dateStartExist == false && $dateEndExist == true) {
+            $visitesAll = $visitesAll->where('date' , $dateEnd); 
         }
 
-        //recherche par nombre de façades
-        if (isset($request['nombreFacadesLot']) && $request['nombreFacadesLot'] != '-' ) {
-            $fa = $request['nombreFacadesLot'] ;
-            $lotsAll = $lotsAll->where('voies_count', $fa); 
-        }
 
-        //recherche par nombre d'etages
-        if (isset($request['etage']) && $request['etage'] != '-' ) {
-            $et = $request['etage'] ;
-            $lotsAll = $lotsAll->where('constructible.etage', $et); 
-        }  
-
-        //recherche par type de lot
-        if (isset($request['type']) && $request['type'] != '-' ) {
-            $ty = $request['type'] ;
-            $lotsAll = $lotsAll->where('constructible.type', $ty);  
-        }           
-
-        //recherche par etat du lot
-        if (isset($request['etatProduit']) && $request['etatProduit'] != '-' ) {
-            $etat = $request['etatProduit'] ;
-            $lotsAll = $lotsAll->where('etiquette_id', $etat);  
-        }           
-
-        $total = 0 ;
-           $prixTotalLots = $lotsAll->map(function ($item, $key) use ($total) {
-        return $total = $total + $item->constructible->surface * $item->prixM2Definitif;
-        });
-
-        */
         $mois = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'September', 'October', 'November','Décembre'] ;
 
         $nombreVisites = \DB::select("
@@ -103,14 +84,15 @@ class VisiteController extends Controller
            $visitesParPage->withQueryString() ;
 
         return view('visites.index', [
-            'visites'       => $this->paginate($visitesAll),
+            'visites'       => $visitesParPage,
             'totalVisites'  => Visite::all(),
             'visitesDay'    => Visite::visitesDay(),
             'visitesMonth'  => Visite::visitesMonth(),
             'visitesYear'   => Visite::visitesYear(),
             'visitesWeek'   => Visite::visitesWeek(),
             'interets'      => Visite::interets(),
-
+            'dateEnd'               => $request['dateEnd'],
+            'dateStart'               => $request['dateStart'],
             'nombreVisites' => $nombreVisites,
             'mois'          => $mois, 
             'etiquettes'        =>'' , //Etiquette::all(),

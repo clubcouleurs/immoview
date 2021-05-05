@@ -110,7 +110,6 @@ class PaiementsExport implements FromView, WithColumnFormatting, WithMapping, Sh
         $paiementsN = $paiementsT - $paiementsV ;
 
         $constructibles = ['lot','appartement','box','magasin','bureau'] ;
-
         return view('exports.paiements', [
             'constructibles' => $constructibles ,
             'constructible' => $constructible,
