@@ -314,6 +314,283 @@ class DossierController extends Controller
         ]);
     }
 
+    public function recouvrement(Request $request)
+    {
+        $constructible = $request['constructible'] ;
+        if (Gate::none(['voir dossiers ' . p($constructible), 'voir ses propres dossiers'])) {
+            abort(403);
+        }
+
+        $tranche = $request['tranche'] ;
+        $tranches = Tranche::all();
+        $tranchesArray = ($tranche == null) ? $tranches->pluck('id')->toArray() : [$tranche] ;
+        $constructiblesArray = ($constructible == null) ?
+                    ['lot','appartement','box','magasin','bureau'] : [$constructible] ;
+
+
+        $All = Produit::with('constructible')
+                            ->whereIn('constructible_type', $constructiblesArray)
+                            ->with('etiquette')
+                            ->get();
+
+        $reserved = $All->where('etiquette_id', 3)->count() ;
+        $stocked = $All->where('etiquette_id', 2)->count() ;
+        $r = $All->where('etiquette_id', 9)->count() ;
+        $blocked = $All->whereNotIn('etiquette_id', [3,2,9])->count() ;
+
+
+        if (Gate::allows('voir dossiers ' . p($constructible))) {
+        $dossiersAll = Dossier::whereHas('produit', function (Builder $query) use ($constructiblesArray)
+                            {
+                                $query->whereIn('constructible_type', $constructiblesArray);
+                            })
+                            ->with('produit')
+                            ->with('delais')
+                            ->with('clients')
+                            ->with('paiements')->orderbyDesc('created_at')
+                            ->get(); 
+        }
+        elseif(Gate::allows('voir ses propres dossiers'))
+        {
+        $dossiersAll = Dossier::where('user_id' , Auth::user()->id)->
+        whereHas('produit', function (Builder $query) use ($constructiblesArray)
+                            {
+                                $query->whereIn('constructible_type', $constructiblesArray);
+                            })
+                            ->with('produit')
+                            ->with('delais')
+                            ->with('clients')
+                            ->with('paiements')->orderbyDesc('created_at')
+                            ->get();           
+        }
+        //recherche par taux de paiement
+        if (isset($request['sign']) && $request['sign'] != '' ) {
+
+            if(isset($request['tauxComparateur']) && $request['tauxComparateur'] != '-' ) {
+
+            $tauxComparateur = $request['tauxComparateur'] ;
+            $sign = $request['sign'] ;
+            $dossiersAll = $dossiersAll->filter(function ($dossier) use ($sign, $tauxComparateur)  {
+            // $taux = $dossier->paiements->sum('montant') * 100 /
+            //                 ($dossier->produit->Total) ;
+
+            $taux = $dossier->tauxPaiementV ;   
+
+                switch ($sign) {
+                    case '>':
+                    if ($taux > $tauxComparateur) {
+                        return true;
+                    }
+                        return false;
+                        break;
+                    case '<':
+                    if ($taux < $tauxComparateur) {
+                        return true;
+                    }
+                        return false;
+                        break;
+                    case '=>':
+                    if ($taux >= $tauxComparateur) {
+                        return true;
+                    }
+                        return false;
+                        break;
+                    case '<=':
+                    if ($taux <= $tauxComparateur) {
+                        return true;
+                    }
+                        return false;
+                        break;                                                                        
+
+                }
+
+            });                
+            }
+        }
+
+        $numsDossier = [];
+
+        //recherche par numéro des dossiers
+        if (isset($request['num']) && $request['num'] != '' ) {
+            $numsDossier = preg_split("/[\s,\.]+/", $request['num']);
+            $numsDossier = array_map('trim', $numsDossier);
+            $dossiersAll = $dossiersAll->whereIn('produit.constructible.num', $numsDossier);
+        }
+
+        //recherche par nom, prénom ou CIN client
+        if (isset($request['client']) && $request['client'] != '' ) {
+            $value = strtolower($request['client']) ;
+                $clientSearch = '' ;
+
+            $dossiersAll = $dossiersAll->filter(function ($item) use ($value, $clientSearch)  {
+                foreach ($item->clients as $client) {
+                $clientSearch .= strtolower(trim($client->cin . ' ' . $client->nom . ' ' . $client->prenom . ' ' ));
+                }
+
+                    if (strpos($clientSearch , $value) !== false) {
+                        return true;
+                    }
+                        return false;
+            });                
+
+        }        
+
+
+        //recherche par tranche
+        if (isset($tranche) && $tranche != '-' ) {
+            switch ($constructible) {
+                case 'appartement':
+                case 'magasin':
+                case 'box':
+                    $dossiersAll = $dossiersAll->filter(function ($dossier) use ($tranchesArray)
+                    {
+                        if(in_array($dossier->produit->constructible->immeuble->tranche_id, $tranchesArray))
+                        {
+                            return true ; 
+                        }
+                    });
+                    break;
+                case 'lot':
+                    $dossiersAll = $dossiersAll->filter(function ($dossier) use ($tranchesArray)
+                    {
+                        if(in_array($dossier->produit->constructible->tranche_id, $tranchesArray))
+                        {
+                            return true ; 
+                        }
+                    });
+                    break;
+                case 'bureau':
+                    $dossiersAll = $dossiersAll->filter(function ($dossier) use ($tranchesArray)
+                    {
+                        if(in_array($dossier->produit->constructible->situable->immeuble->tranche_id, $tranchesArray))
+                        {
+                            return true ; 
+                        }
+                    });
+                    break;
+            }
+        }
+
+        //recherche par commercial
+        if (isset($request['user']) && $request['user'] != '-' ) {
+            $user = $request['user'] ;
+            $dossiersAll = $dossiersAll->where('user_id', $user); 
+        }
+
+        //recherche par relance 
+        if (isset($request['relance']) && $request['relance'] != '-' ) {
+            $relance = $request['relance'] ;
+            switch ($relance) {
+                case 'today':
+                    $date = Carbon::now() ;
+                    $date = $date->toDateString() ;
+                    //dd($date) ;
+                    break;
+                case 'tomorrow':
+                    $date = Carbon::now() ;
+                    $date = $date->addDays(1);
+                    $date = $date->toDateString() ;
+                    break;
+                case 'afterTomorrow':
+                    $date = Carbon::now() ;
+                    $date = $date->addDays(2);
+                    $date = $date->toDateString() ;
+                    break;                                    
+                default:
+                    break;
+            }
+                    $dossiersAll = $dossiersAll->filter(function ($dossier) use ($date)
+                    {
+                        foreach ($dossier->delais as $delai) {
+                            if($delai->date->toDateString() == $date)
+                            {
+                                return true ; 
+                            }
+                        }
+                    });
+        }                 
+        $dateStartExist = false ;
+        $dateEndExist = false ;
+
+        //recherche par prix
+        if (isset($request['dateStart']) && $request['dateStart'] != '' ) {
+            $ds =  $request['dateStart'] ;
+            $dateSt = str_replace('/', '-', $ds);
+            $dateStart = date('Y-m-d', strtotime($dateSt));
+            $dateStartExist = true ;
+
+        }
+
+        //recherche par prix
+        if (isset($request['dateEnd']) && $request['dateEnd'] != '' ) {
+            $de =  $request['dateEnd'] ;
+            $dateEd = str_replace('/', '-', $de);
+            $dateEnd = date('Y-m-d', strtotime($dateEd));
+            $dateEndExist = true ;
+        }
+
+
+        if ($dateStartExist == true && $dateEndExist == true)
+        {
+            if ($dateEnd < $dateStart) {
+                $d = $dateStart ;
+                $dateStart = $dateEnd ;
+                $dateEnd = $d ;
+            }
+        }
+
+        if ($dateStartExist == true && $dateEndExist == true)
+        {
+            $dossiersAll = $dossiersAll->whereBetween('date', [$dateStart, $dateEnd] ); 
+
+        }elseif ($dateStartExist == true && $dateEndExist == false) {
+            $dossiersAll = $dossiersAll->where('date' , $dateStart); 
+
+        }elseif ($dateStartExist == false && $dateEndExist == true) {
+            $dossiersAll = $dossiersAll->where('date' , $dateEnd); 
+        }
+
+
+
+        //recherche par etat du dossier
+        if (isset($request['etatDossier']) && $request['etatDossier'] != '-' ) {
+            $etat = $request['etatDossier'] ;
+            $dossiersAll = $dossiersAll->where('isVente', $etat);  
+        }           
+
+           $dossiersParPage = $this->paginate($dossiersAll) ;
+           $dossiersParPage->withPath('/recouvrement');
+           $dossiersParPage->withQueryString() ;
+
+           $urlWithQueryString = $request->fullUrl();
+           $urlWithQueryString = substr($urlWithQueryString, strlen($request->url())) ;
+
+        return view('dossiers.recouvrement', [
+            'dossiers'              => $dossiersParPage,
+            'totalDossier'          => $dossiersAll->count(),
+            'clients'               =>   Client::all(),
+            'users'                 => User::whereIn('role_id',[2,5,6])->get(),
+            'dossiersParType'       => Dossier::dossiersParType(),
+            'tranches'              => $tranches ,
+            'etatDossier'           => $request['etatDossier'],
+            'SearchByUser'          => $request['user'] ,
+            'SearchBySign'          => $request['sign'] ,
+            'SearchByTauxComparateur'          => $request['tauxComparateur'] ,
+            'SearchByTranche'       => $tranche,
+            'dateEnd'               => $request['dateEnd'],
+            'dateStart'               => $request['dateStart'],
+            'SearchByRelance'           => $request['relance'],
+            'SearchByNum'           => implode(',' , $numsDossier) ,
+            'SearchByClient'        => $request['client'] ,
+            'constructible'         => $constructible ,
+            'reserved' => $reserved , 
+            'stocked' => $stocked , 
+            'r' => $r , 
+            'blocked' => $blocked,
+            'urlWithQueryString' => $urlWithQueryString
+        ]);
+    }    
+
     public function export(Request $request) 
     {
         return Excel::download(new DossiersExport($request), 'Récap-ventes-DSD.xlsx');
@@ -700,22 +977,33 @@ class DossierController extends Controller
                 'm2 (R+' . $dossier->produit->constructible->etage . ').'
             );
 
+
+            $priceTotal = number_format($dossier->produit->total) . ' DHS, ';
+            $priceTotal .= ucfirst($numberTransformer->toWords($dossier->produit->total)) . ' dirhams.'; 
             $pdf->SetXY(49, 82);
-            $pdf->Write(8, number_format($dossier->produit->total));   
+            $pdf->Write(8, $priceTotal);   
 
-            $pdf->SetXY(80, 82);
-            $pdf->Write(8, ucfirst($numberTransformer->toWords($dossier->produit->total)) . ' dirhams');  
+            // $pdf->SetXY(80, 82);
+            // $pdf->Write(8, );     
 
-            $pdf->SetXY(50.25, 87.25);
-            $pdf->Write(8, $dossier->produit->prix);    
+            $pdf->SetXY(49, 87.25);
+            $pdf->Write(8, '(' .$dossier->produit->prix . iconv('UTF-8', 'windows-1252',' DHS le mètre carré) toutes taxes comprises.'));    
 
             // affichage du 30% du prix en chiffre
+            $paiements = number_format((($dossier->produit->total) * 30) /100) . ' DHS, ' ; 
+            $paiements .= ucfirst($numberTransformer->toWords((($dossier->produit->total) * 30) /100 )) . ' dirhams.' ;
+
             $pdf->SetXY(49, 106);
-            $pdf->Write(0, number_format((($dossier->produit->total) * 30) /100 ));   
+            $pdf->Write(0, $paiements);   
 
             // affichage du 30% du prix en lettre
-            $pdf->SetXY(80, 106);
-            $pdf->Write(0, ucfirst($numberTransformer->toWords((($dossier->produit->total) * 30) /100 )) . ' dirhams');  
+            // $pdf->SetXY(80, 106);
+            // $pdf->Write(0, );  
+
+
+            // affichage du 30% du prix en lettre
+            $pdf->SetXY(140, 116);
+            $pdf->Write(0, number_format($dossier->totalPaiementsV) . ' DHS');              
 
             // affichage du délai de livraison
             if (in_array($dossier->produit->constructible->tranche->num, [1,2])) {

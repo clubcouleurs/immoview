@@ -91,22 +91,14 @@ class VisiteController extends Controller
             'visitesYear'   => Visite::visitesYear(),
             'visitesWeek'   => Visite::visitesWeek(),
             'interets'      => Visite::interets(),
-            'dateEnd'               => $request['dateEnd'],
-            'dateStart'               => $request['dateStart'],
+            'sources'       => Visite::sources(),
+            'dateEnd'       => $request['dateEnd'],
+            'dateStart'     => $request['dateStart'], 
             'nombreVisites' => $nombreVisites,
             'mois'          => $mois, 
-            'etiquettes'        =>'' , //Etiquette::all(),
-            'valeurTotal'       => 0 , //$prixTotalLots->sum(),
-            'SearchByTranche'   => '' , //$request['tranche'] ,
-            'SearchByFacade'    => '' , //$request['nombreFacadesLot'] ,
-            'SearchByEtage'     => '' , //$request['etage'] ,
-            'SearchByEtat'     => '' , //$request['etatProduit'] ,
-            'SearchByType'     => '' , //$request['type'] ,
-            'SearchByMin'     => '' , //$request['minPrix'] ,
-            'SearchByMax'     => '' , //$request['maxPrix'] ,
-            'SearchByNum' => '' , //$request['numsLot'] ,
 
-        ]);    }
+        ]);
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -136,13 +128,16 @@ class VisiteController extends Controller
             'mobile'   => 'required|numeric|unique:clients,mobile',
             'date'  => 'required|date',
             'interet' => 'required|string',
-            'detail' => 'required|string'
+            'detail' => 'required|string',
+            'typeContact' => 'required|string' ,
+            'source' => 'required|string' ,
         ]);
 
         $client = new Client() ;
         $client->nom    = strtoupper($request['nom']);
         $client->prenom = strtoupper($request['prenom']);
         $client->mobile = $request['mobile'];
+
         $client->save();
 
         $visite = new Visite([
@@ -150,6 +145,8 @@ class VisiteController extends Controller
         'interet'    => $request['interet'] ,
         'detail'   => $request['detail'],
         'remarqueClient'   => $request['remarqueClient'],
+        'typeContact'   => $request['typeContact'],
+        'source'   => $request['source'],
 
         ]) ;
         $visite->client()->associate($client) ;
@@ -202,7 +199,9 @@ class VisiteController extends Controller
             'mobile'   => 'required|numeric|unique:clients,mobile,'. $client->id,
             'date'  => 'required|date',
             'interet' => 'required|string',
-            'detail' => 'required|string'
+            'detail' => 'required|string',
+            'typeContact' => 'required|string' ,
+            'source' => 'required|string' ,
         ]);
 
         $client->nom                = strtoupper($request['nom']);
@@ -214,7 +213,8 @@ class VisiteController extends Controller
         $visite->interet        = $request['interet'] ;
         $visite->detail         = $request['detail'];
         $visite->remarqueClient = $request['remarqueClient'];
-
+        $visite->typeContact = $request['typeContact'];
+        $visite->source = $request['source'];
 
         $visite->update() ;
 

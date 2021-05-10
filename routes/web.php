@@ -45,6 +45,9 @@ Route::post('/formulaire-concours', [ContactController::class, 'store']) ;
 Route::middleware('auth')->group(function(){
 
 
+Route::get('/recouvrement', [DossierController::class, 'recouvrement'])
+						->middleware('can:voir finance');
+
 Route::get('/finances', [FinanceController::class, 'index'])->middleware('can:voir finance');
 
 Route::get('/stocks', [StockController::class, 'index'])->middleware('can:voir stock');

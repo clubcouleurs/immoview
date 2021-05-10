@@ -2,16 +2,20 @@
       <main class="h-full overflow-y-auto">
           <div class="container px-6 mx-auto grid">
 <h2
-              class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
+              class="flex my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
             >
-              Compte rendu de la visite N°{{$visite->id}}
+            @php
+              $file = ($visite->typeContact== null) ? 'visite.png' : $visite->typeContact.'.png' ;
+            @endphp
+            <img class="h-12 mr-4" src="{{asset($file)}}">
+              {{ucfirst($visite->typeContact)}} N°{{$visite->id}}
             </h2>
             <!-- CTA -->
             <div
               class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800"
             >
               <p class="text-sm text-gray-600 dark:text-gray-400">
-                Date de la visite : {{ $visite->date }}
+                Date : {{ $visite->date }}
               </p>
             </div>
 
@@ -139,8 +143,17 @@
                 <p>
                   {{ $visite->remarqueClient}}
                 </p>
-              </div>
+              </div>              
             </div>
+            <h4
+              class="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-300"
+            >
+              Le prospect a connu le projet via :
+            </h4>
+              <div class="capitalize flex items-center flex items-center justify-between p-4 mb-8 text-sm font-semibold text-black bg-blue-200 rounded-lg shadow-md focus:outline-none focus:shadow-outline-purple">
+                
+                <span>{{$visite->source}}</span>
+              </div>            
           </div>
         </main>
       </x-master>

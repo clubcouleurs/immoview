@@ -19,6 +19,52 @@
             <div
               class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800"
             >
+
+              <div class="mb-4 text-sm">
+
+                    @error('typeContact')
+                    <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
+                    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
+                    @enderror
+
+                <span class="text-gray-700 dark:text-gray-400">
+                  Type de contact
+                </span>
+                <div class="mt-2">
+                  <label
+                    class="inline-flex items-center text-gray-600 dark:text-gray-400"
+                  >
+                    <input
+                      type="radio"
+                      class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+                      name="typeContact"
+                      value="appel"
+                      required
+                      @if ($visite->typeContact == "appel")
+                        checked
+                      @endif 
+                    />
+                    <span class="ml-2">Appel téléphonique</span>
+                  </label>
+                  <label
+                    class="inline-flex items-center ml-6 text-gray-600 dark:text-gray-400"
+                  >
+                    <input
+                      type="radio"
+                      class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+                      name="typeContact"
+                      value="visite"
+                      required
+                      @if ($visite->typeContact == "visite")
+                        checked
+                      @endif                       
+                    />
+                    <span class="ml-2">Visite</span>
+                  </label>                                           
+                </div>
+              </div>
+
+
               <label class="block text-sm">
                 <span class="text-gray-700 dark:text-gray-400">Nom prospect</span>
                 <input
@@ -190,8 +236,52 @@
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror
+              </label>       
 
-              </label>              
+              <label class="block mt-4 text-sm">
+                <span class="text-gray-700 dark:text-gray-400">
+                  Comment le prospect a connu Tigumi Lkhir ?
+                </span>
+                <select
+                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+                  name="source"
+                >
+                  <option value="Site Web"
+                    @if($visite->source == "Site Web")
+                      selected
+                    @endif                    
+                    >Site Web</option>
+                  <option value="Facebook"
+                    @if($visite->source == "Facebook")
+                      selected
+                    @endif                    
+                    >Facebook</option>                    
+                  <option value="Instagram"
+                    @if($visite->source == "Instagram")
+                      selected
+                    @endif                    
+                    >Instagram</option>
+                  <option value="Bouche à oreille"
+                    @if($visite->source == "Bouche à oreille")
+                      selected
+                    @endif                    
+                    >Bouche à oreille</option>
+                  <option value="Kakemonos"
+                    @if($visite->source == "Kakemonos")
+                      selected
+                    @endif                    
+                    >Kakemonos</option>     
+                  <option value="Flyers & Dépliant"
+                    @if($visite->source == "Flyers & Dépliant")
+                      selected
+                    @endif                    
+                    >Flyers & Dépliant</option>                                                    
+                </select>
+                    @error('source')
+                    <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
+                    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
+                    @enderror                
+              </label>                        
                 <div class="block mt-4 text-sm">
                 <button
                   class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-green-600 border border-transparent rounded-lg active:bg-green-600 hover:bg-green-700 focus:outline-none focus:shadow-outline-green"

@@ -92,7 +92,11 @@ function data() {
     isAccesMenuOpen: false,
     toggleAccesMenu() {
       this.isAccesMenuOpen = !this.isAccesMenuOpen
-    },                  
+    },      
+    isRecovMenuOpen: false,
+    toggleRecovMenu() {
+      this.isRecovMenuOpen = !this.isRecovMenuOpen
+    },                 
     // Modal
     isModalOpen: false,
     trapCleanup: null,

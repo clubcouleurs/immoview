@@ -143,7 +143,7 @@
             </div>
 
 
-<div class="grid gap-6 mb-8 md:grid-cols-2">
+<div class="grid gap-6 mb-8 md:grid-cols-3">
               <!-- Doughnut/Pie chart -->
               <div
                 class="min-w-0 p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800"
@@ -188,6 +188,59 @@
                   </div>                                    
                 </div>
               </div>
+
+              <!-- Doughnut/Pie chart sources -->
+              <div
+                class="min-w-0 p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800"
+              >
+                <h4 class="mb-4 font-semibold text-gray-800 dark:text-gray-300">
+                  Sources des visiteurs
+                </h4>
+                <canvas id="pieSource"></canvas>
+                <div
+                  class="flex justify-center mt-4 space-x-3 text-sm text-gray-600 dark:text-gray-400"
+                >
+                  <!-- Chart legend -->
+                  <div class="flex items-center">
+                    <span
+                      class="inline-block w-3 h-3 mr-1 bg-yellow-400 rounded-full"
+                    ></span>
+                    <span>Site</span>
+                  </div>
+                  <div class="flex items-center">
+                    <span
+                      class="inline-block w-3 h-3 mr-1 bg-blue-800 rounded-full"
+                    ></span>
+                    <span>FB</span>
+                  </div>
+                  <div class="flex items-center">
+                    <span
+                      class="inline-block w-3 h-3 mr-1 bg-pink-800 rounded-full"
+                    ></span>
+                    <span>Instagram</span>
+                  </div>
+                  <div class="flex items-center">
+                    <span
+                      class="inline-block w-3 h-3 mr-1 bg-indigo-300 rounded-full"
+                    ></span>
+                    <span>Kakémonos</span>
+                  </div>                   
+                  <div class="flex items-center">
+                    <span
+                      class="inline-block w-3 h-3 mr-1 bg-purple-400 rounded-full"
+                    ></span>
+                    <span>Bouche à oreille</span>
+                  </div>  
+                  <div class="flex items-center">
+                    <span
+                      class="inline-block w-3 h-3 mr-1 bg-red-400 rounded-full"
+                    ></span>
+                    <span>Flyers</span>
+                  </div>                                                                    
+                </div>
+              </div>
+
+
               <!-- Lines chart -->
               <div
                 class="min-w-0 p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800"
@@ -591,6 +644,18 @@
         </main>
 <script>
 
+var Site = 0 ;
+var Facebook = 0 ;
+var Instagram = 0 ;
+var Bouche = 0 ;
+var Flyers = 0 ;
+var Kakemonos = 0 ;
+
+@foreach ($sources as $source)
+  var {{ $source->source }}={{$source->nombre}}
+@endforeach
+
+
 var lot = 0 ;
 var bureau = 0 ;
 var appartement = 0 ;
@@ -625,6 +690,8 @@ var box = 0 ;
       defer
     ></script>
     <script src="{{config('app.url')}}/js/pie-interet-visites.js" defer></script>
+    <script src="{{config('app.url')}}/js/pie-source-visites.js" defer></script>
+
     <script src="{{config('app.url')}}/js/charts-lines.js" defer></script>
 
 <script type="text/javascript">

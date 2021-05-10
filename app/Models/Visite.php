@@ -17,6 +17,8 @@ class Visite extends Model
         'detail',
         'remarqueClient',
         'interet',
+        'typeContact',
+        'source',
     ];
 
     public function client()
@@ -61,7 +63,14 @@ class Visite extends Model
         return Visite::groupBy('interet')
                         ->selectRaw('count(*) as nombre, interet')
                         ->get();
-        //return \DB::select('SELECT interet, COUNT(*) AS nombre FROM visites GROUP BY interet ORDER BY COUNT(*) DESC');
     }    
+
+    public static function sources()
+    {
+        return Visite::groupBy('source')
+                        ->selectRaw('count(*) as nombre, SUBSTRING_INDEX(source, " ", 1) as source')
+                        ->whereNotNull('source')
+                        ->get();
+    }      
          
 }
