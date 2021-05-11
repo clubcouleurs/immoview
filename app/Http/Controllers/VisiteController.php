@@ -82,7 +82,7 @@ class VisiteController extends Controller
            $visitesParPage = $this->paginate($visitesAll) ;
            $visitesParPage->withPath('/visites');
            $visitesParPage->withQueryString() ;
-
+//dd(Visite::sources()) ;
         return view('visites.index', [
             'visites'       => $visitesParPage,
             'totalVisites'  => Visite::all(),

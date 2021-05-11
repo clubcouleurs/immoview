@@ -84,9 +84,9 @@ class ClientController extends Controller
         $request->validate([
             'nom'       => 'required|string|max:50',
             'prenom'    => 'required|string|max:50',
-            'prenomAr'    => 'string|max:50',
-            'nomAr'    => 'string|max:50',
-            'adresseAr'    => 'string',
+            'prenomAr'    => 'string|max:50|nullable',
+            'nomAr'    => 'string|max:50|nullable',
+            'adresseAr'    => 'string|nullable',
 
             'mobile'    => 'numeric|unique:clients,mobile',
             'cin'    => 'required|alpha_num|unique:clients,cin',
@@ -184,9 +184,9 @@ class ClientController extends Controller
             'mobile'    => 'numeric|unique:clients,mobile,' . $client->id,
             'adresse' => 'required|string',
 
-            'prenomAr'    => 'string|max:50',
-            'nomAr'    => 'string|max:50',
-            'adresseAr'    => 'string',    
+            'prenomAr'    => 'string|max:50|nullable',
+            'nomAr'    => 'string|max:50|nullable',
+            'adresseAr'    => 'string|nullable',    
             'cinPj' => 'sometimes|required|max:5000|mimetypes:application/pdf,image/png,image/jpeg,image/tiff,image/gif',        
         ]);
 

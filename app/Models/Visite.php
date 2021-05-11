@@ -69,7 +69,7 @@ class Visite extends Model
     {
         return Visite::groupBy('source')
                         ->selectRaw('count(*) as nombre, SUBSTRING_INDEX(source, " ", 1) as source')
-                        ->whereNotNull('source')
+                        ->where('source', '!=',' ')
                         ->get();
     }      
          
