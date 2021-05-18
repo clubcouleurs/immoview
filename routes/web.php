@@ -55,6 +55,7 @@ Route::get('/stocks', [StockController::class, 'index'])->middleware('can:voir s
 Route::get('finances/export/', [FinanceController::class, 'export'])->middleware('can:export finance');
 Route::get('dossiers/export/', [DossierController::class, 'export'])->middleware('can:export finance');
 Route::get('paiements/export/', [PaiementController::class, 'export'])->middleware('can:export finance');
+Route::get('lots/export/', [LotController::class, 'export'])->middleware('can:export finance');
 
 //Route::get('/{constructible?}/{tranche?}/dossiers', [DossierController::class, 'index']);
 
@@ -114,6 +115,9 @@ Route::post('/dossiers/{dossier}/delais', [DelaiController::class, 'store']);
 
 
 // DOSSIERS ROUTES
+
+// Authorization OK, taking car of it in the controller
+Route::get('/dossiers/litige', [DossierController::class, 'litige']);
 
 // Authorization OK, taking car of it in the controller
 Route::get('/dossiers', [DossierController::class, 'index']);

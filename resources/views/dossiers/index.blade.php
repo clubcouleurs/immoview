@@ -154,70 +154,7 @@
                   </p>
                 </div>
               </div>              
-              <!-- Card -->
-              <!-- ici était la récap de tous les produits immo vendus -->
-              <!-- @ foreach($dossiersParType as $type)
-                @ isset($constructible)
-                  @ if($type->constructible_type == $constructible)
-                <div
-                  class="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800"
-                >
-                  <div
-                    class="p-3 mr-4 text-green-500 bg-green-100 rounded-full dark:text-green-100 dark:bg-green-500"
-                  >
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path
-                        fill-rule="evenodd"
-                        d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z"
-                        clip-rule="evenodd"
-                      ></path>
-                    </svg>
-                  </div>
-                  <div>
-                    <p
-                      class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
-                    >
-                      {{-- ucfirst($type->constructible_type) --}}
-                    </p>
-                    <p
-                      class="text-lg font-semibold text-gray-700 dark:text-gray-200"
-                    >
-                    {{-- $type->nombre --}}
-                    </p>
-                  </div>
-                </div>
-                  @ endif
-                @ else
-                <div
-                  class="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800"
-                >
-                  <div
-                    class="p-3 mr-4 text-green-500 bg-green-100 rounded-full dark:text-green-100 dark:bg-green-500"
-                  >
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path
-                        fill-rule="evenodd"
-                        d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z"
-                        clip-rule="evenodd"
-                      ></path>
-                    </svg>
-                  </div>
-                  <div>
-                    <p
-                      class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
-                    >
-                      {{-- ucfirst($type->constructible_type) --}}
-                    </p>
-                    <p
-                      class="text-lg font-semibold text-gray-700 dark:text-gray-200"
-                    >
-                    {{-- $type->nombre --}}
-                    </p>
-                  </div>
-                </div>
-                @ endisset  
-              @ endforeach -->
-              <!-- Card -->
+              
             </div>
 
             <!-- filtre -->
@@ -496,7 +433,43 @@
             </div>
               </form>
 
-         
+
+
+  <!-- filtre -->
+
+                <form action="/dossiers/litige">
+
+            <div
+              class="flex items-center justify-between p-2 mb-2 text-sm font-semibold text-red-600 bg-red-100 rounded-lg shadow-sm focus:outline-none focus:shadow-outline-blue rounded-2xl"
+              
+            >
+              <div class="flex items-center gap-2">
+
+                <input type="hidden" id="litiges" name="litiges[]"/>
+                <input type="hidden" name=""/>
+
+                <select
+                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
+                  name="action"
+                >
+                
+                  <option value="-1" @if ( $SearchByRelance == '-1') selected @endif>Actions groupées</option>
+                  <option value="litige" @if ( $SearchByRelance == 'litige') selected @endif>Marquer comme litige</option>
+
+                </select>                
+                
+              <button
+                  class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-2xl active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue"
+                  type="submit"
+                >
+                 Appliquer
+                </button>
+
+              </div>
+            </div>
+              </form>
+
+
 
             <!-- New Table -->
             <div class="w-full overflow-hidden rounded-lg shadow-xs" id="section-to-print">
@@ -506,6 +479,7 @@
                     <tr
                       class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border  dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
                     >
+                     <th></th>
                       <th class="py-3">Vente</th>
                       <th class="py-3" id="section-not-to-print">Date du dossier</th>
                       @if($constructible != 'lot')
@@ -530,6 +504,11 @@
                     <tr class="text-gray-700
                     {{($dossier->isVente)? '' : 'bg-yellow-200'}}
                     dark:text-gray-400">
+                    <td>
+                          <input id="selectDossiers" type="checkbox" name="dossiersLitiges[]" value="{{$dossier->id}}"
+                          onclick="addDossiers()">
+                    </td>
+
                       <td class="px-1 py-3">
                         <div class="flex items-center text-sm">
 
@@ -851,6 +830,12 @@
         </main>
 
 <script type="text/javascript">
+  let pickedIds = [] ;
+  function addDossiers() {
+    pickedIds.push(document.getElementById("selectDossiers").value) ;
+    document.getElementById("litiges").setAttribute("value",JSON.stringify(pickedIds));
+    //alert(document.getElementById("litiges").value);
+  }
   const MONTH_NAMES = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Decembre'];
     const DAYS = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
 

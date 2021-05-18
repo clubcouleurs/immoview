@@ -28,14 +28,14 @@ class PaiementsExport implements FromView, WithColumnFormatting, WithMapping, Sh
         $this->request = $request;
  }
 
-    public function map($invoice): array
-    {
-        return [
-            $invoice->invoice_number,
-            Date::dateTimeToExcel($invoice->created_at),
-            $invoice->total
-        ];
-    }
+    // public function map($invoice): array
+    // {
+    //     return [
+    //         $invoice->invoice_number,
+    //         Date::dateTimeToExcel($invoice->created_at),
+    //         $invoice->total
+    //     ];
+    // }
     
     public function columnFormats(): array
     {

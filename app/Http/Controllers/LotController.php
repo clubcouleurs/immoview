@@ -13,6 +13,8 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\LotsExport;
 
 class LotController extends Controller
 {
@@ -105,18 +107,19 @@ class LotController extends Controller
            $lotsParPage->withPath('/lots');
            $lotsParPage->withQueryString() ;
 
+           $urlWithQueryString = $request->fullUrl();
+           $urlWithQueryString = substr($urlWithQueryString, strlen($request->url())) ;
+
         return view('lots.index', [
             'lots'              => $lotsParPage,
             'totalLots'         => $lotsAll->count(),
             'tranches'          =>Tranche::all(),
             'etiquettes'          =>Etiquette::all(),
             'valeurTotal'       => $prixTotalLots->sum(),
-
             'lotsReserved'       => $lotsReserved,
             'lotsBlocked'        => $lotsBlocked,
             'lotsStocked'        => $lotsStocked,
             'lotsR'             => $lotsR,
-            
             'SearchByTranche'   => $request['tranche'] ,
             'SearchByFacade'    => $request['nombreFacadesLot'] ,
             'SearchByEtage'     => $request['etage'] ,
@@ -125,8 +128,15 @@ class LotController extends Controller
             'SearchByMin'     => $request['minPrix'] ,
             'SearchByMax'     => $request['maxPrix'] ,
             'SearchByNum' => $request['numsLot'] ,
+            'urlWithQueryString'  => $urlWithQueryString,
+
 
         ]);
+    }
+
+    public function export(Request $request) 
+    {
+        return Excel::download(new LotsExport($request), 'Etats-lots-DSD.xlsx');
     }
 
     /**

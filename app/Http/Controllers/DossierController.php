@@ -30,6 +30,11 @@ class DossierController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function litige(Request $request)
+    {
+        dd($request) ;
+    }
+    
     public function index(Request $request)
     {
         //dd($request) ; 
