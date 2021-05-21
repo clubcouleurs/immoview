@@ -86,10 +86,18 @@ class VisiteController extends Controller
         return view('visites.index', [
             'visites'       => $visitesParPage,
             'totalVisites'  => Visite::all(),
-            'visitesDay'    => Visite::visitesDay(),
-            'visitesMonth'  => Visite::visitesMonth(),
-            'visitesYear'   => Visite::visitesYear(),
-            'visitesWeek'   => Visite::visitesWeek(),
+            'visitesDay'    => Visite::visitesDay()[0],
+                        'appelsDay'    => Visite::visitesDay()[1],
+
+            'visitesMonth'  => Visite::visitesMonth()[0],
+            'appelsMonth'  => Visite::visitesMonth()[1],
+
+            'visitesYear'   => Visite::visitesYear()[0],
+            'appelsYear'   => Visite::visitesYear()[1],
+
+            'visitesWeek'   => Visite::visitesWeek()[0],
+                        'appelsWeek'   => Visite::visitesWeek()[1],
+
             'interets'      => Visite::interets(),
             'sources'       => Visite::sources(),
             'dateEnd'       => $request['dateEnd'],
@@ -123,14 +131,17 @@ class VisiteController extends Controller
         //'mobile'   => 'required|numeric|unique:clients,mobile'.$mobile,
 
         $request->validate([
-            'nom'      => 'required|string',
-            'prenom'      => 'required|string',
+            'nom'      => 'string|nullable',
+            'prenom'      => 'string|nullable',
             'mobile'   => 'required|numeric|unique:clients,mobile',
             'date'  => 'required|date',
             'interet' => 'required|string',
             'detail' => 'required|string',
             'typeContact' => 'required|string' ,
             'source' => 'required|string' ,
+            'domaine' => 'string|nullable' ,
+            'surfaceDesired' => 'numeric|nullable' ,
+
         ]);
 
         $client = new Client() ;
@@ -147,6 +158,8 @@ class VisiteController extends Controller
         'remarqueClient'   => $request['remarqueClient'],
         'typeContact'   => $request['typeContact'],
         'source'   => $request['source'],
+        'domaine'   => $request['domaine'],
+        'surfaceDesired'   => $request['surfaceDesired'],
 
         ]) ;
         $visite->client()->associate($client) ;
@@ -192,16 +205,17 @@ class VisiteController extends Controller
     public function update(Request $request, Visite $visite)
     {
         $client = $visite->client ;
-
         $request->validate([
-            'nom'      => 'required|string',
-            'prenom'      => 'required|string',
+            'nom'      => 'nullable|string',
+            'prenom'      => 'nullable|string',
             'mobile'   => 'required|numeric|unique:clients,mobile,'. $client->id,
             'date'  => 'required|date',
             'interet' => 'required|string',
             'detail' => 'required|string',
             'typeContact' => 'required|string' ,
             'source' => 'required|string' ,
+            'domaine' => 'string|nullable' ,
+            'surfaceDesired' => 'numeric|nullable' ,            
         ]);
 
         $client->nom                = strtoupper($request['nom']);
@@ -215,6 +229,8 @@ class VisiteController extends Controller
         $visite->remarqueClient = $request['remarqueClient'];
         $visite->typeContact = $request['typeContact'];
         $visite->source = $request['source'];
+        $visite->domaine = $request['domaine'];
+        $visite->surfaceDesired = $request['surfaceDesired'];
 
         $visite->update() ;
 

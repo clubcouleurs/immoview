@@ -216,16 +216,39 @@ Limit 7
 
          $dossiersUnder30 = $dossiers->filter(function ($item, $key) {
                 if (isset($item->dossier)) {
-                    return ($item->dossier->tauxPaiement < 30) ? true : false  ;
+                    return ($item->dossier->tauxPaiementV < 30) ? true : false  ;
                 }
-
         });
          $dossiersOver30 = $dossiers->filter(function ($item, $key) {
                 if (isset($item->dossier)) {
-                    return ($item->dossier->tauxPaiement > 30) ? true : false  ;
+                    return ($item->dossier->tauxPaiementV > 30) ? true : false  ;
                 }
-
         });
+
+        ///// les dossiers moins de 20% de paiement entre 2018 et 31/08/2020
+         $dossiersUnder20 = $dossiers->filter(function ($item, $key) {
+                if (isset($item->dossier) && $item->constructible_type == 'lot' ) {
+                    return ($item->dossier->tauxPaiementV < 20) ? true : false  ;
+                }
+        });
+        $dateStart = date('Y-m-d', strtotime("01-01-2018"));
+        $dateEnd = date('Y-m-d', strtotime("31-08-2020"));
+        $dossiersUnder20 = $dossiersUnder20->whereBetween('dossier.date', [$dateStart, $dateEnd] ); 
+        ///// fin filtre
+
+        ///// les dossiers moins de 30% de paiement entre 01/09/2020 et now
+         $dossiersUnder30In2020 = $dossiers->filter(function ($item, $key) {
+                if (isset($item->dossier) && $item->constructible_type == 'lot' ) {
+            return ($item->dossier->tauxPaiementV < 30 ) ? true : false  ;
+                }
+        });
+        $dateStart = date('Y-m-d', strtotime("01-09-2020"));
+        $dateEnd = date('Y-m-d');
+        $dossiersUnder30In2020 = $dossiersUnder30In2020->whereBetween('dossier.date', [$dateStart, $dateEnd] ); 
+        //// fin filtre
+
+
+
 
         $produitsParType = Produit::produitsParType()->mapWithKeys(function ($item) {
             return [$item->constructible_type.'s' => $item->nombre];
@@ -239,7 +262,6 @@ Limit 7
         $paiementsN = $paiements - $paiementsV ;
         $CA = $CAdossiers->sum() ;
         $reliquat = $CA - $paiementsV ; 
-
         $total = 0 ;
         $prixTotalLots = $lotsAll->map(function ($item, $key) use ($total) {
                 return $total = $total + $item->totalIndicatif;
@@ -313,13 +335,21 @@ Limit 7
             'reliquat' => numberFormat($reliquat), 
             'dossiersUnder30' => $dossiersUnder30->count(),
             'dossiersOver30' => $dossiersOver30->count(),
+            'dossiersUnder20' => $dossiersUnder20->count(),
+            'dossiersUnder30In2020' => $dossiersUnder30In2020->count(),
             'nombreVentes' => $nombreVentes,
             'nombreVentesParMois' => $nombreVentesParMois,
             'totalVisites'  => Visite::all(),
-            'visitesDay'    => Visite::visitesDay(),
-            'visitesMonth'  => Visite::visitesMonth(),
-            'visitesYear'   => Visite::visitesYear(),
-            'visitesWeek'   => Visite::visitesWeek(),
+            'visitesDay'    => Visite::visitesDay()[0],
+            'visitesMonth'  => Visite::visitesMonth()[0],
+            'visitesYear'   => Visite::visitesYear()[0],
+            'visitesWeek'   => Visite::visitesWeek()[0],
+
+            'appelsDay'    => Visite::visitesDay()[1],
+            'appelsMonth'  => Visite::visitesMonth()[1],
+            'appelsYear'   => Visite::visitesYear()[1],
+            'appelsWeek'   => Visite::visitesWeek()[1],
+            'dossiersLitige' => Dossier::litige() ,
                         
         ], $dossiersParType->all() + $produitsParType->all() + $groupedDossiers->all(),
     ) ;

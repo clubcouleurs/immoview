@@ -206,12 +206,13 @@
                   <p
                     class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
                   >
-                    Visites d'aujroud'hui
+                    Aujroud'hui
                   </p>
                   <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
+                    class="flex text-lg font-semibold text-gray-700 dark:text-gray-200"
                   >
-                    {{$visitesDay}}
+                    {{ $visitesDay }} <img class="h-6 ml-2 mr-2" src="{{asset('visite.png')}}"> | 
+                    {{$appelsDay}} <img class="h-6 ml-2" src="{{asset('appel.png')}}">
                   </p>
                 </div>
               </div>
@@ -230,12 +231,13 @@
                   <p
                     class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
                   >
-                    Visites de cette semaine
+                    Cette semaine
                   </p>
                   <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
+                    class="flex text-lg font-semibold text-gray-700 dark:text-gray-200"
                   >
-                  {{$visitesWeek}}
+                    {{ $visitesWeek }} <img class="h-6 ml-2 mr-2" src="{{asset('visite.png')}}"> | 
+                    {{$appelsWeek}} <img class="h-6 ml-2" src="{{asset('appel.png')}}">
                   </p>
                 </div>
               </div>
@@ -254,12 +256,13 @@
                   <p
                     class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
                   >
-                    Visites de ce mois
+                    Ce mois
                   </p>
                   <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
+                    class="flex text-lg font-semibold text-gray-700 dark:text-gray-200"
                   >
-                    {{ $visitesMonth }}
+                    {{ $visitesMonth }} <img class="h-6 ml-2 mr-2" src="{{asset('visite.png')}}"> | 
+                    {{$appelsMonth}} <img class="h-6 ml-2" src="{{asset('appel.png')}}">
                   </p>
                 </div>
               </div>
@@ -279,12 +282,13 @@
                   <p
                     class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
                   >
-                    Visites de cette année {{date_format(now(), 'Y')}}
+                    Cette année {{date_format(now(), 'Y')}}
                   </p>
                   <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
+                    class="flex text-lg font-semibold text-gray-700 dark:text-gray-200"
                   >
-                    {{ $visitesYear }}
+                    {{ $visitesYear }} <img class="h-6 ml-2 mr-2" src="{{asset('visite.png')}}"> | 
+                    {{$appelsYear}} <img class="h-6 ml-2" src="{{asset('appel.png')}}">
                   </p>
                 </div>
               </div>
@@ -425,6 +429,8 @@
                   </p>
                 </div>
               </div>
+
+
 
             </div>
             @endcan
@@ -1167,7 +1173,7 @@
                   <p
                     class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
                   >
-                    Dossiers validés
+                    Dossiers plus 30%
                   </p>
                   <p
                     class="text-lg font-semibold text-gray-700 dark:text-gray-200"
@@ -1193,7 +1199,7 @@
                   <p
                     class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
                   >
-                    Dossiers non-validés
+                    Dossiers moins 30%
                   </p>
                   <p
                     class="text-lg font-semibold text-gray-700 dark:text-gray-200"
@@ -1204,6 +1210,88 @@
               </div>              
               <!-- Card -->
               
+              <!-- Card -->
+              <div
+                class="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
+              >
+                <div
+                  class="p-3 mr-4 text-red-500 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-500"
+                >
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                      d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"
+                    ></path>
+                  </svg>
+                </div>
+                <div>
+                  <p
+                    class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
+                  >
+                    Dossiers Lots -20% (2018-2020)
+                  </p>
+                  <p
+                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
+                  >
+                    {{$dossiersUnder20}}
+                  </p>
+                </div>
+              </div>              
+              <!-- Card -->
+              <!-- Card -->
+              <div
+                class="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
+              >
+                <div
+                  class="p-3 mr-4 text-red-500 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-500"
+                >
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                      d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"
+                    ></path>
+                  </svg>
+                </div>
+                <div>
+                  <p
+                    class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
+                  >
+                    Dossiers Lots -30% (Sep 2020 à aujourd'hui)
+                  </p>
+                  <p
+                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
+                  >
+                    {{$dossiersUnder30In2020}}
+                  </p>
+                </div>
+              </div>              
+              <!-- Card -->
+                <!-- Card -->
+              
+              <div
+                class="flex bg-red-500 items-center p-4 rounded-lg shadow-md dark:bg-gray-800"
+              >
+                <div
+                  class="p-3 mr-4 text-white rounded-full dark:text-orange-100 dark:bg-orange-500"
+                >
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+<path d="M0 10a10 10 0 1 1 20 0 10 10 0 0 1-20 0zm16.32-4.9L5.09 16.31A8 8 0 0 0 16.32 5.09zm-1.41-1.42A8 8 0 0 0 3.68 14.91L14.91 3.68z"></path>
+                  </svg>
+                </div>
+                <div>
+                  <p
+                    class="mb-2 text-sm font-medium text-white dark:text-gray-400"
+                  >
+                    Dossiers en litige
+                  </p>
+                  <p
+                    class="text-lg font-semibold text-white dark:text-gray-200"
+                  >
+                  <a href="">
+                    {{$dossiersLitige}} Dossiers
+                    </a>
+                  </p>
+                </div>
+              </div>              
+
             </div>
             @endcan
 

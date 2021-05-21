@@ -27,12 +27,13 @@
                   <p
                     class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
                   >
-                    Visites d'aujroud'hui
+                    Aujroud'hui
                   </p>
                   <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
+                    class="flex text-lg font-semibold text-gray-700 dark:text-gray-200"
                   >
-                    {{$visitesDay}}
+                    {{$visitesDay}} <img class="h-6 ml-2 mr-2" src="{{asset('visite.png')}}"> | 
+                    {{$appelsDay}} <img class="h-6 ml-2" src="{{asset('appel.png')}}">
                   </p>
                 </div>
               </div>
@@ -55,12 +56,13 @@
                   <p
                     class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
                   >
-                    Visites de cette semaine
+                    Cette semaine
                   </p>
                   <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
+                    class="flex text-lg font-semibold text-gray-700 dark:text-gray-200"
                   >
-                  {{$visitesWeek}}
+                  {{$visitesWeek}} <img class="h-6 ml-2 mr-2" src="{{asset('visite.png')}}"> | 
+                  {{$appelsWeek}} <img class="h-6 ml-2" src="{{asset('appel.png')}}">
                   </p>
                 </div>
               </div>
@@ -81,12 +83,13 @@
                   <p
                     class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
                   >
-                    Visites de ce mois
+                    Ce mois
                   </p>
                   <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
+                    class="flex text-lg font-semibold text-gray-700 dark:text-gray-200"
                   >
-                    {{ $visitesMonth }}
+                    {{ $visitesMonth }} <img class="h-6 ml-2 mr-2" src="{{asset('visite.png')}}"> | 
+                    {{$appelsMonth}} <img class="h-6 ml-2" src="{{asset('appel.png')}}">
                   </p>
                 </div>
               </div>
@@ -106,12 +109,13 @@
                   <p
                     class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
                   >
-                    Visites de cette année {{date_format(now(), 'Y')}}
+                    Cette année {{date_format(now(), 'Y')}}
                   </p>
                   <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
+                    class="flex text-lg font-semibold text-gray-700 dark:text-gray-200"
                   >
-                    {{ $visitesYear }}
+                    {{ $visitesYear }} <img class="h-6 ml-2 mr-2" src="{{asset('visite.png')}}"> | 
+                    {{$appelsYear}} <img class="h-6 ml-2" src="{{asset('appel.png')}}">
                   </p>
                 </div>
               </div>

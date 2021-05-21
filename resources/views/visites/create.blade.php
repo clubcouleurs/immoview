@@ -70,7 +70,6 @@
                   type="text"
                   name="nom"
                   value="{{old('nom')}}"
-                  required
                 />
                     @error('nom')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
@@ -86,18 +85,12 @@
                   type="text"
                   name="prenom"
                   value="{{old('prenom')}}"
-                  required
                 />
                     @error('prenom')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror
               </label>
-
-           
-
-     
-
               <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">Mobile</span>
                 <input
@@ -117,7 +110,17 @@
                     @enderror
               </label>  
 
+<div 
+ x-data="{
+                      isOpen: false,
 
+                    @if (old('interet')!=null && in_array(old('interet'), ['box','magasin','bureau']))
+                      isOpen : true,
+                      @else
+                      isOpen : false,
+                    @endif 
+                     }" 
+>
 
               <div class="mt-4 text-sm">
 
@@ -140,7 +143,8 @@
                       value="lot"
                       @if (old('interet') == "lot")
                         checked
-                      @endif 
+                      @endif
+                      x-on:click="isOpen = false"
                     />
                     <span class="ml-2">Lot</span>
                   </label>
@@ -154,7 +158,9 @@
                       value="appartement"
                       @if (old('interet') == "appartement")
                         checked
-                      @endif                       
+                      @endif
+                      x-on:click="isOpen = false"                      
+
                     />
                     <span class="ml-2">Appartement</span>
                   </label>
@@ -168,7 +174,8 @@
                       value="magasin"
                       @if (old('interet') == "magasin")
                         checked
-                      @endif                       
+                      @endif
+                      x-on:click="isOpen = true"                      
                     />
                     <span class="ml-2">Magasin</span>
                   </label>
@@ -182,7 +189,9 @@
                       value="bureau"
                       @if (old('interet') == "bureau")
                         checked
-                      @endif                       
+                      @endif
+                      x-on:click="isOpen = true"                      
+
                     />
                     <span class="ml-2">Bureau</span>
                   </label>
@@ -196,12 +205,51 @@
                       value="box"
                       @if (old('interet') == "box")
                         checked
-                      @endif                       
+                      @endif
+                      x-on:click="isOpen = true"                                            
                     />
                     <span class="ml-2">Box</span>
                   </label>                                                      
                 </div>
               </div>
+
+                <div x-show="isOpen" >
+
+              <label class="block mt-4 text-sm">
+                <span class="text-gray-700 dark:text-gray-400">Surface Désirée</span>
+                <input
+                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                  placeholder=""
+                  name="surfaceDesired"
+                  type="number"
+                  step="0.01"
+                  value="{{old('surfaceDesired')}}"
+                  :disabled="!isOpen"
+                />
+                    @error('surfaceDesired')
+                    <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
+                    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
+                    @enderror
+              </label>  
+
+              <label class="block mt-4 text-sm">
+                <span class="text-gray-700 dark:text-gray-400">Domaine d'investissement</span>
+                <input
+                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                  placeholder=""
+                  name="domaine"
+                  type="text"
+                  value="{{old('domaine')}}"
+                  :disabled="!isOpen"
+                />
+                    @error('domaine')
+                    <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
+                    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
+                    @enderror
+              </label>  
+</div>
+</div>
+
 
               <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">Remarques du prospect</span>

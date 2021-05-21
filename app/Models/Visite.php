@@ -19,6 +19,8 @@ class Visite extends Model
         'interet',
         'typeContact',
         'source',
+        'domaine',
+        'surfaceDesired',
     ];
 
     public function client()
@@ -34,29 +36,42 @@ class Visite extends Model
     {
         $now = Carbon::now();
         $date = $now->toDateString();
-		return count(Visite::where('date', '=', $date)->get()) ;
+        $appels = count(Visite::where('date', '=', $date)->where('typeContact','appel')->get());
+        $all = count(Visite::where('date', '=', $date)->get()) ;
+        $v = $all - $appels ;
+        return [$appels,$v];
     }  
     public static function VisitesWeek()
     {
-    	//$now = Carbon::now();
         Carbon::setWeekStartsAt(Carbon::MONDAY);
 		Carbon::setWeekEndsAt(Carbon::SUNDAY);    	
         $lundi = Carbon::now()->startOfWeek();
         $dimanche = Carbon::now()->endOfWeek();
-        //dd($lundi)
-		return count(Visite::whereBetween('date', [$lundi, $dimanche])->get()) ;
+        $appels = count(Visite::whereBetween('date', [$lundi, $dimanche])->where('typeContact','appel')->get());
+        $all = count(Visite::whereBetween('date', [$lundi, $dimanche])->get()) ;
+        $v = $all - $appels ;
+		return [$appels,$v];
     }    
     public static function VisitesMonth()
     {
     	$now = Carbon::now();
         $month = $now->month;
-		return count(Visite::whereMonth('date', '=', $month)->get()) ;
+
+        $appels = count(Visite::whereMonth('date', '=', $month)->where('typeContact','appel')->get());
+        $all = count(Visite::whereMonth('date', '=', $month)->get()) ;
+        $v = $all - $appels ;
+        return [$appels,$v];
     }    
     public static function VisitesYear()
     {
     	$now = Carbon::now();
         $year = $now->year;
-		return count(Visite::whereYear('date', '=', $year)->get()) ;
+
+        $appels = count(Visite::whereYear('date', '=', $year)->where('typeContact','appel')->get());
+        $all = count(Visite::whereYear('date', '=', $year)->get()) ;
+        $v = $all - $appels ;
+        return [$appels,$v];
+
     }
     public static function Interets()
     {

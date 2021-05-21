@@ -175,6 +175,12 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        /*
+         * Package Mavinoo
+         */
+        Mavinoo\Batch\BatchServiceProvider::class,
+
+
     ],
 
     /*
@@ -227,6 +233,9 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'Batch' => Mavinoo\Batch\BatchFacade::class,
+
+
     ],
 
 ];

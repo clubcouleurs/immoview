@@ -11,7 +11,11 @@
                   <p
                     class="mb-6 text-lg font-semibold text-red-700 dark:text-gray-200"
                   >
+                  @if($SearchByTauxComparateur == 20)
                     de 2018 à Août 2020 avec un taux de paiement de moins de {{$SearchByTauxComparateur}}%
+                  @elseif($SearchByTauxComparateur == 30)
+                    de Septembre 2020 à Aujourd'hui avec un taux de paiement de moins de {{$SearchByTauxComparateur}}%
+                  @endif
                   </p>              
             </div>
             <div class="flex justify-between">

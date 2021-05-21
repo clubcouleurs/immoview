@@ -31,10 +31,10 @@ class Dossier extends Model
         return $this->belongsToMany(Client::class, 'dossier_client');
     }  
 
-    // public function client()
-    // {
-    //     return $this->belongsTo(Client::class);
-    // }  
+    public static function litige()
+    {
+       return count(Dossier::where('litige', '=', true)->get()) ;
+    }  
 
     public function user()
     {

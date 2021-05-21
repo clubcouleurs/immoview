@@ -29,7 +29,16 @@
             </h4>
               <div class="capitalize flex items-center flex items-center justify-between p-4 mb-8 text-sm font-semibold text-white bg-blue-600 rounded-lg shadow-md focus:outline-none focus:shadow-outline-purple">
                 
-                <span>{{$visite->interet}}</span>
+                <span>{{$visite->interet}}
+                  @if($visite->surfaceDesired != null)
+                  - surface désirée : {{$visite->surfaceDesired}} m<sup>2</sup>
+                  @endif
+
+                  @if($visite->domaine != null)
+                  - domaine d'investissement : {{$visite->domaine}}
+                  @endif                  
+
+                </span>
               </div>
 
 

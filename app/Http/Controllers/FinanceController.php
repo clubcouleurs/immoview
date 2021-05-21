@@ -93,21 +93,21 @@ class FinanceController extends Controller
                 'total' . $constructible   => 1 ,
                'totalSurface'. $constructible => $item->constructible->surface ,
                'totalSurfaceReserve'. $constructible
-                            => ($item->dossier !=null) ? $item->constructible->surface : 0 ,
+                            => ($item->dossier !=null && ($item->dossier != null && $item->dossier->isVente == true) ) ? $item->constructible->surface : 0 ,
                'nbrVendus'. $constructible
-                            => ($item->dossier !=null) ? 1 :0 ,       
+                            => ($item->dossier !=null && ($item->dossier != null && $item->dossier->isVente == true) ) ? 1 :0 ,       
                'CaReserve'. $constructible
-                            => ($item->dossier !=null) ? $item->totalDefinitif : 0 ,
+                            => ($item->dossier !=null && ($item->dossier != null && $item->dossier->isVente == true) ) ? $item->totalDefinitif : 0 ,
                'totalPaiementsV'. $constructible
-                            => ($item->dossier !=null) ? $item->dossier->totalPaiementsV : 0,
+                            => ($item->dossier !=null && ($item->dossier != null && $item->dossier->isVente == true) ) ? $item->dossier->totalPaiementsV : 0,
                'totalPaiementsNV'. $constructible
-                            => ($item->dossier !=null) ? ($item->dossier->totalPaiements - $item->dossier->totalPaiementsV) : 0 ,
+                            => ($item->dossier !=null && ($item->dossier != null && $item->dossier->isVente == true) ) ? ($item->dossier->totalPaiements - $item->dossier->totalPaiementsV) : 0 ,
                'tauxPaiement'. $constructible
-                            => ($item->dossier !=null) ? $item->dossier->tauxPaiementV : 0 ,
+                            => ($item->dossier !=null && ($item->dossier != null && $item->dossier->isVente == true) ) ? $item->dossier->tauxPaiementV : 0 ,
                'reliquat'. $constructible
-                            => ($item->dossier !=null) ? $item->dossier->reliquat : 0 ,
+                            => ($item->dossier !=null && ($item->dossier != null && $item->dossier->isVente == true) ) ? $item->dossier->reliquat : 0 ,
                'reliquatDu30Pourcent'. $constructible
-                            => ($item->dossier !=null) ? $item->dossier->avanceNonEnc : 0 ,                            
+                            => ($item->dossier !=null && ($item->dossier != null && $item->dossier->isVente == true) ) ? $item->dossier->avanceNonEnc : 0 ,                            
                     ];
             });
         });

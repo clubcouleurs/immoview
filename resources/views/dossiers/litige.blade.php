@@ -1,23 +1,12 @@
 <x-master>
-      <main class="h-full overflow-y-auto"
-      @if(null !== $SearchByLitige)
-        style="  background-image: url('{{asset('justice.jpg')}}');
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-        background-position: center;"
-      @endif
-      >
+      <main class="h-full overflow-y-auto">
           <div class="container px-6 mx-auto grid">
             <div class="flex justify-between">
               <div>
               <h2
                 class="my-6 text-4xl font-semibold text-black dark:text-gray-200"
               >
-              @if(null == $SearchByLitige)
                 Récapitulatif des dossiers {{$constructible}}
-              @else
-                Dossiers en litige
-              @endif
               </h2>
             </div>
             <div class="flex justify-between">
@@ -33,7 +22,6 @@
           </div>
 <hr>  
             <!-- Cards -->
-            @if(null == $SearchByLitige)
             <div class="grid gap-6 mb-2 md:grid-cols-2 xl:grid-cols-6">
 
               <!-- Card -->
@@ -168,7 +156,7 @@
               </div>              
               
             </div>
-           
+
             <!-- filtre -->
               <p class="text-sm text-gray-600 dark:text-gray-400 ml-2 mb-2">Filtres</p>   
 
@@ -187,8 +175,6 @@
                 @endforeach
               </div>
             </div>
-           @endif
-           <!-- fin tranche selector -->
 
                 <form action="/dossiers">
 
@@ -199,11 +185,7 @@
               <div class="flex items-center gap-2">
                 <a
                   class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-2xl active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue"
-                  @if(null == $SearchByLitige)
-                    href="/dossiers?constructible={{$constructible}}"
-                  @else
-                    href="/dossiers?constructible={{$constructible}}&litige=1"
-                  @endif
+                  href="/dossiers?constructible={{$constructible}}"
                 >Tout</a>
                 <input type="hidden" name="constructible" value="{{$constructible}}"/>
                 <input type="hidden" name="tranche" value="{{$SearchByTranche}}"/>
@@ -519,7 +501,7 @@
                     </tr>
                   </thead>
                   <tbody
-                    class="divide-y dark:divide-gray-700 dark:bg-gray-800"
+                    class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800"
                   >
 
                   @foreach ($dossiers as $dossier)
@@ -658,7 +640,9 @@
                             @else
                             text-red-200 bg-red-900
                           @endif
-                          ">
+
+                          "
+                        >
                            {{ numberFormat($dossier->produit->totalDefinitif)}} Dhs
                         </span>
                       </td>     

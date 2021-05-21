@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Maatwebsite\Excel\Facades\Excel;
+use Mavinoo\Batch\Batch;
 use NumberToWords\NumberToWords;
 use setasign\Fpdi\Fpdi;
 use setasign\Fpdi\Tcpdf\Fpdi as TCPDF;
@@ -32,12 +33,61 @@ class DossierController extends Controller
      */
     public function litige(Request $request)
     {
-        dd($request) ;
+        $request->validate([
+            'action'      => 'required|string',
+            'litiges.*'      => 'required|numeric',
+        ]);        
+
+        if ($request['action'] == '-1') {
+            return redirect()->back(); 
+        }
+        else
+        {
+        if($request['litiges'] == NULL )
+        {
+        return redirect()->back();            
+
+            }
+            else
+            {
+        $action = $request['action'] ;
+        switch ($action) {
+            case 'litige':
+                $etatLegale = true ;
+                break;
+            case 'accord':
+                $etatLegale = false ;
+                break;
+            default:
+                break;
+        }
+        $dossierInstance = new Dossier;
+        $arrayValuesFromRequest = $request['litiges'] ;
+        //var_dump($request['litiges']) ;
+        $arrayValues = [];
+            foreach ($arrayValuesFromRequest as $value) {
+                //dd($value);
+            array_push($arrayValues, 
+             [
+                 'id' => $value ,
+                 'litige' => $etatLegale ,
+             ]
+             );
+             }
+        
+        //     dd($arrayValues) ;
+        $index = 'id';
+
+        \Batch::update($dossierInstance, $arrayValues, $index);
+        return redirect()->back()
+                    ->with('message','Dossiers marqués !');
+        }
+        }
+   
     }
     
     public function index(Request $request)
     {
-        //dd($request) ; 
 
         $constructible = $request['constructible'] ;
         if (Gate::none(['voir dossiers ' . p($constructible), 'voir ses propres dossiers'])) {
@@ -243,7 +293,6 @@ class DossierController extends Controller
             $dateStartExist = true ;
 
         }
-
         //recherche par prix
         if (isset($request['dateEnd']) && $request['dateEnd'] != '' ) {
             $de =  $request['dateEnd'] ;
@@ -273,18 +322,20 @@ class DossierController extends Controller
             $dossiersAll = $dossiersAll->where('date' , $dateEnd); 
         }
 
-
-
         //recherche par etat du dossier
         if (isset($request['etatDossier']) && $request['etatDossier'] != '-' ) {
             $etat = $request['etatDossier'] ;
             $dossiersAll = $dossiersAll->where('isVente', $etat);  
-        }           
+        }
 
-            //$total = 0 ;
-           //$totalPaiements = $dossiersAll->map(function ($item, $key) use ($total) {
-           //     return $total = $total + $item->lot->surfaceLot * $item->prixM2Definitif;
-           // });
+        //recherche par etat légale du dossier
+        if (isset($request['litige']) && $request['litige'] != '' ) {
+            $litige = $request['litige'] ;
+            $dossiersAll = $dossiersAll->where('litige', $litige);  
+        }else
+        {
+            $dossiersAll = $dossiersAll->whereIn('litige', [NULL, false]);  
+        }
 
            $dossiersParPage = $this->paginate($dossiersAll) ;
            $dossiersParPage->withPath('/dossiers');
@@ -296,7 +347,7 @@ class DossierController extends Controller
         return view('dossiers.index', [
             'dossiers'              => $dossiersParPage,
             'totalDossier'          => $dossiersAll->count(),
-            'clients'               =>   Client::all(),
+            'clients'               => Client::all(),
             'users'                 => User::whereIn('role_id',[2,5,6])->get(),
             'dossiersParType'       => Dossier::dossiersParType(),
             'tranches'              => $tranches ,
@@ -310,6 +361,7 @@ class DossierController extends Controller
             'SearchByRelance'           => $request['relance'],
             'SearchByNum'           => implode(',' , $numsDossier) ,
             'SearchByClient'        => $request['client'] ,
+            'SearchByLitige' => $request['litige'],
             'constructible'         => $constructible ,
             'reserved' => $reserved , 
             'stocked' => $stocked , 
