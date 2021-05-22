@@ -141,6 +141,7 @@ class VisiteController extends Controller
             'source' => 'required|string' ,
             'domaine' => 'string|nullable' ,
             'surfaceDesired' => 'numeric|nullable' ,
+            'autre' => 'string|nullable' ,
 
         ]);
 
@@ -160,8 +161,12 @@ class VisiteController extends Controller
         'source'   => $request['source'],
         'domaine'   => $request['domaine'],
         'surfaceDesired'   => $request['surfaceDesired'],
-
+        'autre'   => $request['autre'],
         ]) ;
+            // if ($request['source'] == 'Autre' && $request['autre'] != null) {
+            //     $visite->source = $request['autre'] ;
+            // }
+
         $visite->client()->associate($client) ;
         $visite->user()->associate(Auth::user()) ;
 
@@ -215,7 +220,9 @@ class VisiteController extends Controller
             'typeContact' => 'required|string' ,
             'source' => 'required|string' ,
             'domaine' => 'string|nullable' ,
-            'surfaceDesired' => 'numeric|nullable' ,            
+            'surfaceDesired' => 'numeric|nullable' , 
+            'autre' => 'string|nullable' ,
+
         ]);
 
         $client->nom                = strtoupper($request['nom']);
@@ -231,6 +238,7 @@ class VisiteController extends Controller
         $visite->source = $request['source'];
         $visite->domaine = $request['domaine'];
         $visite->surfaceDesired = $request['surfaceDesired'];
+        $visite->autre = $request['autre'];
 
         $visite->update() ;
 

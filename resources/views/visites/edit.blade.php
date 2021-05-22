@@ -287,7 +287,160 @@
                     @enderror
               </label>       
 
+<div 
+ x-data="{        isOpenAutre: false,
+                    @if ($visite->source != null && $visite->source =='Autre'  )
+                      isOpenAutre : true,
+                    @endif 
+                     }" 
+>
+             <div class="mt-4 text-sm">
+
+                    @error('source')
+                    <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
+                    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
+                    @enderror
+
+                <span class="text-gray-700 dark:text-gray-400">
+                  Comment le prospect a connu Tigumi Lkhir ?
+                </span>
+                <div class="mt-2">
+                  <label
+                    class="inline-flex items-center text-gray-600 dark:text-gray-400"
+                  >
+                    <input
+                      type="radio"
+                      class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+                      name="source"
+                      value="Site Web"
+                      @if ($visite->source == "Site Web")
+                        checked
+                      @endif
+                      x-on:click="isOpenAutre = false"
+                      required
+                    />
+                    <span class="ml-2">Site Web</span>
+                  </label>
+                  <label
+                    class="inline-flex items-center ml-6 text-gray-600 dark:text-gray-400"
+                  >
+                    <input
+                      type="radio"
+                      class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+                      name="source"
+                      value="Facebook"
+                      @if ($visite->source == "Facebook")
+                        checked
+                      @endif
+                      x-on:click="isOpenAutre = false"  
+                      required                    
+
+                    />
+                    <span class="ml-2">Facebook</span>
+                  </label>
+                  <label
+                    class="inline-flex items-center ml-6 text-gray-600 dark:text-gray-400"
+                  >
+                    <input
+                      type="radio"
+                      class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+                      name="source"
+                      value="Instagram"
+                      @if ($visite->source == "Instagram")
+                        checked
+                      @endif
+                      x-on:click="isOpenAutre = false"                      
+                    />
+                    <span class="ml-2">Instagram</span>
+                  </label>
+                  <label
+                    class="inline-flex items-center ml-6 text-gray-600 dark:text-gray-400"
+                  >
+                    <input
+                      type="radio"
+                      class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+                      name="source"
+                      value="Bouche à oreille"
+                      @if ($visite->source == "Bouche à oreille")
+                        checked
+                      @endif
+                      x-on:click="isOpenAutre = false"  
+                      required                    
+
+                    />
+                    <span class="ml-2">Bouche à oreille</span>
+                  </label>
+                  <label
+                    class="inline-flex items-center ml-6 text-gray-600 dark:text-gray-400"
+                  >
+                    <input
+                      type="radio"
+                      class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+                      name="source"
+                      value="Kakemonos"
+                      @if ($visite->source == "Kakemonos")
+                        checked
+                      @endif
+                      x-on:click="isOpenAutre = false"   
+                      required                                         
+                    />
+                    <span class="ml-2">Kakemonos</span>
+                  </label>     
+                  <label
+                    class="inline-flex items-center ml-6 text-gray-600 dark:text-gray-400"
+                  >
+                    <input
+                      type="radio"
+                      class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+                      name="source"
+                      value="Flyers & Dépliants"
+                      @if ($visite->source == "Flyers & Dépliants")
+                        checked
+                      @endif
+                      x-on:click="isOpenAutre = false"  
+                      required                                          
+                    />
+                    <span class="ml-2">Flyers & Dépliants</span>
+                  </label>    
+                  <label
+                    class="inline-flex items-center ml-6 text-gray-600 dark:text-gray-400"
+                  >
+                    <input
+                      type="radio"
+                      class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+                      name="source"
+                      value="Autre"
+                      @if ($visite->source == "Autre")
+                        checked
+                      @endif
+                      x-on:click="isOpenAutre = true"   
+                      required                                         
+                    />
+                    <span class="ml-2">Autre</span>
+                  </label>                                                                                     
+                </div>
+              </div>
+
+
+                <div x-show="isOpenAutre" >
               <label class="block mt-4 text-sm">
+                <span class="text-gray-700 dark:text-gray-400">Autre source d'information</span>
+                <input
+                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                  placeholder=""
+                  name="autre"
+                  type="text"
+                  value="{{$visite->autre}}"
+                  :disabled="!isOpenAutre"
+                />
+                    @error('autre')
+                    <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
+                    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
+                    @enderror
+              </label>  
+          </div>
+
+           <!--   <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">
                   Comment le prospect a connu Tigumi Lkhir ?
                 </span>
@@ -330,7 +483,9 @@
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror                
-              </label>                        
+              </label>     
+              -->
+              </div>                   
                 <div class="block mt-4 text-sm">
                 <button
                   class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-green-600 border border-transparent rounded-lg active:bg-green-600 hover:bg-green-700 focus:outline-none focus:shadow-outline-green"

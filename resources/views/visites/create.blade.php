@@ -111,9 +111,7 @@
               </label>  
 
 <div 
- x-data="{
-                      isOpen: false,
-
+ x-data="{        isOpen: false,
                     @if (old('interet')!=null && in_array(old('interet'), ['box','magasin','bureau']))
                       isOpen : true,
                       @else
@@ -247,7 +245,7 @@
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror
               </label>  
-</div>
+          </div>
 </div>
 
 
@@ -283,13 +281,175 @@
 
               </label>
 
+<div 
+ x-data="{        isOpenAutre: false,
+                    @if (old('source')!=null && old('source')=='Autre'  )
+                      isOpenAutre : true,
+                    @endif 
+                     }" 
+>
+             <div class="mt-4 text-sm">
+
+                    @error('source')
+                    <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
+                    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
+                    @enderror
+
+                <span class="text-gray-700 dark:text-gray-400">
+                  Comment le prospect a connu Tigumi Lkhir ?
+                </span>
+                <div class="mt-2">
+                  <label
+                    class="inline-flex items-center text-gray-600 dark:text-gray-400"
+                  >
+                    <input
+                      type="radio"
+                      class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+                      name="source"
+                      value="Site Web"
+                      @if (old('source') == "Site Web")
+                        checked
+                      @endif
+                      x-on:click="isOpenAutre = false"
+                      required
+                    />
+                    <span class="ml-2">Site Web</span>
+                  </label>
+                  <label
+                    class="inline-flex items-center ml-6 text-gray-600 dark:text-gray-400"
+                  >
+                    <input
+                      type="radio"
+                      class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+                      name="source"
+                      value="Facebook"
+                      @if (old('source') == "Facebook")
+                        checked
+                      @endif
+                      x-on:click="isOpenAutre = false"  
+                      required                    
+
+                    />
+                    <span class="ml-2">Facebook</span>
+                  </label>
+                  <label
+                    class="inline-flex items-center ml-6 text-gray-600 dark:text-gray-400"
+                  >
+                    <input
+                      type="radio"
+                      class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+                      name="source"
+                      value="Instagram"
+                      @if (old('source') == "Instagram")
+                        checked
+                      @endif
+                      x-on:click="isOpenAutre = false"                      
+                    />
+                    <span class="ml-2">Instagram</span>
+                  </label>
+                  <label
+                    class="inline-flex items-center ml-6 text-gray-600 dark:text-gray-400"
+                  >
+                    <input
+                      type="radio"
+                      class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+                      name="source"
+                      value="Bouche à oreille"
+                      @if (old('source') == "Bouche à oreille")
+                        checked
+                      @endif
+                      x-on:click="isOpenAutre = false"  
+                      required                    
+
+                    />
+                    <span class="ml-2">Bouche à oreille</span>
+                  </label>
+                  <label
+                    class="inline-flex items-center ml-6 text-gray-600 dark:text-gray-400"
+                  >
+                    <input
+                      type="radio"
+                      class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+                      name="source"
+                      value="Kakemonos"
+                      @if (old('source') == "Kakemonos")
+                        checked
+                      @endif
+                      x-on:click="isOpenAutre = false"   
+                      required                                         
+                    />
+                    <span class="ml-2">Kakemonos</span>
+                  </label>     
+                  <label
+                    class="inline-flex items-center ml-6 text-gray-600 dark:text-gray-400"
+                  >
+                    <input
+                      type="radio"
+                      class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+                      name="source"
+                      value="Flyers & Dépliants"
+                      @if (old('source') == "Flyers & Dépliants")
+                        checked
+                      @endif
+                      x-on:click="isOpenAutre = false"  
+                      required                                          
+                    />
+                    <span class="ml-2">Flyers & Dépliants</span>
+                  </label>    
+                  <label
+                    class="inline-flex items-center ml-6 text-gray-600 dark:text-gray-400"
+                  >
+                    <input
+                      type="radio"
+                      class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+                      name="source"
+                      value="Autre"
+                      @if (old('source') == "Autre")
+                        checked
+                      @endif
+                      x-on:click="isOpenAutre = true"   
+                      required                                         
+                    />
+                    <span class="ml-2">Autre</span>
+                  </label>                                                                                     
+                </div>
+              </div>
+
+
+                <div x-show="isOpenAutre" >
               <label class="block mt-4 text-sm">
+                <span class="text-gray-700 dark:text-gray-400">Autre source d'information</span>
+                <input
+                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                  placeholder=""
+                  name="autre"
+                  type="text"
+                  value="{{old('autre')}}"
+                  :disabled="!isOpenAutre"
+                />
+                    @error('autre')
+                    <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
+                    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
+                    @enderror
+              </label>  
+          </div>
+
+             <!-- <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">
                   Comment le prospect a connu Tigumi Lkhir ?
                 </span>
                 <select
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
                   name="source"
+                  id="source"
+                  x-model="source"
+                  onchange="
+                  if(document.getElementById('source').value == 'Autre')
+                    {
+                      isOpenAutre = true ;
+                      alert(isOpenAutre) ;
+                    }                  
+                  "
                 >
                   <option value="Site Web"
                     @if(old('immeuble') == "Site Web")
@@ -320,13 +480,20 @@
                     @if(old('immeuble') == "Flyers & Dépliant")
                       selected
                     @endif                    
-                    >Flyers & Dépliant</option>                                                      
+                    >Flyers & Dépliant</option>             
+                  <option value="Autre"
+                    @if(old('immeuble') == "Autre")
+                      selected
+                    @endif
+                    >Autre</option>                                                                   
                 </select>
                     @error('source')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror                
-              </label>   
+              </label>  --> 
+</div>
+
 
                 <div class="block mt-4 text-sm">
                 <button
@@ -342,4 +509,13 @@
             </form>
           </div>
         </main>
+        <script type="text/javascript">
+          function autreFunction() {         
+            if(document.getElementById('source').value == 'Autre')
+                    {
+                      isOpen = true ;
+                      alert(isOpen) ;
+                    }
+          }                  
+        </script>
 </x-master>            

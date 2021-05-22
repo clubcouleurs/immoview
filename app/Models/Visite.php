@@ -21,6 +21,7 @@ class Visite extends Model
         'source',
         'domaine',
         'surfaceDesired',
+        'autre',
     ];
 
     public function client()

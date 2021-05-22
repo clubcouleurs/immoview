@@ -161,7 +161,11 @@
             </h4>
               <div class="capitalize flex items-center flex items-center justify-between p-4 mb-8 text-sm font-semibold text-black bg-blue-200 rounded-lg shadow-md focus:outline-none focus:shadow-outline-purple">
                 
-                <span>{{$visite->source}}</span>
+                <span>
+                  @if($visite->source == 'Autre')
+                  {{$visite->autre}}
+                  @endif                 
+                </span>
               </div>            
           </div>
         </main>
