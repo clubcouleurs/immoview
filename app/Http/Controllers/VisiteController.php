@@ -7,6 +7,8 @@ use App\Models\Client;
 use App\Models\Visite;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\VisitesExport;
 
 class VisiteController extends Controller
 {
@@ -82,21 +84,24 @@ class VisiteController extends Controller
            $visitesParPage = $this->paginate($visitesAll) ;
            $visitesParPage->withPath('/visites');
            $visitesParPage->withQueryString() ;
-//dd(Visite::sources()) ;
+
+           $urlWithQueryString = $request->fullUrl();
+           $urlWithQueryString = substr($urlWithQueryString, strlen($request->url())) ;           
+
         return view('visites.index', [
             'visites'       => $visitesParPage,
             'totalVisites'  => Visite::all(),
-            'visitesDay'    => Visite::visitesDay()[0],
-                        'appelsDay'    => Visite::visitesDay()[1],
+            'visitesDay'    => Visite::visitesDay()[1],
+                        'appelsDay'    => Visite::visitesDay()[0],
 
-            'visitesMonth'  => Visite::visitesMonth()[0],
-            'appelsMonth'  => Visite::visitesMonth()[1],
+            'visitesMonth'  => Visite::visitesMonth()[1],
+            'appelsMonth'  => Visite::visitesMonth()[0],
 
-            'visitesYear'   => Visite::visitesYear()[0],
-            'appelsYear'   => Visite::visitesYear()[1],
+            'visitesYear'   => Visite::visitesYear()[1],
+            'appelsYear'   => Visite::visitesYear()[0],
 
-            'visitesWeek'   => Visite::visitesWeek()[0],
-                        'appelsWeek'   => Visite::visitesWeek()[1],
+            'visitesWeek'   => Visite::visitesWeek()[1],
+                        'appelsWeek'   => Visite::visitesWeek()[0],
 
             'interets'      => Visite::interets(),
             'sources'       => Visite::sources(),
@@ -104,9 +109,16 @@ class VisiteController extends Controller
             'dateStart'     => $request['dateStart'], 
             'nombreVisites' => $nombreVisites,
             'mois'          => $mois, 
+            'urlWithQueryString' => $urlWithQueryString,
 
         ]);
     }
+
+    public function export(Request $request) 
+    {
+        return Excel::download(new VisitesExport($request), 'Récap-visites-DSD.xlsx');
+    }
+
 
     /**
      * Show the form for creating a new resource.

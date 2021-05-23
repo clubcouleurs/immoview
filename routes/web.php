@@ -56,6 +56,8 @@ Route::get('finances/export/', [FinanceController::class, 'export'])->middleware
 Route::get('dossiers/export/', [DossierController::class, 'export'])->middleware('can:export finance');
 Route::get('paiements/export/', [PaiementController::class, 'export'])->middleware('can:export finance');
 Route::get('lots/export/', [LotController::class, 'export'])->middleware('can:export finance');
+Route::get('visites/export/', [VisiteController::class, 'export'])->middleware('can:export finance');
+Route::get('clients/export/', [ClientController::class, 'export'])->middleware('can:export finance');
 
 //Route::get('/{constructible?}/{tranche?}/dossiers', [DossierController::class, 'index']);
 

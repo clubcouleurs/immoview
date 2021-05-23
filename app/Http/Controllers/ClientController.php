@@ -7,6 +7,8 @@ use App\Models\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
+use App\Exports\ClientsExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ClientController extends Controller
 {
@@ -48,14 +50,23 @@ class ClientController extends Controller
            $clientsParPage->withPath('/clients');
            $clientsParPage->withQueryString() ;
 
+           $urlWithQueryString = $request->fullUrl();
+           $urlWithQueryString = substr($urlWithQueryString, strlen($request->url())) ;
+
         return view('clients.index', [
             'clients'              => $clientsParPage,
             'totalClients'         => $clientsAll->count(),
             'activer'          => $activer,
-            'SearchByClient'   => '', // $request['tranche'] ,
+            'SearchByClient'   => '',
+            'urlWithQueryString' => $urlWithQueryString,
 
         ]);
     }
+
+    public function export(Request $request) 
+    {
+        return Excel::download(new ClientsExport($request), 'Récap-clients-prospects-DSD.xlsx');
+    }    
 
     /**
      * Show the form for creating a new resource.

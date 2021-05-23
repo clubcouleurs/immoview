@@ -1,12 +1,28 @@
 <x-master>
       <main class="h-full overflow-y-auto">
           <div class="container px-6 mx-auto grid">
-            <h2
-              class="my-6 text-4xl font-semibold text-gray-700 dark:text-gray-200"
-            >
-              Récapitulatif des visites
 
-            </h2>
+              
+            <div class="flex justify-between">
+              <div>
+              <h2
+                class="my-6 text-4xl font-semibold text-black dark:text-gray-200"
+              >
+                Récapitulatif des visites
+              </h2>
+            </div>
+            <div class="flex justify-between">
+              <div class="my-6 mr-2">
+              <a href="/visites/export{{$urlWithQueryString}}">
+                <img class="h-6" src="{{asset('excel.png')}}">
+              </a>
+            </div>
+              <div class="my-6">
+                <img class="h-6" src="{{asset('printer.png')}}" onclick="window.print()">
+            </div>  
+            </div>          
+          </div>
+
 <hr>  
             <!-- Cards -->
             <div class="grid gap-6 mb-2 md:grid-cols-2 xl:grid-cols-5">
@@ -452,7 +468,7 @@
 
 
             <!-- New Table -->
-            <div class="w-full overflow-hidden rounded-lg shadow-xs">
+            <div class="w-full overflow-hidden rounded-lg shadow-xs" id="section-to-print">
               <div class="w-full overflow-x-auto">
                 <table class="w-full whitespace-no-wrap">
                   <thead>
@@ -467,6 +483,8 @@
 
                       <th class="px-4 py-3">Détails de la visite</th>
                       <th class="px-4 py-3">Remarques du prospect</th>
+                      <th class="px-4 py-3">Source</th>
+
                       <th class="px-4 py-3">Actions</th>
 
 
@@ -552,7 +570,11 @@
                            
             
                       </td>
+                      <td class="px-4 py-3 text-xs">
+                        {{ $visite->source }} 
                       
+            
+                      </td>                      
 
 
                       <td class="px-4 py-3 text-sm">

@@ -170,6 +170,7 @@
                       type="radio"
                       class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
                       name="isVente"
+                      id="isVente"
                       value="1"
                       required
                       x-on:click=" isOpen = false"
@@ -185,6 +186,7 @@
                       type="radio"
                       class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
                       name="isVente"
+                      id="isVente"
                       value="0"
                       required
                       x-on:click=" isOpen = true"
@@ -623,7 +625,16 @@ this.todos.splice(this.todos.indexOf(todo), 1 );
 </script>    
   <script type="text/javascript">
 function submit() {
-  document.getElementById("DossierForm").submit();
+var getSelectedValue = document.querySelector( 
+                'input[name="isVente"]:checked'); 
+var getFrais = document.querySelector( 
+                'input[name="frais"]');
+            if(getSelectedValue != null && getFrais.value != '') { 
+                document.getElementById("DossierForm").submit();
+            } 
+            else { 
+                return false ;
+            }
 }
 
     function produitSearch() {

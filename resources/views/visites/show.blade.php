@@ -163,7 +163,9 @@
                 
                 <span>
                   @if($visite->source == 'Autre')
-                  {{$visite->autre}}
+                    {{$visite->autre}}
+                  @else
+                    {{$visite->source}}
                   @endif                 
                 </span>
               </div>            
