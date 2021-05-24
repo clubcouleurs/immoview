@@ -469,7 +469,7 @@
                   name="action"
                 >
                 
-                  <option value="-1" @if ( $SearchByRelance == '-1') selected @endif>Actions groupées</option>
+                  <option value="-1">Actions groupées</option>
                   @if ($SearchByLitige == 1)
                   <option value="accord">Marquer comme accord
                     @else
@@ -526,9 +526,19 @@
                     <tr class="text-gray-700
                     {{($dossier->isVente)? '' : 'bg-yellow-200'}}
                     dark:text-gray-400">
-                    <td>
+                    <td class="{{($dossier->litige)? 'bg-red-500' : ''}}"                    
+                    >
+                      @if(null == $SearchByLitige)
+                        @if($dossier->litige == false)
                           <input id="selectDossiers" type="checkbox" name="dossiersLitiges[]" value="{{$dossier->id}}"
                           onclick="addDossiers({{$dossier->id}})">
+                        @endif
+                      @else
+                        @if($dossier->litige == true)
+                          <input id="selectDossiers" type="checkbox" name="dossiersLitiges[]" value="{{$dossier->id}}"
+                          onclick="addDossiers({{$dossier->id}})">
+                        @endif
+                      @endif                          
                     </td>
 
                       <td class="px-1 py-3">
@@ -860,14 +870,20 @@
   function addDossiers(num) {
 
 var input = document.createElement("input");
-input.setAttribute("type", "hidden");
-input.setAttribute("name", "litiges[]");
-input.setAttribute("value", num);
-document.getElementById("actionsGroupedForm").appendChild(input);
-    // alert(num) ;
-    // pickedIds.push(num) ;
-    // document.getElementById("litiges").setAttribute("value",JSON.stringify(pickedIds));
-    // alert(document.getElementById("litiges").value);
+
+var elementExists = !!document.getElementById(num);
+
+    if (elementExists)
+     {
+      document.getElementById(num).remove(input);
+    }else
+    {
+      input.setAttribute("type", "hidden");
+      input.setAttribute("name", "litiges[]");
+      input.setAttribute("value", num);
+      input.setAttribute("id", num);
+      document.getElementById("actionsGroupedForm").appendChild(input);
+    } 
   }
   const MONTH_NAMES = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Decembre'];
     const DAYS = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];

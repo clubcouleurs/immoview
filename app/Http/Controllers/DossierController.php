@@ -33,6 +33,7 @@ class DossierController extends Controller
      */
     public function litige(Request $request)
     {
+        //dd($request) ;
         $request->validate([
             'action'      => 'required|string',
             'litiges.*'      => 'required|numeric',
@@ -328,14 +329,15 @@ class DossierController extends Controller
             $dossiersAll = $dossiersAll->where('isVente', $etat);  
         }
 
-        //recherche par etat légale du dossier
+        // recherche par etat légale du dossier
         if (isset($request['litige']) && $request['litige'] != '' ) {
             $litige = $request['litige'] ;
             $dossiersAll = $dossiersAll->where('litige', $litige);  
-        }else
-        {
-            $dossiersAll = $dossiersAll->whereIn('litige', [NULL, false]);  
         }
+        // else
+        // {
+        //     $dossiersAll = $dossiersAll->whereIn('litige', [NULL, false]);  
+        // }
 
            $dossiersParPage = $this->paginate($dossiersAll) ;
            $dossiersParPage->withPath('/dossiers');
