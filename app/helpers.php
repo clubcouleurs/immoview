@@ -45,7 +45,14 @@ if(! function_exists('numberFormat'))
 	}
 }
 
-
+if(! function_exists('is_rtl'))
+{
+	function is_rtl( $string )
+	{
+		$rtl_chars_pattern = '/[\x{0590}-\x{05ff}\x{0600}-\x{06ff}]/u';
+		return preg_match($rtl_chars_pattern, $string);
+	}
+}
 
 if(! function_exists('completion'))
 {

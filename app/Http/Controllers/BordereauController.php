@@ -148,15 +148,37 @@ class BordereauController extends Controller
                     $i += 1 ;
                     $txt .= '- Monsieur/Madame : ' ;
 
-                    $prenom = stripslashes($client->prenom);
-                    $prenom = iconv('UTF-8', 'windows-1252', $prenom);
-            $nom = stripslashes($client->nom);
+            if (!is_rtl($client->prenom)) {
+                $prenom = stripslashes($client->prenom);
+            }
+            else
+            {
+                $prenom = stripslashes($client->prenomAr);
+            }
+
+            if (!is_rtl($client->nom)) {
+                $nom = stripslashes($client->nom);
+            }
+            else
+            {
+                $nom = stripslashes($client->nomAr);
+            }
+                    //$nom = stripslashes($client->nom);
+                    //$prenom = stripslashes($client->prenom);
+            $prenom = iconv('UTF-8', 'windows-1252', $prenom);
             $nom = iconv('UTF-8', 'windows-1252', $nom);
             $nomC = ucfirst($nom) . ' ' . ucfirst($prenom) ;
             $nomC .= ' - Mobile : ' . $client->mobile ;
             $txt .= $nomC . chr(10) ;
             $txt .= 'Demeurant à : ' ;
-            $adresse = stripslashes($client->adresse);
+
+            if (!is_rtl($client->adresse)) {
+                $adresse = stripslashes($client->adresse);
+            }
+            else
+            {
+                $adresse = stripslashes($client->adresseAr);
+            }
             $adresse = ucfirst(preg_replace( "/\r|\n/", " ", $adresse )) ;
             $ad = str_split($adresse, 45) ;
 

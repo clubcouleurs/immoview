@@ -183,7 +183,7 @@ class ClientController extends Controller
      */
     public function update(Request $request, Client $client)
     {
-        //dd($request) ;
+        //dd($request['cinPj']) ;
 
         if (! Gate::allows('editer clients')) {
                 abort(403);
@@ -213,11 +213,11 @@ class ClientController extends Controller
 
         $client->activer    = 1 ;
 
-        if($request->hasFile('cinPj'))
+        if($request->hasFile('cinPj') && $request['cinPj'] != null)
         {
-            if ($client->cinPj != null) {
-                Storage::delete('public/' . $client->cinPj);
-            }
+            //if ($client->cinPj != null) {
+                //  Storage::delete('public/' . $client->cinPj);
+            //}
             $infoClient = $client->nom . '-' . $client->prenom . '-' .$client->cin;
 
             $pjName = str_replace('.', '',  $infoClient ) . '-' 
@@ -233,11 +233,10 @@ class ClientController extends Controller
         }
         else
         {
-            if ($client->cinPj != null) {
-                Storage::delete('public/' . $client->cinPj);
-            }
-
-            $client->cinPj = null ;
+            // if ($client->cinPj != null) {
+            //     Storage::delete('public/' . $client->cinPj);
+            // }
+            // $client->cinPj = null ;
         }
 
         $client->update();
