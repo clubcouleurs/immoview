@@ -91,24 +91,79 @@
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror
               </label>
-              <label class="block mt-4 text-sm">
+ 
+
+  <div class="flex flex-wrap -mx-3 mb-2 mt-4">
+    <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+             <label class="block text-sm">
+                <span class="text-gray-700 dark:text-gray-400">Pays</span>
+              </label>
+      <div class="relative">
+        <select class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="pays">
+                  <option value="Maroc(+212)"
+                  @if (old('pays') == "Maroc(+212)")
+                    selected
+                  @endif
+                      >Maroc(+212)</option>
+                  <option value="France(+33)"
+                  @if (old('pays') == "France(+33)")
+                    selected
+                  @endif                  
+                  >France(+33)</option>
+                  <option value="Espagne(+34)"
+                  @if (old('pays') == "Espagne(+34)")
+                    selected
+                  @endif                  
+                  >Espagne(+34)</option>    
+                  <option value="Pays-bas(+31)"
+                  @if (old('pays') == "Pays-bas(+31)")
+                    selected
+                  @endif                  
+                  >Pays-bas(+31)</option>
+                  <option value="Belgique(+32)"
+                  @if (old('pays') == "Belgique(+32)")
+                    selected
+                  @endif                  
+                  >Belgique(+32)</option>
+                  <option value="Allemagne(+49)"
+                  @if (old('pays') == "Allemagne(+49)")
+                    selected
+                  @endif                  
+                  >Allemagne(+49)</option>
+                  <option value="Italie(+39)"
+                  @if (old('pays') == "Italie(+39)")
+                    selected
+                  @endif                  
+                  >Italie(+39)</option>                     
+
+        </select>
+      </div>
+    </div>
+    <div class="w-full md:w-2/3 px-3 mb-6 md:mb-0">
+             <label class="block text-sm">
                 <span class="text-gray-700 dark:text-gray-400">Mobile</span>
-                <input
-                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+              </label>
+    <input
+                  class="w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
                   placeholder=""
                   type="text"
                   name="mobile"
                   maxlength="10"
                   value="{{old('mobile')}}"
-
                   required
                 />
+      </div>
+      </div>
 
                     @error('mobile')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror
-              </label>  
+
+
+
+
+
 
 <div 
  x-data="{        isOpen: false,
@@ -219,8 +274,7 @@
                   class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
                   placeholder=""
                   name="surfaceDesired"
-                  type="number"
-                  step="0.01"
+                  type="text"
                   value="{{old('surfaceDesired')}}"
                   :disabled="!isOpen"
                 />

@@ -2,6 +2,7 @@
                   <thead>
                     <tr>
                       <th width="15" bgcolor="#ffdc73">N° Visite</th>
+                      <th width="15" bgcolor="#ffdc73">Type</th>
                       <th width="15" bgcolor="#ffdc73">Date de la visite</th>
                       <th width="25" bgcolor="#ffdc73">Prospect</th>
                       <th width="15" bgcolor="#ffdc73">Tél</th>
@@ -15,33 +16,37 @@
                   <tbody>
                   @foreach ($visites as $visite)
                     <tr>
-                      <td>
+                      <td bgcolor={{($visite->typeContact == 'appel') ? '#d1fae5' : '#ffffff'}}>
                               {{$visite->id }} 
                       </td>
-                      <td>
+                      <td bgcolor={{($visite->typeContact == 'appel') ? '#d1fae5' : '#ffffff'}}>
+
+                              {{($visite->typeContact == 'appel') ? 'appel' : 'visite'}} 
+                      </td>                      
+                      <td bgcolor={{($visite->typeContact == 'appel') ? '#d1fae5' : '#ffffff'}}>
 
                         {{ $visite->date }}
                       </td>
-                      <td>
+                      <td bgcolor={{($visite->typeContact == 'appel') ? '#d1fae5' : '#ffffff'}}>
                           {{ $visite->client->nom }} {{ $visite->client->prenom }}
                         </td>
-							<td>
+							<td bgcolor={{($visite->typeContact == 'appel') ? '#d1fae5' : '#ffffff'}}>
 								{{ $visite->client->mobile}}
 							</td>
                       
-                      <td>
+                      <td bgcolor={{($visite->typeContact == 'appel') ? '#d1fae5' : '#ffffff'}}>
                         {{ $visite->interet}}
                       </td>   
-                      <td>
+                      <td bgcolor={{($visite->typeContact == 'appel') ? '#d1fae5' : '#ffffff'}}>
                         {{ $visite->user->name}}
                       </td>                                          
-                      <td>
+                      <td bgcolor={{($visite->typeContact == 'appel') ? '#d1fae5' : '#ffffff'}}>
                           {{ $visite->detail}}
                       </td>
-                      <td>
+                      <td bgcolor={{($visite->typeContact == 'appel') ? '#d1fae5' : '#ffffff'}}>
                         {{$visite->remarqueClient}}
                       </td>
-                      <td>
+                      <td bgcolor={{($visite->typeContact == 'appel') ? '#d1fae5' : '#ffffff'}}>
                         {{ $visite->source }} 
                       </td>                      
                     </tr>

@@ -152,8 +152,9 @@ class VisiteController extends Controller
             'typeContact' => 'required|string' ,
             'source' => 'required|string' ,
             'domaine' => 'string|nullable' ,
-            'surfaceDesired' => 'numeric|nullable' ,
+            'surfaceDesired' => 'string|nullable' ,
             'autre' => 'string|nullable' ,
+            'pays' => 'string|nullable' ,
 
         ]);
 
@@ -161,7 +162,7 @@ class VisiteController extends Controller
         $client->nom    = strtoupper($request['nom']);
         $client->prenom = strtoupper($request['prenom']);
         $client->mobile = $request['mobile'];
-
+        $client->pays = $request['pays'];
         $client->save();
 
         $visite = new Visite([
@@ -175,9 +176,7 @@ class VisiteController extends Controller
         'surfaceDesired'   => $request['surfaceDesired'],
         'autre'   => $request['autre'],
         ]) ;
-            // if ($request['source'] == 'Autre' && $request['autre'] != null) {
-            //     $visite->source = $request['autre'] ;
-            // }
+
 
         $visite->client()->associate($client) ;
         $visite->user()->associate(Auth::user()) ;
@@ -232,14 +231,17 @@ class VisiteController extends Controller
             'typeContact' => 'required|string' ,
             'source' => 'required|string' ,
             'domaine' => 'string|nullable' ,
-            'surfaceDesired' => 'numeric|nullable' , 
+            'surfaceDesired' => 'string|nullable' , 
             'autre' => 'string|nullable' ,
+            'pays' => 'string|nullable' ,
+
 
         ]);
 
         $client->nom                = strtoupper($request['nom']);
         $client->prenom             = strtoupper($request['prenom']);
         $client->mobile             = $request['mobile'];
+        $client->pays              = $request['pays'];
 
         $client->update();
 

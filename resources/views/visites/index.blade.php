@@ -491,22 +491,24 @@
                     </tr>
                   </thead>
                   <tbody
-                    class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800"
+                    class="divide-y dark:divide-gray-700 dark:bg-gray-800"
                   >
 
                   @foreach ($visites as $visite)
-                    <tr class="
-                    text-gray-700 dark:text-gray-400">
+                    <tr class="text-gray-700
+                    {{($visite->typeContact == 'appel') ? 'bg-green-100' : ''}}
+                     dark:text-gray-400">
                       <td class="px-4 py-3">
                         <div class="flex items-center text-sm">
 
-                          <!-- Avatar with inset shadow -->
                           <div
                             class="relative hidden w-8 h-8 mr-3 rounded-full md:block"
                           >
                             <img
                               class="object-cover w-full h-full rounded-full"
-                              src="{{asset('floor-plan.png')}}"
+                              src="
+                              {{($visite->typeContact == 'appel') ? asset('appel.png') : 'visite.png'}}
+                              "
                               alt=""
                               loading="lazy"
                             />
@@ -522,7 +524,7 @@
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-blue-700 bg-blue-100 rounded-full dark:bg-blue-700 dark:text-blue-100"
                         >                              
-                              {{$visite->id }} 
+                              {{$visite->typeContact . ' ' . $visite->id }} 
                         </span></a>
                             </p>
 
@@ -547,7 +549,7 @@
                     viewBox="0 0 20 20"
                   >
                   <path d="M11.1735916,16.8264084 C7.57463481,15.3079672 4.69203285,12.4253652 3.17359164,8.82640836 L5.29408795,6.70591205 C5.68612671,6.31387329 6,5.55641359 6,5.00922203 L6,0.990777969 C6,0.45097518 5.55237094,3.33066907e-16 5.00019251,3.33066907e-16 L1.65110039,3.33066907e-16 L1.00214643,8.96910337e-16 C0.448676237,1.13735153e-15 -1.05725384e-09,0.445916468 -7.33736e-10,1.00108627 C-7.33736e-10,1.00108627 -3.44283713e-14,1.97634814 -3.44283713e-14,3 C-3.44283713e-14,12.3888407 7.61115925,20 17,20 C18.0236519,20 18.9989137,20 18.9989137,20 C19.5517984,20 20,19.5565264 20,18.9978536 L20,18.3488996 L20,14.9998075 C20,14.4476291 19.5490248,14 19.009222,14 L14.990778,14 C14.4435864,14 13.6861267,14.3138733 13.2940879,14.7059121 L11.1735916,16.8264084 Z" id="Combined-Shape"></path>
-                  </svg> <span class="ml-2">{{ $visite->client->mobile}} </span>
+                  </svg> <span class="ml-2">{{ $visite->client->pays . ' ' . $visite->client->mobile}} </span>
                             </p>                         
                       </td>
                       <td class="px-4 py-3 text-xs">
