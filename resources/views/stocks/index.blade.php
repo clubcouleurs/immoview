@@ -1,12 +1,21 @@
 <x-master>
       <main class="h-full overflow-y-auto">
           <div class="container px-6 mx-auto grid">
-            <h2
-              class="my-6 text-4xl font-semibold text-black dark:text-gray-200"
-            >
-              Etat des stocks
+            <div class="flex justify-between">
+              <div>
+              <h2
+                class="my-6 text-4xl font-semibold text-black dark:text-gray-200"
+              >
+                Etat des stocks
+              </h2></div>
+              <div class="my-6">
+              <a href="/stocks/export">
+                <img class="h-6" src="{{asset('excel.png')}}">
+              </a>
+            </div>
+          </div>
 
-            </h2>
+
             @foreach($constructibles as $header => $constructible)
 <hr>  
             <h3

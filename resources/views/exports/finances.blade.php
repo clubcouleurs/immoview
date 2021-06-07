@@ -79,14 +79,14 @@
 
                       <td>
                         <p>
-                          {{number_format($data['totalCA'],2,",",".") }}
+                          {{$data['totalCA']}}
 
                         </p>
                       </td>
 
                       <td>
                         <p>
-                          {{number_format($data['CaReserve'],2,",",".") }}
+                          {{$data['CaReserve']}}
 
                         </p>
                       </td>
@@ -100,14 +100,14 @@
 
                       <td>
                         <p>
-                          {{number_format($data['totalPaiementsV'],2,",",".") }} 
+                          {{$data['totalPaiementsV']}} 
 
                         </p>
                       </td>
 
                       <td>
                         <p>
-                          {{number_format($data['avance30'],2,",",".") }}
+                          {{$data['avance30']}}
 
                         </p>
                       </td>
@@ -121,14 +121,14 @@
 
                       <td >
                         <p>
-                          {{number_format($data['reliquatDu30Pourcent'],2,",",".") }} 
+                          {{$data['reliquatDu30Pourcent']}} 
 
                         </p>        
                       </td>
 
                       <td >
                         <p>
-                          {{number_format($data['reliquat'],2,",",".") }} 
+                          {{$data['reliquat']}} 
 
                         </p>
                       </td>
@@ -172,7 +172,7 @@
                         </p>
                       </td>
 
-                      <td  bgcolor="#dbdbdb">
+                      <td bgcolor="#dbdbdb">
                         <p>
                           @php
                             echo $$header['totalSurfaceReserve']; 
@@ -193,18 +193,18 @@
                       <td  bgcolor="#dbdbdb">
                         <p>
                           @php
-                            echo number_format($$header['totalCA'],2,",","."); 
+                            echo $$header['totalCA']; 
                           @endphp
-                          Dhs
+                          
                         </p>
                       </td>
 
                       <td  bgcolor="#dbdbdb">
                         <p>
                           @php
-                            echo number_format($$header['CaReserve'],2,",","."); 
+                            echo $$header['CaReserve']; 
                           @endphp
-                          Dhs
+                          
                         </p>
                       </td>
 
@@ -220,18 +220,18 @@
                       <td  bgcolor="#dbdbdb">
                         <p>
                           @php
-                            echo number_format($$header['totalPaiementsV'],2,",","."); 
+                            echo $$header['totalPaiementsV']; 
                           @endphp
-                          Dhs
+                          
                         </p>
                       </td>
 
                       <td bgcolor="#dbdbdb">
                         <p>
                           @php
-                            echo number_format($$header['avance30'],2,",","."); 
+                            echo $$header['avance30']; 
                           @endphp
-                          Dhs
+                          
                         </p>
                       </td>
 
@@ -247,18 +247,18 @@
                       <td bgcolor="#dbdbdb">
                         <p>
                           @php
-                            echo number_format($$header['reliquatDu30Pourcent'],2,",","."); 
+                            echo $$header['reliquatDu30Pourcent']; 
                           @endphp
-                          Dhs
+                          
                         </p>        
                       </td>
 
                       <td bgcolor="#dbdbdb">
                         <p>
                           @php
-                            echo number_format($$header['reliquat'],2,",","."); 
+                            echo $$header['reliquat']; 
                           @endphp
-                          Dhs
+                          
                         </p>
                       </td>
 

@@ -81,9 +81,55 @@ class PaiementController extends Controller
                         ->get();             
         }
 
+
+
+    // date filter
+        $dateStartExist = false ;
+        $dateEndExist = false ;
+
+        //recherche par prix
+        if (isset($request['dateStart']) && $request['dateStart'] != '' ) {
+            $ds =  $request['dateStart'] ;
+            $dateSt = str_replace('/', '-', $ds);
+            $dateStart = date('Y-m-d', strtotime($dateSt));
+            $dateStartExist = true ;
+
+        }
+        //recherche par prix
+        if (isset($request['dateEnd']) && $request['dateEnd'] != '' ) {
+            $de =  $request['dateEnd'] ;
+            $dateEd = str_replace('/', '-', $de);
+            $dateEnd = date('Y-m-d', strtotime($dateEd));
+            $dateEndExist = true ;
+        }
+
+
+        if ($dateStartExist == true && $dateEndExist == true)
+        {
+            if ($dateEnd < $dateStart) {
+                $d = $dateStart ;
+                $dateStart = $dateEnd ;
+                $dateEnd = $d ;
+            }
+        }
+
+        if ($dateStartExist == true && $dateEndExist == true)
+        {
+            $paiements = $paiements->whereBetween('date', [$dateStart, $dateEnd] ); 
+
+        }elseif ($dateStartExist == true && $dateEndExist == false) {
+            $paiements = $paiements->where('date' , $dateStart); 
+
+        }elseif ($dateStartExist == false && $dateEndExist == true) {
+            $paiements = $paiements->where('date' , $dateEnd); 
+        }
+
+    // fin date filter
+
         $paiementsT = $paiements->sum('montant') ;
         $paiementsV = $paiements->where('valider', 1)->sum('montant') ;
         $paiementsN = $paiementsT - $paiementsV ;
+                
 
            $paiementsParPage = $this->paginate($paiements) ;
            $paiementsParPage->withPath('/paiements');

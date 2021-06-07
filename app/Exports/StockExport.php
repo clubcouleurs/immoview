@@ -1,27 +1,51 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Exports;
 
-use App\Models\Dossier;
+use App\Models\Appartement;
+use App\Models\Box;
+use App\Models\Etiquette;
 use App\Models\Lot;
+use App\Models\Magasin;
+use App\Models\Office;
 use App\Models\Paiement;
 use App\Models\Produit;
-use Illuminate\Http\Request;
+use App\Models\Tranche;
+use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Maatwebsite\Excel\Concerns\FromView;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use Maatwebsite\Excel\Concerns\WithMapping;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
-use App\Exports\StockExport;
-use Maatwebsite\Excel\Facades\Excel;
 
-
-class StockController extends Controller
+class StockExport implements FromView, WithColumnFormatting, WithMapping, ShouldAutoSize
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+
+
+    public function map($invoice): array
     {
+        return [];
+    }
+    
+    public function columnFormats(): array
+    {
+        return [
+            'C' => NumberFormat::FORMAT_NUMBER,
+            'D' => NumberFormat::FORMAT_NUMBER,
+            'E' => NumberFormat::FORMAT_NUMBER,
+            'F' => NumberFormat::FORMAT_NUMBER,
+            'B' => NumberFormat::FORMAT_NUMBER,
+        ];
+    }
+    /**
+    * @return \Illuminate\Support\Collection
+    */
+	public function view(): View
+    {
+
         //créer un tableau contenant tout les types de constructibles
         $constructibleArray = ['appartement' ,'lot',  'bureau' , 'magasin' , 'box', 'showroom'] ;
 
@@ -169,9 +193,9 @@ class StockController extends Controller
 
         $lotDossiers = $lotDossiers->merge($showroomDossiers);
 
-        return view('stocks.index',
+        return view('exports.stocks',
 
-            ['color' => [ 'green' ,'purple','blue' , 'red' , 'yellow','indigo'], 
+            ['color' => [ '#86EFAC' ,'#D8B4FE','#93C5FD' , '#FCA5A5' , '#FDE047','#A5B4FC'], 
                 'constructibles' => [
                 'Lots' => 'lot',
                 'Appartements'=>'appartement',
@@ -197,12 +221,6 @@ class StockController extends Controller
                                     //['showroom' => $showroomDossiers] +
                                     //['Showrooms' => $showroomsDossiers]                                    
 
-        ) ;
+        ) ;        
     }
-
-    public function export() 
-    {
-        return Excel::download(new StockExport, 'Récap-Stocks-DSD.xlsx');
-    }
-
 }

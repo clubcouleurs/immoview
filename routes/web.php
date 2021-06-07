@@ -53,6 +53,8 @@ Route::get('/finances', [FinanceController::class, 'index'])->middleware('can:vo
 Route::get('/stocks', [StockController::class, 'index'])->middleware('can:voir stock');
 
 Route::get('finances/export/', [FinanceController::class, 'export'])->middleware('can:export finance');
+Route::get('stocks/export/', [StockController::class, 'export'])->middleware('can:export finance');
+
 Route::get('dossiers/export/', [DossierController::class, 'export'])->middleware('can:export finance');
 Route::get('paiements/export/', [PaiementController::class, 'export'])->middleware('can:export finance');
 Route::get('lots/export/', [LotController::class, 'export'])->middleware('can:export finance');

@@ -507,7 +507,7 @@
                             <img
                               class="object-cover w-full h-full rounded-full"
                               src="
-                              {{($visite->typeContact == 'appel') ? asset('appel.png') : 'visite.png'}}
+                              {{($visite->typeContact == 'appel') ? asset('appel.png') : asset('visite.png')}}
                               "
                               alt=""
                               loading="lazy"
