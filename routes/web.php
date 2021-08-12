@@ -61,6 +61,8 @@ Route::get('lots/export/', [LotController::class, 'export'])->middleware('can:ex
 Route::get('visites/export/', [VisiteController::class, 'export'])->middleware('can:export finance');
 Route::get('clients/export/', [ClientController::class, 'export'])->middleware('can:export finance');
 
+Route::get('appartements/export/', [AppartementController::class, 'export'])->middleware('can:voir appartements');
+
 //Route::get('/{constructible?}/{tranche?}/dossiers', [DossierController::class, 'index']);
 
 // cette route est utilisée par javascript sur le formulaire d'ajout de client

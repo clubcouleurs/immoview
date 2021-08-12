@@ -993,7 +993,7 @@ class DossierController extends Controller
 
             $txt .= implode(chr(10) , $ad) . chr(10) ;
 
-            $txt .= 'Titulaire de la carte d’identité nationale N° : ' ;
+            $txt .= iconv('UTF-8', 'windows-1252', 'Titulaire de la carte d’identité nationale N° : ' );
 
             $txt .= $client->cin  ;
                 if ($i !== $dossier->clients->count() )
@@ -1001,7 +1001,7 @@ class DossierController extends Controller
                    $txt .= chr(10) ;
                 }
             }
-            $txt = iconv('UTF-8', 'windows-1252', $txt) ;
+            //$txt = iconv('UTF-8', 'windows-1252', $txt) ;
             switch ($i) {
                 case 1:
                     $i = 93.75 + 25 ;
@@ -1133,28 +1133,35 @@ class DossierController extends Controller
             $pdf->useTemplate($templateId);
             if ($pageNo == 1) // 1 
             {
+                $i_start = 35 ;
+                $cin_start = 69 ;
+                $ad_start = 117 ;
                 foreach ($dossier->clients as $client)
                 {
-
                     $prenom = stripslashes($client->prenomAr);
                     //$prenom = iconv('UTF-8', 'windows-1251//TRANSLIT//IGNORE', $prenom);
                     //    dd('مفعول') ;
                     $nom = stripslashes($client->nomAr);
                     //$nom = iconv("Windows-1256//TRANSLIT//IGNORE", "UTF-8//TRANSLIT//IGNORE", 'مفعول');
 
-                    $pdf->SetXY(35, 95.75);
-                    $nomC =  $nom . ' ' . $prenom . ' ';
+                    $pdf->SetXY($i_start, 95.75);
+                    $nomC =  $nom . ' ' . $prenom . ' |';
+                    $i_start += strlen($nomC)+2 ;
+
                     $pdf->Write(8, $nomC);
 
                     $adresse = stripslashes($client->adresseAr);
                     //$adresse = iconv('UTF-8', 'windows-1251//TRANSLIT//IGNORE', $adresse);
 
-                    $pdf->SetXY(14, 117);
-                    $pdf->Write(8, ucfirst(preg_replace( "/\r|\n/", " ", $adresse )));
+                    $pdf->SetXY(14, $ad_start);
+                    $pdf->Write(8, ucfirst(preg_replace( "/\r|\n/", " ", '- ' . $adresse )));
+                    $ad_start += 8 ;
 
-                    $pdf->SetXY(69, 103);
-                    $pdf->Write(8, ucfirst($client->cin));    
-                    # code...
+                    $pdf->SetXY($cin_start, 103);
+                    $pdf->Write(8, strtoupper($client->cin) . ' | ');    
+
+                    $cin_start += (strlen($client->cin)*3) +2 ;
+
                 }                
             }    
 

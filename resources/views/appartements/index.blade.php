@@ -1,12 +1,27 @@
 <x-master>
       <main class="h-full overflow-y-auto">
           <div class="container px-6 mx-auto grid">
-            <h2
-              class="my-6 text-4xl font-semibold text-gray-700 dark:text-gray-200"
-            >
-              Récapitulatif des appartements
-            </h2>
-<hr>  
+            <div class="flex justify-between">
+              <div>
+              <h2
+                class="my-6 text-4xl font-semibold text-black dark:text-gray-200"
+              >
+                Récapitulatif des appartements
+              </h2>
+            </div>
+            <div class="flex justify-between">
+              <div class="my-6 mr-2">
+              <a href="/appartements/export{{$urlWithQueryString}}">
+                <img class="h-6" src="{{asset('excel.png')}}">
+              </a>
+            </div>
+              <div class="my-6">
+                <img class="h-6" src="{{asset('printer.png')}}" onclick="window.print()">
+            </div>  
+            </div>          
+          </div>
+<hr> 
+
             <!-- Cards -->
             <div class="grid gap-6 mb-2 md:grid-cols-2 xl:grid-cols-6">
               <!-- Card -->

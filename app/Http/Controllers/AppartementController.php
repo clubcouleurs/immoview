@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\AppartementsExport;
 use App\Http\Requests\ProduitRequest;
 use App\Http\Traits\PaginateTrait;
 use App\Models\Appartement;
@@ -13,6 +14,7 @@ use App\Models\Voie;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AppartementController extends Controller
 {
@@ -108,6 +110,9 @@ class AppartementController extends Controller
            $appartementsParPage->withPath('/appartements');
            $appartementsParPage->withQueryString() ;
 
+           $urlWithQueryString = $request->fullUrl();
+           $urlWithQueryString = substr($urlWithQueryString, strlen($request->url())) ;           
+
         return view('appartements.index', [
             'appartements'              => $appartementsParPage ,
             'totalappartements'         => $appartementsAll->count(),
@@ -128,9 +133,16 @@ class AppartementController extends Controller
             'SearchByMin'     => $request['minPrix'] ,
             'SearchByMax'     => $request['maxPrix'] ,
             'SearchByNum' => $request['numsappartement'] ,
+            'urlWithQueryString' => $urlWithQueryString
 
         ]);
     }
+
+    public function export(Request $request) 
+    {
+        return Excel::download(new AppartementsExport($request), 'Etats-Appartements-DSD.xlsx');
+    }
+
 
     /**
      * Show the form for creating a new resource.
