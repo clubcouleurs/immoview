@@ -6,6 +6,9 @@ use App\Models\Immeuble;
 use App\Models\Tranche;
 use Illuminate\Http\Request;
 
+use Illuminate\Validation\Rule;
+
+
 class ImmeubleController extends Controller
 {
     /**
@@ -40,7 +43,12 @@ class ImmeubleController extends Controller
         $tranche = Tranche::findOrFail($request['tranche_id']) ;
         $request->validate([
             'description' => 'string|nullable',
-            'num' => 'required|alpha_num|unique:immeubles',
+            'num' => 'required|alpha_num',//|unique:immeubles',
+            'num' => [
+                 Rule::unique('immeubles', 'num')->where(function ($query) use ($tranche) {
+                     return $query->where('tranche_id', $tranche->id);
+                 })
+             ],
 
         ]);
 
@@ -88,10 +96,18 @@ class ImmeubleController extends Controller
     public function update(Request $request, Immeuble $immeuble)
     {
         //$immeuble->update(['tranche_id' => $request['tranche_id']);
+        $tranche = Tranche::findOrFail($request['tranche_id']) ;
 
         $request->validate([
             'description' => 'string|nullable',
-            'num' => 'required|alpha_num|unique:immeubles,num,'. $immeuble->id,
+            'num' => 'required|alpha_num', //|unique:immeubles,num,'. $immeuble->id,
+
+            'num' => [
+                 Rule::unique('immeubles', 'num')->where(function ($query) use ($immeuble, $tranche) {
+                     return $query->where('id', '!=' , $immeuble->id)
+                            ->where('tranche_id', $tranche->id);
+                 })
+             ],            
         ]);
 
         $immeuble->description = $request['description'] ;

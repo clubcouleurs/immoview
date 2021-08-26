@@ -203,6 +203,23 @@
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
                   name="immeuble"
                 >
+                  <option value="-">Tranche</option>
+                
+                @foreach($tranches as $tranche)
+                  <option value="{{$tranche->id}}"
+                    @if ( $SearchByTr == $tranche->id)
+                    selected
+                    @endif
+                    >Tranche {{$tranche->num}}
+                  </option>
+                @endforeach
+                </select>
+
+
+                <select
+                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
+                  name="immeuble"
+                >
                   <option value="-">Immeuble</option>
                 
                 @foreach($immeubles as $immeuble)
@@ -210,12 +227,11 @@
                     @if ( $SearchByImm == $immeuble->id)
                     selected
                     @endif
-                    >Imm {{$immeuble->id}}
+                    >Imm {{$immeuble->num}}
                   </option>
                 @endforeach
-
-
                 </select>
+
                 <select
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
                   name="nombreFacadesappartement"

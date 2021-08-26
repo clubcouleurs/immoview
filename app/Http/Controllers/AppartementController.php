@@ -69,12 +69,16 @@ class AppartementController extends Controller
 
         }
 
+        // //recherche par tranche
+        // if (isset($request['tranche']) && $request['tranche'] != '-' ) {
+        //     $tr = $request['tranche'] ;
+        //     $appartementsAll = $appartementsAll->where('constructible.immeuble_id', $tr); 
+        // }
 
-
-        //recherche par tranche
+        //recherche par immeuble
         if (isset($request['immeuble']) && $request['immeuble'] != '-' ) {
-            $tr = $request['immeuble'] ;
-            $appartementsAll = $appartementsAll->where('constructible.immeuble_id', $tr); 
+            $imm = $request['immeuble'] ;
+            $appartementsAll = $appartementsAll->where('constructible.immeuble_id', $imm); 
         }
 
         //recherche par nombre de façades
@@ -118,12 +122,15 @@ class AppartementController extends Controller
             'totalappartements'         => $appartementsAll->count(),
             'immeubles'                 =>Immeuble::all(),
             'etiquettes'                =>Etiquette::all(),
+            'tranches'                  =>Tranche::all(),
             'valeurTotal'               => $prixTotalappartements->sum(),
 
             'appartementsReserved'      => $appartementsReserved,
             'appartementsBlocked'       => $appartementsBlocked,
             'appartementsStocked'       => $appartementsStocked,
             'appartementsR'            => $appartementsR,
+
+            'SearchByTr'           => $request['tranche'] ,
 
             'SearchByImm'           => $request['immeuble'] ,
             'SearchByFacade'        => $request['nombreFacadesappartement'] ,
@@ -133,6 +140,7 @@ class AppartementController extends Controller
             'SearchByMin'     => $request['minPrix'] ,
             'SearchByMax'     => $request['maxPrix'] ,
             'SearchByNum' => $request['numsappartement'] ,
+
             'urlWithQueryString' => $urlWithQueryString
 
         ]);
