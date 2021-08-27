@@ -69,11 +69,25 @@ class AppartementController extends Controller
 
         }
 
-        // //recherche par tranche
-        // if (isset($request['tranche']) && $request['tranche'] != '-' ) {
-        //     $tr = $request['tranche'] ;
-        //     $appartementsAll = $appartementsAll->where('constructible.immeuble_id', $tr); 
-        // }
+
+
+        //recherche par tranche
+        if (isset($request['tranche']) && $request['tranche'] != '-' ) {
+            $tr = $request['tranche'] ;
+
+            $appartementsAll = $appartementsAll->filter(function ($item) use ($tr)  {
+                // foreach ($item->constructible as $appartement) {
+                // $clientSearch .= strtolower(trim($client->cin . ' ' . $client->nom . ' ' . $client->prenom . ' ' ));
+                // }
+
+                    if ($item->constructible->immeuble->tranche_id == $tr) {
+                        return true;
+                    }
+                        return false;
+            });
+
+            //$appartementsAll = $appartementsAll->where('constructible.immeuble_id', $tr); 
+        }
 
         //recherche par immeuble
         if (isset($request['immeuble']) && $request['immeuble'] != '-' ) {
