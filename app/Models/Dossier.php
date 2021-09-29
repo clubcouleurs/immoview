@@ -105,9 +105,18 @@ class Dossier extends Model
 
     public function getHasActeAttribute()
     {       
-        if ($this->produit->constructible_type != 'appartement') {
+        if ($this->produit->constructible_type != 'appartement') {           
             return $this->tauxPaiementV >= 30 ;
         }elseif ($this->produit->constructible_type === 'appartement') {
+            if ($this->produit->constructible->immeuble->tranche->num == 2) {
+                // cette condition et rajoutée en 29/09/2021 par bidouh
+            // 100000 dhs pour les apps en 1er et 2ème Etage & 75000 dhs pour les autres
+            if ($this->produit->constructible->etage == 1 || 
+                    $this->produit->constructible->etage == 2) {
+                return $this->totalPaiementsV >= 100000 ;
+            }
+            }
+            // fin condition rajoutée en 29/09/2021 
             return $this->totalPaiementsV >= 75000 ;
         }
     }  

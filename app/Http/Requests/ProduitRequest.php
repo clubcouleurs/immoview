@@ -30,20 +30,20 @@ class ProduitRequest extends FormRequest
         $idBox = (isset($this->box->id)) ? $this->box->id : Null ;
 
         return [
-            'numLot' => 'sometimes|required|numeric',
-            'numLot' => 'unique:lots,num,'.$idLot,
+            // 'numLot' => 'sometimes|required|numeric',
+            // 'numLot' => 'unique:lots,num,'.$idLot,
 
-            'numApp' => 'sometimes|required|numeric',
-            'numApp' => 'unique:appartements,num,'.$idApp,        
+            // 'numApp' => 'sometimes|required|numeric',
+            // 'numApp' => 'unique:appartements,num,'.$idApp,        
 
-            'numMag' => 'sometimes|required|numeric',
-            'numMag' => 'unique:magasins,num,'.$idMag, 
+            // 'numMag' => 'sometimes|required|numeric',
+            // 'numMag' => 'unique:magasins,num,'.$idMag, 
 
-            'numBur' => 'sometimes|required|numeric',
-            'numBur' => 'unique:offices,num,'.$idBur, 
+            // 'numBur' => 'sometimes|required|numeric',
+            // 'numBur' => 'unique:offices,num,'.$idBur, 
 
-            'numBox' => 'sometimes|required|numeric',
-            'numBox' => 'unique:boxes,num,'.$idBox, 
+            // 'numBox' => 'sometimes|required|numeric',
+            // 'numBox' => 'unique:boxes,num,'.$idBox, 
 
             'surface' => 'sometimes|required|numeric',
             'surfaceApp' => 'sometimes|required|numeric',

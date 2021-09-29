@@ -516,7 +516,7 @@
                       <!-- </a> -->
                             </p>
                             <p class="text-xs text-gray-600 dark:text-gray-400">
-                              Imm. {{ $produit->constructible->immeuble_id }}
+                              Imm. {{ $produit->constructible->immeuble->num }} | Tr. {{ $produit->constructible->immeuble->tranche->num }}
                             </p>
                           </div>
                         </div>
