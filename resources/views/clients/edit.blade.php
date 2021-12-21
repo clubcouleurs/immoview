@@ -132,8 +132,12 @@ id: this.logos.length +1,
             class="inline-block align-middle absolute text-md shadow-xs font-bold text-white top-0 right-0
             bg-red-600 w-6 h-6 transform translate-x-2 -translate-y-2 rounded-full"
             >X</span></button>
-
-            <img src="{{asset($client->cinPj)}}" width="250" class="px-2 py-2 w-48 border border-blue-400 shadow-lg rounded-lg mb-2">
+            
+            @if(substr($client->cinPj,-3) == 'pdf')
+              <img class="h-8" src="{{asset('pdf.png')}}">
+            @else
+              <img src="{{asset($client->cinPj)}}" width="250" class="px-2 py-2 w-48 border border-blue-400 shadow-lg rounded-lg mb-2">
+            @endif
    
         </section>
           <section x-show="logos.length">

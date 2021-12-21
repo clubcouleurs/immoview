@@ -23,7 +23,7 @@
                 <input
                   class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
                   placeholder=""
-                  type="number"
+                  type="text"
                   name="numMag"
                   required
                   value="{{$magasin->num}}"
@@ -68,7 +68,23 @@
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror
               </label> 
+              <label class="block mt-4 text-sm">
+                <span class="text-gray-700 dark:text-gray-400">Surface Sous-Sol en m2</span>
+                <input
+                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                  placeholder=""
+                  type="number"
+                  step="0.01"
+                  name="surfaceSousSol"
+                  value="{{$magasin->surfaceSousSol }}"
 
+                  required
+                />
+                    @error('surfaceSousSol')
+                    <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
+                    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
+                    @enderror
+              </label>  
               <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">
                   Ce magasin est sur les voie : 
@@ -133,7 +149,7 @@
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror
               </label>  
-
+              <!--
               <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">Prix au m2 définitif</span>
                 <input
@@ -150,7 +166,7 @@
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror
               </label>  
-
+              -->
               
               @isset($magasin->produit->dossier)
               <div

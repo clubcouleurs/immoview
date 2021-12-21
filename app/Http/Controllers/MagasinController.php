@@ -67,10 +67,26 @@ class MagasinController extends Controller
 
         $magasinsAll = $magasinsAll->whereBetween('prixM2Indicatif', [$minPrix, $maxPrix] ); 
 
+
         //recherche par tranche
+        if (isset($request['tranche']) && $request['tranche'] != '-' ) {
+            $tr = $request['tranche'] ;
+
+            $magasinsAll = $magasinsAll->filter(function ($item) use ($tr)  {
+
+                    if ($item->constructible->immeuble->tranche_id == $tr) {
+                        return true;
+                    }
+                        return false;
+            });
+
+            //$appartementsAll = $appartementsAll->where('constructible.immeuble_id', $tr); 
+        }
+
+        //recherche par immeuble
         if (isset($request['immeuble']) && $request['immeuble'] != '-' ) {
-            $tr = $request['immeuble'] ;
-            $magasinsAll = $magasinsAll->where('constructible.immeuble_id', $tr); 
+            $imm = $request['immeuble'] ;
+            $magasinsAll = $magasinsAll->where('constructible.immeuble_id', $imm); 
         }
 
         //recherche par nombre de façades
@@ -112,7 +128,7 @@ class MagasinController extends Controller
             'immeubles'              =>Immeuble::all(),
             'etiquettes'            =>Etiquette::all(),
             'valeurTotal'           => $prixTotalappartements->sum(),
-
+            'tranches'                  =>Tranche::all(),
             'magasinsReserved'       => $magasinsReserved,
             'magasinsBlocked'        => $magasinsBlocked,
             'magasinsStocked'        => $magasinsStocked,
@@ -125,7 +141,7 @@ class MagasinController extends Controller
             'SearchByMin'           => $request['minPrix'] ,
             'SearchByMax'           => $request['maxPrix'] ,
             'SearchByNum'           => $request['numsappartement'] ,
-
+            'SearchByTr'           => $request['tranche'] ,
         ]);
     }
 
@@ -159,12 +175,11 @@ class MagasinController extends Controller
         }         
         $immeuble = Immeuble::findOrFail($request['immeuble']) ;
         $etiquette = Etiquette::findOrFail($request['etatProduit']) ;
-
-
         $Magasin = new Magasin() ;
         $Magasin->num               = $request['numMag'];
         $Magasin->surfacePlancher        = $request['surfacePlancher'];
         $Magasin->surfaceMezzanine   = $request['surfaceMezzanine'];
+        $Magasin->surfaceSousSol   = $request['surfaceSousSol'];
         $Magasin->description       = $request['description'];
         $Magasin->save();
         $immeuble->magasins()->save($Magasin) ;
@@ -231,7 +246,7 @@ class MagasinController extends Controller
 
         if ($magasin->produit->dossier == null) {
             
-            $magasin->produit->etiquette_id      = $request['etatProduit'];  
+            $magasin->produit->etiquette_id = $request['etatProduit'];  
             
         }
         // controller si l'utilisateur a le droit de modifier le prix indicatif
@@ -241,7 +256,7 @@ class MagasinController extends Controller
 
         }
 
-        $magasin->produit->etiquette_id      = $request['etatProduit']; 
+        
         $magasin->produit->prixM2Definitif  = $request['prixM2Definitif'];
         $magasin->produit->update() ;
         $magasin->produit->voies()->detach() ; 

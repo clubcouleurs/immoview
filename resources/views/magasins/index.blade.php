@@ -184,7 +184,22 @@
                   class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-2xl active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue"
                   href="/magasins/"
                 >Tout</a>
-
+                <select
+                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
+                  name="tranche"
+                >
+                  <option value="-">Tranche</option>
+                
+                @foreach($tranches as $tranche)
+                  <option value="{{$tranche->id}}"
+                    @if ( $SearchByTr == $tranche->id)
+                    selected
+                    @endif
+                    >Tranche {{$tranche->num}}
+                  </option>
+                @endforeach
+                </select>
+                
                 <select
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
                   name="immeuble"
@@ -380,9 +395,11 @@
                     >
                       <th class="px-4 py-3">N° du magasin</th>
                       <th class="px-4 py-3">Surface en m2</th>
+                      <th class="px-4 py-3">Surface Vendable en m2</th>
+
                       <th class="px-4 py-3">Prix m2 Indicatif</th>
                       
-                      <th class="px-4 py-3">Prix m2 Définitif</th>
+                      
                       <th class="px-4 py-3">Nombre de façades</th>
                       <th class="px-4 py-3">Etat</th>
                       <th class="px-4 py-3">Actions</th>
@@ -449,22 +466,27 @@
                         {{ $produit->constructible->surface }} m<sup>2</sup>
                             <p class="text-xs text-gray-600 dark:text-gray-400">
                               Plancher. {{ $produit->constructible->surfacePlancher }} m<sup>2</sup> | 
-                              Mez. {{ $produit->constructible->surfaceMezzanine }} m<sup>2</sup>  
+                              Mez. {{ $produit->constructible->surfaceMezzanine }} m<sup>2</sup> | 
+                              Mez. {{ $produit->constructible->surfaceSousSol }} m<sup>2</sup>    
 
                             </p>                        
                       </td>
+                      <td class="px-4 py-3 text-sm">
 
+                        {{ $produit->constructible->surfaceVendable }} m<sup>2</sup>
+                     
+                      </td>
                       <td class="px-4 py-3 text-xs">
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
                         >
-                          {{ $produit->prixM2Indicatif }} Dhs
+                          {{ numberFormat($produit->prixM2Indicatif) }} Dhs
                         </span>
                             <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">
                               Total : {{ numberFormat($produit->totalIndicatif)}} Dhs
                             </p>                        
                       </td>
-                      <td class="px-4 py-3 text-xs">
+                      <!--<td class="px-4 py-3 text-xs">
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
                         >
@@ -473,7 +495,7 @@
                             <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">
                               Total : {{ numberFormat($produit->totalDefinitif)}} Dhs
                             </p>                         
-                      </td>                                                                  
+                      </td>-->                                                             
                       <td class="px-4 py-3 text-xs">
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"

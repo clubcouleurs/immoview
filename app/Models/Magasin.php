@@ -33,7 +33,13 @@ class Magasin extends Model
     
     public function getSurfaceAttribute()
     {
-        return $this->surfacePlancher + $this->surfaceMezzanine ;
+        return $this->surfacePlancher + $this->surfaceMezzanine + $this->surfaceSousSol ;
+
+    }
+
+    public function getSurfaceVendableAttribute()
+    {
+        return $this->surfacePlancher + ($this->surfaceMezzanine/2)+ $this->surfaceSousSol ;
 
     }
 

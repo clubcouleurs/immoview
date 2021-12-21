@@ -573,7 +573,11 @@
                           <a href="{{ $dossier->produit->constructible_type }}s/{{ $dossier->produit->constructible->id }}/edit">
                           {{ ucfirst($dossier->produit->constructible_type) }} N°
                           {{ $dossier->produit->constructible->num }}
-                        </a>                              
+                          <p class="mb-2 text-xs font-semibold text-gray-600 dark:text-gray-400">
+                          Tranche {{ $dossier->produit->tranche }} 
+                        </p>
+                          
+                        </a>
 
                       </p>
                           @if(!$dossier->isVente)

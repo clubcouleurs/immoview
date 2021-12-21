@@ -22,7 +22,7 @@
                 <input
                   class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
                   placeholder=""
-                  type="number"
+                  type="text"
                   name="numMag"
                   value="{{old('numMag')}}"
                   required
@@ -66,7 +66,24 @@
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror
-              </label>              
+              </label>
+              <label class="block mt-4 text-sm">
+                <span class="text-gray-700 dark:text-gray-400">Surface Sous-Sol en m2</span>
+                <input
+                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                  placeholder=""
+                  type="number"
+                  step="0.01"
+                  name="surfaceSousSol"
+                  value="{{old('surfaceSousSol')}}"
+
+                  required
+                />
+                    @error('surfaceSousSol')
+                    <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
+                    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
+                    @enderror
+              </label>               
               <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">
                   Ce Magasin est sur les voie : 
@@ -120,7 +137,7 @@
      
 
               <label class="block mt-4 text-sm">
-                <span class="text-gray-700 dark:text-gray-400">Prix au m2 indicatif</span>
+                <span class="text-gray-700 dark:text-gray-400">Prix au m2</span>
                 <input
                   class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
                   placeholder=""
@@ -136,7 +153,7 @@
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror
               </label>  
-
+              <!--
               <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">Prix au m2 définitif</span>
                 <input
@@ -152,13 +169,12 @@
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror
-              </label>  
-
+              </label>  -->
             
               <div class="mt-4 text-sm">
 
                 <span class="text-gray-700 dark:text-gray-400">
-                  Etat de l'appartement
+                  Etat du Magasin
                 </span>
                 <div class="mt-2">
                                 <label class="block text-sm">
@@ -182,9 +198,6 @@
                                 
                 </div>
               </div>
-
-
-
 
               <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">Description & Observations</span>

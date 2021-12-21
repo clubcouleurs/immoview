@@ -177,7 +177,11 @@ class Produit extends Model
         if ($this->constructible->type === 'Economique')
         {
             return 250000 ;
-        }        
+        }
+        if($this->constructible_type === 'magasin')
+        {
+            return $this->prixM2Indicatif * $this->constructible->surfaceVendable ;
+        }
         return $this->prixM2Indicatif * $this->constructible->surface ;
     }     
     public function getTotalAttribute()
@@ -186,7 +190,10 @@ class Produit extends Model
         {
             return 250000 ;
         }
-
+        if($this->constructible_type === 'magasin')
+        {
+            return $this->prix * $this->constructible->surfaceVendable ;
+        }
         return $this->prix * $this->constructible->surface ;
     }  
 
