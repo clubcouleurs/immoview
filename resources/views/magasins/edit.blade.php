@@ -122,7 +122,7 @@
                       @if ($magasin->immeuble_id == $immeuble->id)
                         selected
                       @endif                    
-                    >Imm. {{$immeuble->id}}</option>
+                    >Imm. {{$immeuble->num}}</option>
                 @endforeach
 
                 </select>
