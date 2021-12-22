@@ -34,7 +34,7 @@ class MagasinController extends Controller
                             ->withCount('voies')
                             ->orderByDesc('created_at')
                             ->get();
-        $magasinsAll = $magasinsAll->sortBy('constructible.num') ;
+        $magasinsAll = $magasinsAll->sortBy('constructible.id') ;
                             
         $magasinsReserved = $magasinsAll->where('etiquette_id', 3)->count() ;
         $magasinsStocked = $magasinsAll->where('etiquette_id', 2)->count() ;
@@ -265,6 +265,7 @@ class MagasinController extends Controller
         $magasin->num               = $request['numMag'];
         $magasin->surfacePlancher   = $request['surfacePlancher'];
         $magasin->surfaceMezzanine  = $request['surfaceMezzanine'];
+        $magasin->surfaceSousSol   = $request['surfaceSousSol'];
         $magasin->description       = $request['description'];
         $magasin->update();
         $immeuble->magasins()->save($magasin) ;

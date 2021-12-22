@@ -169,7 +169,10 @@ class Produit extends Model
         {
             return 250000 ;
         }
-
+        if($this->constructible_type === 'magasin')
+        {
+            return $this->prixM2Indicatif * $this->constructible->surfaceVendable ;
+        }
         return $this->prixM2Definitif * $this->constructible->surface ;
     } 
     public function getTotalIndicatifAttribute()
