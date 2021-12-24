@@ -160,7 +160,10 @@ class Produit extends Model
             return round(250000 / $this->constructible->surface) ;
         }
       
-        $prix = ($this->prixM2Definitif === 0 || $this->prixM2Definitif == Null) ? $this->prixM2Indicatif : $this->prixM2Definitif ;
+        $prix = ($this->prixM2Definitif == 0 || $this->prixM2Definitif == Null)
+                    ? $this->prixM2Indicatif
+                    : $this->prixM2Definitif ;
+
         return $prix ;
     }
     public function getTotalDefinitifAttribute()

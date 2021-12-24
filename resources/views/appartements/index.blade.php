@@ -6,7 +6,10 @@
               <h2
                 class="my-6 text-4xl font-semibold text-black dark:text-gray-200"
               >
-                Récapitulatif des appartements
+                Récapitulatif des Appartements 
+                @if ($standing == 1)
+                Standing
+                @endif
               </h2>
             </div>
             <div class="flex justify-between">
@@ -196,8 +199,9 @@
               <div class="flex items-center gap-2">
                 <a
                   class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-2xl active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue"
-                  href="/appartements/"
+                  href="/appartements?standing={{$standing}}"
                 >Tout</a>
+                <input type="hidden" name="standing" value="{{$standing}}"/>
 
                 <select
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"

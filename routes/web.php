@@ -62,6 +62,7 @@ Route::get('visites/export/', [VisiteController::class, 'export'])->middleware('
 Route::get('clients/export/', [ClientController::class, 'export'])->middleware('can:export finance');
 
 Route::get('appartements/export/', [AppartementController::class, 'export'])->middleware('can:voir appartements');
+Route::get('magasins/export/', [MagasinController::class, 'export'])->middleware('can:voir magasins');
 
 //Route::get('/{constructible?}/{tranche?}/dossiers', [DossierController::class, 'index']);
 

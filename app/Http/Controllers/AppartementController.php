@@ -15,6 +15,8 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Database\Eloquent\Builder;
+
 
 class AppartementController extends Controller
 {
@@ -29,15 +31,35 @@ class AppartementController extends Controller
     {
         if (! Gate::allows('voir appartements')) {
                 abort(403);
-        }           
-        $appartementsAll = Produit::with('constructible')
-                            ->where('constructible_type','appartement')
-                            ->with('etiquette')
-                            ->withCount('voies')
-                            ->orderByDesc('created_at')
-                            ->get();
-        $appartementsAll = $appartementsAll->sortBy('constructible.num') ;
+        }
+        if(isset($request['standing']) && $request['standing'] == 1 )
+        {
+            $appartementsAll = Produit::with('constructible')
+                                ->where('constructible_type','appartement')
+                                ->whereHasMorph(
+                                    'constructible',
+                                                [Appartement::class],
+                                                function (Builder $qu) 
+                                            {
+                                                $qu->where('type', 'Standing');
 
+                                            }
+                                )
+                                ->with('etiquette')
+                                ->withCount('voies')
+                                ->orderByDesc('created_at')
+                                ->get();            
+        }
+        else
+        {
+            $appartementsAll = Produit::with('constructible')
+                                ->where('constructible_type','appartement')
+                                ->with('etiquette')
+                                ->withCount('voies')
+                                ->orderByDesc('created_at')
+                                ->get();
+        }
+        $appartementsAll = $appartementsAll->sortBy('constructible.num') ;
         $appartementsReserved = $appartementsAll->where('etiquette_id', 3)->count() ;
         $appartementsStocked = $appartementsAll->where('etiquette_id', 2)->count() ;
         $appartementsR = $appartementsAll->where('etiquette_id', 9)->count() ;
@@ -154,7 +176,7 @@ class AppartementController extends Controller
             'SearchByMin'     => $request['minPrix'] ,
             'SearchByMax'     => $request['maxPrix'] ,
             'SearchByNum' => $request['numsappartement'] ,
-
+            'standing' => $request['standing'] ,
             'urlWithQueryString' => $urlWithQueryString
 
         ]);

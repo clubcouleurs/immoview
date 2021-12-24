@@ -66,7 +66,13 @@ function data() {
     isAppartementsMenuOpen: false,
     toggleAppartementsMenu() {
       this.isAppartementsMenuOpen = !this.isAppartementsMenuOpen
-    },    
+    },
+
+    isStandingMenuOpen: false,
+    toggleStandingMenu() {
+      this.isStandingMenuOpen = !this.isStandingMenuOpen
+    },  
+
     isMagasinsMenuOpen: false,
     toggleMagasinsMenu() {
       this.isMagasinsMenuOpen = !this.isMagasinsMenuOpen

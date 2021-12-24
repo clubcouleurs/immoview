@@ -11,6 +11,7 @@ use App\Models\Dossier;
 use App\Models\Produit;
 use App\Models\Tranche;
 use App\Models\User;
+use App\Models\Appartement;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -91,6 +92,12 @@ class DossierController extends Controller
     {
 
         $constructible = $request['constructible'] ;
+
+        if ($constructible == 'appartement' && isset($request['type']) && !is_null($request['type']))
+        {
+            $typeApp = $request['type'] ;
+        }
+
         if (Gate::none(['voir dossiers ' . p($constructible), 'voir ses propres dossiers'])) {
             abort(403);
         }
@@ -100,13 +107,26 @@ class DossierController extends Controller
         $tranchesArray = ($tranche == null) ? $tranches->pluck('id')->toArray() : [$tranche] ;
         $constructiblesArray = ($constructible == null) ?
                     ['lot','appartement','box','magasin','bureau'] : [$constructible] ;
+          if ($constructible == 'appartement' && isset($request['type']) && !is_null($request['type']))
+            {
+                $All = Produit::with('constructible')
+                                    ->whereIn('constructible_type', $constructiblesArray)
+                                    ->whereHasMorph('constructible',
+                                                [Appartement::class],
+                                                function (Builder $qu) use ($typeApp)
+                                            {
+                                                $qu->where('type', $typeApp);
 
-
-        $All = Produit::with('constructible')
-                            ->whereIn('constructible_type', $constructiblesArray)
-                            ->with('etiquette')
-                            ->get();
-
+                                            })                                    
+                                    ->with('etiquette')
+                                    ->get();
+            }else
+            {
+                $All = Produit::with('constructible')
+                                    ->whereIn('constructible_type', $constructiblesArray)
+                                    ->with('etiquette')
+                                    ->get();                
+            }
         $reserved = $All->where('etiquette_id', 3)->count() ;
         $stocked = $All->where('etiquette_id', 2)->count() ;
         $r = $All->where('etiquette_id', 9)->count() ;
@@ -114,6 +134,28 @@ class DossierController extends Controller
 
 
         if (Gate::allows('voir dossiers ' . p($constructible))) {
+        if ($constructible == 'appartement' && isset($request['type']) && !is_null($request['type']))
+        {
+        $dossiersAll = Dossier::whereHas('produit', function (Builder $query) use ($typeApp, $constructiblesArray)
+                            {
+                                $query->whereIn('constructible_type', $constructiblesArray)
+                                ->whereHasMorph('constructible',
+                                            [Appartement::class],
+                                            function (Builder $qu) use ($typeApp)
+                                        {
+                                            $qu->where('type', $typeApp);
+
+                                        })
+                                ;
+                            })
+                            ->with('produit')
+                            ->with('delais')
+                            ->with('clients')
+                            ->with('paiements')->orderbyDesc('created_at')
+                            ->get(); 
+                        }
+                        else
+                        {
         $dossiersAll = Dossier::whereHas('produit', function (Builder $query) use ($constructiblesArray)
                             {
                                 $query->whereIn('constructible_type', $constructiblesArray);
@@ -122,9 +164,25 @@ class DossierController extends Controller
                             ->with('delais')
                             ->with('clients')
                             ->with('paiements')->orderbyDesc('created_at')
-                            ->get(); 
+                            ->get();                             
+                        }
         }
         elseif(Gate::allows('voir ses propres dossiers'))
+        {
+          if ($constructible == 'appartement' && isset($request['type'])  && !is_null($request['type']))
+            {
+        $dossiersAll = Dossier::where('user_id' , Auth::user()->id)->
+        whereHas('produit', function (Builder $query) use ($constructiblesArray)
+                            {
+                                $query->whereIn('constructible_type', $constructiblesArray);
+                            })
+                            ->with('produit')
+                            ->with('delais')
+                            ->with('clients')
+                            ->with('paiements')->orderbyDesc('created_at')
+                            ->get();                
+            }
+        else
         {
         $dossiersAll = Dossier::where('user_id' , Auth::user()->id)->
         whereHas('produit', function (Builder $query) use ($constructiblesArray)
@@ -135,7 +193,8 @@ class DossierController extends Controller
                             ->with('delais')
                             ->with('clients')
                             ->with('paiements')->orderbyDesc('created_at')
-                            ->get();           
+                            ->get();
+            }
         }
         //recherche par taux de paiement
         if (isset($request['sign']) && $request['sign'] != '' ) {
@@ -365,6 +424,7 @@ class DossierController extends Controller
             'SearchByClient'        => $request['client'] ,
             'SearchByLitige' => $request['litige'],
             'constructible'         => $constructible ,
+            'type' => $request['type'],
             'reserved' => $reserved , 
             'stocked' => $stocked , 
             'r' => $r , 

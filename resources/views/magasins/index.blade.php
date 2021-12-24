@@ -1,11 +1,24 @@
 <x-master>
       <main class="h-full overflow-y-auto">
           <div class="container px-6 mx-auto grid">
+                        <div class="flex justify-between">
+
             <h2
               class="my-6 text-4xl font-semibold text-gray-700 dark:text-gray-200"
             >
               Récapitulatif des magasins
             </h2>
+                        <div class="flex justify-between">
+              <div class="my-6 mr-2">
+              <a href="/magasins/export{{$urlWithQueryString}}">
+                <img class="h-6" src="{{asset('excel.png')}}">
+              </a>
+            </div>
+              <div class="my-6">
+                <img class="h-6" src="{{asset('printer.png')}}" onclick="window.print()">
+            </div>  
+            </div>   
+          </div>
 <hr>  
             <!-- Cards -->
             <div class="grid gap-6 mb-2 md:grid-cols-2 xl:grid-cols-6">
@@ -395,11 +408,8 @@
                     >
                       <th class="px-4 py-3">N° du magasin</th>
                       <th class="px-4 py-3">Surface en m2</th>
-                      <th class="px-4 py-3">Surface Vendable en m2</th>
-
-                      <th class="px-4 py-3">Prix m2 Indicatif</th>
-                      
-                      
+                      <!--<th class="px-4 py-3">Surface Vendable en m2</th>-->
+                      <th class="px-4 py-3">Total</th>
                       <th class="px-4 py-3">Nombre de façades</th>
                       <th class="px-4 py-3">Etat</th>
                       <th class="px-4 py-3">Actions</th>
@@ -428,8 +438,6 @@
                     text-gray-700 dark:text-gray-400">
                       <td class="px-4 py-3">
                         <div class="flex items-center text-sm">
-
-                          <!-- Avatar with inset shadow -->
                           <div
                             class="relative hidden w-8 h-8 mr-3 rounded-full md:block"
                           >
@@ -456,7 +464,7 @@
                       <!-- </a> -->
                             </p>
                             <p class="text-xs text-gray-600 dark:text-gray-400">
-                              Imm. {{ $produit->constructible->immeuble_id }}
+                              Imm. {{ $produit->constructible->immeuble->num }}
                             </p>
                           </div>
                         </div>
@@ -465,26 +473,24 @@
 
                         {{ $produit->constructible->surface }} m<sup>2</sup>
                             <p class="text-xs text-gray-600 dark:text-gray-400">
-                              Plancher. {{ $produit->constructible->surfacePlancher }} m<sup>2</sup> | 
+                              RDC. {{ $produit->constructible->surfacePlancher }} m<sup>2</sup> | 
                               Mez. {{ $produit->constructible->surfaceMezzanine }} m<sup>2</sup> | 
-                              Mez. {{ $produit->constructible->surfaceSousSol }} m<sup>2</sup>    
+                              Sous-Sol. {{ $produit->constructible->surfaceSousSol }} m<sup>2</sup>    
 
                             </p>                        
                       </td>
-                      <td class="px-4 py-3 text-sm">
+                      <!--<td class="px-4 py-3 text-sm">
 
                         {{ $produit->constructible->surfaceVendable }} m<sup>2</sup>
                      
-                      </td>
+                      </td>-->
                       <td class="px-4 py-3 text-xs">
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
                         >
-                          {{ numberFormat($produit->prixM2Indicatif) }} Dhs
+                          Total : {{ numberFormat($produit->totalIndicatif)}} Dhs
                         </span>
-                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                              Total : {{ numberFormat($produit->totalIndicatif)}} Dhs
-                            </p>                        
+                     
                       </td>
                       <!--<td class="px-4 py-3 text-xs">
                         <span

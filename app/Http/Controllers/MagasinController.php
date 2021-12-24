@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\MagasinsExport;
 use App\Http\Controllers\MagasinController;
 use App\Http\Requests\ProduitRequest;
 use App\Http\Traits\PaginateTrait;
@@ -13,6 +14,7 @@ use App\Models\Tranche;
 use App\Models\Voie;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MagasinController extends Controller
 {
@@ -122,6 +124,9 @@ class MagasinController extends Controller
            $magasinsParPage->withPath('/magasins');
            $magasinsParPage->withQueryString() ;
 
+           $urlWithQueryString = $request->fullUrl();
+           $urlWithQueryString = substr($urlWithQueryString, strlen($request->url())) ;           
+
         return view('magasins.index', [
             'magasins'              => $magasinsParPage,
             'totalMagasins'         => $magasinsAll->count(),
@@ -142,7 +147,14 @@ class MagasinController extends Controller
             'SearchByMax'           => $request['maxPrix'] ,
             'SearchByNum'           => $request['numsappartement'] ,
             'SearchByTr'           => $request['tranche'] ,
+             'urlWithQueryString' => $urlWithQueryString
+
         ]);
+    }
+
+    public function export(Request $request) 
+    {
+        return Excel::download(new MagasinsExport($request), 'Etats-Magasins-DSD.xlsx');
     }
 
     /**

@@ -182,7 +182,7 @@
                   class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 
                   {{($tranche->num == $SearchByTranche)? 'bg-yellow-500' : 'bg-gray-400'}}
                   border border-transparent rounded-2xl active:bg-yellow-600 hover:bg-yellow-600 focus:outline-none focus:shadow-outline-yellow"
-                  href="/dossiers?constructible={{$constructible}}&tranche={{$tranche->id}}"
+                  href="/dossiers?constructible={{$constructible}}&tranche={{$tranche->id}}&type=Standing"
                 >Tranche {{$tranche->num}}</a>
                 @endforeach
               </div>
@@ -200,7 +200,7 @@
                 <a
                   class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-2xl active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue"
                   @if(null == $SearchByLitige)
-                    href="/dossiers?constructible={{$constructible}}"
+                    href="/dossiers?constructible={{$constructible}}&type={{$type}}"
                   @else
                     href="/dossiers?constructible={{$constructible}}&litige=1"
                   @endif
@@ -208,6 +208,7 @@
                 <input type="hidden" name="constructible" value="{{$constructible}}"/>
                 <input type="hidden" name="tranche" value="{{$SearchByTranche}}"/>
                 <input type="hidden" name="litige" value="{{$SearchByLitige}}"/>
+                <input type="hidden" name="type" value="{{$type}}"/>
 
 <!-- date picker -->
 <div class="antialiased sans-serif">

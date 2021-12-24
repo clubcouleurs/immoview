@@ -2,7 +2,7 @@
                 <table>
                   <thead>
                     <tr>
-                      <th width="20" bgcolor="#ffdc73">N° du lot</th>
+                      <th width="20" bgcolor="#ffdc73">N° Appartement</th>
                       <th width="20" bgcolor="#ffdc73">Tranche</th>
                          
                       <th width="20" bgcolor="#ffdc73">Surface en m2</th>
