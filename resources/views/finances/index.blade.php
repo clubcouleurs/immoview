@@ -24,7 +24,7 @@
             </h3>
             @if($$constructible->count() == 0)
                         <p class="text-xs text-black mb-4">
-                          Aucune donnée à afficher.
+                          Aucune donnée à afficher {{ $$constructible }}.
                         </p>            
               @continue
             @endif

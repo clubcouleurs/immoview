@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\FinancesExport;
+use App\Models\Appartement;
 use App\Models\Dossier;
 use App\Models\Lot;
 use App\Models\Paiement;
@@ -21,7 +22,7 @@ class FinanceController extends Controller
     public function index()
     {
         //créer un tableau contenant tout les types de constructibles
-        $constructibleArray = ['appartement' ,'lot',  'bureau' , 'magasin' , 'box', 'showroom'] ;
+        $constructibleArray = ['appartement' ,'lot',  'bureau' , 'magasin' , 'box', 'showroom','standing'] ;
 
         //une boucle pour collecter la data selon le type de constructible
         foreach ($constructibleArray as $constructible) {
@@ -38,7 +39,37 @@ class FinanceController extends Controller
                                 )
                             ->with('paiements')
                             ->get();           
-        }elseif($constructible == 'lot')
+        }elseif($constructible == 'standing')
+        {
+            ${$constructible . 'Dossiers'} = Produit::where('constructible_type', 'appartement')
+                            ->with('dossier')
+                            ->with('constructible')
+                            ->whereHasMorph(
+                                    'constructible',
+                                    [Appartement::class],
+                                    function (Builder $query) {
+                                        $query->where('type','Standing');
+                                    }
+                                )
+                            ->with('paiements')
+                            ->get();
+        }
+        elseif($constructible == 'appartement')
+        {
+            ${$constructible . 'Dossiers'} = Produit::where('constructible_type', 'appartement')
+                            ->with('dossier')
+                            ->with('constructible')
+                            ->whereHasMorph(
+                                    'constructible',
+                                    [Appartement::class],
+                                    function (Builder $query) {
+                                        $query->where('type','Economique');
+                                    }
+                                )
+                            ->with('paiements')
+                            ->get();
+        }        
+        elseif($constructible == 'lot')
         {
             ${$constructible . 'Dossiers'} = Produit::where('constructible_type', $constructible)
                             ->with('dossier')
@@ -72,6 +103,7 @@ class FinanceController extends Controller
                  case 'appartement':
                  case 'magasin':
                  case 'box':
+                 case 'standing':
                     ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}
                             ->groupBy('constructible.immeuble.tranche_id');
                      break;
@@ -89,8 +121,8 @@ class FinanceController extends Controller
             return $item->map(function ($item, $key) use ($constructible){
                     return
                     [
-                'totalCA' . $constructible => $item->totalIndicatif ,//$item->totalDefinitif , 
-                'total' . $constructible   => 1 ,
+               'totalCA' . $constructible => $item->totalIndicatif ,//$item->totalDefinitif , 
+               'total' . $constructible   => 1 ,
                'totalSurface'. $constructible => $item->constructible->surface ,
                'totalSurfaceReserve'. $constructible
                             => ($item->dossier !=null && ($item->dossier != null && $item->dossier->isVente == 1) ) ? $item->constructible->surface : 0 ,
@@ -191,11 +223,11 @@ class FinanceController extends Controller
              'totalCA'=> $totalCA, 'CaReserve'=> $CaReserve,
              'tauxRealisationCA' => round(($CaReserve/(($totalCA === 0)? 1:$totalCA) )  * 100 , 2) ,
              'totalPaiementsV'=>$totalPaiementsV, 'avance30' => $avance30,
-             'tauxPaiement' => round(($totalPaiementsV/(($CaReserve === 0)? 1:$CaReserve) )  * 100 , 2) ,
+             'tauxPaiement' => round(($totalPaiementsV/(($CaReserve == 0)? 1:$CaReserve) )  * 100 , 2) ,
              'reliquatDu30Pourcent' => $reliquatDu30Pourcent, 'reliquat' => $reliquat, 'reliquat70Pourcent' => $reliquat70Pourcent]) ; 
 
         //dd(${$constructible. 's' . 'Dossiers'}) ;
-        if ($constructible !== 'showroom')
+        if (!in_array($constructible, ['showroom', 'standing']))
         {
             ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}->mapWithKeys(function ($item, $key) {
                 return ['Tranche '.$key => $item];
@@ -203,10 +235,18 @@ class FinanceController extends Controller
             
         }else
         {
+            if($constructible == 'showroom')
+            {
             ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}->mapWithKeys(function ($item, $key) {
                 return ['Showroom' => $item];
             });
-            }            
+            }elseif($constructible == 'standing')
+            {
+            ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}->mapWithKeys(function ($item, $key) {
+                return ['Standing' => $item];
+            });
+            }
+        }            
         }
 
 
@@ -228,13 +268,14 @@ class FinanceController extends Controller
 
         return view('finances.index',
 
-            ['color' => [ 'green' ,'purple','blue' , 'red' , 'yellow','indigo'], 
+            ['color' => [ 'green' ,'purple','blue' , 'red' , 'yellow','indigo', 'orange'], 
                 'constructibles' => [
                 'Lots' => 'lot',
                 'Appartements'=>'appartement',
                 'Bureaux' => 'bureau',
                 'Magasins' =>'magasin',
                 'Boxes' => 'box',
+                'Standings' => 'standing'
                 //'Showrooms' => 'showroom'
             ]
             ] +
@@ -250,9 +291,9 @@ class FinanceController extends Controller
                                     ['Boxes' => $boxsDossiers] +
 
                                     ['bureau' => $bureauDossiers] +
-                                    ['Bureaux' => $bureausDossiers]// +
-                                    //['showroom' => $showroomDossiers] +
-                                    //['Showrooms' => $showroomsDossiers]                                    
+                                    ['Bureaux' => $bureausDossiers]+
+                                    ['standing' => $standingDossiers] +
+                                    ['Standings' => $standingsDossiers]                                    
 
         ) ;
     }
