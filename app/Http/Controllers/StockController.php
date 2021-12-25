@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\StockExport;
+use App\Models\Appartement;
 use App\Models\Dossier;
 use App\Models\Lot;
 use App\Models\Paiement;
 use App\Models\Produit;
-use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
-
-use App\Exports\StockExport;
+use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
 
@@ -23,7 +23,7 @@ class StockController extends Controller
     public function index()
     {
         //créer un tableau contenant tout les types de constructibles
-        $constructibleArray = ['appartement' ,'lot',  'bureau' , 'magasin' , 'box', 'showroom'] ;
+        $constructibleArray = ['appartement' ,'lot',  'bureau' , 'magasin' , 'box', 'showroom' , 'standing'] ;
 
         //une boucle pour collecter la data selon le type de constructible
         foreach ($constructibleArray as $constructible) {
@@ -39,8 +39,41 @@ class StockController extends Controller
                                     }
                                 )
                             ->with('paiements')
-                            ->get();           
-        }elseif($constructible == 'lot')
+                            ->get();
+
+        }
+        elseif($constructible == 'standing')
+        {
+            ${$constructible . 'Dossiers'} = Produit::where('constructible_type', 'appartement')
+                            ->with('dossier')
+                            ->with('constructible')
+                            ->whereHasMorph(
+                                    'constructible',
+                                    [Appartement::class],
+                                    function (Builder $query) {
+                                        $query->where('type','Standing');
+                                    }
+                                )
+                            ->with('paiements')
+                            ->get();
+        }
+        elseif($constructible == 'appartement')
+        {
+            ${$constructible . 'Dossiers'} = Produit::where('constructible_type', 'appartement')
+                            ->with('dossier')
+                            ->with('constructible')
+                            ->whereHasMorph(
+                                    'constructible',
+                                    [Appartement::class],
+                                    function (Builder $query) {
+                                        $query->where('type','Economique');
+                                    }
+                                )
+                            ->with('paiements')
+                            ->get();
+        }        
+
+        elseif($constructible == 'lot')
         {
             ${$constructible . 'Dossiers'} = Produit::where('constructible_type', $constructible)
                             ->with('dossier')
@@ -74,6 +107,7 @@ class StockController extends Controller
                  case 'appartement':
                  case 'magasin':
                  case 'box':
+                 case 'standing':
                     ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}
                             ->groupBy('constructible.immeuble.tranche_id');
                      break;
@@ -142,7 +176,7 @@ class StockController extends Controller
         ]) ; 
 
         //dd(${$constructible. 's' . 'Dossiers'}) ;
-        if ($constructible !== 'showroom')
+        if (!in_array($constructible, ['showroom', 'standing']))
         {
             ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}->mapWithKeys(function ($item, $key) {
                 return ['Tranche '.$key => $item];
@@ -150,10 +184,18 @@ class StockController extends Controller
             
         }else
         {
+            if($constructible == 'showroom')
+            {
             ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}->mapWithKeys(function ($item, $key) {
                 return ['Showroom' => $item];
             });
-            }            
+            }elseif($constructible == 'standing')
+            {
+            ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}->mapWithKeys(function ($item, $key) {
+                return ['Standing' => $item];
+            });
+            }
+        }            
         }
 
 
@@ -178,7 +220,7 @@ class StockController extends Controller
                 'Bureaux' => 'bureau',
                 'Magasins' =>'magasin',
                 'Boxes' => 'box',
-                //'Showrooms' => 'showroom'
+                'Standings' => 'standing'
             ]
             ] +
             ['appartement' => $appartementDossiers] +
@@ -193,9 +235,9 @@ class StockController extends Controller
                                     ['Boxes' => $boxsDossiers] +
 
                                     ['bureau' => $bureauDossiers] +
-                                    ['Bureaux' => $bureausDossiers]// +
-                                    //['showroom' => $showroomDossiers] +
-                                    //['Showrooms' => $showroomsDossiers]                                    
+                                    ['Bureaux' => $bureausDossiers] +
+                                    ['standing' => $showroomDossiers] +
+                                    ['Standings' => $showroomsDossiers]                                    
 
         ) ;
     }
