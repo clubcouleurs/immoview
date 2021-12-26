@@ -51,14 +51,35 @@ class AppartementsExport implements FromView, WithColumnFormatting, WithMapping,
 	public function view(): View
     {
 
-        $appartementsAll = Produit::with('constructible')
-                            ->where('constructible_type','appartement')
-                            ->with('etiquette')
-                            ->withCount('voies')
-                            ->orderByDesc('created_at')
-                            ->get();
-        $appartementsAll = $appartementsAll->sortBy('constructible.num') ;
+        if(isset($this->request['standing']) && $this->request['standing'] == 1 )
+        {
+            $appartementsAll = Produit::with('constructible')
+                                ->where('constructible_type','appartement')
+                                ->whereHasMorph(
+                                    'constructible',
+                                                [Appartement::class],
+                                                function (Builder $qu) 
+                                            {
+                                                $qu->where('type', 'Standing');
 
+                                            }
+                                )
+                                ->with('etiquette')
+                                ->withCount('voies')
+                                ->orderByDesc('created_at')
+                                ->get();            
+        }
+        else
+        {
+            $appartementsAll = Produit::with('constructible')
+                                ->where('constructible_type','appartement')
+                                ->with('etiquette')
+                                ->withCount('voies')
+                                ->orderByDesc('created_at')
+                                ->get();
+        }
+
+        $appartementsAll = $appartementsAll->sortBy('constructible.num') ;
         $appartementsReserved = $appartementsAll->where('etiquette_id', 3)->count() ;
         $appartementsStocked = $appartementsAll->where('etiquette_id', 2)->count() ;
         $appartementsR = $appartementsAll->where('etiquette_id', 9)->count() ;
