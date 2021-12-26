@@ -111,7 +111,7 @@
                     @if(old('immeuble') == $immeuble->id)
                       selected
                     @endif                    
-                    >Immeuble {{$immeuble->id}}</option>
+                    >Immeuble {{$immeuble->num}}</option>
                 @endforeach
 
                 </select>

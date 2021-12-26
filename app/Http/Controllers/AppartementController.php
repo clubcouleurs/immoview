@@ -143,6 +143,7 @@ class AppartementController extends Controller
 
         $total = 0 ;
            $prixTotalappartements = $appartementsAll->map(function ($item, $key) use ($total) {
+               //return $item->constructible->surfaceTerrasse;
                return $total = $total + $item->totalIndicatif;
         });
 

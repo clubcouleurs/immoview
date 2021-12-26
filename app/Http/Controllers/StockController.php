@@ -236,8 +236,8 @@ class StockController extends Controller
 
                                     ['bureau' => $bureauDossiers] +
                                     ['Bureaux' => $bureausDossiers] +
-                                    ['standing' => $showroomDossiers] +
-                                    ['Standings' => $showroomsDossiers]                                    
+                                    ['standing' => $standingDossiers] +
+                                    ['Standings' => $standingsDossiers]                                    
 
         ) ;
     }

@@ -172,6 +172,10 @@ class Produit extends Model
         {
             return 250000 ;
         }
+        if ($this->constructible->type === 'Standing')
+        {
+            return $this->prixM2Definitif * ($this->constructible->surfaceApp + ($this->constructible->surfaceTerrasse/2)) ;
+        }          
         if($this->constructible_type === 'magasin')
         {
             return $this->prixM2Indicatif * $this->constructible->surfaceVendable ;
@@ -184,6 +188,11 @@ class Produit extends Model
         {
             return 250000 ;
         }
+        if ($this->constructible->type === 'Standing')
+        {
+            return $this->prixM2Indicatif * ($this->constructible->surfaceApp + ($this->constructible->surfaceTerrasse/2)) ;
+        }
+        
         if($this->constructible_type === 'magasin')
         {
             return $this->prixM2Indicatif * $this->constructible->surfaceVendable ;
@@ -196,6 +205,10 @@ class Produit extends Model
         {
             return 250000 ;
         }
+        if ($this->constructible->type === 'Standing')
+        {
+            return $this->prix * ($this->constructible->surfaceApp + ($this->constructible->surfaceTerrasse/2)) ;
+        }         
         if($this->constructible_type === 'magasin')
         {
             return $this->prix * $this->constructible->surfaceVendable ;
