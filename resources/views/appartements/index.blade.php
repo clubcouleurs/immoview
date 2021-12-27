@@ -335,118 +335,6 @@
             </div>
               </form>
 
-              <!-- actions groupées -->
-<!--               <p class="text-sm text-gray-600 dark:text-gray-400 ml-2 mb-2">Actions groupées</p>   
-          <form action="/appartements/" method="POST">
-            @csrf
-            @method('PATCH')
-            <input type="hidden" name="SearchByNum" value="{{ $SearchByNum }}">
-            <div
-              class="flex items-center justify-between p-2 mb-8 text-sm font-semibold text-red-600 bg-red-100 rounded-lg shadow-sm focus:outline-none focus:shadow-outline-blue rounded-2xl"
-              
-            >
-              <div class="flex items-center gap-2">
-               
-
-                <select
-                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
-                  name="immeuble"
-                >
-                  <option value="-">Immeuble</option>
-                
-                @foreach($immeubles as $immeuble)
-                  <option value="{{$immeuble->id}}"
-                    @if ( $SearchByImm == $immeuble->id)
-                    selected
-                    @endif
-                    >Tr {{$immeuble->id}}
-                  </option>
-                @endforeach
-
-
-                </select>
-                <select
-                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
-                  name="nombreFacadesappartement"
-                >
-                  <option value="-">Façades </option>
-
-                  @for ($i = 0; $i < 3; $i++)
-                  <option value="{{$i+1}}"
-                    @if ( $SearchByFacade == ($i+1) )
-                    selected
-                    @endif
-                    >{{$i+1}} Façade(s)
-                  </option>
-                @endfor
-
-                </select>        
-                <select
-                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
-                  name="nombreEtagesappartement"
-                >
-                  <option value="-">Etages</option>
-                
-                  <option value="1" @if ( $SearchByEtage == 1) selected @endif>R+1</option>
-                  <option value="2" @if ( $SearchByEtage == 2) selected @endif>R+2</option>
-                  <option value="3" @if ( $SearchByEtage == 3) selected @endif>R+3</option>
-              
-                </select>
-                <select
-                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
-                  name="etatProduit"
-                >
-                  <option value="-">Etat</option>
-                
-                
-                @foreach($etiquettes as $etiquette)
-                  <option value="{{$etiquette->id}}"
-                    @if ( $SearchByEtat == $etiquette->id)
-                    selected
-                    @endif
-                    > {{$etiquette->label}}
-                  </option>
-                @endforeach
-              
-                </select>
-                <select
-                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
-                  name="typeappartement"
-                >
-                  <option value="-">Type</option>
-                
-                  <option value="Habitat"  @if ( $SearchByType == "Habitat") selected @endif>Habitat</option>
-                  <option value="Commercial" @if ( $SearchByType == "Commercial") selected @endif>Commercial</option>              
-                </select> 
-                <input
-                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input rounded-2xl"
-                  placeholder="prix min"
-                  type="number"
-                  step="0.1"
-                  name="minPrix"
-                  value={{$SearchByMin}}
-                />
-                <input
-                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input rounded-2xl"
-                  placeholder="prix max"
-                  type="number"
-                  step="0.1"
-                  name="maxPrix"
-                  value={{$SearchByMax}}
-                />
-
-
-                            <button
-                  class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-2xl active:bg-red-600 hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
-                  type="submit"
-                >
-                  Appliquer
-                </button>
-
-              </div>
-            </div>
-              </form>   -->            
-
             <!-- New Table -->
             <div class="w-full overflow-hidden rounded-lg shadow-xs">
               <div class="w-full overflow-x-auto">
@@ -457,9 +345,9 @@
                     >
                       <th class="px-4 py-3">N° du appartement</th>
                       <th class="px-4 py-3">Surface en m2</th>
+
                       <th class="px-4 py-3">Prix m2 Indicatif</th>
-                      
-                      <th class="px-4 py-3">Prix m2 Définitif</th>
+                      <!--<th class="px-4 py-3">Prix m2 Définitif</th>-->
                       <th class="px-4 py-3">Nombre de façades</th>
                       <th class="px-4 py-3">Etage</th>
                       <th class="px-4 py-3">Etat</th>
@@ -534,9 +422,16 @@
 
                         
                       </td>
-                      @if($produit->constructible->type === "Economique")
-
-                      @endif
+                      @if($produit->constructible->type === "Standing")
+                      <td class="px-4 py-3 text-xs">
+                        <span
+                          class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
+                        >
+                          {{ number_format($produit->totalIndicatif)}} Dhs
+                        </span>
+                      
+                      </td>
+                      @else
                       <td class="px-4 py-3 text-xs">
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
@@ -547,8 +442,8 @@
                               Total : {{ number_format($produit->totalIndicatif)}} Dhs
                             </p>                        
                       </td>
-
-                      <td class="px-4 py-3 text-xs">
+                      @endif
+                      <!--<td class="px-4 py-3 text-xs">
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
                         >
@@ -557,8 +452,7 @@
                             <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">
                               Total : {{ number_format($produit->totalDefinitif)}} Dhs
                             </p>                         
-                      </td>  
-
+                      </td>-->
 
                       <td class="px-4 py-3 text-xs">
                         <span
