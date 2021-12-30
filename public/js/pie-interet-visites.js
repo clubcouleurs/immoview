@@ -12,11 +12,11 @@ const pieConfigInteret = {
          * These colors come from Tailwind CSS palette
          * https://tailwindcss.com/docs/customizing-colors/#default-color-palette
          */
-        backgroundColor: ['#eb1629', '#004fa4', '#1fd5ed', '#ff85d8' , '#d8d4ea'],
+        backgroundColor: ['#eb1629', '#004fa4', '#1fd5ed', '#ff85d8' , '#FFA500'],
         label: 'Dataset 1',
       },
     ],
-    labels: ['Lots', 'Appartements', 'Magasins','Bureaux', 'Boxes'],
+    labels: ['Lots', 'Appartements', 'Magasins','Bureaux', 'Standing'],
   },
   options: {
     responsive: true,

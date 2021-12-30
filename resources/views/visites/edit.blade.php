@@ -167,7 +167,7 @@
 <div 
  x-data="{
                     isOpen: false,
-                    @if ($visite->interet!=null && in_array($visite->interet, ['box','magasin','bureau']))
+                    @if ($visite->interet!=null && in_array($visite->interet, ['magasin','bureau']))
                       isOpen : true,
                       @else
                       isOpen : false,
@@ -258,9 +258,9 @@
                       @if ($visite->interet == "box")
                         checked
                       @endif      
-                      x-on:click="isOpen = true"
+                      x-on:click="isOpen = false"
                     />
-                    <span class="ml-2">Box</span>
+                    <span class="ml-2">Standing</span>
                   </label>                                                      
                 </div>
               </div>

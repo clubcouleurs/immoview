@@ -154,17 +154,10 @@
                 />
       </div>
       </div>
-
                     @error('mobile')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror
-
-
-
-
-
-
 <div 
  x-data="{        isOpen: false,
                     @if (old('interet')!=null && in_array(old('interet'), ['box','magasin','bureau']))
@@ -174,7 +167,6 @@
                     @endif 
                      }" 
 >
-
               <div class="mt-4 text-sm">
 
                     @error('type')
@@ -259,15 +251,13 @@
                       @if (old('interet') == "box")
                         checked
                       @endif
-                      x-on:click="isOpen = true"                                            
+                      x-on:click="isOpen = false"                                            
                     />
-                    <span class="ml-2">Box</span>
+                    <span class="ml-2">Standing</span>
                   </label>                                                      
                 </div>
               </div>
-
                 <div x-show="isOpen" >
-
               <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">Surface Désirée</span>
                 <input

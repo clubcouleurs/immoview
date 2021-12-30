@@ -1516,9 +1516,9 @@
                   </div>
                   <div class="flex items-center">
                     <span
-                      class="inline-block w-3 h-3 mr-1 bg-indigo-200 rounded-full"
+                      class="inline-block w-3 h-3 mr-1 bg-yellow-500 rounded-full"
                     ></span>
-                    <span>Boxes</span>
+                    <span>Standing</span>
                   </div>                                    
                 </div>
               </div>

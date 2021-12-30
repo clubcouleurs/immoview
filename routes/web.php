@@ -149,7 +149,7 @@ Route::put('/dossiers/{dossier}', [DossierController::class, 'update'])
 
 // Authorization OK, taking car of it in the controller/middleware
 Route::delete('/dossiers/{dossier}', [DossierController::class, 'destroy'])
-				->middleware('can:supprimer,dossier');
+				->middleware('can:supprimer dossiers,dossier');
 
 
 // Authorization OK, taking car of it in the middleware
