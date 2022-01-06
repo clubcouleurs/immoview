@@ -8,6 +8,10 @@
                       <th width="15" bgcolor="#ffdc73">Frais</th>
                       @endif
                       <th width="25" bgcolor="#ffdc73">Client</th>
+                      <th width="25" bgcolor="#ffdc73">CIN Client</th>
+                      <th width="25" bgcolor="#ffdc73">Tél Client</th>
+                      <th width="25" bgcolor="#ffdc73">Adresse Client</th>
+                      <th width="25" bgcolor="#ffdc73">Actes de réservation</th>
                       <th width="15" bgcolor="#ffdc73">Com</th>
                       <th width="18" bgcolor="#ffdc73">Total Paiements</th>
                       <th width="18" bgcolor="#ffdc73">Prix Total</th>
@@ -59,14 +63,31 @@
 
                       </td>
                       @endif
-                                                                  
+
+                                                                    
                       <td>
                         @foreach ($dossier->clients as $client)
-
-                        {{$client->nom}} {{$client->prenom}}                       
-
-                        @endforeach                           
+                        {{$client->nom}} {{$client->prenom}} | 
+                        @endforeach                      
                       </td>
+                      <td>
+                        @foreach ($dossier->clients as $client)
+                        {{$client->cin}} | 
+                        @endforeach          
+                      </td>
+                      <td>
+                        @foreach ($dossier->clients as $client)
+                        {{$client->mobile}} | 
+                        @endforeach          
+                      </td>
+                      <td>
+                        @foreach ($dossier->clients as $client)
+                        {{$client->adresse}} | 
+                        @endforeach          
+                      </td>                                            
+                      <td>
+                        {{ $dossier->actesRetour }}
+                      </td>                     
                       <td>
                         {{ substr($dossier->user->name, 0, strpos($dossier->user->name, ' ')+2) }}.
                       </td>                      

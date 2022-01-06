@@ -123,7 +123,14 @@ class Dossier extends Model
     {       
         return boolval($this->validation);
     } 
-
+    public function getActesRetourAttribute()
+    {    
+        if ($this->actePj)
+        {
+            return 'Oui' ;
+        }
+        return 'Non' ;
+    }
     public function getActeAttribute()
     {    
     if ($this->actePj)
