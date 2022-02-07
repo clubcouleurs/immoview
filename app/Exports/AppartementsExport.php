@@ -73,6 +73,15 @@ class AppartementsExport implements FromView, WithColumnFormatting, WithMapping,
         {
             $appartementsAll = Produit::with('constructible')
                                 ->where('constructible_type','appartement')
+                                ->whereHasMorph(
+                                    'constructible',
+                                                [Appartement::class],
+                                                function (Builder $qu) 
+                                            {
+                                                $qu->where('type', 'Economique');
+
+                                            }
+                                )                                
                                 ->with('etiquette')
                                 ->withCount('voies')
                                 ->orderByDesc('created_at')
