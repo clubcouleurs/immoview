@@ -182,7 +182,7 @@
                   class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 
                   {{($tranche->num == $SearchByTranche)? 'bg-yellow-500' : 'bg-gray-400'}}
                   border border-transparent rounded-2xl active:bg-yellow-600 hover:bg-yellow-600 focus:outline-none focus:shadow-outline-yellow"
-                  href="/dossiers?constructible={{$constructible}}&tranche={{$tranche->id}}&type=Standing"
+                  href="/dossiers?constructible={{$constructible}}&tranche={{$tranche->id}}&type={{$type}}"
                 >Tranche {{$tranche->num}}</a>
                 @endforeach
               </div>
