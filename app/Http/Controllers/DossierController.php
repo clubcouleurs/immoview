@@ -1169,7 +1169,7 @@ class DossierController extends Controller
             $pdf->setPrintHeader(false);
             $pdf->setPrintFooter(false);
         // get the page count
-            if ($dossier->produit->constructible->immeuble->tranche->num == 2
+            if (in_array($dossier->produit->constructible->immeuble->tranche->num, [2,3,4])
                 && ($dossier->produit->constructible->etage == 1 || 
                     $dossier->produit->constructible->etage == 2)) {
              $pageCount = $pdf->setSourceFile(Storage_path('app/public/acte-reservation-appartement-t2.pdf'));
