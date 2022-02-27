@@ -85,12 +85,10 @@ class DossierController extends Controller
                     ->with('message','Dossiers marqués !');
         }
         }
-   
     }
     
     public function index(Request $request)
     {
-
         $constructible = $request['constructible'] ;
 
         if ($constructible == 'appartement' && isset($request['type']) && !is_null($request['type']))
@@ -98,9 +96,14 @@ class DossierController extends Controller
             $typeApp = $request['type'] ;
         }
 
-        if (Gate::none(['voir dossiers ' . p($constructible), 'voir ses propres dossiers'])) {
+        if (Gate::none(['voir dossiers ' . p($constructible),
+                'voir ses propres dossiers'
+                , 'voir dossiers ' . p($constructible) . ' standing'])) {
             abort(403);
         }
+        if (!isset($typeApp) && !Gate::allows('voir dossiers ' . p($constructible))) {
+            abort(403);
+        }        
 
         $tranche = $request['tranche'] ;
         $tranches = Tranche::all();
@@ -133,7 +136,8 @@ class DossierController extends Controller
         $blocked = $All->whereNotIn('etiquette_id', [3,2,9])->count() ;
 
 
-        if (Gate::allows('voir dossiers ' . p($constructible))) {
+        if (Gate::allows('voir dossiers ' . p($constructible)) 
+            || Gate::allows('voir dossiers ' . p($constructible) . ' standing')) {
         if ($constructible == 'appartement' && isset($request['type']) && !is_null($request['type']))
         {
         $dossiersAll = Dossier::whereHas('produit', function (Builder $query) use ($typeApp, $constructiblesArray)
@@ -756,7 +760,7 @@ class DossierController extends Controller
         // On vérifie si l'utilisateur a droit de créer un dossier pour un type de produit
         if (Gate::none(['Ajouter dossiers appartements',
                        'Ajouter dossiers lots',
-                       'Ajouter dossiers boxes' ,
+                       'Ajouter dossiers appartements standing' ,
                        'Ajouter dossiers bureaux' ,
                        'Ajouter dossiers magasins']))
         {
@@ -775,7 +779,7 @@ class DossierController extends Controller
         // On vérifie si l'utilisateur a droit de créer un dossier pour un type de produit
         if (Gate::none(['Ajouter dossiers appartements',
                        'Ajouter dossiers lots',
-                       'Ajouter dossiers boxes' ,
+                       'Ajouter dossiers appartements standing' ,
                        'Ajouter dossiers bureaux' ,
                        'Ajouter dossiers magasins']))
         {
@@ -800,7 +804,9 @@ class DossierController extends Controller
         $produit = Produit::findOrFail($request['produit']) ;
         $constructible = $produit->constructible_type ;
         
-        if (! Gate::allows('Ajouter dossiers ' . p($constructible))) {
+        if (!Gate::allows('Ajouter dossiers ' . p($constructible))
+            && !Gate::allows('Ajouter dossiers ' . p($constructible) . ' standing')
+        ){
                 abort(403);
         }
 
@@ -830,15 +836,20 @@ class DossierController extends Controller
                     ]) ;
                     $dossier->delais()->save($delai) ;
                 }
-
                 $dossier->produit->update() ;
 
-                return redirect(
-                    '/dossiers?constructible='. $produit->constructible_type
-                )->with('message','Dossier ajouté !');
+                if($produit->constructible_type == 'appartement')
+                {
+                    $redirect = '/dossiers?constructible='. $produit->constructible_type .
+                    '&type='.$produit->constructible->type ;
+                }else
+                {
+                    $redirect = '/dossiers?constructible='. $produit->constructible_type ;                 
+                }
+                return redirect($redirect)->with('message','Dossier ajouté !');
             }
 
-            return Redirect::back()->withErrors(['msg', 'Attention : ' .
+            return redirect()->back()->withErrors(['msg', 'Attention : ' .
                 ucfirst($produit->constructible_type). ' n\'existant pas ou étant déjà résérvé !'
             ]);
 
@@ -1261,7 +1272,7 @@ class DossierController extends Controller
             }  
 
         }
-        $pdf->Output('actes_reservation_lot_N_' . $dossier->produit->constructible->num
+        $pdf->Output('actes_reservation_app_N_' . $dossier->produit->constructible->num
             . '_' .  '_' . '.pdf', 'I'); 
         // Output the new PDF
         //$pdf->Output('D', 'actes_reservation_lot_N_' . $dossier->produit->constructible->num
@@ -1273,4 +1284,125 @@ class DossierController extends Controller
         // //$pdf->Output('D', 'actes_reservation_lot_N_' . $dossier->produit->constructible->num
         // //    . '_' . $dossier->client->nom . '_' . $dossier->client->prenom . '.pdf', true);
     }    
+
+    public function actesStanding(Dossier $dossier)
+    {
+
+        // create the number to words "manager" class
+        $toWords = new NumberToWords();
+        // build a new number transformer using the RFC 3066 language identifier
+        $numberTransformer = $toWords->getNumberTransformer('ar');
+
+         // outputs "five thousand one hundred twenty"
+
+        // initiate FPDI
+        $pdf = new TCPDF();
+        $pdf->SetTextColor(0, 0, 255) ;
+        //$pdf->SetFont('Helvetica');
+        $pdf->setRTL(true);
+        $pdf->SetFont('aealarabiya', '', 14);
+            $pdf->setPrintHeader(false);
+            $pdf->setPrintFooter(false);
+        // get the page count
+
+        $pageCount = $pdf->setSourceFile(Storage_path('app/public/acte-reservation-appartement-standing.pdf'));
+
+        // iterate through all pages
+        for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+            $pdf->SetMargins(0, 0, 0 , 0) ;
+
+            // import a page
+            $templateId = $pdf->importPage($pageNo); //$pageNo
+            // get the size of the imported page
+            $size = $pdf->getTemplateSize($templateId);
+            //dd($size) ;
+            // create a page (landscape or portrait depending on the imported page size)
+            if ($size['width'] > $size['height']) {
+                $pdf->AddPage('L', array($size['width'], $size['height']));
+            } else {
+                $pdf->AddPage('P', array($size['width'], $size['height']));
+            }
+
+            // use the imported page
+            $pdf->useTemplate($templateId);
+            if ($pageNo == 1) // 1 
+            {
+                $i_start = 35 ;
+                $cin_start = 69 ;
+                $ad_start = 117 ;
+                foreach ($dossier->clients as $client)
+                {
+                    $prenom = stripslashes($client->prenomAr);
+                    //$prenom = iconv('UTF-8', 'windows-1251//TRANSLIT//IGNORE', $prenom);
+                    //    dd('مفعول') ;
+                    $nom = stripslashes($client->nomAr);
+                    //$nom = iconv("Windows-1256//TRANSLIT//IGNORE", "UTF-8//TRANSLIT//IGNORE", 'مفعول');
+
+                    $pdf->SetXY($i_start, 95.75);
+                    $nomC =  $nom . ' ' . $prenom . ' |';
+                    $i_start += strlen($nomC)+2 ;
+
+                    $pdf->Write(8, $nomC);
+
+                    $adresse = stripslashes($client->adresseAr);
+                    //$adresse = iconv('UTF-8', 'windows-1251//TRANSLIT//IGNORE', $adresse);
+
+                    $pdf->SetXY(14, $ad_start);
+                    $pdf->Write(8, ucfirst(preg_replace( "/\r|\n/", " ", '- ' . $adresse )));
+                    $ad_start += 8 ;
+
+                    $pdf->SetXY($cin_start, 103);
+                    $pdf->Write(8, strtoupper($client->cin) . ' | ');    
+
+                    $cin_start += (strlen($client->cin)*3) +2 ;
+
+                }                
+            }    
+
+            if ($pageNo == 2) // 2
+            {
+                $pdf->SetXY(41, 168.5);
+                $pdf->Write(0,$numberTransformer->toWords($dossier->produit->totalIndicatif) . ' درهم.  ' ) ;
+
+                $pdf->SetFont('Helvetica', 12);
+
+                $pdf->SetXY(39, 27.5);
+                $pdf->Write(0,$dossier->produit->constructible->immeuble->tranche->num) ;
+
+                $pdf->SetXY(65, 27.5);
+                $pdf->Write(0,$dossier->produit->constructible->immeuble->num) ;
+
+                $pdf->SetXY(95, 27.5);
+                $pdf->Write(0,$dossier->produit->constructible->surface) ;
+
+                // $pdf->SetXY(32, 98.5);
+                // $pdf->Write(0,$dossier->produit->constructible->etage) ;                
+            }  
+
+            if ($pageNo == 3) // 2
+            {
+                $pdf->SetFont('aealarabiya', '', 16);   
+                $pdf->SetXY(11, 258.5);             
+                $pdf->Write(0,$numberTransformer->toWords(
+                    $dossier->totalPaiementsV) . ' درهم.  ' 
+                    ) ;
+                $pdf->SetXY(11, 88.5);
+                $pdf->Write(0,$numberTransformer->toWords(
+                round($dossier->produit->totalIndicatif * 0.3)
+                ) . ' درهم.  ' ) ;
+          
+            }  
+            if ($pageNo == 5) // 6
+            {
+
+            $pdf->SetXY(73  , 120);
+            $pdf->Write(8, date("j/n/Y"));   
+          
+
+            }  
+
+        }
+        $pdf->Output('actes_reservation_app_standing_N_' . $dossier->produit->constructible->num
+            . '.pdf', 'I'); 
+    }     
 }

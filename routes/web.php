@@ -157,6 +157,7 @@ Route::middleware(['can:view,dossier'])->group(function () {
 	Route::get('/dossiers/{dossier}/retour', [DossierController::class, 'retour']);
 	Route::get('/dossiers/{dossier}/appartement/actes', [DossierController::class, 'actesApp']);
 	Route::get('/dossiers/{dossier}/lot/actes', [DossierController::class, 'actesLot']);	
+	Route::get('/dossiers/{dossier}/appartement/actesStanding', [DossierController::class, 'actesStanding']);
 
 });
 

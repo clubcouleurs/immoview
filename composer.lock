@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "31ddad395ddccf7b8f83cfce45846877",
+    "content-hash": "0920ed403cb2c8bf64d84ac746400d4d",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1004,24 +1004,24 @@
         },
         {
             "name": "kwn/number-to-words",
-            "version": "1.12.1",
+            "version": "2.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kwn/number-to-words.git",
-                "reference": "7461b531a971eb6b75a687eb28787b79dad09eb1"
+                "reference": "079c1a611bcee216164caaea0d1221d383e479e8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kwn/number-to-words/zipball/7461b531a971eb6b75a687eb28787b79dad09eb1",
-                "reference": "7461b531a971eb6b75a687eb28787b79dad09eb1",
+                "url": "https://api.github.com/repos/kwn/number-to-words/zipball/079c1a611bcee216164caaea0d1221d383e479e8",
+                "reference": "079c1a611bcee216164caaea0d1221d383e479e8",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.6|>=7.1"
+                "php": ">=7.4"
             },
             "require-dev": {
-                "phpunit/phpunit": "^5.7.9",
-                "squizlabs/php_codesniffer": "^3.3.0"
+                "phpunit/phpunit": "^9.5.6",
+                "squizlabs/php_codesniffer": "^3.6.0"
             },
             "type": "library",
             "autoload": {
@@ -1051,9 +1051,9 @@
             ],
             "support": {
                 "issues": "https://github.com/kwn/number-to-words/issues",
-                "source": "https://github.com/kwn/number-to-words/tree/1.12.1"
+                "source": "https://github.com/kwn/number-to-words/tree/2.2.1"
             },
-            "time": "2021-01-20T08:23:47+00:00"
+            "time": "2022-01-13T18:06:29+00:00"
         },
         {
             "name": "laravel/framework",

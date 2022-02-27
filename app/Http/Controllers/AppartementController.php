@@ -29,9 +29,17 @@ class AppartementController extends Controller
      */
     public function index(Request $request)
     {
-        if (! Gate::allows('voir appartements')) {
+        if (! Gate::allows('voir appartements') && ! Gate::allows('voir appartements standing')) {
                 abort(403);
         }
+
+        if (! Gate::allows('voir appartements')
+            && Gate::allows('voir appartements standing')
+            && $request['standing'] != 1
+        ){
+                abort(403);
+        }        
+
         if(isset($request['standing']) && $request['standing'] == 1 )
         {
             $appartementsAll = Produit::with('constructible')
@@ -205,7 +213,7 @@ class AppartementController extends Controller
      */
     public function create()
     {
-        if (! Gate::allows('editer appartements')) {
+        if (! Gate::allows('editer appartements') && ! Gate::allows('editer appartements standing')) {
                 abort(403);
         }          
         return view('appartements.create', [
@@ -223,7 +231,7 @@ class AppartementController extends Controller
      */
     public function store(ProduitRequest $request)
     {
-        if (! Gate::allows('editer appartements')) {
+        if (! Gate::allows('editer appartements') && ! Gate::allows('editer appartements standing')) {
                 abort(403);
         }         
         $immeuble = Immeuble::findOrFail($request['immeuble']) ;
@@ -275,7 +283,7 @@ class AppartementController extends Controller
      */
     public function edit(Appartement $appartement)
     {
-        if (! Gate::allows('editer appartements')) {
+        if (! Gate::allows('editer appartements') && ! Gate::allows('editer appartements standing')) {
                 abort(403);
         }           
         return view('appartements.edit', [
@@ -294,7 +302,7 @@ class AppartementController extends Controller
      */
     public function update(ProduitRequest $request, Appartement $appartement)
     {
-        if (! Gate::allows('editer appartements')) {
+        if (! Gate::allows('editer appartements') && ! Gate::allows('editer appartements standing')) {
                 abort(403);
         }          
         if ($appartement->produit->dossier == null) {
@@ -338,7 +346,7 @@ class AppartementController extends Controller
      */
     public function destroy(Appartement $appartement)
     {
-        if (! Gate::allows('supprimer appartements')) {
+        if (! Gate::allows('supprimer appartements') && ! Gate::allows('editer appartements standing')) {
                 abort(403);
         }     
 

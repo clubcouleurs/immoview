@@ -478,11 +478,7 @@
                       text-purple-100 bg-purple-900                      
                     @else
                       text-white bg-red-900
-                    @endif
-
-
-
-                          "
+                    @endif"
                         >
                           {{ $produit->etiquette->label }}
                         </span>
@@ -494,7 +490,7 @@
                       <td class="px-4 py-3 text-sm">
                         
               <div class="flex px-1 py-1">
-                @can('Ajouter dossiers appartements')
+                @canany(['Ajouter dossiers appartements','Ajouter dossiers appartements standing'])
                 @if(null == $produit->dossier && $produit->etiquette->label == 'En stock')
                 <div class="mr-1">
              
@@ -514,9 +510,9 @@
                 </a>
 
               </div>
-              @endcan
+              @endcanany
             @endif
-            @can('editer appartements')
+            @canany(['editer appartements','editer appartements standing'])
                 <div class="mr-1">
              
                 <a
@@ -535,8 +531,8 @@
                 </a>
 
             </div>
-            @endcan
-            @can('supprimer appartements')
+            @endcanany
+            @canany(['supprimer appartements','supprimer appartements standing'])
             <div>
                         <form action="/appartements/{{$produit->constructible->id}}" method="POST">
                         @csrf
@@ -564,7 +560,7 @@
                       </div>                
               </div>
 
-                      @endcan
+                      @endcanany
                       </td>
 
 

@@ -417,7 +417,7 @@
             </li>  
             @endcanany
 <!-- Appartements Moyen Standing -->
-@canany(['voir appartements', 'editer appartements'])
+@canany(['voir appartements standing', 'editer appartements standing'])
           <li class="relative px-6 py-3">
               <button
                 class="inline-flex items-center justify-between w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
@@ -465,7 +465,7 @@
                   class="p-2 mt-2 space-y-2 overflow-hidden text-sm font-medium text-gray-500 rounded-md shadow-inner bg-gray-50 dark:text-gray-400 dark:bg-gray-900"
                   aria-label="submenu"
                 >
-            @canany(['voir dossiers appartements',
+            @canany(['voir dossiers appartements standing',
                      'voir ses propres dossiers'])
                   <li
                     class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
@@ -473,14 +473,14 @@
                     <a class="w-full" href="/dossiers?constructible=appartement&type=Standing">Dossiers de ventes</a>
                   </li>
                   @endcanany                
-                @can('editer appartements')      
+                @can('editer appartements standing')      
                   <li
                     class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
                   >
                     <a class="w-full" href="/appartements/create">Ajouter un Appartement</a>
                   </li>
                 @endcan
-                @can('voir appartements')      
+                @can('voir appartements standing')      
 
                   <li
                     class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"

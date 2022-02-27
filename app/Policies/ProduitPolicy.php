@@ -43,7 +43,9 @@ class ProduitPolicy
      */
     public function create(User $user, Produit $produit)
     {
-        if (! Gate::allows('Ajouter dossiers ' . p($produit->constructible_type))) {
+        if (! Gate::allows('Ajouter dossiers ' . p($produit->constructible_type)) 
+            && ! Gate::allows('Ajouter dossiers ' . p($produit->constructible_type) . ' standing')
+    ) {
                 abort(403);
         }
 
