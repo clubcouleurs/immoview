@@ -1375,8 +1375,11 @@ class DossierController extends Controller
                 $pdf->SetXY(95, 27.5);
                 $pdf->Write(0,$dossier->produit->constructible->surface) ;
 
-                // $pdf->SetXY(32, 98.5);
-                // $pdf->Write(0,$dossier->produit->constructible->etage) ;                
+                $pdf->SetXY(152, 27.5);
+                $pdf->Write(0,$dossier->produit->constructible->etage) ;   
+
+                $pdf->SetXY(31, 34.5);
+                $pdf->Write(0,$dossier->produit->constructible->num) ;                              
             }  
 
             if ($pageNo == 3) // 2
