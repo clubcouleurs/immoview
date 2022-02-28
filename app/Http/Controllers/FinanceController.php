@@ -23,7 +23,6 @@ class FinanceController extends Controller
     {
         //créer un tableau contenant tout les types de constructibles
         $constructibleArray = ['appartement' ,'lot',  'bureau' , 'magasin' , 'box', 'showroom','standing'] ;
-
         //une boucle pour collecter la data selon le type de constructible
         foreach ($constructibleArray as $constructible) {
         if ($constructible == 'showroom') {  
@@ -98,15 +97,17 @@ class FinanceController extends Controller
                  case 'showroom':
                     ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}
                             ->groupBy('constructible.tranche_id');
-
                      break;
                  case 'appartement':
                  case 'magasin':
                  case 'box':
-                 case 'standing':
                     ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}
                             ->groupBy('constructible.immeuble.tranche_id');
                      break;
+                 case 'standing':
+                    ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}
+                            ->groupBy('constructible.immeuble.num');
+                     break;                     
                  case 'bureau':
                     ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}
                             ->groupBy('constructible.situable.immeuble.tranche_id');
@@ -240,10 +241,11 @@ class FinanceController extends Controller
             ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}->mapWithKeys(function ($item, $key) {
                 return ['Showroom' => $item];
             });
-            }elseif($constructible == 'standing')
+            }
+            elseif($constructible == 'standing')
             {
             ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}->mapWithKeys(function ($item, $key) {
-                return ['Standing' => $item];
+                return [$key => $item];
             });
             }
         }            
