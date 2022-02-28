@@ -101,7 +101,7 @@ class DossierController extends Controller
                 , 'voir dossiers ' . p($constructible) . ' standing'])) {
             abort(403);
         }
-        if (!isset($typeApp) && !Gate::allows('voir dossiers ' . p($constructible))) {
+        if (!isset($typeApp) && $constructible=="appartement" && !Gate::allows('voir dossiers ' . p($constructible))) {
             abort(403);
         }        
 

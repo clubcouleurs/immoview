@@ -107,10 +107,13 @@ class StockController extends Controller
                  case 'appartement':
                  case 'magasin':
                  case 'box':
-                 case 'standing':
                     ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}
                             ->groupBy('constructible.immeuble.tranche_id');
                      break;
+                 case 'standing':
+                    ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}
+                            ->groupBy('constructible.immeuble.num');
+                     break;                      
                  case 'bureau':
                     ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}
                             ->groupBy('constructible.situable.immeuble.tranche_id');
@@ -192,7 +195,7 @@ class StockController extends Controller
             }elseif($constructible == 'standing')
             {
             ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}->mapWithKeys(function ($item, $key) {
-                return ['Standing' => $item];
+                return [$key => $item];
             });
             }
         }            
