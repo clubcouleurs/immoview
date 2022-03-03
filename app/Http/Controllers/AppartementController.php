@@ -27,7 +27,7 @@ class AppartementController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, $typeApp = "")
     {
         if (! Gate::allows('voir appartements') && ! Gate::allows('voir appartements standing')) {
                 abort(403);
@@ -39,7 +39,6 @@ class AppartementController extends Controller
         ){
                 abort(403);
         }        
-
         if(isset($request['standing']) && $request['standing'] == 1 )
         {
             $appartementsAll = Produit::with('constructible')
@@ -245,6 +244,14 @@ class AppartementController extends Controller
         $Appartement->type              = $request['type'];
         $Appartement->etage             = $request['etage'];
         $Appartement->description       = $request['descriptionApp'];
+
+        //ajout du 03/03/22 l'app est composé de ces pièces ...
+        $Appartement->chambres       = $request['chambres'];
+        $Appartement->cuisines       = $request['cuisines'];
+        $Appartement->sdbs       = $request['sdbs'];
+        $Appartement->toilettes       = $request['toilettes'];
+        $Appartement->extra       = $request['extra'];
+
         $Appartement->save();
         $immeuble->appartements()->save($Appartement) ;
 
@@ -330,11 +337,24 @@ class AppartementController extends Controller
         $appartement->type              = $request['type'];
         $appartement->etage             = $request['etage'];
         $appartement->description       = $request['description'];
+        
+        //ajout du 03/03/22 l'app est composé de ces pièces ...
+        $appartement->chambres       = $request['chambres'];
+        $appartement->cuisines       = $request['cuisines'];
+        $appartement->sdbs       = $request['sdbs'];
+        $appartement->toilettes       = $request['toilettes'];
+        $appartement->extra       = $request['extra'];
+
         $appartement->update();
 
         $immeuble->appartements()->save($appartement) ;
-
-        return redirect()->action([AppartementController::class, 'index'])
+        if ($appartement->type == 'Standing') {
+            $st = 1 ;
+        }else
+        {
+            $st = 0 ;
+        }
+        return redirect()->action([AppartementController::class,'index'] , ['standing' => $st ])
         ->with('message','Appartement modifié !');
     }
 

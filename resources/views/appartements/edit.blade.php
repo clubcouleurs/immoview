@@ -209,7 +209,149 @@
                     @enderror
               </label>  
 
+
+<div class="flex flex-wrap -mx-3 mb-2 mt-4">
+    <div class="w-full md:w-1/6 px-3 mb-6 md:mb-0">
+      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-state">
+        Chambres
+      </label>
+      <div class="relative">
+        <select class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state"
+        name="chambres">
+          <option value ="1"
+            @if($appartement->chambres == 1)
+              selected
+            @endif>1</option>
+          <option value ="2"
+            @if($appartement->chambres == 2)
+              selected
+            @endif>2</option>
+          <option value ="3"
+            @if($appartement->chambres == 3)
+              selected
+            @endif>3</option>
+          <option value ="4"
+            @if($appartement->chambres == 4)
+              selected
+            @endif>4</option>                               
+        </select>
+      </div>
+    </div>
+
+    <div class="w-full md:w-1/6 px-3 mb-6 md:mb-0">
+      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-state">
+        Cuisines
+      </label>
+      <div class="relative">
+        <select class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state"
+        name="cuisines">
+          <option value ="1"
+            @if($appartement->cuisines == 1)
+              selected
+            @endif>1</option>
+          <option value ="2"
+            @if($appartement->cuisines == 2)
+              selected
+            @endif>2</option>
+          <option value ="3"
+            @if($appartement->cuisines == 3)
+              selected
+            @endif>3</option>
+          <option value ="4"
+            @if($appartement->cuisines == 4)
+              selected
+            @endif>4</option>          
+        </select>
+      </div>
+    </div>
+
+    <div class="w-full md:w-1/6 px-3 mb-6 md:mb-0">
+      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-state">
+        Salles de bain
+      </label>
+      <div class="relative">
+        <select class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state"
+        name="sdbs">
+          <option value ="1"
+            @if($appartement->sdbs == 1)
+              selected
+            @endif>1</option>
+          <option value ="2"
+            @if($appartement->sdbs == 2)
+              selected
+            @endif>2</option>
+          <option value ="3"
+            @if($appartement->sdbs == 3)
+              selected
+            @endif>3</option>
+          <option value ="4"
+            @if($appartement->sdbs == 4)
+              selected
+            @endif>4</option>          
+        </select>
+      </div>
+    </div>
+
+    <div class="w-full md:w-1/6 px-3 mb-6 md:mb-0">
+      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-state">
+        Toilettes
+      </label>
+      <div class="relative">
+        <select class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state"
+        name="toilettes">
+          <option value ="1"
+            @if($appartement->toilettes == 1)
+              selected
+            @endif>1</option>
+          <option value ="2"
+            @if($appartement->toilettes == 2)
+              selected
+            @endif>2</option>
+          <option value ="3"
+            @if($appartement->toilettes == 3)
+              selected
+            @endif>3</option>
+          <option value ="4"
+            @if($appartement->toilettes == 4)
+              selected
+            @endif>4</option>          
+        </select>
+      </div>
+    </div>
+
+    <div class="w-full md:w-1/6 px-3 mb-6 md:mb-0">
+      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-state">
+        Extra
+      </label>
+      <div class="relative">
+        <select class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state"
+        name="extra">
+          <option value ="Balcon"
+            @if($appartement->extra == 'Balcon')
+              selected
+            @endif>Balcon</option>
+          <option value ="Cour"
+            @if($appartement->extra == 'Cour')
+              selected
+            @endif>Cour</option>
+          <option value ="Terrasse"
+            @if($appartement->extra == 'Terrasse')
+              selected
+            @endif>Terrasse</option>
+          <option value ="Balcon & Terrasse"
+            @if($appartement->extra == 'Balcon & Terrasse')
+              selected
+            @endif>Balcon & Terrasse</option>  
+        </select>
+      </div>
+    </div>
+  </div>              
+              <!--div end section isOpen-->
               </div>
+
+
+
+
               
              @isset($appartement->produit->dossier)
               <div

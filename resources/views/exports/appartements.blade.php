@@ -30,9 +30,9 @@
                       <td>{{ $produit->constructible->num }}</td>
                       <td>{{ $produit->constructible->tranche->num }}</td>
                       <td>{{ $produit->constructible->immeuble->num }}</td>
-                      <td>{{ $produit->constructible->surface }} </td>
+                      <td>{{ $produit->constructible->surfaceApp }} </td>
                       <td>{{ $produit->constructible->surfaceTerrasse }} </td>
-                      <td>{{ $produit->constructible->surface + $produit->constructible->surfaceTerrasse }} </td>
+                      <td>{{ $produit->constructible->surface }} </td>
 
                       <td>{{ $produit->prixM2Indicatif }}</td>
                       <td>{{ $produit->totalIndicatif}}</td>

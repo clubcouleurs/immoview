@@ -60,6 +60,14 @@ class ProduitRequest extends FormRequest
             'prixM2Definitif' => 'numeric|nullable',
             'remise' => 'numeric|nullable',
             'voies' => 'array',
+
+            'chambres' => 'sometimes|required|numeric',
+            'cuisines' => 'sometimes|required|numeric',
+            'sdbs' => 'sometimes|required|numeric',
+            'toilettes' => 'sometimes|required|numeric',
+            'extra' => 'sometimes|required|string',
+
+
         ];
     }
     public function messages()

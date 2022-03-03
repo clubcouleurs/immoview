@@ -209,6 +209,88 @@
                     @enderror
               </label>  
 
+
+
+
+<div class="flex flex-wrap -mx-3 mb-2 mt-4">
+    <div class="w-full md:w-1/6 px-3 mb-6 md:mb-0">
+      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-state">
+        Chambres
+      </label>
+      <div class="relative">
+        <select class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state"
+        name="chambres">
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>          
+        </select>
+      </div>
+    </div>
+
+    <div class="w-full md:w-1/6 px-3 mb-6 md:mb-0">
+      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-state">
+        Cuisines
+      </label>
+      <div class="relative">
+        <select class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state"
+        name="cuisines">
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>          
+        </select>
+      </div>
+    </div>
+
+    <div class="w-full md:w-1/6 px-3 mb-6 md:mb-0">
+      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-state">
+        Salles de bain
+      </label>
+      <div class="relative">
+        <select class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state"
+        name="sdbs">
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>          
+        </select>
+      </div>
+    </div>
+
+    <div class="w-full md:w-1/6 px-3 mb-6 md:mb-0">
+      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-state">
+        Toilettes
+      </label>
+      <div class="relative">
+        <select class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state"
+        name="toilettes">
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>          
+        </select>
+      </div>
+    </div>
+
+    <div class="w-full md:w-1/6 px-3 mb-6 md:mb-0">
+      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-state">
+        Extra
+      </label>
+      <div class="relative">
+        <select class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state"
+        name="extra">
+          <option>Balcon</option>
+          <option>Cour</option>
+          <option>Terrasse</option>   
+          <option>Balcon & Terrasse</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+
+              <!--div end section isOpen-->
               </div>
               
               <div class="mt-4 text-sm">

@@ -1379,12 +1379,19 @@ class DossierController extends Controller
                 $pdf->Write(0,$dossier->produit->constructible->etage) ;   
 
                 $pdf->SetXY(31, 34.5);
-                $pdf->Write(0,$dossier->produit->constructible->num) ;                              
+                $pdf->Write(0,$dossier->produit->constructible->num) ;   
+                
+                $pdf->SetFont('aealarabiya', '', 16);   
+
+                $pdf->SetXY(11.5, 40);
+                $pdf->Write(0,$dossier->produit->constructible->composer) ;                 
+                           
             }  
 
             if ($pageNo == 3) // 2
             {
                 $pdf->SetFont('aealarabiya', '', 16);   
+
                 $pdf->SetXY(11, 258.5);             
                 $pdf->Write(0,$numberTransformer->toWords(
                     $dossier->totalPaiementsV) . ' درهم.  ' 
