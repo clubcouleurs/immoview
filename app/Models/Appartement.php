@@ -136,7 +136,7 @@ class Appartement extends Model
         $extra = 'بهو' ;
             break;
         case 'Terrasse':
-        $extra = 'شرفة' ;
+        $extra = 'بهو' ;
             break;
         case 'Balcon': 
         $extra = 'شرفة' ;
@@ -147,11 +147,11 @@ class Appartement extends Model
             break;                 
 
         case 'Sans': 
-        $extra = 'بدون شرفة و بدون بهو' ;
+        $extra = '' ;
             break;  
 
         default:
-        $extra = 'بدون شرفة و بدون بهو' ;
+        $extra = '' ;
             break;
         }
 
