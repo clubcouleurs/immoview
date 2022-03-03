@@ -65,7 +65,7 @@ class Appartement extends Model
         switch ($this->chambres)
         {
         case 1:
-        $chambres = 'واحدة غرفة' ;
+        $chambres = 'غرفة واحدة' ;
             break;
         case 2:
         $chambres = 'غرفتين' ;
@@ -145,6 +145,10 @@ class Appartement extends Model
         case 'Balcon & Terrasse': 
         $extra = 'شرفة و بهو' ;
             break;                 
+
+        case 'Sans': 
+        $extra = 'بدون شرفة و بدون بهو' ;
+            break;  
 
         default:
         $extra = 'بدون شرفة و بدون بهو' ;

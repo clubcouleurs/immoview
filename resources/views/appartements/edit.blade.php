@@ -192,7 +192,7 @@
               </label>  
 
               <label class="block mt-4 text-sm">
-                <span class="text-gray-700 dark:text-gray-400">Prix au m2 définitif{{ $appartement->produit->prixM2Definitif }}</span>
+                <span class="text-gray-700 dark:text-gray-400">Prix au m2 définitif</span>
                 <input
                   class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
                   placeholder=""
@@ -343,6 +343,11 @@
               selected
             @endif>Balcon & Terrasse</option>  
         </select>
+          <option value = "Sans"
+            @if($appartement->extra == 'Sans')
+              selected
+            @endif>Sans</option>  
+        </select>        
       </div>
     </div>
   </div>              

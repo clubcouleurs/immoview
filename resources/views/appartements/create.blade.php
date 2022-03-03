@@ -284,6 +284,8 @@
           <option>Cour</option>
           <option>Terrasse</option>   
           <option>Balcon & Terrasse</option>
+          <option>Sans</option>
+                    
         </select>
       </div>
     </div>
