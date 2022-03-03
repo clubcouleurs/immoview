@@ -342,11 +342,12 @@
             @if($appartement->extra == 'Balcon & Terrasse')
               selected
             @endif>Balcon & Terrasse</option>  
-        </select>
+        
           <option value = "Sans"
             @if($appartement->extra == 'Sans')
               selected
-            @endif>Sans</option>  
+            @endif
+            >Sans</option>  
         </select>        
       </div>
     </div>
