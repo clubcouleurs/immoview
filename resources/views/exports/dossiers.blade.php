@@ -14,6 +14,9 @@
                       <th width="25" bgcolor="#ffdc73">Actes de réservation</th>
                       <th width="15" bgcolor="#ffdc73">Com</th>
                       <th width="18" bgcolor="#ffdc73">Total Paiements</th>
+                      @if($constructible == 'lot')
+                      <th width="15" bgcolor="#ffdc73">Prix m2</th>
+                      @endif
                       <th width="18" bgcolor="#ffdc73">Prix Total</th>
                       <th width="10" bgcolor="#ffdc73">Taux</th>
                       <th width="10" bgcolor="#ffdc73">Tranche</th>
@@ -25,7 +28,7 @@
 
                   @foreach ($dossiers as $dossier)
                     <tr
-                    {{($dossier->isVente)? '' : 'bgcolor="yeloow"'}}
+                    {{($dossier->isVente)? '' : 'bgcolor="yellow"'}}
                     >
                       <td>
                           {{ ucfirst($dossier->produit->constructible_type) }} N°
@@ -95,9 +98,20 @@
 
                           {{number_format($dossier->totalPaiementsV,2,",",".")}} 
                       </td>
+
+                      @if($dossier->produit->constructible_type == 'lot')
+
+                      <td>
+
+                          {{ number_format($dossier->produit->prixM2Indicatif,2,",",".") }} 
+
+                      </td>
+                      @endif
+
                       <td>
                            {{ number_format($dossier->produit->totalDefinitif,2,",",".")}} 
                       </td>     
+
                       <td>
                           {{ $dossier->tauxPaiementV }} %
                       </td>      

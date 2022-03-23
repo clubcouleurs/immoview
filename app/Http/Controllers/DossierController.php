@@ -1361,8 +1361,16 @@ class DossierController extends Controller
 
             if ($pageNo == 2) // 2
             {
+
+
                 $pdf->SetXY(41, 168.5);
-                $pdf->Write(0,$numberTransformer->toWords($dossier->produit->totalIndicatif) . ' درهم.  ' ) ;
+                $pdf->Write(0, number_format($dossier->produit->totalIndicatif) . ' درهم.  ' ) ;
+
+                $len = strlen(number_format($dossier->produit->totalIndicatif) . ' درهم.  ' );
+
+                $pdf->SetXY(41+$len+13, 168.5);
+                $pdf->Write(0,'(' . $numberTransformer->toWords($dossier->produit->totalIndicatif) . ' درهم.' . ').' ) ;
+
 
                 $pdf->SetFont('Helvetica', 12);
 
@@ -1393,13 +1401,28 @@ class DossierController extends Controller
                 $pdf->SetFont('aealarabiya', '', 16);   
 
                 $pdf->SetXY(11, 258.5);             
-                $pdf->Write(0,$numberTransformer->toWords(
-                    $dossier->totalPaiementsV) . ' درهم.  ' 
+                $pdf->Write(0,number_format(
+                    $dossier->totalPaiementsV) . ' درهم' 
                     ) ;
-                $pdf->SetXY(11, 88.5);
-                $pdf->Write(0,$numberTransformer->toWords(
+                $len = strlen(number_format($dossier->totalPaiementsV) . ' درهم');
+                $pdf->SetXY(11+$len +17, 258.5);             
+                $pdf->Write(0,'(' . $numberTransformer->toWords(
+                    $dossier->totalPaiementsV) . ' درهم' . ').'
+                    ) ;
+
+                $len = strlen(number_format(
                 round($dossier->produit->totalIndicatif * 0.3)
-                ) . ' درهم.  ' ) ;
+                ) . ' درهم');
+
+                $pdf->SetXY(11, 88.5);
+                $pdf->Write(0, number_format(
+                round($dossier->produit->totalIndicatif * 0.3)
+                ) . ' درهم' ) ;
+
+                $pdf->SetXY(11+$len+17, 88.5);
+                $pdf->Write(0,'(' . $numberTransformer->toWords(
+                round($dossier->produit->totalIndicatif * 0.3)
+                ) . ' درهم' . ').') ;
           
             }  
             if ($pageNo == 5) // 6

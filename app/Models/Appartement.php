@@ -155,7 +155,7 @@ class Appartement extends Model
             break;
         }
 
-        return $chambres . ' | ' . $cuisines  . ' | ' . $sdbs . ' | ' . $toilettes . ' | ' . $extra ;
+        return $chambres . ' | ' . 'صالون واحد' . ' | ' . $cuisines  . ' | ' . $sdbs . ' | ' . $toilettes . ' | ' . $extra ;
 
     }
 
