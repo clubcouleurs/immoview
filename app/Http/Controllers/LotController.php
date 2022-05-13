@@ -270,6 +270,8 @@ class LotController extends Controller
         $lot->type               = $request['type'];
         $lot->etage       = $request['etage'];
         $lot->description        = $request['description'];
+        $lot->titre_foncier        = $request['titre_foncier'];
+
         $lot->update();
         $tranche->lots()->save($lot) ;
 

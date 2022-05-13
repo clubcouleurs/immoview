@@ -1137,7 +1137,7 @@ class DossierController extends Controller
 
             // affichage du délai de livraison
             if (in_array($dossier->produit->constructible->tranche->num, [1,2])) {
-                $delai = 24 ;
+                $delai = 2 ;
             }elseif (in_array($dossier->produit->constructible->tranche->num, [3,4])) {
                 $delai = 36 ;
             }

@@ -33,6 +33,23 @@
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror
               </label>
+<!-- champs titre foncier -->
+              <label class="block mt-4 text-sm">
+                <span class="text-gray-700 dark:text-gray-400">Titre Foncier</span>
+                <input
+                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                  placeholder=""
+                  type="text"
+                  name="titre_foncier"
+                  required
+                  value="{{$lot->titre_foncier}}"
+                />
+                    @error('titre_foncier')
+                    <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
+                    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
+                    @enderror
+              </label>
+<!-- champs titre foncier -->
 
               <label class="block   mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">Surface du lot en m2</span>
