@@ -504,10 +504,12 @@
                     >
                      <th></th>
                       <th class="py-3">Vente</th>
-                      <th class="py-3" id="section-not-to-print">Date du dossier</th>
                       @if($constructible != 'lot')
                       <th class="py-3">Frais</th>
+                      @else
+                      <th class="py-3">N° Titre Foncier</th>
                       @endif
+                      <th class="py-3" id="section-not-to-print">Date du dossier</th>                      
                       <th class="py-3">Client</th>
                       <th class="py-3" id="section-not-to-print">Com</th>
                       <th class="py-3">Total Paiements</th>
@@ -593,6 +595,21 @@
                           </div>
                         </div>
                       </td>
+                      @if($dossier->produit->constructible_type != 'lot')
+                      <td class="px-1 py-3 text-xs">
+                        <span
+                          class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
+                        >
+                          {{ numberFormat($dossier->frais) }} Dhs
+                        </span>
+                        
+                      </td>
+                      @else
+                                            <td class="px-4 py-3 text-sm">
+
+                        {{ $dossier->produit->constructible->titre_foncier }}
+                      </td>
+                      @endif                      
                       <td class="px-1 py-3 text-sm" id="section-not-to-print">
                         {{ $dossier->date }}
                           @if(!$dossier->isVente)
@@ -619,18 +636,8 @@
                </span>                      
                       @endisset
                           @endif                        
-                      </td>
-                      @if($dossier->produit->constructible_type != 'lot')
-                      <td class="px-1 py-3 text-xs">
-                        <span
-                          class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
-                        >
-                          {{ numberFormat($dossier->frais) }} Dhs
-                        </span>
-                        
-                      </td>
-                      @endif
-                                                                  
+                     </td>
+                                                                 
                       <td class="px-1 py-3 text-xs">
                         @foreach ($dossier->clients as $client)
                         <span

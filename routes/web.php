@@ -3,6 +3,7 @@
 use App\Http\Controllers\AppartementController;
 use App\Http\Controllers\BordereauController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DelaiController;
 use App\Http\Controllers\DossierController;
@@ -16,13 +17,12 @@ use App\Http\Controllers\PaiementController;
 use App\Http\Controllers\ProduitController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StockController;
+use App\Http\Controllers\SyntheseController;
 use App\Http\Controllers\TrancheController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ValidationController;
 use App\Http\Controllers\VisiteController;
 use App\Http\Controllers\VoieController;
-use App\Http\Controllers\ContactController;
-
 use App\Models\Dossier;
 use App\Models\Etiquette;
 use Illuminate\Support\Facades\Route;
@@ -39,8 +39,7 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/formulaire-concours', [ContactController::class, 'index']) ;
-Route::post('/formulaire-concours', [ContactController::class, 'store']) ;
+Route::post('/synthese', [SyntheseController::class, 'synthese']) ;
 
 Route::middleware('auth')->group(function(){
 

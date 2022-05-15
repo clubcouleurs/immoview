@@ -559,11 +559,29 @@
                   </li>
                 @endcan
                 @can('voir magasins')   
+<li
+                    class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
+                  >
+                    <a class="w-full" href="/magasins?tranche=1">Magasins T1</a>
+                  </li>
+
                   <li
                     class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
                   >
-                    <a class="w-full" href="/magasins">Magasins</a>
+                    <a class="w-full" href="/magasins?tranche=2">Magasins T2</a>
                   </li>
+
+                  <li
+                    class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
+                  >
+                    <a class="w-full" href="/magasins?tranche=3">Magasins T3</a>
+                  </li>
+
+                  <li
+                    class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
+                  >
+                    <a class="w-full" href="/magasins?tranche=4">Magasins T4</a>
+                  </li>      
                 @endcan
                 </ul>
               </template>

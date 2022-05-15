@@ -67,20 +67,6 @@
                   <table class="w-full">
                   <tbody class="divide-y dark:divide-gray-700 dark:bg-gray-800">
                     <tr class="text-gray-700 dark:text-gray-400">
-<!--                       <td class="px-1 py-1 w-36">
-                        <div class="flex items-center text-sm">
-                          <div><p class="font-semibold">
-                            <span
-                              class="font-semibold leading-tight text-red-700 bg-red-100 rounded-md dark:bg-red-700 dark:text-red-100">
-                              N° Dossier :
-                            </span>
-                            </p>
-                          </div>
-                        </div>
-                      </td>
-                       <td class="px-1 py-1 text-sm">
-                          {{$dossier->num}}
-                      </td> -->
                     </tr>
                     <tr class="text-gray-700 dark:text-gray-400">
                       <td class="px-1 py-1">
@@ -147,7 +133,7 @@
                       <td class="px-1 py-4">
                         <div class="flex items-center text-sm">
                           <div class="flex gap-2">
-                            
+
                                   <a
                                     class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-green-600 border border-transparent rounded-lg active:bg-green-600 hover:bg-green-700 focus:outline-none focus:shadow-outline-green"
                                     href="/dossiers/{{$dossier->id}}/edit"
@@ -161,7 +147,45 @@
                     @endcan                                                                          
                   </tbody>
                 </table>
-                
+                @if($dossier->produit->constructible->titre_foncier != '')
+                <hr>
+            <form action="/synthese" method="POST">
+              @csrf
+              <input type="hidden" name="dossier" value="{{$dossier->id}}">
+                <div class="mt-2">
+                  <label
+                    class="inline-flex items-center text-gray-600 dark:text-gray-400"
+                  >
+                    <input
+                      type="radio"
+                      class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+                      name="type"
+                      value="compromis"                   
+                    />
+                    <span class="ml-2">Compromis de vente</span>
+                  </label>
+                  <label
+                    class="inline-flex items-center ml-6 text-gray-600 dark:text-gray-400"
+                  >
+                    <input
+                      type="radio"
+                      class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+                      name="type"
+                      value="acte"
+                    />
+                    <span class="ml-2">Acte de vente </span>
+                  </label>
+                </div>
+                <div class="block mt-4 text-sm">
+                <button
+                  class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+                  type="submit"
+                >
+                  Générer Synthèse
+                </button>
+              </div>                
+            </form>
+            @endif
               </div>
               @endcan
  
@@ -532,20 +556,13 @@
                 </table>
                 
               </div>
-
-
 <!-- fin des cartes -->
+
+
             </div>
             
 
-         
 
-<div class="grid gap-6 mb-8 md:grid-cols-2">
-
-
-
-
-          </div>
         </main>
 
 <script>
