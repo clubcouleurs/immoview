@@ -176,6 +176,19 @@
                     <span class="ml-2">Acte de vente </span>
                   </label>
                 </div>
+                <div class="mt-2">
+                  <label
+                    class="inline-flex items-center text-gray-600 dark:text-gray-400"
+                  >
+                    <input
+                      type="checkbox"
+                      class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+                      name="titre_foncier"
+                      value="oui"                   
+                    />
+                    <span class="ml-2">Afficher le numéro du titre foncier</span>
+                  </label>
+                </div>                
                 <div class="block mt-4 text-sm">
                 <button
                   class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"

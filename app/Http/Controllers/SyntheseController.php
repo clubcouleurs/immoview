@@ -13,6 +13,7 @@ class SyntheseController extends Controller
         $request->validate([
             'dossier'      => 'required|numeric',
             'type'      => 'required|string',
+            'titre_foncier'      => 'sometimes|string',
         ]); 
         $dossier = Dossier::findOrFail($request['dossier']);
 
@@ -55,16 +56,19 @@ class SyntheseController extends Controller
                     $pdf->SetXY(78.75, 32.5);
                     $pdf->Write(8,'X');   
                 }
-                $pdf->Ln(0.5); 
-                $pdf->SetFontSize(11);
+                $pdf->SetFont('Times','B');
+                $pdf->SetFontSize(11,'B');
+
             $pdf->SetXY(10, 59);
             $pdf->Write(8, 'Agadir, Le : ' .  date("j/n/Y"));   
 
             $pdf->SetXY(79, 51);
-            $pdf->Write(8, ucfirst($dossier->produit->constructible->num));   
+            $pdf->Write(8, ucfirst($dossier->produit->constructible->num));
 
-            $pdf->SetXY(123, 51);
-            $pdf->Write(8, ucfirst($dossier->produit->constructible->titre_foncier));   
+            if ($request['titre_foncier'] == "oui") {
+                $pdf->SetXY(123, 51);
+                $pdf->Write(8, ucfirst($dossier->produit->constructible->titre_foncier));   
+            }
 
             $pdf->SetXY(185, 51);
             $pdf->Write(8, ucfirst($dossier->produit->constructible->tranche_id));    
@@ -112,22 +116,25 @@ class SyntheseController extends Controller
                         $adresse = stripslashes($client->adresse);
                         $adresse = ucfirst(preg_replace( "/\r|\n/", " ", $adresse )) ;
                         $adresse = iconv('UTF-8', 'windows-1252', $adresse);
-                        $ad = str_split($adresse, 33) ;
+                        $ad = str_split($adresse, 30) ;
+                        if (count($ad) > 1) {
+                            $ad[0] = $ad[0] . '-' ; 
+                        }
+                        
                         $txt .= implode(chr(10) , $ad) . chr(10) ;
                         $txt .= iconv('UTF-8', 'windows-1252', 'CIN : ' );
                         $txt .= $client->cin . chr(10) ;
                         $txt .= iconv('UTF-8', 'windows-1252', 'N° TEL : ' );
                         $txt .= $client->mobile . chr(10) ;
-                        $txt .= 'Signature : ' . chr(10) ;
 
             if ($i > 1 ) {
 
                 if ($i % 2 == 0) {
                     $x = $x + 95 ;
-                    $y =74 + ((($i/2)-1) * 56 ) ;
+                    $y =74 + ((($i/2)-1) * 45 ) ;
                 }else
                 {
-                    $y = $y + 56 ;
+                    $y = $y + 45 ;
                     $x = 10 ;
                 }
             }
@@ -140,10 +147,10 @@ class SyntheseController extends Controller
                 if ($i % 2 == 0) {
 
                     $x = $x + 95 ;
-                    $y =74 + ((($i/2)-1) * 56 ) ;
+                    $y =74 + ((($i/2)-1) * 45 ) ;
                 }else
                 {
-                    $y = $y + 56 ;
+                    $y = $y + 45 ;
                     $x = 10 ;
                 }
             }
@@ -169,7 +176,8 @@ class SyntheseController extends Controller
             $l = $l + 4.5 ;    
             $priceTotal = number_format($dossier->TotalPaiementsV,2, ',' , '.') . ' DHS';
             $pdf->SetXY($x2, $y2+$l);
-            $pdf->Write(0, 'Total Avances : ' . $priceTotal);   
+            $pdf->Write(0, 'Total Avances : ' . $priceTotal);
+
             $l = $l + 4.5 ;
             $priceTotal = number_format($dossier->Reliquat,2, ',' , '.') . ' DHS';
             $pdf->SetXY($x2, $y2+$l);
@@ -180,15 +188,17 @@ class SyntheseController extends Controller
                 if ($i % 2 == 0) {
 
                     $x = $x + 95 ;
-                    $y =74 + ((($i/2)-1) * 56 ) ;
+                    $y =74 + ((($i/2)-1) * 45 ) ;
                 }else
                 {
-                    $y = $y + 56 ;
+                    $y = $y + 45 ;
                     $x = 10 ;
                 }
             }
-                $pdf->Image(Storage_path('app/public/visa.jpg'), $x , $y ,-300);
-
+            //echo $y + 45 ;
+                $pdf->Image(Storage_path('app/public/visa.jpg'), 10 , 255 ,-300);
+                // $y = $y + 40 ;
+                // $pdf->Image(Storage_path('app/public/visa.jpg'), $x , $y ,-300);
 
           
 
@@ -197,7 +207,7 @@ class SyntheseController extends Controller
         }
 
         // Output the new PDF
-        $pdf->Output('D', 'actes_reservation_lot_N_' . $dossier->produit->constructible->num
+        $pdf->Output('D', 'synthese_situation_lot_N_' . $dossier->produit->constructible->num
             . '_' . '.pdf', true);
     }
 
