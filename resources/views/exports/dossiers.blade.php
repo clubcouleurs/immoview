@@ -6,6 +6,8 @@
                       <th width="15" bgcolor="#ffdc73">Date du dossier</th>
                       @if($constructible != 'lot')
                       <th width="15" bgcolor="#ffdc73">Frais</th>
+                      @else
+                      <th width="15" bgcolor="#ffdc73">Titre Foncier</th>
                       @endif
                       <th width="25" bgcolor="#ffdc73">Client</th>
                       <th width="25" bgcolor="#ffdc73">CIN Client</th>
@@ -65,6 +67,12 @@
                           {{ number_format($dossier->frais,2,",",".") }} 
 
                       </td>
+                      @else
+                      <td>
+
+                        {{ $dossier->produit->constructible->titre_foncier }}
+                      </td>
+
                       @endif
 
                                                                     

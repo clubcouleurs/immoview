@@ -196,7 +196,7 @@ class SyntheseController extends Controller
                 }
             }
             //echo $y + 45 ;
-                $pdf->Image(Storage_path('app/public/visa.jpg'), 10 , 255 ,-300);
+                $pdf->Image(Storage_path('app/public/visa.jpg'), 10 , 248 ,-300);
                 // $y = $y + 40 ;
                 // $pdf->Image(Storage_path('app/public/visa.jpg'), $x , $y ,-300);
 
