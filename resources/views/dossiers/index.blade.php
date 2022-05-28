@@ -507,7 +507,9 @@
                       @if($constructible != 'lot')
                       <th class="py-3">Frais</th>
                       @else
-                      <th class="py-3">N° Titre Foncier</th>
+                      @can('voir titre foncier')
+                        <th class="py-3">N° Titre Foncier</th>
+                      @endcan
                       @endif
                       <th class="py-3" id="section-not-to-print">Date du dossier</th>                      
                       <th class="py-3">Client</th>
@@ -605,10 +607,11 @@
                         
                       </td>
                       @else
-                                            <td class="px-4 py-3 text-sm">
-
-                        {{ $dossier->produit->constructible->titre_foncier }}
-                      </td>
+                      @can('voir titre foncier')
+                        <td class="px-4 py-3 text-sm">
+                          {{ $dossier->produit->constructible->titre_foncier }}
+                        </td>
+                      @endcan
                       @endif                      
                       <td class="px-1 py-3 text-sm" id="section-not-to-print">
                         {{ $dossier->date }}
