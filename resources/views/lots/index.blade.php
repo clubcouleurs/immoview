@@ -430,7 +430,9 @@
                     >
                       <th class="px-4 py-3">N° du lot</th>
                       <th class="px-4 py-3">Surface en m2</th>
+                       @can('voir titre foncier')
                       <th class="px-4 py-3">N° Titre Foncier</th>
+                      @endcan
 
                       <th class="px-4 py-3">Prix m2 Indicatif</th>
                       
@@ -503,8 +505,9 @@
                         {{ $produit->constructible->surface }} m<sup>2</sup>
                       </td>
                       <td class="px-4 py-3 text-sm">
-
+                        @can('voir titre foncier')
                         {{ $produit->constructible->titre_foncier }}
+                        @endcan
                       </td>
                       <td class="px-4 py-3 text-xs">
                         <span
