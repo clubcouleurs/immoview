@@ -1148,7 +1148,7 @@ class DossierController extends Controller
             if ($pageNo == 4)
             {
 
-            $pdf->SetXY(113, 153);
+            $pdf->SetXY(113, 188.5);
             $pdf->Write(8, date("j/n/Y"));   
           
 
@@ -1180,15 +1180,16 @@ class DossierController extends Controller
             $pdf->setPrintHeader(false);
             $pdf->setPrintFooter(false);
         // get the page count
-            if (in_array($dossier->produit->constructible->immeuble->tranche->num, [2,3,4])
-                && ($dossier->produit->constructible->etage == 1 || 
-                    $dossier->produit->constructible->etage == 2)) {
-             $pageCount = $pdf->setSourceFile(Storage_path('app/public/acte-reservation-appartement-t2.pdf'));
-            }else{
-             $pageCount = $pdf->setSourceFile(Storage_path('app/public/acte-reservation-'.
-             $dossier->produit->constructible_type .'.pdf'));
-            }
+            // if (in_array($dossier->produit->constructible->immeuble->tranche->num, [2,3,4])
+            //     && ($dossier->produit->constructible->etage == 1 || 
+            //         $dossier->produit->constructible->etage == 2)) {
+            //  $pageCount = $pdf->setSourceFile(Storage_path('app/public/acte-reservation-appartement-t2.pdf'));
+            // }else{
+            //  $pageCount = $pdf->setSourceFile(Storage_path('app/public/acte-reservation-'.
+            //  $dossier->produit->constructible_type .'.pdf'));
+            // }
 
+            $pageCount = $pdf->setSourceFile(Storage_path('app/public/acte-reservation-appartement-t2.pdf'));
 
         // iterate through all pages
         for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {

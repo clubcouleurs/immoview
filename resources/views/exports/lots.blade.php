@@ -6,8 +6,9 @@
                       <th width="20" bgcolor="#ffdc73">Tranche</th>
                          
                       <th width="20" bgcolor="#ffdc73">Surface en m2</th>
+                       @can('voir titre foncier')
                       <th width="20" bgcolor="#ffdc73">N° Titre Foncier</th>
-
+                      @endcan
                       <th width="20" bgcolor="#ffdc73">Prix m2 Indicatif</th>
                       <th width="20" bgcolor="#ffdc73">Prix de vente indicatif</th>
 
@@ -29,7 +30,9 @@
                       <td>{{ $produit->constructible->num }}</td>
                       <td>{{ $produit->constructible->tranche->num }}</td>
                       <td>{{ $produit->constructible->surface }}</td>
+                      @can('voir titre foncier')
                       <td>{{ $produit->constructible->titre_foncier }}</td>
+                      @endcan
                       <td>{{ $produit->prixM2Indicatif }}</td>
                       <td>{{ $produit->totalIndicatif}}</td>
                       <td>{{ $produit->prixM2Definitif }}</td>

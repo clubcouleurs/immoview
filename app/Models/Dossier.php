@@ -107,17 +107,20 @@ class Dossier extends Model
     {       
         if ($this->produit->constructible_type != 'appartement') {           
             return $this->tauxPaiementV >= 30 ;
-        }elseif ($this->produit->constructible_type === 'appartement') {
+        }elseif ($this->produit->constructible_type === 'appartement')
+        {
                             // cette condition et rajoutée en 29/09/2021 par bidouh
             // 100000 dhs pour les apps en 1er et 2ème Etage (2ème tranche) & 75000 dhs pour les autres
-            if (in_array($this->produit->constructible->immeuble->tranche->num, [2,3,4])
+            // 100000 dhs pour ttes les apps, par bidouh le 22/06/22
+            /*if (in_array($this->produit->constructible->immeuble->tranche->num, [2,3,4])
                 && ($this->produit->constructible->etage == 1 || 
                     $this->produit->constructible->etage == 2)) {
                 return $this->totalPaiementsV >= 100000 ;
-                }
+                }*/
             // fin condition rajoutée en 29/09/2021 
             }
-            return $this->totalPaiementsV >= 75000 ;
+            //return $this->totalPaiementsV >= 75000 ;
+            return $this->totalPaiementsV >= 100000 ;
     }  
     public function getValidateAttribute()
     {       
