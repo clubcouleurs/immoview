@@ -154,6 +154,9 @@ Route::delete('/dossiers/{dossier}', [DossierController::class, 'destroy'])
 // Authorization OK, taking car of it in the middleware
 Route::middleware(['can:view,dossier'])->group(function () {
 	Route::get('/dossiers/{dossier}/retour', [DossierController::class, 'retour']);
+	//rajoutée le 06/07/22 
+	Route::get('/dossiers/{dossier}/acte-vente', [DossierController::class, 'acte_vente']);
+	// fin modification du 06/07/22
 	Route::get('/dossiers/{dossier}/appartement/actes', [DossierController::class, 'actesApp']);
 	Route::get('/dossiers/{dossier}/lot/actes', [DossierController::class, 'actesLot']);	
 	Route::get('/dossiers/{dossier}/appartement/actesStanding', [DossierController::class, 'actesStanding']);

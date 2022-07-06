@@ -923,7 +923,31 @@ class DossierController extends Controller
 
             $dossier->actePj = 'actes/' . $pjName . '.' . $pjExtension ;
 
-        }else
+        }elseif($request->hasFile('actevente'))
+        {
+            $clientN = '' ;
+            foreach ($dossier->clients as $client)
+            {
+                $clientN .= $client->nom . '-' . $client->prenom . '-' ;
+            }
+            $clientN = str_replace(' ', '', $clientN) ;
+
+            $pjName = 'acte-vente' . '-' . $dossier->produit->constructible_type . '-Num' 
+
+            . str_replace('.', '', $dossier->produit->constructible->num) . '-' 
+
+            . str_replace('.', '',  $clientN ) . '-' 
+
+            . str_replace(' ', '-', date('Y-m-d-His')) ;
+
+            $pjExtension = $request->file('actevente')->extension() ;                 
+
+            $pdfPath = $request->file('actevente')
+            ->storeAs('public/actes', $pjName . '.' . $pjExtension) ;
+
+            $dossier->actevente = 'actes/' . $pjName . '.' . $pjExtension ;
+        }
+        else
         {
             $dossier->clients()->detach();            
             $dossier->clients()->attach($request['client']);
@@ -972,6 +996,13 @@ class DossierController extends Controller
     public function retour(Dossier $dossier)
     {
         return view('dossiers.retour', [
+            'dossier'       => $dossier
+        ]) ;
+    }
+
+    public function acte_vente(Dossier $dossier)
+    {
+        return view('dossiers.actevente', [
             'dossier'       => $dossier
         ]) ;
     }

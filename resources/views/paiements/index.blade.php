@@ -32,10 +32,10 @@
             <div
               class="px-4 py-3 mb-6 bg-white rounded-lg shadow-md dark:bg-gray-800"
                x-data="{
-              @if ( old('type') != null && (old('type') == 'Compensation' ))
+              @if ( old('type') != null && (old('type') == 'Compensation' || old('type') == 'Notaire'))
                 isOpen: true,
               @else
-                @if (isset($paiement->type) && ($paiement->type == 'Compensation' ))
+                @if (isset($paiement->type) && ($paiement->type == 'Compensation' || $paiement->type == 'Notaire'))
                   isOpen: true,
                 @else
                  isOpen: false,
@@ -239,7 +239,22 @@
                       />                    
                     
                     <span class="ml-2">Compensation</span>
-                  </label>                                                    
+                  </label>     
+
+                  <label
+                    class="inline-flex items-center ml-6 text-gray-600 dark:text-gray-400"
+                  >
+                    <input
+                      type="radio"
+                      class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+                      name="type"
+                      value="Notaire"
+                      x-on:click=" isOpen = true"
+                      {{ old('type', $paiement->type ?? '')== "Notaire" ? 'checked' : '' }}
+                      />                    
+                    
+                    <span class="ml-2">Notaire</span>
+                  </label>                                                                  
                 </div>
               </div>
 

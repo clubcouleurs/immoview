@@ -216,7 +216,7 @@ class PaiementController extends Controller
             return back()->withInput()->with('error', 'Vous avez dépasser le reste à payer!') ;
         }
 
-        if ($paiement->type != "Compensation") {
+        if (in_array($paiement->type, ['Compensation','Notaire']) ) {
             $paiement->num = $request['num'] ;
         }else
         {

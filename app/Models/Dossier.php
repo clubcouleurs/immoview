@@ -155,7 +155,25 @@ class Dossier extends Model
                         <path d="M14,14 L18,14 L18,2 L2,2 L2,14 L6,14 L6,14.0020869 C6,15.1017394 6.89458045,16 7.99810135,16 L12.0018986,16 C13.1132936,16 14,15.1055038 14,14.0020869 L14,14 L14,14 Z M0,1.99079514 C0,0.891309342 0.898212381,0 1.99079514,0 L18.0092049,0 C19.1086907,0 20,0.898212381 20,1.99079514 L20,18.0092049 C20,19.1086907 19.1017876,20 18.0092049,20 L1.99079514,20 C0.891309342,20 0,19.1017876 0,18.0092049 L0,1.99079514 L0,1.99079514 Z M4,4 L16,4 L16,6 L4,6 L4,4 L4,4 Z M4,7 L16,7 L16,9 L4,9 L4,7 L4,7 Z M4,10 L16,10 L16,12 L4,12 L4,10 L4,10 Z" id="Combined-Shape"></path>
                     </svg>
                 </a>
-             </div>';         
+             </div>
+            <div class="mr-1">
+                <a
+                  class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
+                  aria-label="Like"
+                  target="_blank"
+                  href="/dossiers/' . $this->id . '/acte-vente"
+                >
+                    <svg
+                    class="w-4 h-4"
+                    aria-hidden="true"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    >
+                                <path d="M8.25707061,7.74292939 C8.08989122,7.19135019 8,6.60617271 8,6 C8,2.6862915 10.6862915,0 14,0 C17.3137085,0 20,2.6862915 20,6 C20,9.3137085 17.3137085,12 14,12 C13.3938273,12 12.8086498,11.9101088 12.2570706,11.7429294 L10,14 L8,14 L8,16 L6,16 L6,18 L4,20 L0,20 L0,16 L8.25707061,7.74292939 Z M17.1213203,7.12132034 C17.6642136,6.57842712 18,5.82842712 18,5 C18,3.34314575 16.6568542,2 15,2 C14.1715729,2 13.4215729,2.33578644 12.8786797,2.87867966 L17.1213203,7.12132034 L17.1213203,7.12132034 Z" id="Combined-Shape"></path>
+                        </svg>
+                </a>
+             </div>             
+             ';         
            
        }   
        else

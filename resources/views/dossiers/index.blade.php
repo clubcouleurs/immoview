@@ -754,6 +754,8 @@
                 </a>
                 </div>
 
+                
+
                 @endcanany
 
             @canany(['voir paiements',
