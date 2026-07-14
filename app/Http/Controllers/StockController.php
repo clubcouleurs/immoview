@@ -65,9 +65,7 @@ class StockController extends Controller
                             ->whereHasMorph(
                                     'constructible',
                                     [Appartement::class],
-                                    function (Builder $query) {
-                                        $query->where('type','Economique');
-                                    }
+
                                 )
                             ->with('paiements')
                             ->get();
@@ -101,14 +99,14 @@ class StockController extends Controller
                  case 'lot':
                  case 'showroom':
                     ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}
-                            ->groupBy('constructible.tranche_id');
+                            ->groupBy('constructible.tranche.num');
 
                      break;
                  case 'appartement':
                  case 'magasin':
                  case 'box':
                     ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}
-                            ->groupBy('constructible.immeuble.tranche_id');
+                            ->groupBy('constructible.immeuble.tranche.num');
                      break;
                  case 'standing':
                     ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}
@@ -116,7 +114,7 @@ class StockController extends Controller
                      break;                      
                  case 'bureau':
                     ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}
-                            ->groupBy('constructible.situable.immeuble.tranche_id');
+                            ->groupBy('constructible.situable.immeuble.tranche.num');
                      break;                      
                  default:
                      break;
@@ -247,7 +245,7 @@ class StockController extends Controller
 
     public function export() 
     {
-        return Excel::download(new StockExport, 'Récap-Stocks-DSD.xlsx');
+        return Excel::download(new StockExport, 'Récap-Stocks.xlsx');
     }
 
 }

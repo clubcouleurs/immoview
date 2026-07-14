@@ -24,7 +24,7 @@
               class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800"
             >
               <label class="block text-sm">
-                <span class="text-gray-700 dark:text-gray-400">Largeur de la voie</span>
+                <span class="text-gray-700 dark:text-gray-400">Largeur de la voie en m</span>
                 <input
                   class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
                   placeholder=""
@@ -110,7 +110,7 @@
                           >
                             <img
                               class="object-cover w-full h-full rounded-full"
-                              src="{{asset('road.png')}}"
+                              src="{{asset('storage/'.'road.png')}}"
                               alt=""
                               loading="lazy"
                             />

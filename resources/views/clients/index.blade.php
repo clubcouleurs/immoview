@@ -12,11 +12,11 @@
             <div class="flex justify-between">
               <div class="my-6 mr-2">
               <a href="/clients/export{{$urlWithQueryString}}">
-                <img class="h-6" src="{{asset('excel.png')}}">
+                <img class="h-6" src="{{asset('storage/'.'excel.png')}}">
               </a>
             </div>
               <div class="my-6">
-                <img class="h-6" src="{{asset('printer.png')}}" onclick="window.print()">
+                <img class="h-6" src="{{asset('storage/'.'printer.png')}}" onclick="window.print()">
             </div>  
             </div>          
           </div>
@@ -128,7 +128,7 @@
                           >
                             <img
                               class="object-cover w-full h-full rounded-full"
-                              src="{{asset('user.png')}}"
+                              src="{{asset('storage/'.'user.png')}}"
                               alt=""
                               loading="lazy"
                             />
@@ -152,14 +152,17 @@
                       @if($activer==1)
                       <td class="px-4 py-3 text-sm">
                         {{ $client->cin }} 
+                      <p class="text-xs text-gray-600 dark:text-gray-400">
+                             Né: {{$client->date_naissance }} 
+                            </p>
                       </td>
                       <td class="px-4 py-3 text-sm">
                         @isset($client->cinPj)
-                        <a href="{{asset($client->cinPj)}}" target="_blank">
+                        <a href="{{asset('storage/'. $client->cinPj)}}" target="_blank">
                             @if(substr($client->cinPj,-3) == 'pdf')
-                            <img class="h-8" src="{{asset('pdf.png')}}">
+                            <img class="h-8" src="{{asset('storage/'.'pdf.png')}}">
                             @else
-                            <img class="h-8" src="{{asset('id-card-icon.png')}}">
+                            <img class="h-8" src="{{asset('storage/'.'id-card-icon.png')}}">
                             @endif
                         </a>
                         @else
@@ -181,6 +184,8 @@
                           {{ $client->mobile }}
                         </span>
                             <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                          {{ $client->email }}
+
                             </p>                         
                       </td>                                                                  
                     

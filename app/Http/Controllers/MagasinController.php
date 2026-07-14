@@ -12,9 +12,12 @@ use App\Models\Magasin;
 use App\Models\Produit;
 use App\Models\Tranche;
 use App\Models\Voie;
+use App\Rules\oneLotPerProjet;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Maatwebsite\Excel\Facades\Excel;
+
 
 class MagasinController extends Controller
 {
@@ -130,13 +133,17 @@ class MagasinController extends Controller
         return view('magasins.index', [
             'magasins'              => $magasinsParPage,
             'totalMagasins'         => $magasinsAll->count(),
-            'immeubles'              =>Immeuble::all(),
-            'etiquettes'            =>Etiquette::all(),
+            'immeubles'             => Immeuble::with('tranche')
+                                        ->whereHas('tranche', function (Builder $query) {
+                                            $query->where('projet_id', session('projet_id'));
+                                        })  
+                                        ->get(),
+            'etiquettes'            =>  Etiquette::all(),
             'valeurTotal'           => $prixTotalappartements->sum(),
-            'tranches'                  =>Tranche::all(),
-            'magasinsReserved'       => $magasinsReserved,
-            'magasinsBlocked'        => $magasinsBlocked,
-            'magasinsStocked'        => $magasinsStocked,
+            'tranches'              => Tranche::where('projet_id' , session('projet_id'))->orderBy('num')->get(),
+            'magasinsReserved'      => $magasinsReserved,
+            'magasinsBlocked'       => $magasinsBlocked,
+            'magasinsStocked'       => $magasinsStocked,
             'magasinsR'             => $magasinsR, 
             'SearchByImm'           => $request['immeuble'] ,
             'SearchByFacade'        => $request['nombreFacadesappartement'] ,
@@ -146,15 +153,14 @@ class MagasinController extends Controller
             'SearchByMin'           => $request['minPrix'] ,
             'SearchByMax'           => $request['maxPrix'] ,
             'SearchByNum'           => $request['numsappartement'] ,
-            'SearchByTr'           => $request['tranche'] ,
-             'urlWithQueryString' => $urlWithQueryString
-
+            'SearchByTr'            => $request['tranche'] ,
+             'urlWithQueryString'   => $urlWithQueryString
         ]);
     }
 
     public function export(Request $request) 
     {
-        return Excel::download(new MagasinsExport($request), 'Etats-Magasins-DSD.xlsx');
+        return Excel::download(new MagasinsExport($request), 'Etats-Magasins.xlsx');
     }
 
     /**
@@ -168,9 +174,9 @@ class MagasinController extends Controller
                 abort(403);
         }         
         return view('magasins.create', [
-            'voies'         => Voie::all(),
-            'immeubles'     => Immeuble::all(),
-            'etiquettes'    => Etiquette::whereNotIn('label', ['Vendu'])->get(),
+            'voies' => Voie::all(),
+            'immeubles' => Immeuble::whereHas('tranche')->get(),
+            'etiquettes' => Etiquette::whereNotIn('label', ['Vendu'])->get(),
         ]) ;
     }
 
@@ -184,7 +190,16 @@ class MagasinController extends Controller
     {
         if (! Gate::allows('editer magasins')) {
                 abort(403);
-        }         
+        }
+            $request->validate(
+                [
+                    'numMag' => [
+                    'required',
+                    new oneLotPerProjet('','magasins.num', 'magasins', 'magasin'),
+                    ],
+                ]
+            );  
+
         $immeuble = Immeuble::findOrFail($request['immeuble']) ;
         $etiquette = Etiquette::findOrFail($request['etatProduit']) ;
         $Magasin = new Magasin() ;
@@ -239,7 +254,8 @@ class MagasinController extends Controller
             'magasin'           => $magasin, 
             'voies'         => Voie::all(), 
             'etiquettes'    => Etiquette::whereNotIn('label', ['Vendu'])->get(),
-            'immeubles'      => Immeuble::all()]) ;
+            'immeubles' => Immeuble::whereHas('tranche')->get(),
+        ]);
     }
 
     /**
@@ -253,7 +269,8 @@ class MagasinController extends Controller
     {
         if (! Gate::allows('editer magasins')) {
                 abort(403);
-        }         
+        }
+
         $immeuble = Immeuble::findOrFail($request['immeuble']) ;
 
         if ($magasin->produit->dossier == null) {

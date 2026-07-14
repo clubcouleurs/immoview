@@ -6,6 +6,7 @@ use App\Models\Client;
 use App\Models\Dossier;
 use App\Models\Paiement;
 use App\Models\Produit;
+use App\Models\Projet;
 use App\Models\User;
 use App\Models\Visite;
 use Carbon\Carbon;
@@ -13,31 +14,49 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\DB;
+use Doctrine\Inflector\InflectorFactory;
+use Doctrine\Inflector\Language;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Projet $projet)
     {
-        for ($i=0; $i <= 2; $i++) { 
-            $day = (Carbon::now())->addDays($i) ;
-            $today[$i] = Dossier::where('isVente', false)->whereHas('delais', function (Builder $query) use ($day) {
-                $query->whereDate('date', $day->toDateString());
-            })->get()->count();            
+        $inflector = InflectorFactory::createForLanguage(Language::FRENCH)->build();
+
+        $projet_id = session('projet_id');
+
+        if($projet->id == null && $projet_id == null){
+            $projet = Projet::where('default' , true)->limit(1)->first() ;
+           
         }
+        if($projet_id != null && $projet->id == null)
+        {
+            $projet = Projet::where('id' , $projet_id)->limit(1)->first() ;
+        }
+        
+        session(['projet_id' => $projet->id]);
+        $projet_id = session('projet_id');
+        session(['projetConstructibles' => $projet->type_constructible]);
+        session(['entreprise_id' => $projet->entreprise_id]);
 
 
+        
     	$mois = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'September', 'October', 'November','Décembre'] ;
 
     	$nombreVisites = \DB::select("
                     SELECT * FROM (
-                    SELECT YEAR (date) as an, MONTH(date) as mois , COUNT(*) as nombreVisites
+                    SELECT YEAR (visites.date) as an, MONTH(visites.date) as mois , COUNT(*) as nombreVisites
                     from visites
-                    group by MONTH(date), YEAR(date)
-                    Order by YEAR(date) desc, MONTH(date) desc
+                        LEFT JOIN projets
+                        ON visites.projet_id = projets.id
+                        WHERE projets.id = ?                    
+                    group by MONTH(visites.date), YEAR(visites.date)
+                    Order by YEAR(visites.date) desc, MONTH(visites.date) desc
                     limit 7
                     ) as sub
                     ORDER BY an asc, mois asc            
-            ");
+                    ",[$projet_id]);
 
         $nombreVentes = \DB::select("
 SELECT an, mois,
@@ -52,15 +71,22 @@ FROM
     from dossiers
     LEFT JOIN produits
     ON dossiers.produit_id = produits.id
+    LEFT JOIN projets
+    ON produits.projet_id = projets.id
+    WHERE produits.projet_id = ?
     group by MONTH(dossiers.date), YEAR(dossiers.date), produits.constructible_type
     Order by YEAR(dossiers.date) desc, MONTH(dossiers.date) desc
     Limit 7
-) AS T
-GROUP BY an, mois
-Limit 7
-            ");
+    ) AS T
+    GROUP BY an, mois
+    Limit 7" , [$projet_id]);
 
-        $commerciaux = User::whereIn('role_id' , [2])->get()->pluck('name') ;
+
+        $commerciaux = User::get()->pluck('name') ;
+$commerciaux = \App\Models\User::whereHas('dossiers.produit', function($q) use ($projet_id) {
+    $q->where('projet_id', $projet_id);
+})->pluck('name')->unique();
+
         $len = count($commerciaux);
         $len = $len - 1 ;
         $maxStatement = '' ;
@@ -76,143 +102,94 @@ Limit 7
             $i++;
         }
         //dd($maxStatement) ;
-        $performanceCommercial = \DB::select("
-                SELECT an, mois," .
-                $maxStatement
-                .
-                "FROM
-                (SELECT u.name as Commercial, YEAR (t1.date) as an, MONTH(t1.date) as mois , COUNT(*) as nbrVentes 
-        from dossiers as t1
-        LEFT JOIN users as u
-        ON t1.user_id = u.id
-        join
-        (SELECT YEAR (dossiers.date) as an, MONTH(dossiers.date) as mois
-        from dossiers
-        group by YEAR (dossiers.date) ,MONTH(dossiers.date)
-        Order by YEAR (dossiers.date) desc, MONTH(dossiers.date) desc
-        limit 7
-        ) as dt
-        on dt.an=YEAR(t1.date) and dt.mois=MONTH(t1.date)
-        Group by MONTH(t1.date), YEAR(t1.date), u.name
-        Order by YEAR(t1.date) desc, MONTH(t1.date) desc
-        ) AS tt
-        GROUP BY an, mois
+        // $performanceCommercial = \DB::select("
+        //         SELECT an, mois," .
+        //         $maxStatement
+        //         .
+        //         "FROM
+        //         (SELECT u.name as Commercial, YEAR (t1.date) as an, MONTH(t1.date) as mois , COUNT(*) as nbrVentes 
+        // from dossiers as t1
+        // LEFT JOIN users as u
+        // ON t1.user_id = u.id
+        // join
+        // (SELECT YEAR (dossiers.date) as an, MONTH(dossiers.date) as mois
+        // from dossiers
+        // group by YEAR (dossiers.date) ,MONTH(dossiers.date)
+        // Order by YEAR (dossiers.date) desc, MONTH(dossiers.date) desc
+        // limit 7
+        // ) as dt
+        // on dt.an=YEAR(t1.date) and dt.mois=MONTH(t1.date)
+        // Group by MONTH(t1.date), YEAR(t1.date), u.name
+        // Order by YEAR(t1.date) desc, MONTH(t1.date) desc
+        // ) AS tt
+        // GROUP BY an, mois
             
-            ");
+        //     ");
         
-        //dd($performanceCommercial) ;
+// 1. Récupérer les données brutes
+$data = DB::table('dossiers')
+    ->join('produits', 'dossiers.produit_id', '=', 'produits.id')
+    ->join('users', 'dossiers.user_id', '=', 'users.id') // Remplacez user_id par votre clé étrangère
+    ->select(
+        DB::raw('YEAR(dossiers.date) as an'),
+        DB::raw('MONTH(dossiers.date) as mois'),
+        'users.name as user_name',
+        DB::raw('COUNT(*) as total')
+    )
+    ->where('produits.projet_id', $projet_id)
+    ->where('dossiers.date', '>=', Carbon::now()->subMonths(7)->startOfMonth())
+    ->groupBy('an', 'mois', 'user_name')
+    ->orderBy('an', 'desc')
+    ->orderBy('mois', 'desc')
+    ->get();
 
-        $nombreVentesParMois = \DB::select("
-                    SELECT * FROM (
-                    SELECT YEAR (date) as an, MONTH(date) as mois , COUNT(*) as nombreVentes
-                    from dossiers
-                    group by MONTH(date), YEAR(date)
-                    Order by YEAR(date) desc, MONTH(date) desc
-                    limit 7
-                    ) as sub
-                    ORDER BY an asc, mois asc            
-            ");
-        
-        
-        $lotsAll = Produit::with('etiquette')
-        					->with('constructible')
-                            ->where('constructible_type','lot')
-                            ->get();
-        $reserved = $lotsAll->where('etiquette_id', 3)->count(); 
-        $stocked = $lotsAll->where('etiquette_id', 2)->count(); 
-        $promised = $lotsAll->where('etiquette_id', 9)->count(); 
+// Récupérer la liste des noms de tous les commerciaux du projet au préalable
+$nomsCommerciaux = $data->pluck('user_name')->unique();
 
-        $blocked = $lotsAll->count() - ($stocked + $reserved + $promised); 
+$performanceCommercial = $data->groupBy(function($item) {
+    return $item->an . '-' . $item->mois;
+})->map(function ($group) use ($nomsCommerciaux) {
+    $first = $group->first();
+    
+    // 1. Initialiser l'objet avec an, mois et tous les users à 0
+    $result = [
+        'an' => $first->an,
+        'mois' => $first->mois,
+    ];
+    foreach ($nomsCommerciaux as $nom) {
+        $result[$nom] = 0;
+    }
 
-        $appartementsAll = Produit::with('constructible')
-                            ->where('constructible_type','appartement')
-                            ->with('etiquette')
-                            ->get();
-        $appartementsReserved = $appartementsAll->where('etiquette_id', 3)->count() ;
-        $appartementsStocked = $appartementsAll->where('etiquette_id', 2)->count() ;
-        $appartementsPromised = $appartementsAll->where('etiquette_id', 9)->count(); 
-        $appartementsBlocked = $appartementsAll->whereNotIn('etiquette_id', [3,2,9])->count() ;
+    // 2. Remplir avec les vraies valeurs
+    foreach ($group as $row) {
+        $result[$row->user_name] = $row->total;
+    }
 
-        $magasinsAll = Produit::with('constructible')
-                            ->where('constructible_type','magasin')
-                            ->with('etiquette')
-                            ->get();
-        $magasinsReserved = $magasinsAll->where('etiquette_id', 3)->count() ;
-        $magasinsStocked = $magasinsAll->where('etiquette_id', 2)->count() ;
-        $magasinsPromised = $magasinsAll->where('etiquette_id', 9)->count();         
-        $magasinsBlocked = $magasinsAll->whereNotIn('etiquette_id', [3,2,9])->count() ;
+    return (object) $result;
+})->values()->take(7)->toArray();
 
-        $bureauxAll = Produit::with('constructible')
-                            ->where('constructible_type','bureau')
-                            ->with('etiquette')
-                            ->get();
-        $bureauxReserved = $bureauxAll->where('etiquette_id', 3)->count() ;
-        $bureauxStocked = $bureauxAll->where('etiquette_id', 2)->count() ;
-        $bureauxPromised = $bureauxAll->where('etiquette_id', 9)->count();         
-        $bureauxBlocked = $bureauxAll->whereNotIn('etiquette_id', [3,2,9])->count() ;
 
-        $boxesAll = Produit::with('constructible')
-                            ->where('constructible_type','box')
-                            ->with('etiquette')
-                            ->get();
+$nombreVentesParMois = \DB::select("
+    SELECT * FROM (
+        SELECT 
+            YEAR(dossiers.date) as an, 
+            MONTH(dossiers.date) as mois, 
+            COUNT(*) as nombreVentes
+        FROM dossiers
+        LEFT JOIN produits ON dossiers.produit_id = produits.id
+        LEFT JOIN projets ON produits.projet_id = projets.id
+        WHERE projets.id = ?
+        GROUP BY YEAR(dossiers.date), MONTH(dossiers.date)
+        ORDER BY an DESC, mois DESC
+        LIMIT 7
+        ) as sub
+        ORDER BY an ASC, mois ASC
+    ", [$projet_id]);
 
-        $boxesReserved = $boxesAll->where('etiquette_id', 3)->count() ;
-        $boxesStocked = $boxesAll->where('etiquette_id', 2)->count() ;
-        $boxesPromised = $boxesAll->where('etiquette_id', 9)->count();
-        $boxesBlocked = $boxesAll->whereNotIn('etiquette_id', [3,2,9])->count() ;
 
-        $dossiersAll = Dossier::with('produit')->with('clients')->with('paiements')
-        ->orderByDesc('created_at')->paginate(15);
 
         // pour compter les taux d'avances 30%
-
-        $dossiers = Produit::with('dossier')->with('constructible')->with('paiements')->get();
-
-        // sélectionner les produits vendus càd avec un dossier
-        $groupedDossiers = $dossiers->filter(function ($item, $key) {
-            if (isset($item->dossier)) {
-               return true ;    
-            }
-        });
-
-        $groupedDossiers = $groupedDossiers->groupBy('constructible_type');
-
-        $groupedDossiers = $groupedDossiers->map(function ($item, $key) {
-            return $item->map(function ($item, $key){
-                    return
-                    [
-               'CaReserve' => $item->totalDefinitif,
-               'totalPaiementsV' => $item->dossier->totalPaiementsV,
-               'totalPaiementsNV' => ($item->dossier->totalPaiements - $item->dossier->totalPaiementsV),
-               'tauxPaiement' => $item->dossier->tauxPaiementV,
-               'reliquat' => $item->dossier->reliquat,
-                    ];
-            });
-        });
-
-        $groupedDossiers = $groupedDossiers->map(function ($item, $key) {
-                return
-                [
-                'CaReserve' => $item->sum('CaReserve'),
-                'totalPaiementsV' => $item->sum('totalPaiementsV'),
-                'totalPaiementsNV' => $item->sum('totalPaiementsNV'),
-                'tauxPaiement' => $item->sum('tauxPaiement') / $item->count(),
-                'reliquat' => $item->sum('reliquat'),                    
-                ]  ;    
-           
-        });
-
-        $groupedDossiers = $groupedDossiers->mapWithKeys(function ($item, $key) {
-            return [$key.'Finance' => $item];
-        });
-
-        $total = 0 ;
-           $CAdossiers = $dossiers->map(function ($item, $key) use ($total) {
-            if (isset($item->dossier)) {
-               return $total = $total + $item->totalDefinitif;    
-            }
-        });
-
+        $dossiers = Projet::getAllDossiersOfThisProjet($projet->id);
 
          $dossiersUnder30 = $dossiers->filter(function ($item, $key) {
                 if (isset($item->dossier)) {
@@ -248,91 +225,44 @@ Limit 7
         //// fin filtre
 
 
+        // adding project update 26/08/23
+        //new
+        $produitsParType = Produit::produitsParTypeParProjet($projet)->mapWithKeys(function ($item)  use ($inflector){
+            return [$inflector->pluralize($item->constructible_type) => $item->nombre];
+        });        
 
-
-        $produitsParType = Produit::produitsParType()->mapWithKeys(function ($item) {
-            return [$item->constructible_type.'s' => $item->nombre];
-        });
-
-        $dossiersParType = Dossier::dossiersParType()->mapWithKeys(function ($item) {
+        $dossiersParType = Dossier::dossiersParType($projet->id)->mapWithKeys(function ($item){
             return [$item->constructible_type => $item->nombre];
         });
-        $paiements = Paiement::sum('montant') ;
-        $paiementsV = Paiement::where('valider', 1)->sum('montant') ;
-        $paiementsN = $paiements - $paiementsV ;
-        $CA = $CAdossiers->sum() ;
-        $reliquat = $CA - $paiementsV ; 
-        $total = 0 ;
-        $prixTotalLots = $lotsAll->map(function ($item, $key) use ($total) {
-                return $total = $total + $item->totalIndicatif;
-        });
-        $total = 0 ;
-        $prixTotalappartements = $appartementsAll->map(function ($item, $key) use ($total) {
-               return $total = $total + $item->totalIndicatif;
-        });           
-        $total = 0 ;
-        $prixTotalmagasins = $magasinsAll->map(function ($item, $key) use ($total) {
-               return $total = $total + $item->totalIndicatif;
-        }); 
-        $total = 0 ;
-        $prixTotalbureaux = $bureauxAll->map(function ($item, $key) use ($total) {
-               return $total = $total + $item->totalIndicatif;
-        }); 
-        $total = 0 ;
-        $prixTotalboxes = $boxesAll->map(function ($item, $key) use ($total) {
-               return $total = $total + $item->totalIndicatif;
-        }); 
 
+//dd(Projet::getFinancesOfThisProjet($projet->id)->all());
+        // dd($performanceCommercial) ;
+        // dd($commerciaux) ;
 
+        return view('dashboard',[
+            'paiementsDueNbr' => Paiement::getNbrPaiementsDueToday($projet->id, [0,2], 0),
+            'paiementsUnpaidNbr' => Paiement::getNbrPaiementsDueToday($projet->id, 2 ),
+            'paiementsDueUntilNbr' => Paiement::getNbrPaiementsDueUntilToday($projet->id, [0,2], Carbon::now()->toDateString()),
 
-        return view('dashboard', [
-            'dossiersToday'         => $today[0] ,
-            'dossiersTomorrow' => $today[1],
-            'dossiersAfterTomorrow' =>  $today[2],
-			'reserved' 	=> $reserved, 
-	        'stocked' 	=> $stocked,
-	        'blocked' 	=> $blocked,
-            'promised'   => $promised,
-            
+            'dossiersToday' => Dossier::getDossierArelancerToday($projet->id),
             'interets'      => Visite::interets(),
             'tauxConversion' => Client::tauxConversion() . ' %', 
-            'appartementsReserved' => $appartementsReserved,
-            'appartementsStocked' => $appartementsStocked,
-            'appartementsBlocked' => $appartementsBlocked,
-            'appartementsPromised' => $appartementsPromised,
+            'projets' => Projet::all(),
+            'today' => Carbon::now()->toDateString(),
 
-            'bureauxReserved' => $bureauxReserved,
-            'bureauxStocked' => $bureauxStocked,
-            'bureauxBlocked' => $bureauxBlocked,
-            'bureauxPromised' => $bureauxPromised,
+            //'valeurTotalLots' => $prixTotalLots->sum(),
+            // 'valeurTotalAppartements' => $prixTotalappartements->sum(),
+            // 'valeurTotalBureaux' => $prixTotalbureaux->sum(),
+            //'valeurTotalMagasins' => $prixTotalmagasins->sum(),
+            //'valeurTotalBoxes' => $prixTotalboxes->sum(),
+            'dossiers' => Dossier::getAllDossiersProjet($projet->id),
 
-            'magasinsReserved' => $magasinsReserved,
-            'magasinsStocked' => $magasinsStocked,
-            'magasinsBlocked' => $magasinsBlocked,
-            'magasinsPromised' => $magasinsPromised,
-
-            'boxesReserved' => $boxesReserved,
-            'boxesStocked' => $boxesStocked,
-            'boxesBlocked' => $boxesBlocked,
-            'boxesPromised' => $boxesPromised,
-
-            'valeurTotalLots' => $prixTotalLots->sum(),
-            'valeurTotalAppartements' => $prixTotalappartements->sum(),
-            'valeurTotalBureaux' => $prixTotalbureaux->sum(),
-            'valeurTotalMagasins' => $prixTotalmagasins->sum(),
-            'valeurTotalBoxes' => $prixTotalboxes->sum(),
-
-	        'dossiers' => $dossiersAll,
 	        'nombreVisites' => $nombreVisites,
             'performanceCommercial' => $performanceCommercial ,
             'perfKeys' => array_keys(json_decode(json_encode($performanceCommercial), true)),
             'commerciaux' => $commerciaux ,
 	        'mois' => $mois,
-            'paiements' => numberFormat($paiements) ,
-            'paiementsV' => numberFormat($paiementsV) ,
-            'paiementsN' => numberFormat($paiementsN) ,
-            'CA'        => numberFormat($CA),
-            'reliquat' => numberFormat($reliquat), 
+
             'dossiersUnder30' => $dossiersUnder30->count(),
             'dossiersOver30' => $dossiersOver30->count(),
             'dossiersUnder20' => $dossiersUnder20->count(),
@@ -351,7 +281,10 @@ Limit 7
             'appelsWeek'   => Visite::visitesWeek()[0],
             'dossiersLitige' => Dossier::litige() ,
                         
-        ], $dossiersParType->all() + $produitsParType->all() + $groupedDossiers->all(),
+        ],      Produit::getEtatProduitsProjet($projet, $inflector)->all()
+            +   $dossiersParType->all()
+            +   $produitsParType->all()
+            +   Projet::getFinancesOfThisProjet($projet->id)->all(),
     ) ;
     }
 }

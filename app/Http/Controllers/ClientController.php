@@ -65,7 +65,7 @@ class ClientController extends Controller
 
     public function export(Request $request) 
     {
-        return Excel::download(new ClientsExport($request), 'Récap-clients-prospects-DSD.xlsx');
+        return Excel::download(new ClientsExport($request), 'Récap-clients-prospects.xlsx');
     }    
 
     /**
@@ -98,6 +98,8 @@ class ClientController extends Controller
             'prenomAr'    => 'string|max:50|nullable',
             'nomAr'    => 'string|max:50|nullable',
             'adresseAr'    => 'string|nullable',
+            'email' => 'string|nullable',
+            'date_naissance' => 'date|nullable',
 
             'mobile'    => 'numeric|unique:clients,mobile',
             'cin'    => 'required|alpha_num|unique:clients,cin',
@@ -110,6 +112,8 @@ class ClientController extends Controller
         $client->nom    = strtoupper($request['nom']);
         $client->prenom = strtoupper($request['prenom']);
         $client->mobile = $request['mobile'];
+        $client->email     = strtolower($request['email']);
+        $client->date_naissance     = $request['date_naissance'];        
         $client->cin = strtoupper($request['cin']);
         $client->adresse = strtoupper($request['adresse']);
         $client->nomAr    = strtoupper($request['nomAr']);
@@ -194,7 +198,8 @@ class ClientController extends Controller
             'prenom'    => 'required|string|max:50',
             'mobile'    => 'numeric|unique:clients,mobile,' . $client->id,
             'adresse' => 'required|string',
-
+            'email' => 'string|nullable',
+            'date_naissance' => 'date|nullable',
             'prenomAr'    => 'string|max:50|nullable',
             'nomAr'    => 'string|max:50|nullable',
             'adresseAr'    => 'string|nullable',    
@@ -204,12 +209,14 @@ class ClientController extends Controller
         $client->nom        = strtoupper($request['nom']);
         $client->prenom     = strtoupper($request['prenom']);
         $client->mobile     = $request['mobile'];
+        $client->email     = strtolower($request['email']);
+        $client->date_naissance     = $request['date_naissance'];
         $client->cin        = strtoupper($request['cin']);
         $client->adresse    = strtoupper($request['adresse']);
-
         $client->nomAr    = strtoupper($request['nomAr']);
         $client->prenomAr = strtoupper($request['prenomAr']);        
         $client->adresseAr = strtoupper($request['adresseAr']);
+
 
         $client->activer    = 1 ;
 

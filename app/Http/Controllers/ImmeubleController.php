@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Immeuble;
 use App\Models\Tranche;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Builder;
 
 use Illuminate\Validation\Rule;
 
@@ -18,8 +19,11 @@ class ImmeubleController extends Controller
      */
     public function index()
     {
-        return view('immeubles.index', ['immeubles' => Immeuble::all(), 'tranches' => Tranche::all()]) ; //->paginate(2)]) ;
-
+        return view('immeubles.index',
+        [
+         'immeubles' => Immeuble::whereHas('tranche')->get(),
+        'tranches' => Tranche::all(),
+        ]);
     }
 
     /**
@@ -71,8 +75,16 @@ class ImmeubleController extends Controller
      */
     public function show(Immeuble $immeuble)
     {
-        return view('immeubles.index', ['immeubles' => Immeuble::all(),'tranches' => Tranche::all(),
-        'immeuble' => $immeuble]) ;
+        return view('immeubles.index',
+        [
+         'immeubles' => Immeuble::with('tranche')
+                                ->whereHas('tranche', function (Builder $query) {
+                                    $query->where('projet_id', session('projet_id'));
+                                })  
+                                ->get(),
+        'tranches' => Tranche::where('projet_id' , session('projet_id'))->orderBy('num')->get(),
+        'immeuble' => $immeuble,
+        ]);
     }
 
     /**

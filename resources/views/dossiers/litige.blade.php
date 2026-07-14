@@ -12,11 +12,11 @@
             <div class="flex justify-between">
               <div class="my-6 mr-2">
               <a href="/dossiers/export{{$urlWithQueryString}}">
-                <img class="h-6" src="{{asset('excel.png')}}">
+                <img class="h-6" src="{{asset('storage/'.'excel.png')}}">
               </a>
             </div>
               <div class="my-6">
-                <img class="h-6" src="{{asset('printer.png')}}" onclick="window.print()">
+                <img class="h-6" src="{{asset('storage/'.'printer.png')}}" onclick="window.print()">
             </div>  
             </div>          
           </div>
@@ -524,9 +524,9 @@
                               class="object-cover w-full h-full rounded-full"
                               src="
                               @if($dossier->litige == false)
-                              {{asset('floor-plan.png')}}
+                              {{asset('storage/'.'floor-plan.png')}}
                               @else
-                              {{asset('litige.png')}}
+                              {{asset('storage/'.'litige.png')}}
                               @endif
                               "
                               alt=""

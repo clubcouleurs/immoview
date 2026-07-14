@@ -33,6 +33,20 @@
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror
               </label>
+              <label class="block mt-4 text-sm">
+                <span class="text-gray-700 dark:text-gray-400">N° du lot au niveau cadastre (Optionnel, au cas le numéro n'est pas accepté par le service cadastre)</span>
+                <input
+                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                  placeholder=""
+                  type="text"
+                  name="num_cadastre"
+                  value="@if($lot->num_cadastre == ''){{old('num_cadastre')}}@else{{$lot->num_cadastre}}@endif"
+                />
+                    @error('num_cadastre')
+                    <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
+                    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
+                    @enderror
+              </label>              
 <!-- champs titre foncier -->
               <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">Titre Foncier</span>
@@ -41,8 +55,7 @@
                   placeholder=""
                   type="text"
                   name="titre_foncier"
-                  required
-                  value="{{$lot->titre_foncier}}"
+                  value="@if($lot->titre_foncier == ''){{old('titre_foncier')}}@else{{$lot->titre_foncier}}@endif"
                 />
                     @error('titre_foncier')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
@@ -67,6 +80,24 @@
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror
               </label>
+
+              <label class="block   mt-4 text-sm">
+                <span class="text-gray-700 dark:text-gray-400">Surface du lot en m2 (cadastre) (Optionnel, au cas ou la surface n'est pas accepté par le service cadastre)</span>
+                <input
+                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                  placeholder=""
+                  type="number"
+                  step="0.01"
+                  name="surface_cadastre"
+                  value="{{$lot->surface_cadastre}}"
+                />
+                    @error('surface_cadastre')
+                    <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
+                    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
+                    @enderror
+              </label>
+
+
               <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">
                   Ce lot est sur les voie : 
@@ -206,7 +237,7 @@
                   Etat du lot
                 </span>
                 <div class="mt-2">
-                                <label class="block text-sm">
+                <label class="block text-sm">
 
                 <select
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"

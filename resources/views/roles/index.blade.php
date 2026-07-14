@@ -74,7 +74,7 @@
                           >
                             <img
                               class="object-cover w-full h-full rounded-full"
-                              src="{{asset('access.png')}}"
+                              src="{{asset('storage/'.'access.png')}}"
                               alt=""
                               loading="lazy"
                             />

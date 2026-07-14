@@ -2,14 +2,18 @@
 
 namespace App\Models;
 
+use App\Http\Traits\BelongsToProject;
 use App\Models\Client;
+use App\Models\Projet;
 use App\Models\User;
+use App\Scopes\ProjetScope;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Carbon\Carbon;
 
 class Visite extends Model
 {
+    use BelongsToProject;
     use HasFactory;
 
     protected $fillable = [
@@ -22,6 +26,7 @@ class Visite extends Model
         'domaine',
         'surfaceDesired',
         'autre',
+        'projet_id',
     ];
 
     public function client()
@@ -32,7 +37,17 @@ class Visite extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function projet()
+    {
+        return $this->belongsTo(Projet::class);
+    }
 
+    protected static function booted()
+    {
+        static::addGlobalScope(new ProjetScope);
+    }
+
+        
     public static function visitesDay()
     {
         $now = Carbon::now();

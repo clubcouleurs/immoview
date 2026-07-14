@@ -2,13 +2,17 @@
 
 namespace App\Models;
 
+use App\Models\Contrat;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Contact extends Model
+class Article extends Model
 {
-	public $timestamps = false;
     use HasFactory;
-    protected $fillable = ['nomEnfant', 'nomTuteur','mobile','email','adresse'];
+
+    public function contrat()
+    {
+        return $this->belongsTo(Contrat::class);
+    }
 
 }

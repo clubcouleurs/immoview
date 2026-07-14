@@ -6,16 +6,19 @@ use App\Exports\AppartementsExport;
 use App\Http\Requests\ProduitRequest;
 use App\Http\Traits\PaginateTrait;
 use App\Models\Appartement;
+use App\Models\Client;
 use App\Models\Etiquette;
 use App\Models\Immeuble;
 use App\Models\Produit;
 use App\Models\Tranche;
+use App\Models\Type;
 use App\Models\Voie;
+use App\Rules\oneLotPerProjet;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Maatwebsite\Excel\Facades\Excel;
-use Illuminate\Database\Eloquent\Builder;
 
 
 class AppartementController extends Controller
@@ -29,6 +32,8 @@ class AppartementController extends Controller
      */
     public function index(Request $request, $typeApp = "")
     {
+
+
         if (! Gate::allows('voir appartements') && ! Gate::allows('voir appartements standing')) {
                 abort(403);
         }
@@ -38,7 +43,8 @@ class AppartementController extends Controller
             && $request['standing'] != 1
         ){
                 abort(403);
-        }        
+        }
+        /* Requete ancienne version qui fait la différence entre économique et standing
         if(isset($request['standing']) && $request['standing'] == 1 )
         {
             $appartementsAll = Produit::with('constructible')
@@ -49,7 +55,6 @@ class AppartementController extends Controller
                                                 function (Builder $qu) 
                                             {
                                                 $qu->where('type', 'Standing');
-
                                             }
                                 )
                                 ->with('etiquette')
@@ -75,6 +80,15 @@ class AppartementController extends Controller
                                 ->orderByDesc('created_at')
                                 ->get();
         }
+        */
+        // nouvelle version du 06/05/26
+            $appartementsAll = Produit::with('constructible')
+                                ->where('constructible_type','appartement')                                
+                                ->with('etiquette')
+                                ->withCount('voies')
+                                ->orderByDesc('created_at')
+                                ->get();
+
         $appartementsAll = $appartementsAll->sortBy('constructible.num') ;
         $appartementsReserved = $appartementsAll->where('etiquette_id', 3)->count() ;
         $appartementsStocked = $appartementsAll->where('etiquette_id', 2)->count() ;
@@ -171,11 +185,17 @@ class AppartementController extends Controller
            $urlWithQueryString = substr($urlWithQueryString, strlen($request->url())) ;           
 
         return view('appartements.index', [
+            'types' => Type::distinct()->pluck('type'),
             'appartements'              => $appartementsParPage ,
             'totalappartements'         => $appartementsAll->count(),
-            'immeubles'                 =>Immeuble::all(),
+            'immeubles' => Immeuble::with('tranche')
+                                ->whereHas('tranche', function (Builder $query) {
+                                    $query->where('projet_id', session('projet_id'));
+                                })  
+                                ->get(),
             'etiquettes'                =>Etiquette::all(),
-            'tranches'                  =>Tranche::all(),
+            'tranches' => Tranche::where('projet_id' , session('projet_id'))->orderBy('num')->get(),
+
             'valeurTotal'               => $prixTotalappartements->sum(),
 
             'appartementsReserved'      => $appartementsReserved,
@@ -201,7 +221,7 @@ class AppartementController extends Controller
 
     public function export(Request $request) 
     {
-        return Excel::download(new AppartementsExport($request), 'Etats-Appartements-DSD.xlsx');
+        return Excel::download(new AppartementsExport($request), 'Etats-Appartements.xlsx');
     }
 
 
@@ -216,9 +236,11 @@ class AppartementController extends Controller
                 abort(403);
         }          
         return view('appartements.create', [
+            // 'voies' => Voie::where('projet_id' , session('projet_id'))->orderBy('id')->get(),
             'voies' => Voie::all(),
-            'immeubles' => Immeuble::all(),
+            'immeubles' => Immeuble::whereHas('tranche')->get(),
             'etiquettes' => Etiquette::whereNotIn('label', ['Vendu'])->get(),
+            'types' => Type::all(),
         ]) ;
     }
 
@@ -233,10 +255,16 @@ class AppartementController extends Controller
         if (! Gate::allows('editer appartements') && ! Gate::allows('editer appartements standing')) {
                 abort(403);
         }         
+            $request->validate(
+                [
+                    'numApp' => [
+                    'required',
+                    new oneLotPerProjet('','appartements.num', 'appartements', 'appartement'),
+                    ],
+                ]
+            );        
         $immeuble = Immeuble::findOrFail($request['immeuble']) ;
         $etiquette = Etiquette::findOrFail($request['etatProduit']) ;
-
-
         $Appartement = new Appartement() ;
         $Appartement->num               = $request['numApp'];
         $Appartement->surfaceApp        = $request['surfaceApp'];
@@ -247,6 +275,8 @@ class AppartementController extends Controller
 
         //ajout du 03/03/22 l'app est composé de ces pièces ...
         $Appartement->chambres       = $request['chambres'];
+        $Appartement->salons       = $request['salons'];
+
         $Appartement->cuisines       = $request['cuisines'];
         $Appartement->sdbs       = $request['sdbs'];
         $Appartement->toilettes       = $request['toilettes'];
@@ -257,10 +287,9 @@ class AppartementController extends Controller
 
         $produit = new Produit([
         'etatProduit'       => $request['etatProduit'] ,
-        'prixM2Indicatif'    => $request['prixM2Indicatif'] ,
+        'prixM2Indicatif'   => $request['prixM2Indicatif'] ,
         'prixM2Definitif'   => $request['prixM2Definitif'],
-        'etiquette_id'   => $etiquette->id,
-
+        'etiquette_id'      => $etiquette->id,
         ]) ;
         $Appartement->produit()->save($produit) ;
         //$etiquette->produits()->save($produit) ;
@@ -297,7 +326,10 @@ class AppartementController extends Controller
             'appartement'           => $appartement, 
             'voies'         => Voie::all(), 
             'etiquettes'    => Etiquette::whereNotIn('label', ['Vendu'])->get(),
-            'immeubles'      => Immeuble::all()]) ;
+            'immeubles'      => Immeuble::whereHas('tranche')->get(),
+            'types' => Type::all(),
+        ]);
+
     }
 
     /**
@@ -340,6 +372,8 @@ class AppartementController extends Controller
         
         //ajout du 03/03/22 l'app est composé de ces pièces ...
         $appartement->chambres       = $request['chambres'];
+        $appartement->salons       = $request['salons'];
+
         $appartement->cuisines       = $request['cuisines'];
         $appartement->sdbs       = $request['sdbs'];
         $appartement->toilettes       = $request['toilettes'];
@@ -348,13 +382,8 @@ class AppartementController extends Controller
         $appartement->update();
 
         $immeuble->appartements()->save($appartement) ;
-        if ($appartement->type == 'Standing') {
-            $st = 1 ;
-        }else
-        {
-            $st = 0 ;
-        }
-        return redirect()->action([AppartementController::class,'index'] , ['standing' => $st ])
+
+        return redirect()->action([AppartementController::class,'index'])
         ->with('message','Appartement modifié !');
     }
 

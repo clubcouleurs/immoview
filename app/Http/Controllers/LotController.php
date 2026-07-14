@@ -2,19 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\LotsExport;
 use App\Http\Requests\ProduitRequest;
 use App\Http\Traits\PaginateTrait;
 use App\Models\Etiquette;
 use App\Models\Lot;
 use App\Models\Produit;
+use App\Models\Projet;
 use App\Models\Tranche;
 use App\Models\Voie;
+use App\Rules\oneLotPerProjet;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\LotsExport;
 
 class LotController extends Controller
 {
@@ -29,8 +31,13 @@ class LotController extends Controller
         if (! Gate::allows('voir lots')) {
                 abort(403);
         }
+        // update 19/09/2023
+        //récupérer le projet selectionné
+        $projet = $request->session()->get('projet_id');
+        
         $lotsAll = Produit::with('constructible')
                             ->where('constructible_type','lot')
+                            ->where('projet_id', $projet)
                             ->with('etiquette')
                             ->withCount('voies')
                             ->orderByDesc('created_at')
@@ -113,8 +120,8 @@ class LotController extends Controller
         return view('lots.index', [
             'lots'              => $lotsParPage,
             'totalLots'         => $lotsAll->count(),
-            'tranches'          =>Tranche::all(),
-            'etiquettes'          =>Etiquette::all(),
+            'tranches'          => Tranche::where('projet_id' , session('projet_id'))->orderBy('num')->get(),
+            'etiquettes'        =>Etiquette::all(),
             'valeurTotal'       => $prixTotalLots->sum(),
             'lotsReserved'       => $lotsReserved,
             'lotsBlocked'        => $lotsBlocked,
@@ -126,8 +133,8 @@ class LotController extends Controller
             'SearchByEtat'     => $request['etatProduit'] ,
             'SearchByType'     => $request['type'] ,
             'SearchByMin'     => $request['minPrix'] ,
-            'SearchByMax'     => $request['maxPrix'] ,
-            'SearchByNum' => $request['numsLot'] ,
+            'SearchByMax'   => $request['maxPrix'] ,
+            'SearchByNum'   => $request['numsLot'] ,
             'urlWithQueryString'  => $urlWithQueryString,
 
 
@@ -136,7 +143,7 @@ class LotController extends Controller
 
     public function export(Request $request) 
     {
-        return Excel::download(new LotsExport($request), 'Etats-lots-DSD.xlsx');
+        return Excel::download(new LotsExport($request), 'Etats-lots.xlsx');
     }
 
     /**
@@ -150,14 +157,12 @@ class LotController extends Controller
                 abort(403);
         }        
         return view('lots.create', [
-            'voies' => Voie::all(),
-            'tranches' => Tranche::all(),
+            'voies' => Voie::where('projet_id' , session('projet_id'))->get(),
+            'tranches' => Tranche::where('projet_id' , session('projet_id'))->orderBy('num')->get(),
             'etiquettes' => Etiquette::whereNotIn('label', ['Vendu'])->get(),
         ]) ;
 
     }
-
-
 
     /**
      * Store a newly created resource in storage.
@@ -167,15 +172,27 @@ class LotController extends Controller
      */
     public function store(ProduitRequest $request)
     {   
+        $request->validate(
+            [
+                'numLot' => [
+                'sometimes',
+                'required',
+                new oneLotPerProjet(),
+                ],
+            ]
+        );
+
         if (! Gate::allows('editer lots')) {
                 abort(403);
         }
         $tranche = Tranche::findOrFail($request['tranche']) ;
         $etiquette = Etiquette::findOrFail($request['etatProduit']) ;
 
-
         $lot = new Lot() ;
         $lot->num                = $request['numLot'];
+        $lot->num_cadastre       = $request['num_cadastre'];
+        $lot->surface_cadastre = $request['surface_cadastre'];
+
         $lot->surface            = $request['surface'];
         $lot->type               = $request['type'];
         $lot->etage             = $request['etage'];
@@ -184,17 +201,14 @@ class LotController extends Controller
         $tranche->lots()->save($lot) ;
 
         $produit = new Produit([
-        'etatProduit'       => $request['etatProduit'] ,
-        'prixM2Indicatif'    => $request['prixM2Indicatif'] ,
-        'prixM2Definitif'   => $request['prixM2Definitif'],
-        'etiquette_id'   => $etiquette->id,
-
-        ]) ;
+        'etatProduit'           => $request['etatProduit'] ,
+        'prixM2Indicatif'       => $request['prixM2Indicatif'] ,
+        'prixM2Definitif'       => $request['prixM2Definitif'],
+        'etiquette_id'          => $etiquette->id,
+        'projet_id'             => session('projet_id') ,
+        ]);
         $lot->produit()->save($produit) ;
-        //$etiquette->produits()->save($produit) ;
         $produit->voies()->attach($request['voies']) ;
-
-
         return redirect()->action([LotController::class, 'index'])
         ->with('message','Lot ajouté !');
 
@@ -227,9 +241,10 @@ class LotController extends Controller
         }        
         return view('lots.edit', [
             'lot'           => $lot, 
-            'voies'         => Voie::all(), 
+            'voies' => Voie::where('projet_id' , session('projet_id'))->get(),
             'etiquettes'    => Etiquette::whereNotIn('label', ['Vendu'])->get(),
-            'tranches'      => Tranche::all()]) ;
+            'tranches' => Tranche::where('projet_id' , session('projet_id'))->orderBy('num')->get(),
+        ]);
     }
 
 
@@ -245,15 +260,23 @@ class LotController extends Controller
         if (! Gate::allows('editer lots')) {
                 abort(403);
         }
-
+        $request->validate(
+            [
+                'numLot' => [
+                'required',
+                new oneLotPerProjet($lot->id),
+                ],
+                'num_cadastre' => [
+                'nullable',
+                new oneLotPerProjet($lot->id, 'lots.num_cadastre'),
+                ],                
+            ]
+        );
         $tranche = Tranche::findOrFail($request['tranche']) ;
-
-        if ($lot->produit->dossier == null) {
-            
-            $lot->produit->etiquette_id = $request['etatProduit']; 
-            
+        if ($lot->produit->dossier == null)
+        {
+            $lot->produit->etiquette_id = $request['etatProduit'];    
         }
-
         // controller si l'utilisateur a le droit de modifier le prix indicatif
         if (Gate::allows('editer prix produits'))
         {
@@ -264,6 +287,9 @@ class LotController extends Controller
         $lot->produit->update() ;
         $lot->produit->voies()->detach() ; 
         $lot->produit->voies()->attach($request['voies']) ;
+
+        $lot->num_cadastre       = $request['num_cadastre'];
+        $lot->surface_cadastre = $request['surface_cadastre'];        
 
         $lot->num               = $request['numLot'];
         $lot->surface            = $request['surface'];

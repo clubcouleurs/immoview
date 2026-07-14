@@ -13,7 +13,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 
 use Illuminate\Database\Eloquent\Builder;
-
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ProduitController extends Controller
 {
@@ -91,6 +91,21 @@ class ProduitController extends Controller
     public function destroy(Produit $produit)
     {
         //
+    }
+
+    public function fiche(Produit $produit)
+    {
+        $paiements = null ;
+        if($produit->dossier)
+        {
+           $paiements = $produit->dossier->paiements ;
+        }
+        $pdf = Pdf::loadView('pdf.recaps.lot',
+            [   'logo'      => $produit->projet->entreprise->logo,
+                'paiements' => $paiements,
+                'produit'   => $produit]);
+        return $pdf->download('FicheProduit.pdf');
+
     }
 
     public function produits_data(Request $request, $num, $type)

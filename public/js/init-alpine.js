@@ -68,9 +68,9 @@ function data() {
       this.isAppartementsMenuOpen = !this.isAppartementsMenuOpen
     },
 
-    isStandingMenuOpen: false,
-    toggleStandingMenu() {
-      this.isStandingMenuOpen = !this.isStandingMenuOpen
+    isStandingsMenuOpen: false,
+    toggleStandingsMenu() {
+      this.isStandingsMenuOpen = !this.isStandingsMenuOpen
     },  
 
     isMagasinsMenuOpen: false,
@@ -102,7 +102,11 @@ function data() {
     isRecovMenuOpen: false,
     toggleRecovMenu() {
       this.isRecovMenuOpen = !this.isRecovMenuOpen
-    },                 
+    },   
+    isProjetsMenuOpen: false,
+    toggleProjetsMenu() {
+      this.isProjetsMenuOpen = !this.isProjetsMenuOpen
+    },                  
     // Modal
     isModalOpen: false,
     trapCleanup: null,

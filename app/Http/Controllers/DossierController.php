@@ -5,13 +5,14 @@ namespace App\Http\Controllers;
 use App\Exports\DossiersExport;
 use App\Http\Requests\DossierRequest;
 use App\Http\Traits\PaginateTrait;
+use App\Models\Appartement;
 use App\Models\Client;
+use App\Models\Contrat;
 use App\Models\Delai;
 use App\Models\Dossier;
 use App\Models\Produit;
 use App\Models\Tranche;
 use App\Models\User;
-use App\Models\Appartement;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -23,6 +24,10 @@ use Mavinoo\Batch\Batch;
 use NumberToWords\NumberToWords;
 use setasign\Fpdi\Fpdi;
 use setasign\Fpdi\Tcpdf\Fpdi as TCPDF;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
+use App\Models\Paiement;
+
 
 class DossierController extends Controller
 {
@@ -32,64 +37,11 @@ class DossierController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function litige(Request $request)
-    {
-        //dd($request) ;
-        $request->validate([
-            'action'      => 'required|string',
-            'litiges.*'      => 'required|numeric',
-        ]);        
-
-        if ($request['action'] == '-1') {
-            return redirect()->back(); 
-        }
-        else
-        {
-        if($request['litiges'] == NULL )
-        {
-        return redirect()->back();            
-
-            }
-            else
-            {
-        $action = $request['action'] ;
-        switch ($action) {
-            case 'litige':
-                $etatLegale = true ;
-                break;
-            case 'accord':
-                $etatLegale = false ;
-                break;
-            default:
-                break;
-        }
-        $dossierInstance = new Dossier;
-        $arrayValuesFromRequest = $request['litiges'] ;
-        //var_dump($request['litiges']) ;
-        $arrayValues = [];
-            foreach ($arrayValuesFromRequest as $value) {
-                //dd($value);
-            array_push($arrayValues, 
-             [
-                 'id' => $value ,
-                 'litige' => $etatLegale ,
-             ]
-             );
-             }
-        
-        //     dd($arrayValues) ;
-        $index = 'id';
-
-        \Batch::update($dossierInstance, $arrayValues, $index);
-        return redirect()->back()
-                    ->with('message','Dossiers marqués !');
-        }
-        }
-    }
     
     public function index(Request $request)
     {
         $constructible = $request['constructible'] ;
+        $projet_id = session('projet_id') ;
 
         if ($constructible == 'appartement' && isset($request['type']) && !is_null($request['type']))
         {
@@ -104,14 +56,14 @@ class DossierController extends Controller
         if (!isset($typeApp) && $constructible=="appartement" && !Gate::allows('voir dossiers ' . p($constructible))) {
             abort(403);
         }        
-
         $tranche = $request['tranche'] ;
-        $tranches = Tranche::all();
+        $tranches = Tranche::where('projet_id' , session('projet_id'))->orderBy('num')->get();
         $tranchesArray = ($tranche == null) ? $tranches->pluck('id')->toArray() : [$tranche] ;
         $constructiblesArray = ($constructible == null) ?
                     ['lot','appartement','box','magasin','bureau'] : [$constructible] ;
           if ($constructible == 'appartement' && isset($request['type']) && !is_null($request['type']))
             {
+
                 $All = Produit::with('constructible')
                                     ->whereIn('constructible_type', $constructiblesArray)
                                     ->whereHasMorph('constructible',
@@ -122,14 +74,17 @@ class DossierController extends Controller
 
                                             })                                    
                                     ->with('etiquette')
+                                    ->where('projet_id', $projet_id)
                                     ->get();
             }else
             {
                 $All = Produit::with('constructible')
                                     ->whereIn('constructible_type', $constructiblesArray)
                                     ->with('etiquette')
+                                    ->where('projet_id', $projet_id)
                                     ->get();                
             }
+
         $reserved = $All->where('etiquette_id', 3)->count() ;
         $stocked = $All->where('etiquette_id', 2)->count() ;
         $r = $All->where('etiquette_id', 9)->count() ;
@@ -152,6 +107,9 @@ class DossierController extends Controller
                                         })
                                 ;
                             })
+                            ->whereHas('produit', function (Builder $query) use ($projet_id) {
+                                    $query->where('projet_id', $projet_id);
+                                })        
                             ->with('produit')
                             ->with('delais')
                             ->with('clients')
@@ -168,6 +126,9 @@ class DossierController extends Controller
                             ->with('delais')
                             ->with('clients')
                             ->with('paiements')->orderbyDesc('created_at')
+                            ->whereHas('produit', function (Builder $query) use ($projet_id) {
+                                    $query->where('projet_id', $projet_id);
+                            })                            
                             ->get();                             
                         }
         }
@@ -183,6 +144,9 @@ class DossierController extends Controller
                             ->with('produit')
                             ->with('delais')
                             ->with('clients')
+                            ->whereHas('produit', function (Builder $query) use ($projet_id) {
+                                    $query->where('projet_id', $projet_id);
+                            })                            
                             ->with('paiements')->orderbyDesc('created_at')
                             ->get();                
             }
@@ -193,6 +157,9 @@ class DossierController extends Controller
                             {
                                 $query->whereIn('constructible_type', $constructiblesArray);
                             })
+                            ->whereHas('produit', function (Builder $query) use ($projet_id) {
+                                    $query->where('projet_id', $projet_id);
+                            })        
                             ->with('produit')
                             ->with('delais')
                             ->with('clients')
@@ -271,7 +238,6 @@ class DossierController extends Controller
             });                
 
         }        
-
 
         //recherche par tranche
         if (isset($tranche) && $tranche != '-' ) {
@@ -397,10 +363,17 @@ class DossierController extends Controller
             $litige = $request['litige'] ;
             $dossiersAll = $dossiersAll->where('litige', $litige);  
         }
-        // else
-        // {
-        //     $dossiersAll = $dossiersAll->whereIn('litige', [NULL, false]);  
-        // }
+        // recherche par etat transfert du dossier
+        if (isset($request['transfert']) && $request['transfert'] != '' ) {
+
+            $dossiersAll = $dossiersAll->whereNotNull('transferred_at');  
+        }        
+
+        // recherche par etat légale du dossier
+        if (isset($request['desisstement']) && $request['desisstement'] != '' ) {
+
+            $dossiersAll = Dossier::onlyTrashed()->get();  
+        }
 
            $dossiersParPage = $this->paginate($dossiersAll) ;
            $dossiersParPage->withPath('/dossiers');
@@ -414,7 +387,7 @@ class DossierController extends Controller
             'totalDossier'          => $dossiersAll->count(),
             'clients'               => Client::all(),
             'users'                 => User::whereIn('role_id',[2,5,6])->get(),
-            'dossiersParType'       => Dossier::dossiersParType(),
+            'dossiersParType'       => Dossier::dossiersParType($projet_id),
             'tranches'              => $tranches ,
             'etatDossier'           => $request['etatDossier'],
             'SearchByUser'          => $request['user'] ,
@@ -426,7 +399,11 @@ class DossierController extends Controller
             'SearchByRelance'           => $request['relance'],
             'SearchByNum'           => implode(',' , $numsDossier) ,
             'SearchByClient'        => $request['client'] ,
+
             'SearchByLitige' => $request['litige'],
+            'SearchByDesisstement' => $request['desisstement'],
+            'SearchByTransfert' => $request['transfert'],
+
             'constructible'         => $constructible ,
             'type' => $request['type'],
             'reserved' => $reserved , 
@@ -435,6 +412,55 @@ class DossierController extends Controller
             'blocked' => $blocked,
             'urlWithQueryString' => $urlWithQueryString
         ]);
+    }
+
+    public function litige(Request $request)
+    {
+        $request->validate([
+            'action'      => 'required|string',
+            'litiges.*'      => 'required|numeric',
+        ]);        
+
+        if ($request['action'] == '-1') {
+            return redirect()->back(); 
+        }
+        else
+        {
+        if($request['litiges'] == NULL )
+        {
+        return redirect()->back();            
+
+            }
+            else
+            {
+        $action = $request['action'] ;
+        switch ($action) {
+            case 'litige':
+                $etatLegale = true ;
+                break;
+            case 'accord':
+                $etatLegale = false ;
+                break;
+            default:
+                break;
+        }
+        $dossierInstance = new Dossier;
+        $arrayValuesFromRequest = $request['litiges'] ;
+        $arrayValues = [];
+            foreach ($arrayValuesFromRequest as $value) {
+            array_push($arrayValues, 
+             [
+                 'id' => $value ,
+                 'litige' => $etatLegale ,
+             ]
+             );
+             }
+        $index = 'id';
+        \Batch::update($dossierInstance, $arrayValues, $index);
+        return redirect()->back()
+                    ->with('message','Dossiers marqués !');
+        }
+        }
     }
 
     public function recouvrement(Request $request)
@@ -673,9 +699,6 @@ class DossierController extends Controller
             $dossiersAll = $dossiersAll->where('date' , $dateEnd); 
         }
 
-
-
-        //recherche par etat du dossier
         if (isset($request['etatDossier']) && $request['etatDossier'] != '-' ) {
             $etat = $request['etatDossier'] ;
             $dossiersAll = $dossiersAll->where('isVente', $etat);  
@@ -716,7 +739,7 @@ class DossierController extends Controller
 
     public function export(Request $request) 
     {
-        return Excel::download(new DossiersExport($request), 'Récap-ventes-DSD.xlsx');
+        return Excel::download(new DossiersExport($request), 'Récap-ventes.xlsx');
     }
 
     /**
@@ -744,14 +767,16 @@ class DossierController extends Controller
         ]) ;
     }
 
+    // !!!!! A déplacer vers la model produit 
+
     public function recap(Produit $produit)
     {
         return 
             'Qui concerne ' . $produit->constructible_type .' N° ' . $produit->constructible->num . 
             ', d\'une surface totale de : ' . $produit->constructible->surface . 'm2' .
             '. Vendu au prix total de : ' . number_format($produit->total) . ' Dhs'.
-            '. Du type : ' . $produit->constructible->type . '. Etage : ' . $produit->constructible->etage .
-            '. ' . ucfirst($produit->constructible_type) .' sur la tranche ' . $produit->constructible->tranche->id ;
+            '. Du type : ' . $produit->type . '. Etage : ' . $produit->etage .
+            '. ' . ucfirst($produit->constructible_type) .' sur la tranche ' . $produit->constructible->tranche->description ;
     }
 
 
@@ -863,10 +888,17 @@ class DossierController extends Controller
      */
     public function show(Dossier $dossier)
     {
+            // Exemple de récupération dans ton contrôleur avant de retourner la vue :
+        $historyGroups = \Illuminate\Support\Facades\DB::table('client_dossier_histories')
+        ->where('dossier_id', $dossier->id)
+        ->orderBy('transferred_at', 'desc')
+        ->get()
+        ->groupBy('batch_id'); // 👈 Regroupe toutes les lignes d'un même transfert
 
         return view('dossiers.show', [
-            'dossier'              => $dossier,
-            'clients'               =>   Client::all(),
+            'dossier'       => $dossier,
+            'clients'       =>   Client::all(),
+            'historyGroups' => $historyGroups,
         ]);
     }
 
@@ -879,13 +911,18 @@ class DossierController extends Controller
     public function edit(Dossier $dossier)
     {
         return view('dossiers.edit' , [
-            'clients'   => Client::orderBy('nom', 'desc')->get(), 
+        'clients'=> Client::where('activer', '=', 1 )
+                            ->orderby('nom', 'desc')
+                            ->get(),
+
             'dossier'   => $dossier,
             'produit'   => $dossier->produit,
             'client'    => $dossier->client,
             'dataRecap' => $this->recap($dossier->produit)
         ]);
     }
+
+
 
     /**
      * Update the specified resource in storage.
@@ -949,9 +986,6 @@ class DossierController extends Controller
         }
         else
         {
-            $dossier->clients()->detach();            
-            $dossier->clients()->attach($request['client']);
-
             $dossier->date = $request['date'];
             $dossier->frais = $request['frais'];
             $dossier->detail = $request['detail'];
@@ -1015,13 +1049,19 @@ class DossierController extends Controller
      */
     public function destroy(Dossier $dossier)
     {
+
+            DB::transaction(function () use ($dossier, $motif, $tauxIndemnite) {
+            $dossier->update([
+                'desiste_by' => Auth::id(),
+            ]);
+            });
+
         // le produit devient dispo au stock après suppression du dossier
         $dossier->produit->etiquette_id = 2 ; // étiquette -> En stock
         $dossier->produit->update() ; // étiquette -> En stock
-
-        $dossier->clients()->detach();
+        $dossier->clients()->detach() ;
         $dossier->paiements()->delete() ;
-
+        $dossier->transferts()->delete() ;
         $dossier->delete() ;
 
         return redirect()->back()
@@ -1031,174 +1071,211 @@ class DossierController extends Controller
         //         ->with('message','Dossier supprimé !');
     }
 
-    public function actesLot(Dossier $dossier)
+    public function desisstement(Dossier $dossier)
+    {
+        return view('dossiers.desisstement', [
+            'dossier'       => $dossier
+        ]) ;
+    }
+
+    public function demandeDesisstement(Dossier $dossier, Request $request)
+    {
+            $request->validate([
+                'indemnite' => 'required|numeric|min:0|max:100',
+                'motif' => 'string'
+            ]);
+
+        $tauxIndemnite = $request->input('indemnite');
+        $motif = $request->input('motif');
+        $indemnite = $dossier->TotalPaiementsV * ($tauxIndemnite/100) ;
+
+            DB::transaction(function () use ($dossier, $motif, $tauxIndemnite) {
+            $dossier->update([
+                'indemnite' => $tauxIndemnite,
+                'motif_desistement' => $motif,
+                'desiste_by' => Auth::id(),
+            ]);
+            });
+
+        $pdf = Pdf::loadView('pdf.recaps.desisstement',
+            [
+                'tauxIndemnite' => $tauxIndemnite,
+                'indemnite' => $indemnite,
+                'dossier'   => $dossier
+            ]);
+        return $pdf->download('demande_desistement.pdf');
+
+    }
+
+    public function demandeTransfert(Dossier $dossier, Request $request)
     {
 
-        // create the number to words "manager" class
-        $toWords = new NumberToWords();
-        // build a new number transformer using the RFC 3066 language identifier
-        $numberTransformer = $toWords->getNumberTransformer('fr');
+        $request->validate([
+                'client.*' => 'required|integer|exists:clients,id',
+            ]);
+        $nouveauxClients = Client::whereIn('id', $request['client'])->get();
 
-         // outputs "five thousand one hundred twenty"
 
-        // initiate FPDI
-        $pdf = new FPDI();
-        $pdf->SetTextColor(0, 0, 255) ;
-        $pdf->SetFont('Helvetica');
-            // $pdf->setPrintHeader(false);
-            // $pdf->setPrintFooter(false);
-        // get the page count
+            DB::transaction(function () use ($dossier, $motif, $tauxIndemnite) {
+            $dossier->update([
+                'indemnite' => $tauxIndemnite,
+                'motif_desistement' => $motif,
+                'desiste_by' => Auth::id(),
+            ]);
+            });
 
-        $pageCount = $pdf->setSourceFile(Storage_path('app/public/acte-reservation-'.
-         $dossier->produit->constructible_type .'.pdf'));
+        $pdf = Pdf::loadView('pdf.recaps.transfert',
+            [
+                'nouveauxClients' => $nouveauxClients,
+                'dossier'   => $dossier
+            ]);
+        return $pdf->download('demande_transfert.pdf');
 
-        // iterate through all pages
-        for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
-            $pdf->SetMargins(0, 0, 0 , 0) ;
+    }
 
-            // import a page
-            $templateId = $pdf->importPage($pageNo); //$pageNo
-            // get the size of the imported page
-            $size = $pdf->getTemplateSize($templateId);
-            //dd($size) ;
-            // create a page (landscape or portrait depending on the imported page size)
-            if ($size['width'] > $size['height']) {
-                $pdf->AddPage('L', array($size['width'], $size['height']));
-            } else {
-                $pdf->AddPage('P', array($size['width'], $size['height']));
+    public function desister(Dossier $dossier, Request $request)
+    {
+
+            if ($dossier->trashed()) {
+                throw new \Exception('Ce dossier est déjà désisté.');
             }
 
-            // use the imported page
-            $pdf->useTemplate($templateId);
-            if ($pageNo == 1)
+        if($request->hasFile('demandeDesisstement'))
+        {
+
+            $clientN = '' ;
+            foreach ($dossier->clients as $client)
             {
-                    $txt = '' ;
-                    $i = 0 ;
-                foreach ($dossier->clients as $client)
-                {  
-
-                    $i += 1 ;
-                    $txt .= '- Monsieur/Madame : ' ;
-                    $prenom = stripslashes($client->prenom);
-                    $nom = iconv('UTF-8', 'windows-1252', $prenom);
-
-            $nom = stripslashes($client->nom);
-            $nom = iconv('UTF-8', 'windows-1252', $nom);
-            $nomC = ucfirst($nom) . ' ' . ucfirst($prenom) ;
-            $txt .= $nomC . chr(10) ;
-            $txt .= 'Demeurant à : ' ;
-            $adresse = stripslashes($client->adresse);
-            $adresse = ucfirst(preg_replace( "/\r|\n/", " ", $adresse )) ;
-            $adresse = iconv('UTF-8', 'windows-1252', $adresse);
-
-            $ad = str_split($adresse, 45) ;
-
-            $txt .= implode(chr(10) , $ad) . chr(10) ;
-
-            $txt .= iconv('UTF-8', 'windows-1252', 'Titulaire de la carte d’identité nationale N° : ' );
-
-            $txt .= $client->cin  ;
-                if ($i !== $dossier->clients->count() )
-                {
-                   $txt .= chr(10) ;
-                }
+                $clientN .= $client->nom . '-' . $client->prenom . '-' ;
             }
-            //$txt = iconv('UTF-8', 'windows-1252', $txt) ;
-            switch ($i) {
-                case 1:
-                    $i = 93.75 + 25 ;
-                    break;
-                case 2:
-                    $i = 93.75 + 20 ;
-                    break;
-                case 3:
-                    $i = 93.75 + 15 ;
-                    break;  
-                                      
-                default:
-                    break;
-            }
-            $pdf->SetXY(50, $i);
+            $clientN = str_replace(' ', '', $clientN) ;
 
-            $pdf->MultiCell(0,5, $txt);
+            $pjName = 'demandeDesisstement' . '-' . $dossier->produit->constructible_type . '-Num' 
 
-            }    
+            . str_replace('.', '', $dossier->produit->constructible->num) . '-' 
 
-            if ($pageNo == 2)
-            {
-            $pdf->SetXY(120, 46);
-            $pdf->Write(8, ucfirst($dossier->produit->constructible->num));   
+            . str_replace('.', '',  $clientN ) . '-' 
 
-            $pdf->SetXY(180, 46);
-            $pdf->Write(8, ucfirst($dossier->produit->constructible->tranche_id));    
+            . str_replace(' ', '-', date('Y-m-d-His')) ;
 
-            $pdf->SetXY(105.25, 55.5);
-            $pdf->Write(0, 
-                ucfirst($dossier->produit->constructible->surface) .
-                'm2 (R+' . $dossier->produit->constructible->etage . ').'
-            );
+            $pjExtension = $request->file('demandeDesisstement')->extension() ;                 
 
+            $pdfPath = $request->file('demandeDesisstement')
+            ->storeAs('desistements', $pjName . '.' . $pjExtension) ;
 
-            $priceTotal = number_format($dossier->produit->total) . ' DHS, ';
-            $priceTotal .= ucfirst($numberTransformer->toWords($dossier->produit->total)) . ' dirhams.'; 
-            $pdf->SetXY(49, 82);
-            $pdf->Write(8, $priceTotal);   
-
-            // $pdf->SetXY(80, 82);
-            // $pdf->Write(8, );     
-
-            $pdf->SetXY(49, 87.25);
-            $pdf->Write(8, '(' .$dossier->produit->prix . iconv('UTF-8', 'windows-1252',' DHS le mètre carré) toutes taxes comprises.'));    
-
-            // affichage du 30% du prix en chiffre
-            $paiements = number_format((($dossier->produit->total) * 30) /100) . ' DHS, ' ; 
-            $paiements .= ucfirst($numberTransformer->toWords((($dossier->produit->total) * 30) /100 )) . ' dirhams.' ;
-
-            $pdf->SetXY(49, 106);
-            $pdf->Write(0, $paiements);   
-
-            // affichage du 30% du prix en lettre
-            // $pdf->SetXY(80, 106);
-            // $pdf->Write(0, );  
-
-
-            // affichage du 30% du prix en lettre
-            $pdf->SetXY(140, 116);
-            $pdf->Write(0, number_format($dossier->totalPaiementsV) . ' DHS');              
-
-            // affichage du délai de livraison
-            if (in_array($dossier->produit->constructible->tranche->num, [1,2])) {
-                $delai = 2 ;
-            }elseif (in_array($dossier->produit->constructible->tranche->num, [3,4])) {
-                $delai = 36 ;
-            }
-            $pdf->SetXY(142, 263.25);
-            $pdf->Write(0, $delai);  
-            }  
-
-            if ($pageNo == 4)
-            {
-
-            $pdf->SetXY(113, 188.5);
-            $pdf->Write(8, date("j/n/Y"));   
-          
-
-            }  
+            $lien = 'desistements/' . $pjName . '.' . $pjExtension ;
 
         }
 
-        // Output the new PDF
-        $pdf->Output('D', 'actes_reservation_lot_N_' . $dossier->produit->constructible->num
-            . '_' . '.pdf', true);
+        DB::transaction(function () use ($dossier, $lien) {
+            $dossier->update([
+                'demandeDesisstement' => $lien,
+            ]);
+            $dossier->produit->etiquette_id = 2 ; // app redevient dispo
+            $dossier->produit->update() ; // étiquette -> En stock
+
+       $totalPaiementVNegative = -$dossier->totalPaiementsV ;
+
+            // Paiements ENCAISSÉS : enregistrer leur négative pour les enlever des calculs
+
+        if ($totalPaiementVNegative !== 0)
+        {
+            $paiement = new Paiement([
+                'date'              => now()->format('Y-m-d'),
+                'type'              => 'desistement',
+                'montant'           => $totalPaiementVNegative ,
+                'valider'           => 1
+            ]) ;
+
+            $paiement->dossier()->associate($dossier) ;
+            $paiement->save();
+        }
+            // Paiements NON ENCAISSÉS uniquement : ceux-là peuvent être marqués annulés
+            $dossier->paiements()->where('valider', 0)->update(['valider' => 3]);
+
+            $dossier->delete(); // soft delete, en dernier
+
+        });
+
+                return redirect(
+                    '/dossiers?constructible='. $dossier->produit->constructible_type
+                )->with('message','Dossier desisté !');        
+
     }
 
+    public function actesLot(Dossier $dossier)
+    {
+
+        $projet = $dossier->produit->projet ;
+        $contrat = Contrat::firstWhere('type_produit', 'lot')
+                            ->where('projet_id' , $projet->id)->first() ;
+
+        $a = $contrat->articles->map(function ($article) use ($dossier){
+            $article->texte =  replace_shortcodes( $article->texte, $dossier) ;
+            return $article ;
+        });
+        $a = $a->sortBy('classement');
+
+        $pdf = Pdf::loadView('pdf.contrats.lot', ['data' => $a, 'logo' => $projet->entreprise->logo]);
+        return $pdf->download('contratLot.pdf');
+
+/////////////////////////////
+
+      
+    }    
+
+////
+
+
+// 05/05/26 ajout de cette function pour créer le pdf du contrat
     public function actesApp(Dossier $dossier)
+    {
+        $projet = $dossier->produit->projet ;
+        $contrat = Contrat::firstWhere('type_produit', 'appartement')
+                            ->where('projet_id' , $projet->id)->first() ;
+
+        $a = $contrat->articles->map(function ($article) use ($dossier){
+            $article->texte =  replace_shortcodes( $article->texte, $dossier) ;
+            return $article ;
+        });
+        $a = $a->sortBy('classement');
+
+        $pdf = Pdf::loadView('pdf.contrats.lot', ['data' => $a, 'logo' => $projet->entreprise->logo]);
+        return $pdf->download('contratAppartement.pdf');
+    }    
+
+
+/////    
+
+// 05/05/26 ajout de cette function pour créer le pdf du contrat
+    public function actesMag(Dossier $dossier)
+    {
+        $projet = $dossier->produit->projet ;
+        $contrat = Contrat::Where('type_produit', 'magasin')
+                            ->where('projet_id' , $projet->id)->first() ;
+        $a = $contrat->articles->map(function ($article) use ($dossier){
+            $article->texte =  replace_shortcodes( $article->texte, $dossier) ;
+            return $article ;
+        });
+        $a = $a->sortBy('classement');
+
+        $pdf = Pdf::loadView('pdf.contrats.magasin', ['data' => $a, 'logo' => $projet->entreprise->logo]);
+        return $pdf->download('contratMagasin.pdf');
+    }    
+
+
+///// 
+
+
+// modification 20/02/2023 : ajout actes réservation magasins
+
+ public function actesMag0000(Dossier $dossier)
     {
 
         // create the number to words "manager" class
         $toWords = new NumberToWords();
         // build a new number transformer using the RFC 3066 language identifier
-        $numberTransformer = $toWords->getNumberTransformer('fr');
+        $numberTransformer = $toWords->getNumberTransformer('ar');
 
          // outputs "five thousand one hundred twenty"
 
@@ -1210,17 +1287,9 @@ class DossierController extends Controller
         $pdf->SetFont('aealarabiya', '', 14);
             $pdf->setPrintHeader(false);
             $pdf->setPrintFooter(false);
-        // get the page count
-            // if (in_array($dossier->produit->constructible->immeuble->tranche->num, [2,3,4])
-            //     && ($dossier->produit->constructible->etage == 1 || 
-            //         $dossier->produit->constructible->etage == 2)) {
-            //  $pageCount = $pdf->setSourceFile(Storage_path('app/public/acte-reservation-appartement-t2.pdf'));
-            // }else{
-            //  $pageCount = $pdf->setSourceFile(Storage_path('app/public/acte-reservation-'.
-            //  $dossier->produit->constructible_type .'.pdf'));
-            // }
 
-            $pageCount = $pdf->setSourceFile(Storage_path('app/public/acte-reservation-appartement-t2.pdf'));
+        $pageCount = $pdf->setSourceFile(Storage_path('app/public/acte-reservation-magasin.pdf'));
+
 
         // iterate through all pages
         for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
@@ -1278,46 +1347,83 @@ class DossierController extends Controller
             {
                 $pdf->SetFont('Helvetica', 12);
 
-                $pdf->SetXY(56, 41.5);
-                $pdf->Write(0,$dossier->produit->constructible->surface) ;
 
-                $pdf->SetXY(109, 41.5);
+                $pdf->SetXY(137, 25.5);
                 $pdf->Write(0,$dossier->produit->constructible->immeuble->tranche->num) ;
 
-                $pdf->SetXY(150, 41.5);
+                $pdf->SetXY(15, 32.5);
                 $pdf->Write(0,$dossier->produit->constructible->immeuble->num) ;
 
-                $pdf->SetXY(55, 48.5);
+                $pdf->SetXY(40, 32.5);
                 $pdf->Write(0,$dossier->produit->constructible->num) ;
 
-                $pdf->SetXY(32, 48.5);
-                $pdf->Write(0,$dossier->produit->constructible->etage) ;                
+                $pdf->SetXY(84, 32.5);
+                $pdf->Write(0,$dossier->produit->constructible->surface) ;
+
+                $pdf->SetXY(83, 54);
+                $pdf->Write(0,$dossier->produit->constructible->surfacePlancher) ;
+                $pdf->SetXY(83, 60.5);
+                $pdf->Write(0,$dossier->produit->constructible->surfaceSousSol) ;
+                $pdf->SetXY(76, 67.5);
+                $pdf->Write(0,$dossier->produit->constructible->surfaceMezzanine) ;
+
+
+
+                
+                $pdf->SetXY(35, 181.5);
+                $pdf->Write(0, number_format($dossier->produit->totalIndicatif) ) ; 
+
+                $pdf->SetFont('aealarabiya', '', 14);
+                // avance en arabe
+                $pdf->SetXY(73, 181);
+                $pdf->Write(0,'('. $numberTransformer->toWords($dossier->produit->totalIndicatif) . ' درهم ' .')' ) ; 
+                // avance en arabe
+
+           
             }  
 
-            if ($pageNo == 6) // 6
+                if ($pageNo == 3) // 2
+                    {
+                        $pdf->SetFont('Helvetica', 12);
+
+                        $pdf->SetXY(15, 96.5);
+                        $pdf->Write(0, number_format(round($dossier->produit->totalIndicatif) * 0.3) ) ; 
+
+                        $pdf->SetFont('aealarabiya', '', 14);
+                        // avance en arabe
+                        $pdf->SetXY(47, 96.5);
+                        $pdf->Write(0,'('. $numberTransformer->toWords(round($dossier->produit->totalIndicatif) * 0.3) . ' درهم ' .')' ) ; 
+
+
+                        $pdf->SetFont('Helvetica', 12);
+                        // avance en numéraire
+                        $pdf->SetXY(15, 258.5);
+                        $pdf->Write(0,number_format($dossier->totalPaiementsV)) ;  
+
+                        $pdf->SetFont('aealarabiya', '', 14);
+                        // avance en arabe
+                        $pdf->SetXY(47, 258.5);
+                        $pdf->Write(0,'('. $numberTransformer->toWords($dossier->totalPaiementsV) . ' درهم ' .')' ) ; 
+                      
+                    }  
+
+
+            if ($pageNo == 5) // 6
             {
 
-            $pdf->SetXY(99, 194.5);
+            $pdf->SetXY(99, 94.5);
             $pdf->Write(8, date("j/n/Y"));   
           
 
             }  
 
         }
-        $pdf->Output('actes_reservation_app_N_' . $dossier->produit->constructible->num
+        $pdf->Output('actes_reservation_magsin_N_' . $dossier->produit->constructible->num
             . '_' .  '_' . '.pdf', 'I'); 
-        // Output the new PDF
-        //$pdf->Output('D', 'actes_reservation_lot_N_' . $dossier->produit->constructible->num
-        //    . '_' . $dossier->client->nom . '_' . $dossier->client->prenom . '.pdf', true);
-
-        // $pdf->Output('actes_reservation_lot_N_' . $dossier->produit->constructible->num
-        //     . '_' . $dossier->client->nom . '_' . $dossier->client->prenom . '.pdf', 'I'); 
-        // // Output the new PDF
-        // //$pdf->Output('D', 'actes_reservation_lot_N_' . $dossier->produit->constructible->num
-        // //    . '_' . $dossier->client->nom . '_' . $dossier->client->prenom . '.pdf', true);
-    }    
-
-    public function actesStanding(Dossier $dossier)
+    }        
+    // fin modification 20/02/2023
+    // 05/05/26 changement nom function pour créer une autre version
+    public function actesStanding0(Dossier $dossier)
     {
 
         // create the number to words "manager" class

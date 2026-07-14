@@ -143,7 +143,7 @@ class OfficeController extends Controller
         }          
         return view('offices.create', [
             'voies' => Voie::all(),
-            'immeubles' => Immeuble::all(),
+            'immeubles' => Immeuble::whereHas('tranche')->get(),
             'etiquettes' => Etiquette::whereNotIn('label', ['Vendu'])->get(),
         ]) ;
     }
@@ -229,7 +229,9 @@ class OfficeController extends Controller
             'office'           => $office, 
             'voies'         => Voie::all(), 
             'etiquettes'    => Etiquette::whereNotIn('label', ['Vendu'])->get(),
-            'immeubles'      => Immeuble::all()]) ;
+            'immeubles' => Immeuble::whereHas('tranche')->get(),
+
+        ]);
     }
 
     /**

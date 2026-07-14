@@ -111,7 +111,7 @@
                           >
                             <img
                               class="object-cover w-full h-full rounded-full"
-                              src="{{asset('tag.png')}}"
+                              src="{{asset('storage/'.'tag.png')}}"
                               alt=""
                               loading="lazy"
                             />

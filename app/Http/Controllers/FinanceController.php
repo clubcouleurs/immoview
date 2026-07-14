@@ -61,9 +61,7 @@ class FinanceController extends Controller
                             ->whereHasMorph(
                                     'constructible',
                                     [Appartement::class],
-                                    function (Builder $query) {
-                                        $query->where('type','Economique');
-                                    }
+
                                 )
                             ->with('paiements')
                             ->get();
@@ -96,13 +94,13 @@ class FinanceController extends Controller
                  case 'lot':
                  case 'showroom':
                     ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}
-                            ->groupBy('constructible.tranche_id');
+                            ->groupBy('constructible.tranche.num');
                      break;
                  case 'appartement':
                  case 'magasin':
                  case 'box':
                     ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}
-                            ->groupBy('constructible.immeuble.tranche_id');
+                            ->groupBy('constructible.immeuble.tranche.num');
                      break;
                  case 'standing':
                     ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}
@@ -110,7 +108,7 @@ class FinanceController extends Controller
                      break;                     
                  case 'bureau':
                     ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}
-                            ->groupBy('constructible.situable.immeuble.tranche_id');
+                            ->groupBy('constructible.situable.immeuble.tranche.num');
                      break;                      
                  default:
                      break;
@@ -231,7 +229,7 @@ class FinanceController extends Controller
         if (!in_array($constructible, ['showroom', 'standing']))
         {
             ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}->mapWithKeys(function ($item, $key) {
-                return ['Tranche '.$key => $item];
+                return ['Tranche|GH '.$key => $item];
             });
             
         }else
@@ -302,7 +300,7 @@ class FinanceController extends Controller
 
     public function export() 
     {
-        return Excel::download(new FinancesExport, 'Récap-finances-DSD.xlsx');
+        return Excel::download(new FinancesExport, 'Récap-finances.xlsx');
     }
 
 }

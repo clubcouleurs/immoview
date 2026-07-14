@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Services\ProjectModulesService;
 
 class PaiementController extends Controller
 {
@@ -25,14 +26,26 @@ class PaiementController extends Controller
 
     public function historique(Request $request)
     {
+
+        //dd((new ProjectModulesService())->getProjetConstructiblesSingular());
+        $projet = session()->get('projet_id');
         $status = $request['status'] ;
 
-        $statusArray = ($status == null || $status == '' || !is_numeric($status)) ?
-                    [0,1] : [$status] ;
+        if( $status == 3 )
+            {
+                $statusArray = [0,2] ;
+            }else{
+                $statusArray = ($status == null || $status == '' || !is_numeric($status)) ?
+                        [0,1,2] : [$status] ;
+
+            }
 
         $constructible = $request['constructible'] ;
         $constructibleArray = ($constructible == null || $constructible == '') ?
-                    ['lot','appartement','box','magasin','bureau'] : [$constructible] ;
+                    (new ProjectModulesService())->getProjetConstructiblesSingular() : [$constructible] ;
+
+        // $constructibleArray = ($constructible == null || $constructible == '') ?
+        //             ['lot','appartement','box','magasin','bureau'] : [$constructible] ;
 
         $collection = Produit::with('constructible')->get() ;
         $multiplied = $collection->map(function ($item, $key) {
@@ -41,19 +54,29 @@ class PaiementController extends Controller
 
         $ca = $multiplied->sum() ;
 
-        $paiements = Paiement::whereHas('dossier.produit', function (Builder $query) use ($constructibleArray)
+        $paiements = Paiement::join('dossiers', 'dossiers.id', '=', 'paiements.dossier_id')
+                    ->join('produits','produits.id','=','dossiers.produit_id')
+                    ->join('projets','projets.id','=','produits.projet_id')
+                    ->where('projets.id', $projet)
+                    ->whereHas('dossier.produit', function (Builder $query) use ($constructibleArray)
                             {
                                 $query->whereIn('constructible_type', $constructibleArray);
                             })
                         ->whereIn('valider', $statusArray)
-                        ->paginate(25);        
+                        ->paginate(25);    
+
+                        //dd($paiements)   ;
 
         //recherche par numéro des appartement
         if (isset($request['num']) && $request['num'] != '' ) {
             $nums = preg_split("/[\s,\.]+/", $request['num']);
             $nums = array_map('trim', $nums);
 
-            $paiements = Paiement::whereHas('dossier.produit', function (Builder $query) use ($constructibleArray, $nums)
+            $paiements = Paiement::join('dossiers', 'dossiers.id', '=', 'paiements.dossier_id')
+                    ->join('produits','produits.id','=','dossiers.produit_id')
+                    ->join('projets','projets.id','=','produits.projet_id')
+                    ->where('projets.id', $projet)
+                    ->whereHas('dossier.produit', function (Builder $query) use ($constructibleArray, $nums)
                             {
                                 $query->whereIn('constructible_type', $constructibleArray)
                                 ->whereHasMorph(
@@ -77,8 +100,23 @@ class PaiementController extends Controller
                             {
                                 $query->whereIn('constructible_type', $constructibleArray);
                             })
+                        ->whereHas('dossier.produit.projet', function (Builder $query) use ($projet)
+                            {
+                                $query->where('id', $projet);
+                            })
                         ->whereIn('valider', $statusArray)
-                        ->get();             
+                        ->get();
+
+        // $paiements = Paiement::join('dossiers', 'dossiers.id', '=', 'paiements.dossier_id')
+        //             ->join('produits','produits.id','=','dossiers.produit_id')
+        //             ->join('projets','projets.id','=','produits.projet_id')
+        //             ->where('projets.id', $projet)
+        //             ->whereHas('dossier.produit', function (Builder $query) use ($constructibleArray)
+        //                     {
+        //                         $query->whereIn('constructible_type', $constructibleArray);
+        //                     })
+        //                 ->whereIn('valider', $statusArray)
+        //                 ->get();             
         }
 
 
@@ -86,13 +124,14 @@ class PaiementController extends Controller
     // date filter
         $dateStartExist = false ;
         $dateEndExist = false ;
-
+// dd($request['dateEnd']) ;
         //recherche par prix
         if (isset($request['dateStart']) && $request['dateStart'] != '' ) {
             $ds =  $request['dateStart'] ;
             $dateSt = str_replace('/', '-', $ds);
             $dateStart = date('Y-m-d', strtotime($dateSt));
             $dateStartExist = true ;
+
 
         }
         //recherche par prix
@@ -103,6 +142,7 @@ class PaiementController extends Controller
             $dateEndExist = true ;
         }
 
+     
 
         if ($dateStartExist == true && $dateEndExist == true)
         {
@@ -118,11 +158,14 @@ class PaiementController extends Controller
             $paiements = $paiements->whereBetween('date', [$dateStart, $dateEnd] ); 
 
         }elseif ($dateStartExist == true && $dateEndExist == false) {
-            $paiements = $paiements->where('date' , $dateStart); 
+            $paiements = $paiements->where('date' , '>=', $dateStart); 
 
         }elseif ($dateStartExist == false && $dateEndExist == true) {
-            $paiements = $paiements->where('date' , $dateEnd); 
+
+            $paiements = $paiements->where('date' , '<=', $dateEnd); 
+            
         }
+
 
     // fin date filter
 
@@ -135,29 +178,30 @@ class PaiementController extends Controller
            $paiementsParPage->withPath('/paiements');
            $paiementsParPage->withQueryString() ;
 
-            $constructibles = ['lot','appartement','box','magasin','bureau'] ;
 
            $urlWithQueryString = $request->fullUrl();
            $urlWithQueryString = substr($urlWithQueryString, strlen($request->url())) ;
-
+//dd($paiements->first()) ;
         return view('paiements.historique', [
-            'constructibles' => $constructibles ,
-            'constructible' => $constructible,
-            'status'    => $status,
-            'paiements' => $paiementsParPage,
-            'paiementsT' => $paiementsT,
-            'paiementsN' => $paiementsN,
-            'paiementsV' => $paiementsV,
-            'totalPaiements' => Paiement::sum('montant'),
-            'ca' => $ca,
-            'SearchByNum' => $request['num'] ,
-            'urlWithQueryString'  => $urlWithQueryString,
-        ]) ;
+            'constructibles'        => (new ProjectModulesService())->getProjetConstructiblesSingular() ,
+            'constructible'         => $constructible,
+            'status'                => $status,
+            'paiements'             => $paiementsParPage,
+            'paiementsT'            => $paiementsT,
+            'paiementsN'            => $paiementsN,
+            'paiementsV'            => $paiementsV,
+            'totalPaiements'        => Paiement::sum('montant'),
+            'ca'                    => $ca,
+            'SearchByNum'           => $request['num'] ,
+            'urlWithQueryString'    => $urlWithQueryString,
+            'dateEnd'               => $request['dateEnd'],
+            'dateStart'             => $request['dateStart'],            
+        ], ) ;
     }
 
     public function export(Request $request) 
     {
-        return Excel::download(new PaiementsExport($request), 'Etats-encaissements-DSD.xlsx');
+        return Excel::download(new PaiementsExport($request), 'Etats-encaissements.xlsx');
     }
 
 
@@ -203,6 +247,7 @@ class PaiementController extends Controller
             'pj' => 'sometimes|required|max:5000|mimetypes:application/pdf,image/png,image/jpeg,image/tiff,image/gif',
 
         ]);
+
         $paiement = new Paiement([
             'date'              => $request['date'],
             'type'              => $request['type'],
@@ -216,7 +261,7 @@ class PaiementController extends Controller
             return back()->withInput()->with('error', 'Vous avez dépasser le reste à payer!') ;
         }
 
-        if (in_array($paiement->type, ['Compensation','Notaire']) ) {
+        if (!in_array($paiement->type, ['Compensation','Notaire']) ) {
             $paiement->num = $request['num'] ;
         }else
         {
@@ -237,8 +282,8 @@ class PaiementController extends Controller
             $pjExtension = $request->file('pj')->extension() ;
 
             $pdfPath = $request->file('pj')
-            ->storeAs('public/pj', $pjName . '.' . $pjExtension) ;
-            $paiement->pj = 'pj/' . $pjName . '.' . $pjExtension ;
+            ->storeAs('documents/pj', $pjName . '.' . $pjExtension) ;
+            $paiement->pj = 'documents/pj/' . $pjName . '.' . $pjExtension ;
         }
 
         if ($request['banque'] != null ) {
@@ -302,7 +347,7 @@ class PaiementController extends Controller
             'type'      => 'sometimes|required|string',
             'num'       => 'sometimes|required|string',
             'montant'   => 'sometimes|required|numeric',
-            'valider'   => 'sometimes|required|boolean',
+            'valider'   => 'sometimes|required|integer',
             'banque'    => 'sometimes|required|integer',
             'pj' => 'sometimes|required|max:5000|mimetypes:application/pdf,image/png,image/jpeg,image/tiff,image/gif',
             'produitDossier'    => 'string|nullable',
@@ -372,16 +417,17 @@ class PaiementController extends Controller
                     $pjExtension = $request->file('pj')->extension() ;                 
 
                     $pdfPath = $request->file('pj')
-                    ->storeAs('public/pj', $pjName . '.' . $pjExtension) ;
+                    ->storeAs('documents/pj', $pjName . '.' . $pjExtension) ;
 
-                    $paiement->pj = 'pj/' . $pjName . '.' . $pjExtension ;
+                    $paiement->pj = 'documents/pj/' . $pjName . '.' . $pjExtension ;
 
                 }
 
         }
         elseif(isset($request['valider']))
         {
-            $paiement->valider = boolval($request['valider']) ;
+
+            $paiement->valider = intval($request['valider']) ;
         }
         $paiement->update() ;
 

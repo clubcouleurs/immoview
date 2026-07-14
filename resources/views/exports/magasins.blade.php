@@ -24,7 +24,8 @@
                   @foreach ($magasins as $produit)
                  
                     <tr>
-                      <td>{{ $produit->constructible->tranche->num }}</td>
+                      <td>{{ $produit->constructible->tranche->num}} |
+                        {{$produit->constructible->tranche->description }}</td>
                       <td>{{ $produit->constructible->immeuble->num }}</td>
                       <td>{{ $produit->constructible->num }}</td>
                       <td>Voie {{$produit->quellesVoies}}</td>
@@ -39,7 +40,7 @@
 
                       <td>{{ $produit->prixM2Indicatif }}</td>
                       <td>{{ $produit->totalIndicatif / ($produit->constructible->surfaceSousSol + $produit->constructible->surfaceMezzanine + $produit->constructible->surfacePlancher)}}</td>
-
+                      <td>{{ $produit->created_at }}</td>
                     </tr>
                     @endforeach
                   </tbody>

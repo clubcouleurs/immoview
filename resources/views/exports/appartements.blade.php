@@ -19,6 +19,8 @@
                       <th width="20" bgcolor="#ffdc73">Etage</th>
                       <th width="20" bgcolor="#ffdc73">Etat</th>
                       <th width="20" bgcolor="#ffdc73">Type produit</th>
+                      <th width="20" bgcolor="#ffdc73">Consistance</th>
+
 
                     </tr>
                   </thead>
@@ -28,7 +30,7 @@
                  
                     <tr>
                       <td>{{ $produit->constructible->num }}</td>
-                      <td>{{ $produit->constructible->tranche->num }}</td>
+                      <td>{{ $produit->constructible->tranche->description }}</td>
                       <td>{{ $produit->constructible->immeuble->num }}</td>
                       <td>{{ $produit->constructible->surfaceApp }} </td>
                       <td>{{ $produit->constructible->surfaceTerrasse }} </td>
@@ -49,6 +51,21 @@
                       </td>
                       <td>
                         {{ ucfirst($produit->constructible->type) }}
+                      </td>
+
+                      <td>
+                        {{$produit->constructible->chambres}} Chambres, 
+                        {{$produit->constructible->salons}} Salon, 
+                        {{$produit->constructible->cuisines}} Cuisine, 
+                        {{$produit->constructible->sdbs}} SDB, 
+                        {{$produit->constructible->toilettes}} WC | Extra : 
+                        {{$produit->constructible->extra}} 
+
+
+                      </td>                      
+
+                       <td>
+                        {{ ucfirst($produit->constructible->created_at) }}
                       </td>
 
                     </tr>

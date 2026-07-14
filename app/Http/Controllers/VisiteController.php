@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\VisitesExport;
 use App\Http\Traits\PaginateTrait;
 use App\Models\Client;
+use App\Models\Projet;
 use App\Models\Visite;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\VisitesExport;
+use Rinvex\Countries\CountryLoader;
 
 class VisiteController extends Controller
 {
@@ -116,7 +118,7 @@ class VisiteController extends Controller
 
     public function export(Request $request) 
     {
-        return Excel::download(new VisitesExport($request), 'Récap-visites-DSD.xlsx');
+        return Excel::download(new VisitesExport($request), 'Récap-visites.xlsx');
     }
 
 
@@ -127,7 +129,33 @@ class VisiteController extends Controller
      */
     public function create()
     {
-        return view('visites.create') ;
+            $countries = countries();
+
+            $countryList = collect($countries)->map(function ($country, $code) {
+                // On cherche dans 'fra' (ISO 3 lettres) ou 'fr' (ISO 2 lettres)
+                $translations = $country['translations'] ?? [];
+                
+                $nameFr = $translations['fra']['common'] 
+                          ?? $translations['fr']['common'] 
+                          ?? $country['name']['common'] 
+                          ?? $country['name'];
+
+                return [
+                    'name'      => $nameFr,
+                    'dial_code' => is_array($country['calling_code']) ? $country['calling_code'][0] : $country['calling_code'],
+                    'emoji'     => $country['emoji'] ?? '',
+                    'code'      => $code
+                ];
+            })->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE);
+
+            // Mettre le Maroc en tête
+            $morocco = $countryList->pull('ma');
+            if ($morocco) {
+                $countryList = $countryList->prepend($morocco);
+            }
+
+
+        return view('visites.create', compact('countryList')) ;
     }
 
     /**
@@ -175,8 +203,8 @@ class VisiteController extends Controller
         'domaine'   => $request['domaine'],
         'surfaceDesired'   => $request['surfaceDesired'],
         'autre'   => $request['autre'],
+        'projet_id' => session('projet_id'),
         ]) ;
-
 
         $visite->client()->associate($client) ;
         $visite->user()->associate(Auth::user()) ;

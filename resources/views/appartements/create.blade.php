@@ -1,4 +1,4 @@
-<x-master>
+<x-master> 
       <main class="h-full overflow-y-auto">
           <div class="container px-6 mx-auto grid">
         @if(!$errors->isEmpty())
@@ -116,7 +116,7 @@
 
                 </select>
               </label>              
-
+                <!-- code sert à séparer les types d'appartements
                    <div class="mt-4 text-sm">
 
                     @error('type')
@@ -169,10 +169,10 @@
               class="flex items-center justify-between p-3 mt-2 text-sm font-semibold text-blue-600 bg-blue-100 rounded-lg shadow-sm focus:outline-none focus:shadow-outline-blue rounded-2xl">
               Le prix pour cet apprtement est : 250.000 Dhs
               
-            </div>
+            </div>-->
 
 
-              <div x-show="isOpenPrix">
+              <!--<div x-show="isOpenPrix">-->
               <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">Prix au m2 indicatif</span>
                 <input
@@ -182,8 +182,7 @@
                   name="prixM2Indicatif"
                   step="0.01"
                   value="{{old('prixM2Indicatif')}}"
-                  :required="isOpenPrix"
-                  :disabled="!isOpenPrix"    
+  
                 />
                     @error('prixM2Indicatif')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
@@ -200,8 +199,7 @@
                   name="prixM2Definitif"
                   value="{{old('prixM2Definitif')}}"
                   step="0.01"
-                  :required="isOpenPrix"
-                  :disabled="!isOpenPrix"                    
+                  
                 />
                     @error('prixM2Definitif')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
@@ -210,6 +208,33 @@
               </label>  
 
 
+
+              <div class="mt-4 text-sm">
+                <span class="text-gray-700 dark:text-gray-400">
+                  Type de l'appartement
+                </span>
+                <div class="mt-2">
+                                <label class="block text-sm">
+                <select
+                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+                  required
+                  name="type"
+                >
+                @foreach ($types as $type)
+                  <option value="{{ $type->type }}"
+                    @if(old('type') == $type->type)
+                      selected
+                    @endif
+                    >
+                    {{$type->type}}
+                  </option>
+                @endforeach
+
+                </select>
+              </label>   
+                                
+                </div>
+              </div>
 
 
 <div class="flex flex-wrap -mx-3 mb-2 mt-4">
@@ -220,6 +245,21 @@
       <div class="relative">
         <select class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state"
         name="chambres">
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>          
+        </select>
+      </div>
+    </div>
+
+    <div class="w-full md:w-1/6 px-3 mb-6 md:mb-0">
+      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-state">
+        Salons
+      </label>
+      <div class="relative">
+        <select class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state"
+        name="salons">
           <option>1</option>
           <option>2</option>
           <option>3</option>
@@ -293,7 +333,7 @@
 
 
               <!--div end section isOpen-->
-              </div>
+              <!--</div>-->
               
               <div class="mt-4 text-sm">
 
@@ -332,7 +372,7 @@
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
                   name="etage"
                 >
-                  @for($i = 1; $i < 11; $i++)
+                  @for($i = 0; $i < 11; $i++)
                     <option value="{{$i}}"
                     @if(old('etage') == $i)
                       selected

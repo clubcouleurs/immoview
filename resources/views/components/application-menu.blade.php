@@ -1,12 +1,44 @@
-
         <div class="py-4 text-gray-500 dark:text-gray-400">
           <a
             class="ml-6 text-lg font-bold text-gray-800 dark:text-gray-200"
             href="/"
           >
-            ImmoView
+          @inject('ProjectModulesService', 'App\Services\ProjectModulesService')
+
+          {{$nom_entreprise}} | ImmoView 
           </a>
-          <ul class="mt-6">
+
+          @can('voir finance')
+            <div class="ml-6 mt-2 custom-select-container">
+
+                <input type="text" placeholder="Choisir un projet ..." 
+                class="custom-select block  text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        <div class="dropdown-content">
+                      @foreach ( $ProjectModulesService->getProjets() as $projet)
+                        <a href="/dashboard/{{$projet->id}}">{{$projet->nom}}</a>
+                      @endforeach
+                    </div>
+            </div>
+          @endcan
+          <ul class="mt-2">
+            <li class="relative px-6 py-3 bg-purple-600 rounded-tr-lg rounded-br-lg">
+              <span
+                class="absolute inset-y-0 left-0 w-1 bg-white"
+                aria-hidden="true"
+              ></span>
+              <p
+                class="inline-flex items-center w-full text-sm font-semibold text-white transition-colors duration-150 dark:text-gray-100"
+                href="/"
+              >
+                @foreach ($ProjectModulesService->getProjets() as $projet)
+                        @if($projet->id == session('projet_id')) 
+                          <span class="ml-4">{{$projet->nom}}</span>
+                        @endif
+                @endforeach
+              </p>
+            </li>
+          </ul>
+          <ul class="mt-2">
             <li class="relative px-6 py-3">
               <span
                 class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"
@@ -168,7 +200,14 @@
                     class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
                   >
                     <a class="w-full" href="/stocks">Stocks</a>
-                  </li>                  
+                  </li>
+                  @can('editer banques')
+                  <li
+                    class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
+                  >
+                    <a class="w-full" href="/banques">Comptes bancaires</a>
+                  </li>    
+                  @endcan                             
                 
                 </ul>
               </template>
@@ -197,7 +236,7 @@
                     d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
                   ></path>
                   </svg>
-                  <span class="ml-4">Recouvrement</span>
+                  <span class="ml-4">Dossiers particuliers</span>
                 </span>
                 <svg
                   class="w-4 h-4"
@@ -226,32 +265,31 @@
                   <li
                     class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
                   >
-                    <a class="w-full" href="/dossiers?constructible=lot&litige=1&">Dossiers en litige</a>
-                  </li>
-
+                    <a class="w-full" href="/dossiers?litige=1&">En litige</a>
+                  </li>               
                   <li
                     class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
                   >
-                    <a class="w-full" href="/recouvrement?constructible=lot&dateStart=01%2F01%2F2018&dateEnd=31%2F08%2F2020&sign=<&tauxComparateur=20&">-20% 2018-2020</a>
-                  </li>
+                    <a class="w-full" href="/dossiers?desisstement=1&">Désistements</a>
+                  </li>  
                   <li
                     class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
                   >
-                    <a class="w-full" href="/recouvrement?constructible=lot&tranche=&dateStart=01%2F09%2F2020&dateEnd={{date('j')}}%2F{{date('n')}}%2F{{date('Y')}}&sign=<&tauxComparateur=30&">-30% 2020-...</a>
-                  </li>                  
-                
+                    <a class="w-full" href="/dossiers?transfert=1&">Transferts</a>
+                  </li>                                    
                 </ul>
               </template>
             </li> 
             @endcan
 
 
-          @canany(['voir lots','editer lots'])
+
+          @canany(['voir projets','editer projets'])
 
           <li class="relative px-6 py-3">
               <button
                 class="inline-flex items-center justify-between w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                @click="toggleLotsMenu"
+                @click="toggleProjetsMenu"
                 aria-haspopup="true"
               >
                 <span class="inline-flex items-center">
@@ -269,7 +307,7 @@
                     d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
                   ></path>
                   </svg>
-                  <span class="ml-4">Lots</span>
+                  <span class="ml-4">Projets</span>
                 </span>
                 <svg
                   class="w-4 h-4"
@@ -284,7 +322,7 @@
                   ></path>
                 </svg>
               </button>
-              <template x-if="isLotsMenuOpen">
+              <template x-if="isProjetsMenuOpen">
                 <ul
                   x-transition:enter="transition-all ease-in-out duration-300"
                   x-transition:enter-start="opacity-25 max-h-0"
@@ -295,39 +333,47 @@
                   class="p-2 mt-2 space-y-2 overflow-hidden text-sm font-medium text-gray-500 rounded-md shadow-inner bg-gray-50 dark:text-gray-400 dark:bg-gray-900"
                   aria-label="submenu"
                 >
-            @canany(['voir dossiers lots',
-                     'voir ses propres dossiers'])
+                  @can('editer projets')
                   <li
                     class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
                   >
-                    <a class="w-full" href="/dossiers?constructible=lot">Dossiers de ventes</a>
-                  </li>
-                  @endcan                
-                  @can('editer lots')
-                  <li
-                    class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                  >
-                    <a class="w-full" href="/lots/create">Ajouter un lot</a>
+                    <a class="w-full" href="/projets/create">Ajouter un projet</a>
                   </li>
                   @endcan
-                  @can('voir lots')
+                  @can('voir projets')
                   <li
                     class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
                   >
-                    <a class="w-full" href="/lots">Lots</a>
+                    <a class="w-full" href="/projets">Projets</a>
                   </li>
                   @endcan
+                  @can('editer projets')
+                  <li
+                    class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
+                  >
+                    <a class="w-full" href="/entreprises/create">Ajouter une Entreprise</a>
+                  </li>
+                  @endcan
+                  @can('voir projets')
+                  <li
+                    class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
+                  >
+                    <a class="w-full" href="/entreprises">Entreprises</a>
+                  </li>
+                  @endcan                  
                 </ul>
               </template>
 
             </li>            
             @endcanany
 
-          @canany(['voir appartements', 'editer appartements'])
+ @foreach ($ProjectModulesService->getProjetConstructibles() as $menuItem)
+          @canany(['voir $menuItem','editer $menuItem'])
+
           <li class="relative px-6 py-3">
               <button
                 class="inline-flex items-center justify-between w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                @click="toggleAppartementsMenu"
+                @click="toggle{{ucfirst($menuItem)}}Menu"
                 aria-haspopup="true"
               >
                 <span class="inline-flex items-center">
@@ -345,7 +391,7 @@
                     d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
                   ></path>
                   </svg>
-                  <span class="ml-4">Appartements</span>
+                  <span class="ml-4">{{ucfirst($menuItem)}}</span>
                 </span>
                 <svg
                   class="w-4 h-4"
@@ -360,7 +406,7 @@
                   ></path>
                 </svg>
               </button>
-              <template x-if="isAppartementsMenuOpen">
+              <template x-if="is{{ucfirst($menuItem)}}MenuOpen">
                 <ul
                   x-transition:enter="transition-all ease-in-out duration-300"
                   x-transition:enter-start="opacity-25 max-h-0"
@@ -371,373 +417,47 @@
                   class="p-2 mt-2 space-y-2 overflow-hidden text-sm font-medium text-gray-500 rounded-md shadow-inner bg-gray-50 dark:text-gray-400 dark:bg-gray-900"
                   aria-label="submenu"
                 >
-            @canany(['voir dossiers appartements',
+            @canany(['voir dossiers $menuItem',
                      'voir ses propres dossiers'])
                   <li
                     class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
                   >
-                    <a class="w-full" href="/dossiers?constructible=appartement&type=Economique">Dossiers de ventes</a>
+                    <a class="w-full"
+                    href="/dossiers?constructible={{$ProjectModulesService->getSingular($menuItem)}}">
+                  Dossiers de ventes</a>
                   </li>
-                  @endcanany                
-                @can('editer appartements')      
+                  @endcan                
+                  @can('editer $menuItem')
                   <li
                     class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
                   >
-                    <a class="w-full" href="/appartements/create">Ajouter un Appartement</a>
-                  </li>
-                @endcan
-                @can('voir appartements')      
-
-                  <li
-                    class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                  >
-                    <a class="w-full" href="/appartements?standing=0&tranche=1">Appartements T1</a>
-                  </li>
-
-                  <li
-                    class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                  >
-                    <a class="w-full" href="/appartements?standing=0&tranche=2">Appartements T2</a>
-                  </li>
-
-                  <li
-                    class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                  >
-                    <a class="w-full" href="/appartements?standing=0&tranche=3">Appartements T3</a>
-                  </li>
-
-                  <li
-                    class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                  >
-                    <a class="w-full" href="/appartements?standing=0&tranche=4">Appartements T4</a>
-                  </li>                  
-                @endcan
-                </ul>
-              </template>
-            </li>  
-            @endcanany
-<!-- Appartements Moyen Standing -->
-@canany(['voir appartements standing', 'editer appartements standing'])
-          <li class="relative px-6 py-3">
-              <button
-                class="inline-flex items-center justify-between w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                @click="toggleStandingMenu"
-                aria-haspopup="true"
-              >
-                <span class="inline-flex items-center">
-                  <svg
-                    class="w-5 h-5"
-                    aria-hidden="true"
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                  <path
-                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-                  ></path>
-                  </svg>
-                  <span class="ml-4">Moyen Standing</span>
-                </span>
-                <svg
-                  class="w-4 h-4"
-                  aria-hidden="true"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                    clip-rule="evenodd"
-                  ></path>
-                </svg>
-              </button>
-              <template x-if="isStandingMenuOpen">
-                <ul
-                  x-transition:enter="transition-all ease-in-out duration-300"
-                  x-transition:enter-start="opacity-25 max-h-0"
-                  x-transition:enter-end="opacity-100 max-h-xl"
-                  x-transition:leave="transition-all ease-in-out duration-300"
-                  x-transition:leave-start="opacity-100 max-h-xl"
-                  x-transition:leave-end="opacity-0 max-h-0"
-                  class="p-2 mt-2 space-y-2 overflow-hidden text-sm font-medium text-gray-500 rounded-md shadow-inner bg-gray-50 dark:text-gray-400 dark:bg-gray-900"
-                  aria-label="submenu"
-                >
-            @canany(['voir dossiers appartements standing',
-                     'voir ses propres dossiers'])
-                  <li
-                    class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                  >
-                    <a class="w-full" href="/dossiers?constructible=appartement&type=Standing">Dossiers de ventes</a>
-                  </li>
-                  @endcanany                
-                @can('editer appartements standing')      
-                  <li
-                    class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                  >
-                    <a class="w-full" href="/appartements/create">Ajouter un Appartement</a>
-                  </li>
-                @endcan
-                @can('voir appartements standing')      
-
-                  <li
-                    class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                  >
-                    <a class="w-full" href="/appartements?standing=1">Apps.Moyen Standing</a>
-                  </li>
-                @endcan
-                </ul>
-              </template>
-            </li>  
-            @endcanany
-
-<!-- end moyen standing -->
-
-          @canany(['voir magasins','editer magasins'])   
-          <li class="relative px-6 py-3">
-              <button
-                class="inline-flex items-center justify-between w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                @click="toggleMagasinsMenu"
-                aria-haspopup="true"
-              >
-                <span class="inline-flex items-center">
-                  <svg
-                    class="w-5 h-5"
-                    aria-hidden="true"
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                  <path
-                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-                  ></path>
-                  </svg>
-                  <span class="ml-4">Magasins</span>
-                </span>
-                <svg
-                  class="w-4 h-4"
-                  aria-hidden="true"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                    clip-rule="evenodd"
-                  ></path>
-                </svg>
-              </button>
-              <template x-if="isMagasinsMenuOpen">
-                <ul
-                  x-transition:enter="transition-all ease-in-out duration-300"
-                  x-transition:enter-start="opacity-25 max-h-0"
-                  x-transition:enter-end="opacity-100 max-h-xl"
-                  x-transition:leave="transition-all ease-in-out duration-300"
-                  x-transition:leave-start="opacity-100 max-h-xl"
-                  x-transition:leave-end="opacity-0 max-h-0"
-                  class="p-2 mt-2 space-y-2 overflow-hidden text-sm font-medium text-gray-500 rounded-md shadow-inner bg-gray-50 dark:text-gray-400 dark:bg-gray-900"
-                  aria-label="submenu"
-                >
-            @canany(['voir dossiers magasins',
-                     'voir ses propres dossiers'])
-                  <li
-                    class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                  >
-                    <a class="w-full" href="/dossiers?constructible=magasin">Dossiers de ventes</a>
-                  </li>
-                  @endcanany                 
-                @can('editer magasins')   
-                  <li
-                    class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                  >
-                    <a class="w-full" href="/magasins/create">Ajouter un Magasin</a>
-                  </li>
-                @endcan
-                @can('voir magasins')   
-<li
-                    class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                  >
-                    <a class="w-full" href="/magasins?tranche=1">Magasins T1</a>
-                  </li>
-
-                  <li
-                    class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                  >
-                    <a class="w-full" href="/magasins?tranche=2">Magasins T2</a>
-                  </li>
-
-                  <li
-                    class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                  >
-                    <a class="w-full" href="/magasins?tranche=3">Magasins T3</a>
-                  </li>
-
-                  <li
-                    class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                  >
-                    <a class="w-full" href="/magasins?tranche=4">Magasins T4</a>
-                  </li>      
-                @endcan
-                </ul>
-              </template>
-            </li>  
-            @endcanany          
-
-          @canany(['editer bureaux','voir bureaux'])    
-          <li class="relative px-6 py-3">
-              <button
-                class="inline-flex items-center justify-between w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                @click="toggleBureauxMenu"
-                aria-haspopup="true"
-              >
-                <span class="inline-flex items-center">
-                  <svg
-                    class="w-5 h-5"
-                    aria-hidden="true"
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                  <path
-                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-                  ></path>
-                  </svg>
-                  <span class="ml-4">Bureaux</span>
-                </span>
-                <svg
-                  class="w-4 h-4"
-                  aria-hidden="true"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                    clip-rule="evenodd"
-                  ></path>
-                </svg>
-              </button>
-              <template x-if="isBureauxMenuOpen">
-                <ul
-                  x-transition:enter="transition-all ease-in-out duration-300"
-                  x-transition:enter-start="opacity-25 max-h-0"
-                  x-transition:enter-end="opacity-100 max-h-xl"
-                  x-transition:leave="transition-all ease-in-out duration-300"
-                  x-transition:leave-start="opacity-100 max-h-xl"
-                  x-transition:leave-end="opacity-0 max-h-0"
-                  class="p-2 mt-2 space-y-2 overflow-hidden text-sm font-medium text-gray-500 rounded-md shadow-inner bg-gray-50 dark:text-gray-400 dark:bg-gray-900"
-                  aria-label="submenu"
-                >
-            @canany(['voir dossiers bureaux',
-                     'voir ses propres dossiers'])
-                  <li
-                    class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                  >
-                    <a class="w-full" href="/dossiers?constructible=bureau">Dossiers de ventes</a>
-                  </li>
-                  @endcanany                 
-                  @can('editer bureaux')    
-                  <li
-                    class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                  >
-                    <a class="w-full" href="/offices/create">Ajouter un Bureau</a>
+                    <a class="w-full" href="/{{$menuItem}}/create">
+                    Ajouter un {{$ProjectModulesService->getSingular($menuItem)}}
+                  </a>
                   </li>
                   @endcan
-                  @can('voir bureaux')    
+                  @can('voir $menuItem')
                   <li
                     class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
                   >
-                    <a class="w-full" href="/offices">Bureaux</a>
+                    <a class="w-full" href="/{{$menuItem}}">{{ucfirst($menuItem)}}</a>
                   </li>
                   @endcan
+                  @can('voir actes')
+                  <li
+                    class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
+                  >
+                    <a class="w-full" href="/contrats?type={{$ProjectModulesService->getSingular($menuItem)}}">Contrat de réservation</a>
+                  </li>
+                  @endcan                  
                 </ul>
               </template>
-            </li>  
-            @endcanany
 
-            @canany(['voir boxes','editer boxes'])
-            <li class="relative px-6 py-3">
-              <button
-                class="inline-flex items-center justify-between w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                @click="toggleBoxesMenu"
-                aria-haspopup="true"
-              >
-                <span class="inline-flex items-center">
-                  <svg
-                    class="w-5 h-5"
-                    aria-hidden="true"
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                  <path
-                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-                  ></path>
-                  </svg>
-                  <span class="ml-4">Boxes</span>
-                </span>
-                <svg
-                  class="w-4 h-4"
-                  aria-hidden="true"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                    clip-rule="evenodd"
-                  ></path>
-                </svg>
-              </button>
-              <template x-if="isBoxesMenuOpen">
-                <ul
-                  x-transition:enter="transition-all ease-in-out duration-300"
-                  x-transition:enter-start="opacity-25 max-h-0"
-                  x-transition:enter-end="opacity-100 max-h-xl"
-                  x-transition:leave="transition-all ease-in-out duration-300"
-                  x-transition:leave-start="opacity-100 max-h-xl"
-                  x-transition:leave-end="opacity-0 max-h-0"
-                  class="p-2 mt-2 space-y-2 overflow-hidden text-sm font-medium text-gray-500 rounded-md shadow-inner bg-gray-50 dark:text-gray-400 dark:bg-gray-900"
-                  aria-label="submenu"
-                >
-            @canany(['voir dossiers boxes',
-                     'voir ses propres dossiers'])
-                  <li
-                    class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                  >
-                    <a class="w-full" href="/dossiers?constructible=box">Dossiers de ventes</a>
-                  </li>
-                  @endcanany
-                @can('editer boxes')
-                  <li
-                    class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                  >
-                    <a class="w-full" href="/boxes/create">Ajouter un Box</a>
-                  </li>
-                  @endcan
-                @can('voir boxes')
-                  <li
-                    class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                  >
-                    <a class="w-full" href="/boxes">Boxes</a>
-                  </li>
-                  @endcan
-
-                </ul>
-              </template>
-            </li> 
+            </li>            
             @endcanany
+          @endforeach            
+
+
 
 @canany(['voir clients','editer clients'])
 
@@ -943,6 +663,15 @@
                     </a>
                   </li>                  
                     @endcan
+                @can('voir tranches')
+
+                  <li
+                    class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
+                  >
+                    <a class="w-full" href="/types">Types</a>
+                  </li>
+                  @endcan
+
                 </ul>
               </template>
             </li>

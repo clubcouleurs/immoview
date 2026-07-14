@@ -110,7 +110,7 @@
                           >
                             <img
                               class="object-cover w-full h-full rounded-full"
-                              src="{{asset('user.png')}}"
+                              src="{{asset('storage/'.'user.png')}}"
                               alt=""
                               loading="lazy"
                             />

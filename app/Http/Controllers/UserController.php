@@ -6,9 +6,32 @@ use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 class UserController extends Controller
 {
+
+    public function index0(Request $request)
+    {
+        $users = User::get();
+
+        $data = [
+                'title' => 'How To Create PDF File Using DomPDF In Laravel 9 - Techsolutionstuff',
+                'date' => date('d/m/Y'),
+                'users' => $users
+        ];
+
+        if($request->has('download'))
+        {
+            $pdf = Pdf::loadView('users.xpdf',$data)->setOptions(['defaultFont' => 'sans-serif']);  
+            return $pdf->download('users_pdf_example.pdf');
+        }
+
+        return view('users.xpdf',compact('users'));
+    }
+
+
     /**
      * Display a listing of the resource.
      *

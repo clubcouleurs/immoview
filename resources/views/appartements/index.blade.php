@@ -1,4 +1,4 @@
-<x-master>
+<x-master> 
       <main class="h-full overflow-y-auto">
           <div class="container px-6 mx-auto grid">
             <div class="flex justify-between">
@@ -15,11 +15,11 @@
             <div class="flex justify-between">
               <div class="my-6 mr-2">
               <a href="/appartements/export{{$urlWithQueryString}}">
-                <img class="h-6" src="{{asset('excel.png')}}">
+                <img class="h-6" src="{{asset('storage/'.'excel.png')}}">
               </a>
             </div>
               <div class="my-6">
-                <img class="h-6" src="{{asset('printer.png')}}" onclick="window.print()">
+                <img class="h-6" src="{{asset('storage/'.'printer.png')}}" onclick="window.print()">
             </div>  
             </div>          
           </div>
@@ -199,7 +199,7 @@
               <div class="flex items-center gap-2">
                 <a
                   class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-2xl active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue"
-                  href="/appartements?standing={{$standing}}"
+                  href="/appartements"
                 >Tout</a>
                 <input type="hidden" name="standing" value="{{$standing}}"/>
 
@@ -214,7 +214,7 @@
                     @if ( $SearchByTr == $tranche->id)
                     selected
                     @endif
-                    >Tranche {{$tranche->num}}
+                    >Tranche {{$tranche->num}}-{{$tranche->description}}
                   </option>
                 @endforeach
                 </select>
@@ -292,9 +292,10 @@
                   name="type"
                 >
                   <option value="-">Type</option>
-                
-                  <option value="Economique"  @if ( $SearchByType == "Economique") selected @endif>Social</option>
-                  <option value="Standing" @if ( $SearchByType == "Standing") selected @endif>Standing</option>              
+                @foreach($types as $type)
+                  <option value="{{$type}}" @if ( $SearchByType == "{{$type}}") selected @endif>{{$type}}</option>
+                  @endforeach
+
                 </select> 
                 <input
                   class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input rounded-2xl"
@@ -387,7 +388,7 @@
                           >
                             <img
                               class="object-cover w-full h-full rounded-full"
-                              src="{{asset('floor-plan.png')}}"
+                              src="{{asset('storage/'.'floor-plan.png')}}"
                               alt=""
                               loading="lazy"
                             />
@@ -427,7 +428,7 @@
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
                         >
-                          {{ number_format($produit->totalIndicatif)}} Dhs
+                          {{ number_format($produit->totalDefinitif)}} Dhs
                         </span>
                       
                       </td>
@@ -436,10 +437,10 @@
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
                         >
-                          {{ number_format($produit->constructible->prixM2Indicatif) }} Dhs
+                          {{ number_format($produit->constructible->prixM2Definitif) }} Dhs
                         </span>
                             <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                              Total : {{ number_format($produit->totalIndicatif)}} Dhs
+                              Total : {{ number_format($produit->totalDefinitif)}} Dhs
                             </p>                        
                       </td>
                       @endif
@@ -464,7 +465,7 @@
                         </span>
                       </td>
                       <td class="px-4 py-3 text-sm">
-                        R+{{ $produit->constructible->etage }}
+                        {{ $produit->etage }}
                       </td>                      
                       <td class="px-4 py-3 text-sm">
                         <span

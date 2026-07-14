@@ -15,12 +15,20 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Gate;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+
+use NumberToWords\NumberToWords;
+
 
 class Dossier extends Model
 {
+    use SoftDeletes;
     use HasFactory;
     // y'avait 'num' dans les fillables
-    protected $fillable = ['date', 'frais','detail', 'user_id', 'produit_id', 'isVente'];
+    protected $fillable = ['date', 'frais','detail', 'user_id', 'produit_id', 'isVente','motif_desistement', 'indemnite', 'desiste_by', 'demandeDesisstement'];
     
     public function produit()
     {
@@ -31,15 +39,27 @@ class Dossier extends Model
         return $this->belongsToMany(Client::class, 'dossier_client');
     }  
 
-    public static function litige()
+    // Relation pour récupérer l'historique des clients
+    public function clientHistory()
     {
-       return count(Dossier::where('litige', '=', true)->get()) ;
-    }  
+        return $this->belongsToMany(Client::class, 'client_dossier_histories', 'dossier_id', 'new_client_id')
+                    ->withPivot('old_client_id', 'transferred_at')
+                    ->withTimestamps();
+    }
+
+
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }      
+
+    // Nouvelle relation (celui qui a désisté)
+    public function desisteBy()
+    {
+        return $this->belongsTo(User::class, 'desiste_by');
+    }
+        
     public function paiements()
     {
         return $this->hasMany(Paiement::class);
@@ -55,21 +75,54 @@ class Dossier extends Model
         return $this->hasMany(Delai::class)->latest();
     }
 
-
     public function validation()
     {
         return $this->hasOne(Validation::class);
     }
 
+    public function transferts()
+    {
+        return $this->hasMany(Transfert::class);
+    }    
+
+
+    ////// end of relationships
+
+    public static function getAllDossiersProjet(String $projet)
+    {
+        return Dossier::with('produit')
+                                ->whereHas('produit', function (Builder $query) use ($projet) {
+                                    $query->where('projet_id', $projet);
+                                })  
+                                ->with('clients')
+                                ->with('paiements')
+                                ->orderByDesc('created_at')->paginate(15);
+    }
+
+    public static function litige()
+    {
+       return count(Dossier::where('litige', '=', true)->get()) ;
+    }  
 
     public function getAvanceNonEncAttribute()
     {
         $r = ($this->produit->total * 0.3) - $this->totalPaiementsV ;
         return ($r < 0) ? 0 : $r ;
-
     } 
 
-
+    public static function getDossierArelancerToday(String $projet)
+    {
+            $day = Carbon::now() ;
+            $today = Dossier::where('isVente', false)
+            ->whereHas('delais', function (Builder $query) use ($day) {
+                $query->whereDate('date', $day->toDateString());
+            })                
+            ->whereHas('produit', function (Builder $query) use ($projet) {
+                $query->where('projet_id', $projet);
+            })         
+            ->get()->count();
+            return $today;
+    }
             
     public function getTotalPaiementsAttribute()
     {
@@ -80,6 +133,14 @@ class Dossier extends Model
     {
         return $this->paiements()->where('valider',1)->sum('montant');
     }
+    public function getTotalPaiementsLettresVAttribute()
+    {
+        // create the number to words "manager" class
+        $toWords = new NumberToWords();
+        // build a new number transformer using the RFC 3066 language identifier
+        $numberTransformer = $toWords->getNumberTransformer('fr');
+        return ucfirst($numberTransformer->toWords($this->totalPaiementsV));
+    }    
     public function getTauxPaiementVAttribute()
     {       
         return round(($this->totalPaiementsV * 100) / $this->produit->total , 2) ;
@@ -99,9 +160,44 @@ class Dossier extends Model
         return \DB::table('dossiers')
                 ->select('produits.constructible_type', \DB::raw('COUNT(*) as nombre'))
                 ->leftJoin('produits', 'dossiers.produit_id', '=', 'produits.id')
+                ->leftJoin('projets', 'produits.projet_id' , '=', 'projets.id')
                 ->groupBy('produits.constructible_type')
                 ->get();
     } 
+
+    public function sanitizeClientInfos()
+    {
+            //chr(10) = retour à la ligne
+            $txt = ''  ;
+            $arrayTxt = array() ;
+            $i = 0 ;
+            foreach ($this->clients as $client)
+                {  
+                    $i += 1 ;
+                    $txt  = '<br> Monsieur/Madame : ' ;
+                    $prenom = stripslashes($client->prenom);
+                    $nom = iconv('UTF-8', 'windows-1252', $prenom);
+                    $nom = stripslashes($client->nom);
+                    $nom = iconv('UTF-8', 'windows-1252', $nom);
+                    $nomC = ucfirst($nom) . ' ' . ucfirst($prenom) ;
+                    $txt .= '<b>' . $nomC . '</b>' . '<br>' ;
+                    $txt .= 'Demeurant à : ' ;
+                    $adresse = stripslashes($client->adresse);
+                    $adresse = ucfirst(preg_replace( "/\r|\n/", " ", $adresse )) ;
+                    $adresse = iconv('UTF-8', 'windows-1252', $adresse);
+                    $txt .= $adresse . '<br>'  ;
+                    $txt .= 'Titulaire de la carte d’identité nationale N° : ' ;
+                    $txt .= '<b>' . $client->cin . '</b>' . '<br>'   ;
+                    $txt .= 'Numéro de téléphone : ' ;                    
+                    $txt .= '<b>' . $client->mobile . '</b>' . '<br>'   ;
+                        if ($i <= $this->clients->count() )
+                        {
+                           $txt .= '---' ;
+                        }
+                    array_push($arrayTxt, $txt);                        
+                    }
+                    return $arrayTxt ;
+    }
 
     public function getHasActeAttribute()
     {       
@@ -136,27 +232,11 @@ class Dossier extends Model
     }
     public function getActeAttribute()
     {    
-    if ($this->actePj)
-    {
-            return
+        $htmlReturn = '' ;
+         if ( ($this->totalPaiementsV/$this->produit->totalDefinitif)*100>80  )
+         {
+             $htmlReturn .= 
             '<div class="mr-1">
-                <a
-                  class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
-                  aria-label="Like"
-                  target="_blank"
-                  href="' . asset($this->actePj) . '"
-                >
-                    <svg
-                    class="w-4 h-4"
-                    aria-hidden="true"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                        <path d="M14,14 L18,14 L18,2 L2,2 L2,14 L6,14 L6,14.0020869 C6,15.1017394 6.89458045,16 7.99810135,16 L12.0018986,16 C13.1132936,16 14,15.1055038 14,14.0020869 L14,14 L14,14 Z M0,1.99079514 C0,0.891309342 0.898212381,0 1.99079514,0 L18.0092049,0 C19.1086907,0 20,0.898212381 20,1.99079514 L20,18.0092049 C20,19.1086907 19.1017876,20 18.0092049,20 L1.99079514,20 C0.891309342,20 0,19.1017876 0,18.0092049 L0,1.99079514 L0,1.99079514 Z M4,4 L16,4 L16,6 L4,6 L4,4 L4,4 Z M4,7 L16,7 L16,9 L4,9 L4,7 L4,7 Z M4,10 L16,10 L16,12 L4,12 L4,10 L4,10 Z" id="Combined-Shape"></path>
-                    </svg>
-                </a>
-             </div>
-            <div class="mr-1">
                 <a
                   class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
                   aria-label="Like"
@@ -175,25 +255,47 @@ class Dossier extends Model
              </div>             
              ';         
            
-       }   
-       else
-       {
-        if ($this->hasActe || $this->validate)
-        {
-            if ($this->produit->constructible->type == 'Standing') {
-                $actes = 'actesStanding' ;
-            }
-            else
-            {
-                $actes = 'actes' ;
-            }
-            return
+       }         
+    if ($this->actePj)
+    {
+        $htmlReturn .= 
             '<div class="mr-1">
                 <a
                   class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
                   aria-label="Like"
                   target="_blank"
-                  href="/dossiers/' . $this->id . '/' . $this->produit->constructible_type . '/' . $actes .'"
+                  href="' . asset('storage/'.$this->actePj) . '"
+                >
+                    <svg
+                    class="w-4 h-4"
+                    aria-hidden="true"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                        <path d="M14,14 L18,14 L18,2 L2,2 L2,14 L6,14 L6,14.0020869 C6,15.1017394 6.89458045,16 7.99810135,16 L12.0018986,16 C13.1132936,16 14,15.1055038 14,14.0020869 L14,14 L14,14 Z M0,1.99079514 C0,0.891309342 0.898212381,0 1.99079514,0 L18.0092049,0 C19.1086907,0 20,0.898212381 20,1.99079514 L20,18.0092049 C20,19.1086907 19.1017876,20 18.0092049,20 L1.99079514,20 C0.891309342,20 0,19.1017876 0,18.0092049 L0,1.99079514 L0,1.99079514 Z M4,4 L16,4 L16,6 L4,6 L4,4 L4,4 Z M4,7 L16,7 L16,9 L4,9 L4,7 L4,7 Z M4,10 L16,10 L16,12 L4,12 L4,10 L4,10 Z" id="Combined-Shape"></path>
+                    </svg>
+                </a>
+             </div>';
+         }
+  
+       else
+       {
+        if ($this->hasActe || $this->validate)
+        {                    
+            // if ($this->produit->constructible->type == 'Standing') {
+            //     $actes = 'actesStanding' ;
+            // }
+            // else
+            // {
+            //     $actes = 'actes' ;
+            // }
+            $htmlReturn .= 
+            '<div class="mr-1">
+                <a
+                  class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
+                  aria-label="Like"
+                  target="_blank"
+                  href="/dossiers/' . $this->id . '/' . $this->produit->constructible_type . '/actes"
                 >
                     <svg
                     class="w-4 h-4"
@@ -226,7 +328,7 @@ class Dossier extends Model
         {
             //verifying Gate::allows('validation-dossier')
             if (Gate::allows('valider dossiers')) {
-            return
+            $htmlReturn .= 
             '<div class="mr-1">
                 <a
                   class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
@@ -250,7 +352,7 @@ class Dossier extends Model
             }
             else
             {
-            return
+            $htmlReturn .= 
             '<div class="mr-1">
                 <span
                   class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none focus:shadow-outline-gray"
@@ -269,7 +371,6 @@ class Dossier extends Model
              }  
         }
         }
+        return $htmlReturn;
     }     
-
-
 }

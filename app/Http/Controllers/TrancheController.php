@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Projet;
 use App\Models\Tranche;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class TrancheController extends Controller
 {
@@ -14,7 +16,8 @@ class TrancheController extends Controller
      */
     public function index()
     {
-        return view('tranches.index', ['tranches' => Tranche::all()]) ; //->paginate(2)]) ;
+        $projet = Projet::where('id' , session('projet_id'))->limit(1)->first() ;  
+        return view('tranches.index', ['tranches' => Tranche::where('projet_id' , $projet->id)->get()]) ; 
     }
 
     /**
@@ -34,20 +37,23 @@ class TrancheController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-     
+    {     
+        $projet_id = session('projet_id');
+        $projet = Projet::where('id' , $projet_id)->limit(1)->first() ;  
         $request->validate([
             'description' => 'string|nullable',
-            'num' => 'required|numeric|unique:tranches',
-
+            'num' => [
+                'required',
+                'numeric',
+                Rule::unique('tranches', 'num')->where('projet_id', $projet->id),
+            ],
         ]);
-
         $tranche = new Tranche([
         'description'       => $request['description'] ,
         'num'               => $request['num'] ,
-
+        'projet_id'         => $projet->id ,
         ]) ;
-        $tranche->save() ;
+        $projet->tranches()->save($tranche);
         return redirect()->action([TrancheController::class, 'index'])
         ->with('message','Tranche ajouté !');
     }
@@ -60,7 +66,8 @@ class TrancheController extends Controller
      */
     public function show(Tranche $tranch)
     {
-        return view('tranches.index', ['tranches' => Tranche::all(),
+        // $projet = Projet::where('id' , session('projet_id'))->limit(1)->first() ;  
+        return view('tranches.index', ['tranches' => Tranche::where('projet_id' , session('projet_id'))->get(),
         'tranche' => $tranch]) ; 
     }
 
@@ -84,11 +91,22 @@ class TrancheController extends Controller
      */
     public function update(Request $request, Tranche $tranch)
     {
+
+        $projet = Projet::where('id' , session('projet_id'))->limit(1)->first() ;  
         $request->validate([
             'description' => 'string|nullable',
-            'num' => 'required|numeric|unique:tranches,num,'.$tranch->id,
-
+            'num' => [
+                'required',
+                'numeric',
+                Rule::unique('tranches', 'num')->where('projet_id', $projet->id)->ignore($tranch),
+            ],
         ]);
+
+        // $request->validate([
+        //     'description' => 'string|nullable',
+        //     'num' => 'required|numeric|unique:tranches,num,'.$tranch->id,
+
+        // ]);
 
         $tranch->description = $request['description'] ;
         $tranch->num = $request['num'] ;

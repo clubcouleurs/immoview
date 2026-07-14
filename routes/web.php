@@ -1,12 +1,16 @@
 <?php
 
 use App\Http\Controllers\AppartementController;
+use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\BanqueController;
 use App\Http\Controllers\BordereauController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ContratController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DelaiController;
 use App\Http\Controllers\DossierController;
+use App\Http\Controllers\EntrepriseController;
 use App\Http\Controllers\EtiquetteController;
 use App\Http\Controllers\FinanceController;
 use App\Http\Controllers\ImmeubleController;
@@ -15,10 +19,14 @@ use App\Http\Controllers\MagasinController;
 use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\PaiementController;
 use App\Http\Controllers\ProduitController;
+use App\Http\Controllers\ProjetController;
+use App\Http\Controllers\RecuController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\SyntheseController;
 use App\Http\Controllers\TrancheController;
+use App\Http\Controllers\TransfertController;
+use App\Http\Controllers\TypeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ValidationController;
 use App\Http\Controllers\VisiteController;
@@ -39,10 +47,28 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::post('/synthese', [SyntheseController::class, 'synthese']) ;
+
 
 Route::middleware('auth')->group(function(){
 
+// routes ajoutés après 19/09/2023
+// Authorization not OK
+Route::resource('types', TypeController::class);
+
+Route::resource('projets', ProjetController::class);
+Route::resource('contrats', ContratController::class);
+Route::post('/contratsDuplicate', [ContratController::class, 'duplicate']) ;
+
+Route::resource('entreprises', EntrepriseController::class);
+Route::resource('banques', BanqueController::class);
+Route::resource('articles', ArticleController::class);
+
+Route::get('/produits/{produit}/fiche', [ProduitController::class, 'fiche']);	
+
+// end nouveaux routes
+
+// Authorization OK, taking car of it in the controller
+Route::post('/synthese', [SyntheseController::class, 'synthese']) ;
 
 Route::get('/recouvrement', [DossierController::class, 'recouvrement'])
 						->middleware('can:voir finance');
@@ -126,7 +152,7 @@ Route::post('/dossiers/{dossier}/delais', [DelaiController::class, 'store']);
 Route::get('/dossiers/litige', [DossierController::class, 'litige']);
 
 // Authorization OK, taking car of it in the controller
-Route::get('/dossiers', [DossierController::class, 'index']);
+Route::get('/dossiers', [DossierController::class, 'index'])->name('dossiers.index');;
 
 // Authorization OK, taking car of it in the controller
 Route::get('/dossiers/create', [DossierController::class, 'createWithoutClient']);
@@ -142,6 +168,8 @@ Route::get('/dossiers/{dossier}', [DossierController::class, 'show'])
 Route::get('/dossiers/{dossier}/edit', [DossierController::class, 'edit'])
 			->middleware('can:edit,dossier');
 
+
+
 // Authorization OK, taking car of it in the controller/middleware
 Route::put('/dossiers/{dossier}', [DossierController::class, 'update'])
 			->middleware('can:edit,dossier');
@@ -149,6 +177,40 @@ Route::put('/dossiers/{dossier}', [DossierController::class, 'update'])
 // Authorization OK, taking car of it in the controller/middleware
 Route::delete('/dossiers/{dossier}', [DossierController::class, 'destroy'])
 				->middleware('can:supprimer dossiers,dossier');
+
+Route::get('/dossiers/{dossier}/desisstement', [DossierController::class, 'desisstement'])
+				->middleware('can:supprimer dossiers,dossier');
+
+Route::post('/dossiers/{dossier}/demandeDesisstement', [DossierController::class, 'demandeDesisstement'])
+				->middleware('can:supprimer dossiers,dossier');
+
+Route::post('/dossiers/{dossier}/demandeTransfert', [DossierController::class, 'demandeTransfert'])
+				->middleware('can:supprimer dossiers,dossier');
+
+Route::put('/dossiers/{dossier}/desister', [DossierController::class, 'desister'])
+				->middleware('can:supprimer dossiers,dossier');
+
+///////////////////////
+// Route::get('/dossiers/{dossier}/transfert', [TransfertController::class, 'index'])
+// 				->name('dossiers.transfert.index');
+
+
+// Authorization OK, taking car of it in the middleware
+Route::get('/dossiers/{dossier}/transfert', [TransfertController::class, 'index'])
+			->name('dossiers.transfert.generer')
+			->middleware('can:edit,dossier');
+
+Route::post('/dossiers/{dossier}/transfert/generer', [TransfertController::class, 'genererDocument']);
+
+Route::post('/dossiers/{dossier}/transfert/{transfert}/finaliser', [TransfertController::class, 'finaliser'])
+				->name('dossiers.transfert.finaliser');
+Route::delete('/dossiers/{dossier}/transfert/{transfert}', [TransfertController::class, 'supprimer'])
+				->name('dossiers.transfert.supprimer');
+
+
+Route::get('/dossiers/{dossier}/transfert/{transfert}/telecharger', [TransfertController::class, 'telechargerDocument'])
+    ->name('dossiers.transfert.telecharger')
+    ->middleware('can:edit,dossier');;
 
 
 // Authorization OK, taking car of it in the middleware
@@ -158,8 +220,12 @@ Route::middleware(['can:view,dossier'])->group(function () {
 	Route::get('/dossiers/{dossier}/acte-vente', [DossierController::class, 'acte_vente']);
 	// fin modification du 06/07/22
 	Route::get('/dossiers/{dossier}/appartement/actes', [DossierController::class, 'actesApp']);
-	Route::get('/dossiers/{dossier}/lot/actes', [DossierController::class, 'actesLot']);	
-	Route::get('/dossiers/{dossier}/appartement/actesStanding', [DossierController::class, 'actesStanding']);
+	Route::get('/dossiers/{dossier}/lot/actes', [DossierController::class, 'actesLot']);
+
+	// Route::get('/dossiers/{dossier}/appartement/actesStanding', [DossierController::class, 'actesStanding']);
+	// modification du 20/02/2023
+	Route::get('/dossiers/{dossier}/magasin/actes', [DossierController::class, 'actesMag']);	
+
 
 });
 
@@ -212,6 +278,12 @@ Route::post('/dossiers/{dossier}/paiements', [PaiementController::class, 'store'
 Route::patch('/dossiers/{dossier}/paiements/{paiement}', [PaiementController::class, 'update'])
 			->middleware('can:edit,paiement');
 
+// Route pour générer le reçu de paiement
+// Authorization OK in the middelware
+Route::get('/dossiers/{dossier}/paiements/{paiement}/generate', [RecuController::class, 'recu'])
+			->middleware('can:edit,paiement');
+
+
 // Authorization OK in the middelware
 Route::delete('/dossiers/{dossier}/paiements/{paiement}', [PaiementController::class, 'destroy'])
 			->middleware('can:delete,paiement');
@@ -241,6 +313,8 @@ Route::delete('/dossiers/{dossier}/bordereaux/{bordereau}', [BordereauController
 // Authorization OK in the middelware
 Route::get('/dossiers/{dossier}/bordereaux/{bordereau}/generate', [BordereauController::class, 'bordereau'])
 			->middleware('can:edit,bordereau');
+
+			
 // FIN PAIEMENTS DOSSIER ROUTES
 
 
@@ -257,8 +331,14 @@ Route::get('/parametres', function () {
     return view('settings', ['totalEtiquettes' => $totalEtiquettes->count()]);
 })->middleware('can:voir parametres');
 
-Route::get('/', [DashboardController::class, 'index'])->name('dashboard'); ;
-Route::get('/dashboard', [DashboardController::class, 'index']);
+Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+// adding dashboard by project, updated 26/0/823
+// old
+//Route::get('/dashboard', [DashboardController::class, 'index']);
+// new
+Route::get('/dashboard/{projet?}', [DashboardController::class, 'index']);
+//Route::get('/dashboard', [DashboardController::class, 'indexWithoutProject']);
+
 
 /*Route::get('/', function () {
     return view('dashboard');

@@ -76,7 +76,7 @@
                       
                     @endisset
 
-                    >Tranche {{$tranche->num}}</option>
+                    >Tranche {{$tranche->num}} | {{$tranche->description}}</option>
                 @endforeach
 
                 </select>
@@ -153,7 +153,7 @@
                           >
                             <img
                               class="object-cover w-full h-full rounded-full"
-                              src="{{asset('imm.png')}}"
+                              src="{{asset('storage/'.'imm.png')}}"
                               alt=""
                               loading="lazy"
                             />

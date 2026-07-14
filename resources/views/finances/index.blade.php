@@ -10,7 +10,7 @@
               </h2></div>
               <div class="my-6">
               <a href="/finances/export">
-                <img class="h-6" src="{{asset('excel.png')}}">
+                <img class="h-6" src="{{asset('storage/'.'excel.png')}}">
               </a>
             </div>
           </div>
@@ -36,7 +36,7 @@
                     <tr
                       class="text-xs font-semibold bg-{{$color[$loop->index]}}-300 tracking-wide text-left text-black border  dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
                     >
-                      <th class="py-3 bg-{{$color[$loop->index]}}-400">Tranche</th>
+                      <th class="py-3 bg-{{$color[$loop->index]}}-400">Tranche/GH</th>
 
                       @can('afficher nombre ' . $constructible)
                       <th class="py-3">Nombre de {{$header}}</th>
@@ -90,7 +90,7 @@
                       <th class="py-3">Reliquat du CA Réservé</th>
                       @endcan
 
-<!--                  @can('afficher 70% du CA total '. $constructible)
+                      <!--@can('afficher 70% du CA total '. $constructible)
                       <th class="py-3">70% du CA total</th>
                       @endcan -->
 

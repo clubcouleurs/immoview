@@ -10,9 +10,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Appartement extends Model
 {
+
     use HasFactory;
     protected $fillable = ['num', 'surfaceApp','surfaceTerrasse','type','etage','description',
-    'chambres', 'cuisines' , 'sdbs' , 'toilettes' , 'extra'];
+    'chambres', 'salons', 'cuisines' , 'sdbs' , 'toilettes' , 'extra'];
 
     public function produit()
     {
@@ -32,24 +33,16 @@ class Appartement extends Model
 
     public function getprixM2DefinitifAttribute()
     {
-        if ($this->type === 'Economique')
-        {
-            return 250000 / $this->surface;
-        }else
-        {
+
             return $this->produit->prixM2Definitif ;
-        }
+
     }
     
     public function getprixM2IndicatifAttribute()
     {
-        if ($this->type === 'Economique')
-        {
-            return 250000 / $this->surface;
-        }else
-        {
+
             return $this->produit->prixM2Indicatif ;
-        }
+
     }
 
     public function getSurfaceDetailAttribute()

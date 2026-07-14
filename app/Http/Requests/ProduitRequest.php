@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Lot;
+use App\Rules\oneLotPerProjet;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ProduitRequest extends FormRequest
 {
@@ -30,8 +33,7 @@ class ProduitRequest extends FormRequest
         $idBox = (isset($this->box->id)) ? $this->box->id : Null ;
 
         return [
-            // 'numLot' => 'sometimes|required|numeric',
-            // 'numLot' => 'unique:lots,num,'.$idLot,
+            
 
             // 'numApp' => 'sometimes|required|numeric',
             // 'numApp' => 'unique:appartements,num,'.$idApp,        
@@ -45,7 +47,20 @@ class ProduitRequest extends FormRequest
             // 'numBox' => 'sometimes|required|numeric',
             // 'numBox' => 'unique:boxes,num,'.$idBox, 
 
+
+
+            // 'numLot' => Rule::unique('lots', 'num')->where(function ($query){
+            //      $query->join('produits', function ($join) {
+            //         return $join->on('produits.constructible_id', '=', 'lots.id')
+            //                     ->where('produits.projet_id', '!=',  '108619ec-fd2d-48f1-804e-f6f60a2d7fc3');
+            //        });
+            //      }),
+
+
+
             'surface' => 'sometimes|required|numeric',
+            'surface_cadastre' => 'numeric|nullable',
+
             'surfaceApp' => 'sometimes|required|numeric',
             'surfaceTerrasse' => 'sometimes|required|numeric',
 

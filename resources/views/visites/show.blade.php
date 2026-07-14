@@ -7,7 +7,7 @@
             @php
               $file = ($visite->typeContact== null) ? 'visite.png' : $visite->typeContact.'.png' ;
             @endphp
-            <img class="h-12 mr-4" src="{{asset($file)}}">
+            <img class="h-12 mr-4" src="{{asset('storage/'.$file)}}">
               {{ucfirst($visite->typeContact)}} N°{{$visite->id}}
             </h2>
             <!-- CTA -->

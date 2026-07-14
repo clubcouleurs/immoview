@@ -12,11 +12,11 @@
             <div class="flex justify-between">
               <div class="my-6 mr-2">
               <a href="/lots/export{{$urlWithQueryString}}">
-                <img class="h-6" src="{{asset('excel.png')}}">
+                <img class="h-6" src="{{asset('storage/'.'excel.png')}}">
               </a>
             </div>
               <div class="my-6">
-                <img class="h-6" src="{{asset('printer.png')}}" onclick="window.print()">
+                <img class="h-6" src="{{asset('storage/'.'printer.png')}}" onclick="window.print()">
             </div>  
             </div>          
           </div>
@@ -474,7 +474,7 @@
                           >
                             <img
                               class="object-cover w-full h-full rounded-full"
-                              src="{{asset('floor-plan.png')}}"
+                              src="{{asset('storage/'.'floor-plan.png')}}"
                               alt=""
                               loading="lazy"
                             />
@@ -568,6 +568,18 @@
                         
                 @can('Ajouter dossiers lots')
               <div class="flex px-1 py-1">
+                <!-- pour télécharger la fiche produit -->
+                <div class="mr-1">
+                <a
+                  class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none focus:shadow-outline-gray"
+                  aria-label="Like"
+                  href="/produits/{{ $produit->id }}/fiche"
+                >
+                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M7.47 10.78a.75.75 0 001.06 0l3.75-3.75a.75.75 0 00-1.06-1.06L8.75 8.44V1.75a.75.75 0 00-1.5 0v6.69L4.78 5.97a.75.75 0 00-1.06 1.06l3.75 3.75zM3.75 13a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5z"></path></svg>
+                </a>
+              </div>
+
+                <!-- fin telechargement fiche produit -->
 
                 @if(null == $produit->dossier && $produit->etiquette->label == 'En stock')
                 <div class="mr-1">
@@ -611,7 +623,7 @@
             </div>
             @endcan
             @can('supprimer lots')
-            <div>
+   
                         <form action="/lots/{{$produit->constructible->id}}" method="POST">
                         @csrf
                         @method('DELETE')
@@ -635,7 +647,7 @@
                   </svg>
                 </button>
                       </form>
-                      </div>   
+                    
                       @endcan             
               </div>
 

@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 class Lot extends Model
 {
     use HasFactory;
-    protected $fillable = ['num', 'surface','type','etage','description', 'titre_foncierr'];
+    protected $fillable = ['num', 'num_cadastre', 'surface','surface_definitive','type','etage','description', 'titre_foncierr'];
 
     /*public function produit()
     {

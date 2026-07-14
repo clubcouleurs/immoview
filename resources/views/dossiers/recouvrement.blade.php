@@ -21,11 +21,11 @@
             <div class="flex justify-between">
               <div class="my-6 mr-2">
               <a href="/dossiers/export{{$urlWithQueryString}}">
-                <img class="h-6" src="{{asset('excel.png')}}">
+                <img class="h-6" src="{{asset('storage/'.'excel.png')}}">
               </a>
             </div>
               <div class="my-6">
-                <img class="h-6" src="{{asset('printer.png')}}" onclick="window.print()">
+                <img class="h-6" src="{{asset('storage/'.'printer.png')}}" onclick="window.print()">
             </div>  
             </div>          
           </div>
@@ -112,7 +112,7 @@
                           >
                             <img
                               class="object-cover w-full h-full rounded-full"
-                              src="{{asset('floor-plan.png')}}"
+                              src="{{asset('storage/'.'floor-plan.png')}}"
                               alt=""
                               loading="lazy"
                             />

@@ -459,7 +459,7 @@
                           >
                             <img
                               class="object-cover w-full h-full rounded-full"
-                              src="{{asset('floor-plan.png')}}"
+                              src="{{asset('storage/'.'floor-plan.png')}}"
                               alt=""
                               loading="lazy"
                             />

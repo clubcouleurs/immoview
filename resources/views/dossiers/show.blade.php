@@ -1,4 +1,4 @@
-<x-master>
+f<x-master>
       <main class="h-full overflow-y-auto">
           <div class="container px-6 mx-auto grid">
 
@@ -513,6 +513,7 @@
                       </td>
                       <td class="px-1 py-3 text-sm">
                           {{$client->nom}} {{$client->prenom}}
+                          <p>Né le : {{$client->date_naissance }}</p>
                       </td>
                     </tr> 
                     <tr class="text-gray-700 dark:text-gray-400">
@@ -529,8 +530,25 @@
                       </td>
                       <td class="px-1 py-3 text-sm">
                           {{$client->cin }}
+
                       </td>
                     </tr>  
+                    <tr class="text-gray-700 dark:text-gray-400">
+                      <td class="px-1 py-3">
+                        <div class="flex items-center text-sm">
+                          <div><p class="font-semibold">
+                            <span
+                              class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-md dark:bg-green-700 dark:text-green-100">
+                              Email :                     
+                            </span>
+                            </p>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-1 py-3 text-sm">
+                          {{$client->email }}
+                      </td>
+                    </tr>                      
                     <tr class="text-gray-700 dark:text-gray-400">
                       <td class="px-1 py-3">
                         <div class="flex items-center text-sm">
@@ -571,6 +589,81 @@
               </div>
 <!-- fin des cartes -->
 
+<div class="flow-root m-5">
+    <ul role="list" class="-mb-8">
+        @foreach($historyGroups as $batchId => $rows)
+            @php
+                // 1. On extrait tous les IDs uniques de ce transfert
+                $oldIds = $rows->pluck('old_client_id')->filter()->unique()->toArray();
+                $newIds = $rows->pluck('new_client_id')->filter()->unique()->toArray();
+
+                // 2. On récupère les clients complets avec Nom, Prénom et CIN
+                $oldClientsCollection = \App\Models\Client::whereIn('id', $oldIds)->select('nom', 'prenom', 'cin')->get();
+                $newClientsCollection = \App\Models\Client::whereIn('id', $newIds)->select('nom', 'prenom', 'cin')->get();
+
+                // 3. On formate l'affichage : "Nom Prénom (CIN)" séparés par des virgules s'il y en a plusieurs
+                $oldNames = $oldClientsCollection->map(function($client) {
+                    return trim("{$client->nom} {$client->prenom} " . ($client->cin ? "({$client->cin})" : ""));
+                })->implode(', ');
+
+                $newNames = $newClientsCollection->map(function($client) {
+                    return trim("{$client->nom} {$client->prenom} " . ($client->cin ? "({$client->cin})" : ""));
+                })->implode(', ');
+
+                // 4. Formatage de la date du transfert
+                $date = \Carbon\Carbon::parse($rows->first()->transferred_at)->translatedFormat('d F Y à H:i');
+            @endphp
+
+            <li>
+                <div class="relative pb-8">
+                    <!-- Ligne verticale de liaison -->
+                    @if(!$loop->last)
+                        <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
+                    @endif
+
+                    <div class="relative flex space-x-3">
+                        <!-- Icône de la Timeline -->
+                        <div>
+                            <span class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center ring-8 ring-white">
+                                <svg class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </span>
+                        </div>
+
+                        <!-- Contenu textuel -->
+                        <div class="flex-1 min-w-0 pt-1.5">
+                            <div class="text-sm text-gray-500">
+                                @if(empty($oldNames))
+                                    <span class="block mb-1">Prise en charge initiale par :</span>
+                                    <strong class="font-semibold text-gray-900 bg-green-50 px-2 py-1 rounded border border-green-200 inline-block">
+                                        {{ $newNames }}
+                                    </strong>
+                                @else
+                                    <span class="block mb-1">Passation effectuée :</span>
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        <span class="inline-block px-2 py-1 rounded text-xs font-medium bg-red-50 text-red-800 border border-red-100">
+                                            {{ $oldNames }}
+                                        </span>
+                                        <span class="text-gray-400">➔</span>
+                                        <span class="inline-block px-2 py-1 rounded text-xs font-medium bg-green-50 text-green-800 border border-green-100">
+                                            {{ $newNames }}
+                                        </span>
+                                    </div>
+                                @endif
+                            </div>
+                            
+                            <!-- Date de l'événement -->
+                            <div class="text-xs text-gray-400 mt-2">
+                                <time datetime="{{ $rows->first()->transferred_at }}">{{ $date }}</time>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        @endforeach
+    </ul>
+</div>
 
             </div>
             

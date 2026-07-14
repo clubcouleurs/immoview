@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Banque;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class BanqueController extends Controller
 {
@@ -14,7 +15,17 @@ class BanqueController extends Controller
      */
     public function index()
     {
-        //
+        $banques = Banque::select('id','num','nom','abreviation')->get();
+
+        $arrBanques = $banques->mapWithKeys(function ($item, $key) {
+            return [$item['id'] => $item ];
+        });
+        $arrBanques = $arrBanques->toArray() ;
+        
+        return view('banques.index', [
+            'banques'          =>  $banques,
+            'arrBanques'       => json_encode($arrBanques),
+        ]);
     }
 
     /**
@@ -24,7 +35,10 @@ class BanqueController extends Controller
      */
     public function create()
     {
-        //
+        if (! Gate::allows('editer banques')) {
+                abort(403);
+        }         
+        return view('banques.create') ;
     }
 
     /**
@@ -35,7 +49,29 @@ class BanqueController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if (! Gate::allows('editer banques')) {
+                abort(403);
+        }
+
+        $validated = $request->validate([
+            'nom'           => 'required|string',
+            'num'           => 'required|string|unique:banques',
+            'abreviation'   => 'required|string'
+
+        ],
+        [
+            
+        ]
+    );
+
+        $banque = new Banque ;
+        $banque->num = $validated['num'] ;
+        $banque->nom = $validated['nom'] ;
+        $banque->abreviation = $validated['abreviation'] ;
+
+        $banque->save() ;
+        return redirect('banques')
+                    ->with('message','Compte ajouté !');
     }
 
     /**
@@ -69,7 +105,27 @@ class BanqueController extends Controller
      */
     public function update(Request $request, Banque $banque)
     {
-        //
+        if (! Gate::allows('editer banques')) {
+                abort(403);
+        }
+        $validated = $request->validate([
+            'nom'           => 'required|string',
+            'num'           => 'required|string',
+            'abreviation'   => 'required|string'
+
+        ],
+        [
+            
+        ]
+    );
+        $banque->num         = $validated['num'];
+        $banque->nom         = $validated['nom'];
+        $banque->abreviation = $validated['abreviation'];
+
+        $banque->update();
+
+        return redirect()->action([BanqueController::class, 'index'])
+        ->with('message','Compte modifié !');
     }
 
     /**
@@ -80,6 +136,18 @@ class BanqueController extends Controller
      */
     public function destroy(Banque $banque)
     {
-        //
+        if (! Gate::allows('editer banques')) {
+                abort(403);
+        }
+        if (count($banque->paiements) > 0 ) {
+            return redirect()->back()
+            ->with('error','Supression impossible. compte utilisé.');
+        }
+        if(count($banque->paiements) == 0)
+        {
+            $banque->delete() ;
+        }
+        return redirect()->action([BanqueController::class, 'index'])
+        ->with('message','Compte supprimé !');
     }
 }

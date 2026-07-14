@@ -1,9 +1,10 @@
 <x-master>
       <main class="h-full overflow-y-auto">
           <div class="container px-6 mx-auto grid">
+ 
             @can('voir finance')
             <h2
-              class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
+              class="text-2xl font-semibold text-gray-700 dark:text-gray-200"
             >
               Finance 
             </h2>
@@ -12,7 +13,7 @@
             <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-5">
 
             <!-- Card -->
-            
+
               <div
                 class="flex items-center p-4 bg-green-500 rounded-lg shadow-md dark:bg-gray-800"
               >
@@ -211,8 +212,8 @@
                   <p
                     class="flex text-lg font-semibold text-gray-700 dark:text-gray-200"
                   >
-                    {{ $visitesDay }} <img class="h-6 ml-2 mr-2" src="{{asset('visite.png')}}"> | 
-                    {{$appelsDay}} <img class="h-6 ml-2" src="{{asset('appel.png')}}">
+                    {{ $visitesDay }} <img class="h-6 ml-2 mr-2" src="{{asset('storage/'. 'visite.png')}}"> | 
+                    {{$appelsDay}} <img class="h-6 ml-2" src="{{asset('storage/'. 'appel.png')}}">
                   </p>
                 </div>
               </div>
@@ -236,8 +237,8 @@
                   <p
                     class="flex text-lg font-semibold text-gray-700 dark:text-gray-200"
                   >
-                    {{ $visitesWeek }} <img class="h-6 ml-2 mr-2" src="{{asset('visite.png')}}"> | 
-                    {{$appelsWeek}} <img class="h-6 ml-2" src="{{asset('appel.png')}}">
+                    {{ $visitesWeek }} <img class="h-6 ml-2 mr-2" src="{{asset('storage/'. 'visite.png')}}"> | 
+                    {{$appelsWeek}} <img class="h-6 ml-2" src="{{asset('storage/'. 'appel.png')}}">
                   </p>
                 </div>
               </div>
@@ -261,8 +262,8 @@
                   <p
                     class="flex text-lg font-semibold text-gray-700 dark:text-gray-200"
                   >
-                    {{ $visitesMonth }} <img class="h-6 ml-2 mr-2" src="{{asset('visite.png')}}"> | 
-                    {{$appelsMonth}} <img class="h-6 ml-2" src="{{asset('appel.png')}}">
+                    {{ $visitesMonth }} <img class="h-6 ml-2 mr-2" src="{{asset('storage/'. 'visite.png')}}"> | 
+                    {{$appelsMonth}} <img class="h-6 ml-2" src="{{asset('storage/'. 'appel.png')}}">
                   </p>
                 </div>
               </div>
@@ -287,8 +288,8 @@
                   <p
                     class="flex text-lg font-semibold text-gray-700 dark:text-gray-200"
                   >
-                    {{ $visitesYear }} <img class="h-6 ml-2 mr-2" src="{{asset('visite.png')}}"> | 
-                    {{$appelsYear}} <img class="h-6 ml-2" src="{{asset('appel.png')}}">
+                    {{ $visitesYear }} <img class="h-6 ml-2 mr-2" src="{{asset('storage/'. 'visite.png')}}"> | 
+                    {{$appelsYear}} <img class="h-6 ml-2" src="{{asset('storage/'. 'appel.png')}}">
                   </p>
                 </div>
               </div>
@@ -322,17 +323,70 @@
             </div>
             @endcan
             <!--  fin prospection -->
-            <!--  début relance -->
-            @can('voir relance')
+
+            <!--  paiements due et impayés  -->
+            @can('voir impaye')
             <h2
               class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
             >
-              Relance Clients 
+              Paiements dues et impayés 
             </h2>
             <!-- Cards -->
-            <div class="grid gap-6 mb-2 md:grid-cols-2 xl:grid-cols-3">
+            <div class="grid gap-6 mb-2 md:grid-cols-2 xl:grid-cols-6">
               <!-- Card -->
-              
+              <div
+                class="flex items-center p-4 bg-yellow-500 rounded-lg shadow-md dark:bg-gray-800"
+              >
+                <div
+                  class="p-3 mr-4 text-yellow-500 bg-yellow-100 rounded-full dark:text-orange-100 dark:bg-orange-500"
+                >
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+<path d="M2.92893219,17.0710678 C6.83417511,20.9763107 13.1658249,20.9763107 17.0710678,17.0710678 C20.9763107,13.1658249 20.9763107,6.83417511 17.0710678,2.92893219 C13.1658249,-0.976310729 6.83417511,-0.976310729 2.92893219,2.92893219 C-0.976310729,6.83417511 -0.976310729,13.1658249 2.92893219,17.0710678 Z M9,5 L11,5 L11,11 L9,11 L9,5 Z M9,13 L11,13 L11,15 L9,15 L9,13 Z" id="Combined-Shape"></path>
+                  </svg>
+                </div>
+                <div>
+                  <p
+                    class="mb-2 text-sm font-medium text-white dark:text-gray-400"
+                  >
+                    Nombre de paiements à encaisser aujourd'hui
+                  </p>
+                  <p
+                    class="text-3xl font-semibold text-white dark:text-gray-200"
+                  >
+                    <a href="/paiements?dateEnd={{$today}}">{{$paiementsDueNbr}}</a>
+                  </p>
+                </div>
+
+              </div>
+               <!-- Card -->
+              <div
+                class="flex items-center p-4 bg-yellow-500 rounded-lg shadow-md dark:bg-gray-800"
+              >
+                <div
+                  class="p-3 mr-4 text-yellow-500 bg-yellow-100 rounded-full dark:text-orange-100 dark:bg-orange-500"
+                >
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+<path d="M2.92893219,17.0710678 C6.83417511,20.9763107 13.1658249,20.9763107 17.0710678,17.0710678 C20.9763107,13.1658249 20.9763107,6.83417511 17.0710678,2.92893219 C13.1658249,-0.976310729 6.83417511,-0.976310729 2.92893219,2.92893219 C-0.976310729,6.83417511 -0.976310729,13.1658249 2.92893219,17.0710678 Z M9,5 L11,5 L11,11 L9,11 L9,5 Z M9,13 L11,13 L11,15 L9,15 L9,13 Z" id="Combined-Shape"></path>
+                  </svg>
+                </div>
+                <div>
+                  <p
+                    class="mb-2 text-sm font-medium text-white dark:text-gray-400"
+                  >
+                    Nombre d'échéances impayées à ce jour
+                  </p>
+                  <p
+                    class="text-3xl font-semibold text-white dark:text-gray-200"
+                  >
+                    <a href="/paiements?dateEnd={{$today}}&status=3">{{$paiementsDueUntilNbr}}</a>
+                  </p>
+                </div>
+                
+              </div>
+ 
+              <!-- Card -->
+              <!-- Card -->
+              @can('voir relance')
               <div
                 class="flex items-center p-4
                 {{ ($dossiersToday > 0) ? 'bg-red-600' : 'bg-gray-300' }}
@@ -356,59 +410,20 @@
                   <p
                     class="text-lg font-semibold text-white dark:text-gray-200"
                   >
-                  <a href="">
+                  <a href="/dossiers?etatDossier=0&relance=today">
                    {{$dossiersToday}} Dossiers
                  </a>
                   </p>
                 </div>
               </div>
-
+              @endcan              
               <!-- Card -->
               <!-- Card -->
-              
               <div
-                class="flex items-center p-4
-                {{ ($dossiersTomorrow > 0) ? 'bg-yellow-600' : 'bg-gray-300' }}
-                 rounded-lg shadow-md dark:bg-gray-800"
+                class="flex items-center p-4 bg-red-500 rounded-lg shadow-md dark:bg-gray-800"
               >
                 <div
-                  class="p-3 mr-4 text-white
-                {{ ($dossiersTomorrow > 0) ? 'bg-yellow-400' : 'bg-gray-200' }}
-
-                  rounded-full dark:text-orange-100 dark:bg-orange-500"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-<path d="M8.02739671,2.33180314 C5.68271203,3.14769073 4,5.37733614 4,8 L4,14 L1,16 L1,17 L19,17 L19,16 L16,14 L16,8 C16,5.37733614 14.317288,3.14769073 11.9726033,2.33180314 C11.9906226,2.22388264 12,2.11303643 12,2 C12,0.8954305 11.1045695,0 10,0 C8.8954305,0 8,0.8954305 8,2 C8,2.11303643 8.0093774,2.22388264 8.02739671,2.33180314 L8.02739671,2.33180314 Z M12,18 C12,19.1045695 11.1045695,20 10,20 C8.8954305,20 8,19.1045695 8,18 L12,18 L12,18 Z" id="Combined-Shape"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p
-                    class="mb-2 text-sm font-medium text-white dark:text-gray-400"
-                  >
-                    Dossiers à relancer Demain :
-                  </p>
-                  <p
-                    class="text-lg font-semibold text-white dark:text-gray-200"
-                  >
-                  <a href="">
-                    {{$dossiersTomorrow}} Dossiers
-                  </a>
-                  </p>
-                </div>
-              </div>
-                <!-- Card -->
-              
-              <div
-                class="flex items-center p-4
-                {{ ($dossiersAfterTomorrow > 0) ? 'bg-yellow-500' : 'bg-gray-300' }}
-
-                rounded-lg shadow-md dark:bg-gray-800"
-              >
-                <div
-                  class="p-3 mr-4 text-white
-                {{ ($dossiersAfterTomorrow > 0) ? 'bg-yellow-400' : 'bg-gray-200' }}
-
-                  rounded-full dark:text-orange-100 dark:bg-orange-500"
+                  class="p-3 mr-4 text-red-500 bg-red-100 rounded-full dark:text-orange-100 dark:bg-orange-500"
                 >
                   <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
 <path d="M2.92893219,17.0710678 C6.83417511,20.9763107 13.1658249,20.9763107 17.0710678,17.0710678 C20.9763107,13.1658249 20.9763107,6.83417511 17.0710678,2.92893219 C13.1658249,-0.976310729 6.83417511,-0.976310729 2.92893219,2.92893219 C-0.976310729,6.83417511 -0.976310729,13.1658249 2.92893219,17.0710678 Z M9,5 L11,5 L11,11 L9,11 L9,5 Z M9,13 L11,13 L11,15 L9,15 L9,13 Z" id="Combined-Shape"></path>
@@ -418,25 +433,27 @@
                   <p
                     class="mb-2 text-sm font-medium text-white dark:text-gray-400"
                   >
-                    Dossiers à relancer Après-Demain
+                    Les impayés
                   </p>
                   <p
-                    class="text-lg font-semibold text-white dark:text-gray-200"
+                    class="text-3xl font-semibold text-white dark:text-gray-200"
                   >
-                  <a href="">
-                    {{$dossiersAfterTomorrow}} Dossiers
-                    </a>
+                    <a href="/paiements?status=2">{{$paiementsUnpaidNbr}}</a>
                   </p>
                 </div>
               </div>
+              
 
-
+            
 
             </div>
             @endcan
+            <!--  fin paiements due et impayés -->
+
 
             <!-- fin relance -->
             @can('editer lots')
+            @isset($lotsAll)
             <h2
               class="my-6 text-2xl font-semibold text-gray-700 dark:text-purple-200"
             >
@@ -462,12 +479,12 @@
                   <p
                     class="mb-2 text-sm font-medium text-red-600 dark:text-red-400"
                   >
-                    Total Lots
+                    Total lots
                   </p>
                   <p
                     class="text-lg font-semibold text-red-700 dark:text-red-200"
                   >
-                    @isset($lots){{$lots}}@else 0 @endisset
+                    @isset($lotsAll){{$lotsAll}}@else 0 @endisset
 
                   </p>
                 </div>
@@ -492,7 +509,7 @@
                   <p
                     class="text-lg font-semibold text-red-700 dark:text-red-200"
                   >
-                    @isset($reserved){{$reserved}}@else 0 @endisset
+                    @isset($lotsReserved){{$lotsReserved}}@else 0 @endisset
 
                   </p>
                 </div>
@@ -517,7 +534,8 @@
                   <p
                     class="text-lg font-semibold text-red-700 dark:text-red-200"
                   >
-                    {{$blocked}}
+                   @isset($lotsBlocked){{$lotsBlocked}}@else 0 @endisset
+                    
 
                   </p>
                 </div>
@@ -542,7 +560,8 @@
                   <p
                     class="text-lg font-semibold text-white dark:text-red-200"
                   >
-                    {{$promised}}
+                    @isset($lotsPromised){{$lotsPromised}}@else 0 @endisset
+
 
                   </p>
                 </div>
@@ -568,7 +587,8 @@
                   <p
                     class="text-lg font-semibold text-white dark:text-gray-200"
                   >
-                    {{$stocked}}
+                    @isset($lotsStocked){{$lotsStocked}}@else 0 @endisset
+
 
                   </p>
                 </div>
@@ -576,10 +596,12 @@
 
 
               </div>
+              @endisset
               @endcan
 
 
             @can('editer appartements')
+            @isset($appartementsAll)
             <h2
               class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
             >
@@ -610,7 +632,7 @@
                   <p
                     class="text-lg font-semibold text-purple-700 dark:text-purple-200"
                   >
-                    @isset($appartements){{$appartements}}@else 0 @endisset
+                    @isset($appartementsAll){{$appartementsAll}}@else 0 @endisset
 
                   </p>
                 </div>
@@ -635,7 +657,7 @@
                   <p
                     class="text-lg font-semibold text-purple-700 dark:text-purple-200"
                   >
-                    @isset($appartement){{$appartement}}@else 0 @endisset
+                    @isset($appartementsReserved){{$appartementsReserved}}@else 0 @endisset
 
                   </p>
                 </div>
@@ -660,7 +682,9 @@
                   <p
                     class="text-lg font-semibold text-purple-700 dark:text-purple-200"
                   >
-                    {{$appartementsBlocked}}
+                    @isset($appartementsBlocked){{$appartementsBlocked}}@else 0 @endisset
+
+
 
                   </p>
                 </div>
@@ -686,7 +710,9 @@
                   <p
                     class="text-lg font-semibold text-purple-700 dark:text-purple-200"
                   >
-                    {{$appartementsPromised}}
+                    @isset($appartementsPromised){{$appartementsPromised}}@else 0 @endisset
+
+       
 
                   </p>
                 </div>
@@ -711,7 +737,9 @@
                   <p
                     class="text-lg font-semibold text-white dark:text-purple-200"
                   >
-                    {{$appartementsStocked}}
+                    @isset($appartementsStocked){{$appartementsStocked}}@else 0 @endisset
+
+        
 
                   </p>
                 </div>
@@ -719,9 +747,11 @@
               <!-- Card -->
               
               </div>
+              @endisset
               @endcan
 
         @can('editer magasins')
+        @isset($magasinsAll)
             <h2
               class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
             >
@@ -752,7 +782,7 @@
                   <p
                     class="text-lg font-semibold text-blue-700 dark:text-blue-200"
                   >
-                    @isset($magasins){{$magasins}}@else 0 @endisset
+                    @isset($magasinsAll){{$magasinsAll}}@else 0 @endisset
 
                   </p>
                 </div>
@@ -777,7 +807,7 @@
                   <p
                     class="text-lg font-semibold text-blue-700 dark:text-blue-200"
                   >
-                    @isset($magasin){{$magasin}}@else 0 @endisset
+                    @isset($magasinsReserved){{$magasinsReserved}}@else 0 @endisset
 
                   </p>
                 </div>
@@ -802,7 +832,8 @@
                   <p
                     class="text-lg font-semibold text-blue-700 dark:text-gray-200"
                   >
-                    {{$magasinsBlocked}}
+                    @isset($magasinsBlocked){{$magasinsBlocked}}@else 0 @endisset
+
 
                   </p>
                 </div>
@@ -827,7 +858,7 @@
                   <p
                     class="text-lg font-semibold text-purple-700 dark:text-purple-200"
                   >
-                    {{$magasinsPromised}}
+                    @isset($magasinsPromised){{$magasinsPromised}}@else 0 @endisset
 
                   </p>
                 </div>
@@ -853,16 +884,19 @@
                   <p
                     class="text-lg font-semibold text-white dark:text-gray-200"
                   >
-                    {{$magasinsStocked}}
+                    @isset($magasinsStocked){{$magasinsStocked}}@else 0 @endisset
+
 
                   </p>
                 </div>
               </div> 
               <!-- Card -->
               </div>
+              @endisset
               @endcan
 
         @can('editer bureaux')
+        @isset($bureauxAll)
             <h2
               class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
             >
@@ -893,7 +927,8 @@
                   <p
                     class="text-lg font-semibold text-green-700 dark:text-green-200"
                   >
-                    @isset($bureaus){{$bureaus}}@else 0 @endisset
+      
+                    @isset($bureauxAll){{$bureauxAll}}@else 0 @endisset
 
                   </p>
                 </div>
@@ -918,7 +953,8 @@
                   <p
                     class="text-lg font-semibold text-green-700 dark:text-green-200"
                   >
-                    @isset($bureau){{$bureau}}@else 0 @endisset
+
+                    @isset($bureauxReserved){{$bureauxReserved}}@else 0 @endisset
 
                   </p>
                 </div>
@@ -943,7 +979,7 @@
                   <p
                     class="text-lg font-semibold text-green-700 dark:text-green-200"
                   >
-                    {{$bureauxBlocked}}
+                    @isset($bureauxBlocked){{$bureauxBlocked}}@else 0 @endisset
 
                   </p>
                 </div>
@@ -968,7 +1004,7 @@
                   <p
                     class="text-lg font-semibold text-green-700 dark:text-green-200"
                   >
-                    {{$bureauxPromised}}
+                    @isset($bureauxPromised){{$bureauxPromised}}@else 0 @endisset
 
                   </p>
                 </div>
@@ -994,7 +1030,7 @@
                   <p
                     class="text-lg font-semibold text-white dark:text-gray-200"
                   >
-                    {{$bureauxStocked}}
+                    @isset($bureauxStocked){{$bureauxStocked}}@else 0 @endisset
 
                   </p>
                 </div>
@@ -1002,9 +1038,11 @@
               <!-- Card -->
               
               </div>
+              @endisset
               @endcan
 
         @can('editer boxes')
+        @isset($boxesAll)
             <h2
               class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
             >
@@ -1035,7 +1073,8 @@
                   <p
                     class="text-lg font-semibold text-yellow-700 dark:text-yellow-200"
                   >
-                    @isset($boxs){{$boxs}}@else 0 @endisset
+
+                    @isset($boxesAll){{$boxesAll}}@else 0 @endisset
 
                   </p>
                 </div>
@@ -1060,7 +1099,8 @@
                   <p
                     class="text-lg font-semibold text-yellow-700 dark:text-yellow-200"
                   >
-                    @isset($boxs){{$boxs}}@else 0 @endisset
+
+                    @isset($boxesReserved){{$boxesReserved}}@else 0 @endisset
 
                   </p>
                 </div>
@@ -1085,7 +1125,8 @@
                   <p
                     class="text-lg font-semibold text-yellow-700 dark:text-gray-200"
                   >
-                    {{$boxesBlocked}}
+                    @isset($boxesBlocked){{$boxesBlocked}}@else 0 @endisset
+
 
                   </p>
                 </div>
@@ -1110,7 +1151,8 @@
                   <p
                     class="text-lg font-semibold text-yellow-700 dark:text-yellow-200"
                   >
-                    {{$boxesPromised}}
+                    @isset($boxesPromised){{$boxesPromised}}@else 0 @endisset
+
 
                   </p>
                 </div>
@@ -1136,7 +1178,8 @@
                   <p
                     class="text-lg font-semibold text-white dark:text-yellow-200"
                   >
-                    {{$boxesStocked}}
+                    @isset($boxesStocked){{$boxesStocked}}@else 0 @endisset
+
 
                   </p>
                 </div>
@@ -1144,6 +1187,7 @@
               <!-- Card -->
               
               </div>
+              @endisset
               @endcan
 
               @can('editer dossiers')
@@ -1208,60 +1252,7 @@
               </div>              
               <!-- Card -->
               
-              <!-- Card -->
-              <div
-                class="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
-              >
-                <div
-                  class="p-3 mr-4 text-red-500 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-500"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path
-                      d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"
-                    ></path>
-                  </svg>
-                </div>
-                <div>
-                  <p
-                    class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
-                  >
-                    Dossiers Lots -20% (2018-2020)
-                  </p>
-                  <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
-                  >
-                    {{$dossiersUnder20}}
-                  </p>
-                </div>
-              </div>              
-              <!-- Card -->
-              <!-- Card -->
-              <div
-                class="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
-              >
-                <div
-                  class="p-3 mr-4 text-red-500 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-500"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path
-                      d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"
-                    ></path>
-                  </svg>
-                </div>
-                <div>
-                  <p
-                    class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
-                  >
-                    Dossiers Lots -30% (Sep 2020 à aujourd'hui)
-                  </p>
-                  <p
-                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
-                  >
-                    {{$dossiersUnder30In2020}}
-                  </p>
-                </div>
-              </div>              
-              <!-- Card -->
+
                 <!-- Card -->
               
               <div
@@ -1283,7 +1274,7 @@
                   <p
                     class="text-lg font-semibold text-white dark:text-gray-200"
                   >
-                  <a href="">
+                  <a href="dossiers?litige=1">
                     {{$dossiersLitige}} Dossiers
                     </a>
                   </p>
@@ -1438,7 +1429,7 @@
                 class="min-w-0 p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800"
               >
                 <h4 class="mb-4 font-semibold text-gray-800 dark:text-gray-300">
-                  Ventes par mois et par type
+                  Ventes par mois et par commercial
                 </h4>
                 <canvas id="barsPerformance"></canvas>
                 <div
@@ -1514,12 +1505,7 @@
                     ></span>
                     <span>Magasins</span>
                   </div>
-                  <div class="flex items-center">
-                    <span
-                      class="inline-block w-3 h-3 mr-1 bg-yellow-500 rounded-full"
-                    ></span>
-                    <span>Standing</span>
-                  </div>                                    
+                                  
                 </div>
               </div>
 </div>
@@ -1567,7 +1553,7 @@
                           >
                             <img
                               class="object-cover w-full h-full rounded-full"
-                              src="{{asset('floor-plan.png')}}"
+                              src="{{asset('storage/'. 'floor-plan.png')}}"
                               alt=""
                               loading="lazy"
                             />
@@ -1591,6 +1577,7 @@
                             <a href="/dossiers/{{ $dossier->id }}">
                           {{ ucfirst($dossier->produit->constructible_type) }} N°
                           {{ $dossier->produit->constructible->num }}
+                         
                         </a>
                             </p>
                           </div>
@@ -1657,7 +1644,7 @@
           </div>
         </main>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" defer></script>
+    <script src="{{config('app.url')}}/js/Chart.min.js" defer></script>
 
 
 <script>
@@ -1672,79 +1659,187 @@ var magasin = 0 ;
 var box = 0 ;
 
 // affecter un % pour les types constructibles
+      // @foreach ($interets as $interet)
+      //   var {{$interet->interet}}={{$interet->nombre}}
+      // @endforeach
+
+      // {{$i = 0 }}
+      // {{$k = 0 }}
+
+      // @foreach ($nombreVisites as $visite)
+      //   var v{{$loop->iteration}}={{$visite->nombreVisites}}
+      //   var d{{$loop->iteration}}='{{ $mois[ ($visite->mois - 1) ] }}'
+      //   {{$i = $loop->iteration}}
+      //   {{$k = ($visite->mois - 1) }}  
+      // @endforeach
+
+      // @if ($i < 7)
+      //   @for ($i = $i+1 ; $i <= 7; $i++)
+      //   {{$k++}}
+      //   var v{{$i}}=0
+      //   var d{{$i}}='{{ $mois[ ($k) ] }}'
+      //   @endfor
+      // @endif
+
+
+{{-- 1. On laisse la partie intérêt telle quelle au début --}}
 @foreach ($interets as $interet)
-  var {{$interet->interet}}={{$interet->nombre}}
+  var {{ $interet->interet }} = {{ $interet->nombre }};
 @endforeach
 
-{{$i = 0 }}
-{{$k = 0 }}
+{{ $totalMonths = 7 }}
+{{ $donneesComptees = count($nombreVisites) }}
+{{ $moisManquants = $totalMonths - $donneesComptees }}
 
-@foreach ($nombreVisites as $visite)
-  var v{{$loop->iteration}}={{$visite->nombreVisites}}
-  var d{{$loop->iteration}}='{{ $mois[ ($visite->mois - 1) ] }}'
-  {{$i = $loop->iteration}}
-  {{$k = ($visite->mois - 1) }}  
-@endforeach
+{{-- 2. On trouve le mois le plus ancien de tes visites --}}
+{{ $moisLePlusAncien = $donneesComptees > 0 ? $nombreVisites[0]->mois - 1 : date('n') - 1 }}
 
-@if ($i < 7)
-  @for ($i = $i+1 ; $i <= 7; $i++)
-  {{$k++}}
-  var v{{$i}}=0
-  var d{{$i}}='{{ $mois[ ($k) ] }}'
+{{ $indexGraph = 1 }}
+
+{{-- 3. ÉTAPE 1 : On génère d'abord les mois de visites vides (Passé lointain) --}}
+@if ($moisManquants > 0)
+  @for ($j = $moisManquants; $j > 0; $j--)
+    {{-- On recule dans le temps par rapport au mois le plus ancien --}}
+    {{ $k = ($moisLePlusAncien - $j + 12) % 12 }}
+
+    var v{{ $indexGraph }} = 0;
+    var d{{ $indexGraph }} = '{{ $mois[$k] }}';
+    {{ $indexGraph++ }}
   @endfor
 @endif
+
+{{-- 4. ÉTAPE 2 : On affiche tes vraies visites (Passé récent / Présent) --}}
+@foreach ($nombreVisites as $visite)
+  var v{{ $indexGraph }} = {{ $visite->nombreVisites }};
+  var d{{ $indexGraph }} = '{{ $mois[$visite->mois - 1] }}';
+  {{ $indexGraph++ }}
+@endforeach
+
 
 // pour définir l'etat des lots
-var stocked={{ $stocked }}
-var blocked={{ $blocked }}
-var reserved={{ $reserved }}
+var stocked=@isset($lotsStocked){{$lotsStocked}}@else 0 @endisset;
+var blocked=@isset($lotsBlocked){{$lotsBlocked}}@else 0 @endisset;
+var reserved=@isset($lotsReserved){{$lotsReserved}}@else 0 @endisset;
 
 // pour définir l'etat des appartements
-var appartementsStocked={{ $appartementsStocked }}
-var appartementsBlocked={{ $appartementsBlocked }}
-var appartementsReserved={{ $appartementsReserved }}
+var appartementsStocked=@isset($appartementsStocked){{$appartementsStocked}}@else 0 @endisset;
+var appartementsBlocked=@isset($appartementsBlocked){{$appartementsBlocked}}@else 0 @endisset;
+var appartementsReserved=@isset($appartementsReserved){{$appartementsReserved}}@else 0 @endisset;
+
+
 
 // définier le graph BAR ventes par type et par mois
-{{$i = 0 }}
-@foreach ($nombreVentes as $ventes)
-  var lot{{$loop->iteration}}={{$ventes->lot}}
-  var bur{{$loop->iteration}}={{$ventes->bureau}}
-  var box{{$loop->iteration}}={{$ventes->box}}
-  var app{{$loop->iteration}}={{$ventes->appartement}}
-  var mag{{$loop->iteration}}={{$ventes->magasin}}
-  var da{{$loop->iteration}}='{{ $mois[ ($ventes->mois - 1) ] }}'
-  {{$i = $loop->iteration}}
-@endforeach
+      // {{$i = 0 }}
+      // {{$k = 0 }}
+      // @foreach ($nombreVentes as $ventes)
+      //   var lot{{$loop->iteration}}={{$ventes->lot}}
+      //   var bur{{$loop->iteration}}={{$ventes->bureau}}
+      //   var box{{$loop->iteration}}={{$ventes->box}}
+      //   var app{{$loop->iteration}}={{$ventes->appartement}}
+      //   var mag{{$loop->iteration}}={{$ventes->magasin}}
+      //   var da{{$loop->iteration}}='{{ $mois[ ($ventes->mois - 1) ] }}'
+      //   {{$i = $loop->iteration}}
+      //     {{$k = ($ventes->mois - 1) }}  
 
-@if ($i < 7)
-  @for ($i = $i+1 ; $i <= 7; $i++)
-  var lot{{$i}}=0
-  var bur{{$i}}=0
-  var box{{$i}}=0
-  var app{{$i}}=0
-  var mag{{$i}}=0
-  var da{{$i}}='{{ $mois[ ($i) ] }}'
+      // @endforeach
+
+      // @if ($i < 7)
+      //   @for ($i = $i+1 ; $i <= 7; $i++)
+      //   {{$k++}}
+      //   var lot{{$i}}=0
+      //   var bur{{$i}}=0
+      //   var box{{$i}}=0
+      //   var app{{$i}}=0
+      //   var mag{{$i}}=0
+      //   var da{{$i}}='{{ $mois[ ($k) ] }}'
+      //   @endfor
+      // @endif
+
+
+{{ $totalMonths = 7 }}
+{{ $donneesComptees = count($nombreVentes) }}
+{{ $moisManquants = $totalMonths - $donneesComptees }}
+
+{{-- 1. On trouve le mois le plus ancien de tes données actuelles --}}
+{{ $moisLePlusAncien = $donneesComptees > 0 ? $nombreVentes[0]->mois - 1 : date('n') - 1 }}
+
+{{ $indexGraph = 1 }}
+
+{{-- 2. ÉTAPE 1 : On génère d'abord les mois vides à 0 (Passé lointain) --}}
+@if ($moisManquants > 0)
+  @for ($j = $moisManquants; $j > 0; $j--)
+    {{-- On recule dans le temps par rapport au mois le plus ancien --}}
+    {{ $k = ($moisLePlusAncien - $j + 12) % 12 }}
+
+    var lot{{ $indexGraph }} = 0;
+    var bur{{ $indexGraph }} = 0;
+    var box{{ $indexGraph }} = 0;
+    var app{{ $indexGraph }} = 0;
+    var mag{{ $indexGraph }} = 0;
+    var da{{ $indexGraph }} = '{{ $mois[$k] }}';
+    {{ $indexGraph++ }}
   @endfor
 @endif
+
+{{-- 3. ÉTAPE 2 : On affiche tes vraies ventes par type de produit (Passé récent / Présent) --}}
+@foreach ($nombreVentes as $ventes)
+  var lot{{ $indexGraph }} = {{ $ventes->lot }};
+  var bur{{ $indexGraph }} = {{ $ventes->bureau }};
+  var box{{ $indexGraph }} = {{ $ventes->box }};
+  var app{{ $indexGraph }} = {{ $ventes->appartement }};
+  var mag{{ $indexGraph }} = {{ $ventes->magasin }};
+  var da{{ $indexGraph }} = '{{ $mois[$ventes->mois - 1] }}';
+  {{ $indexGraph++ }}
+@endforeach
+
 // fin BAR
 
 
 
 // définir evolution de vente par mois
-{{$i = 0 }}
-@foreach ($nombreVentesParMois as $ventes)
-  var vvpm{{$loop->iteration}}={{$ventes->nombreVentes}}
-  var dvpm{{$loop->iteration}}='{{ $mois[ ($ventes->mois - 1) ] }}'
-  {{$i = $loop->iteration}}
-@endforeach
+// {{$i = 0 }}
+// {{$k = 0 }}
+// @foreach ($nombreVentesParMois as $ventes)
+//   var vvpm{{$loop->iteration}}={{$ventes->nombreVentes}}
+//   var dvpm{{$loop->iteration}}='{{ $mois[ ($ventes->mois - 1) ] }}'
+//   {{$i = $loop->iteration}}
+//       {{$k = ($ventes->mois - 1) }} 
+// @endforeach
 
-@if ($i < 7)
-  @for ($i = $i+1 ; $i <= 7; $i++)
-  var vvpm{{$i}}=0
-  var dvpm{{$i}}='{{ $mois[ ($i) ] }}'
+// @if ($i < 7)
+//   @for ($i = $i+1 ; $i <= 7; $i++)
+//     {{$k++}}
+//   var vvpm{{$i}}=0
+//   var dvpm{{$i}}='{{ $mois[ ($k) ] }}'
+//   @endfor
+// @endif
+{{ $totalMonths = 7 }}
+{{ $donneesComptees = count($nombreVentesParMois) }}
+{{ $moisManquants = $totalMonths - $donneesComptees }}
+
+{{-- 1. On trouve le mois le plus ancien de tes données actuelles pour reculer à partir de là --}}
+{{ $moisLePlusAncien = $donneesComptees > 0 ? $nombreVentesParMois[0]->mois - 1 : date('n') - 1 }}
+
+{{ $indexGraph = 1 }}
+
+{{-- 2. ÉTAPE 1 : On génère dabord les mois vides (Passé lointain) --}}
+@if ($moisManquants > 0)
+  @for ($j = $moisManquants; $j > 0; $j--)
+    {{-- On recule dans le temps par rapport au mois le plus ancien --}}
+    {{ $k = ($moisLePlusAncien - $j + 12) % 12 }}
+
+    var vvpm{{ $indexGraph }} = 0;
+    var dvpm{{ $indexGraph }} = '{{ $mois[$k] }}';
+    {{ $indexGraph++ }}
   @endfor
 @endif
 
+{{-- 3. ÉTAPE 2 : On affiche tes vraies ventes (Passé récent / Présent) --}}
+@foreach ($nombreVentesParMois as $ventes)
+  var vvpm{{ $indexGraph }} = {{ $ventes->nombreVentes }};
+  var dvpm{{ $indexGraph }} = '{{ $mois[$ventes->mois - 1] }}';
+  {{ $indexGraph++ }}
+@endforeach
 
 </script>
 
@@ -1761,6 +1856,8 @@ var appartementsReserved={{ $appartementsReserved }}
 
 <!-- here graph bar ventes par commercial -->
   <script>
+
+
     window.chartColors = {
       red: '#DC2626',
       teal: '#14B8A6',
@@ -1799,36 +1896,23 @@ var appartementsReserved={{ $appartementsReserved }}
     };
    
 
-
-
-
-
-
-
 window.onload = function() {
 var com = [] ;
 
 const barsCtxVentesParCommercials = document.getElementById('barsPerformance');
 window.myLine = getNewChart(barsCtxVentesParCommercials, config);
-
+@if(!empty($performanceCommercial))
   @foreach ($commerciaux as $commercial) // = execution 8 times/commerciaux
-
     @foreach ($performanceCommercial as $performance) // = execution 4 times/mois
-
       nom = '{{$commercial}}' ;
-
     com.push({{$performance->$commercial}}) // = execution 8 times/commerciaux
-
   @endforeach
     push(com, nom) 
-
     com = [] ;
-
-
   var da{{$loop->iteration}}='{{ $mois[ ($performance->mois - 1) ] }}'
   {{$i = $loop->iteration}}
-
 @endforeach
+@endif
 
     };
     
@@ -1860,6 +1944,7 @@ window.myLine = getNewChart(barsCtxVentesParCommercials, config);
       config.data.datasets.push(newDataset);
       window.myLine.update();
     }
+
 
   </script>
 

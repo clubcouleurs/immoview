@@ -9,6 +9,9 @@
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.0",
+        "barryvdh/laravel-dompdf": "^2.0",
+        "doctrine/inflector": "^2.0",
+        "dompdf/dompdf": "^2.0",
         "elibyy/tcpdf-laravel": "^8.0",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
@@ -18,6 +21,8 @@
         "laravel/tinker": "^2.5",
         "maatwebsite/excel": "^3.1",
         "mavinoo/laravel-batch": "^2.2",
+        "ramsey/uuid": "^4.2",
+        "rinvex/countries": "^7.3",
         "setasign/fpdf": "^1.8",
         "setasign/fpdi": "^2.3",
         "tecnickcom/tcpdf": "^6.3"

@@ -204,7 +204,7 @@
                           >
                             <img
                               class="object-cover w-full h-full rounded-full"
-                              src="{{asset('dollar.png')}}"
+                              src="{{asset('storage/'.'dollar.png')}}"
                               alt=""
                               loading="lazy"
                             />

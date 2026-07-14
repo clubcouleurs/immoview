@@ -134,9 +134,9 @@ id: this.logos.length +1,
             >X</span></button>
             
             @if(substr($client->cinPj,-3) == 'pdf')
-              <img class="h-8" src="{{asset('pdf.png')}}">
+              <img class="h-8" src="{{asset('storage/'. 'pdf.png')}}">
             @else
-              <img src="{{asset($client->cinPj)}}" width="250" class="px-2 py-2 w-48 border border-blue-400 shadow-lg rounded-lg mb-2">
+              <img src="{{asset('storage/'. $client->cinPj)}}" width="250" class="px-2 py-2 w-48 border border-blue-400 shadow-lg rounded-lg mb-2">
             @endif
    
         </section>
@@ -206,6 +206,51 @@ id: this.logos.length +1,
                     @enderror
               </label>  
 
+              <label class="block mt-4 text-sm">
+                <span class="text-gray-700 dark:text-gray-400">email</span>
+                <input
+                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                  placeholder="contact@email.com"
+                  type="text"
+                  name="email"
+                  value="{{$client->email}}"
+                />
+
+                    @error('email')
+                    <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
+                    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
+                    @enderror
+              </label>  
+
+<!-- date picker -->
+
+<div class="w-full max-w-sm">
+    <label for="complete_date" class="block text-sm font-medium text-gray-700 mb-1">
+        Date de naissance
+    </label>
+    <div class="relative mt-1 rounded-md shadow-sm">
+        <!-- Icône Calendrier à gauche -->
+        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+            <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+        </div>
+        
+        <!-- Input de la date -->
+        <input type="text" 
+               name="date_naissance" 
+               id="date_naissance",
+               placeholder="JJ/MM/AAAA"
+               value="{{ isset($client) ? $client->date_naissance : '' }}"
+               class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 pr-3 py-2 sm:text-sm border-gray-300 rounded-md bg-white text-gray-900 cursor-pointer"
+               readonly>
+    </div>
+</div>
+
+
+
+
+<!-- fin date picker-->
 
               <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">Adresse</span>
@@ -252,5 +297,30 @@ id: this.logos.length +1,
           </div>
         </main>
 
+<script type="text/javascript">
 
+    document.addEventListener("DOMContentLoaded", function() {
+    flatpickr("#date_naissance", {
+        locale: "fr",                  // Force la langue en Français
+        dateFormat: "Y-m-d",           // Format envoyé à la BDD Laravel (AAAA-MM-JJ)
+        altInput: true,                // Active un affichage plus lisible pour l'humain
+        altFormat: "d F Y",            // Format affiché à l'écran (ex: 21 Mai 2026)
+        allowInput: false,             // Force l'utilisateur à passer par le calendrier
+        
+        // Options magiques pour la navigation rapide :
+        showMonths: 1,                 // Affiche 1 mois à la fois
+        dropdownPages: 1,
+        
+        // Ces deux options transforment le titre en menus déroulants cliquables :
+        static: false,                 // Permet au calendrier de flotter correctement
+        theme: "light",
+        
+        // Permet de changer rapidement d'année et de mois via un select
+        onReady: function(selectedDates, dateStr, instance) {
+            // Optionnel : force l'année et le mois à être des listes déroulantes interactives
+            instance.currentYearElement.removeAttribute("readonly"); 
+        }
+    });
+});
+</script>
 </x-master>            

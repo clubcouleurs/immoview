@@ -100,42 +100,11 @@
               </label>
       <div class="relative">
         <select class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="pays">
-                  <option value="Maroc(+212)"
-                  @if (old('pays') == "Maroc(+212)")
-                    selected
-                  @endif
-                      >Maroc(+212)</option>
-                  <option value="France(+33)"
-                  @if (old('pays') == "France(+33)")
-                    selected
-                  @endif                  
-                  >France(+33)</option>
-                  <option value="Espagne(+34)"
-                  @if (old('pays') == "Espagne(+34)")
-                    selected
-                  @endif                  
-                  >Espagne(+34)</option>    
-                  <option value="Pays-bas(+31)"
-                  @if (old('pays') == "Pays-bas(+31)")
-                    selected
-                  @endif                  
-                  >Pays-bas(+31)</option>
-                  <option value="Belgique(+32)"
-                  @if (old('pays') == "Belgique(+32)")
-                    selected
-                  @endif                  
-                  >Belgique(+32)</option>
-                  <option value="Allemagne(+49)"
-                  @if (old('pays') == "Allemagne(+49)")
-                    selected
-                  @endif                  
-                  >Allemagne(+49)</option>
-                  <option value="Italie(+39)"
-                  @if (old('pays') == "Italie(+39)")
-                    selected
-                  @endif                  
-                  >Italie(+39)</option>                     
-
+    @foreach($countryList as $country)
+        <option value="{{ $country['dial_code'] }}">
+            {{ $country['emoji'] }} {{ $country['name'] }} (+{{ $country['dial_code'] }})
+        </option>
+    @endforeach
         </select>
       </div>
     </div>
@@ -153,6 +122,7 @@
                   required
                 />
       </div>
+      
       </div>
                     @error('mobile')
                     <p class="block h-10 px-2 py-2 rounded-md w-full mt-2

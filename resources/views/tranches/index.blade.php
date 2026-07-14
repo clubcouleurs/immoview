@@ -13,10 +13,11 @@
             >
               Ajouter une nouvelle tranche 
             </h2>
-            <form action=@isset($tranche->description){{"/tranches/" . $tranche->id}}@else "/tranches" @endisset
+            <form action=
+            @isset($tranche->id){{"/tranches/" . $tranche->id}}@else "/tranches" @endisset
             method="POST">
               @csrf
-              @isset ($tranche->description)
+              @isset ($tranche->id)
                 @method('PATCH')
               @endisset
 
@@ -47,7 +48,7 @@
                   placeholder="Description ou observations concernant cette tranche"
                   name="description"
 
-                >@isset ($tranche->description){{$tranche->description}}@endisset</textarea>
+                >@isset ($tranche->description){{$tranche->description}}@else{{old('description')}}@endisset</textarea>
 
 
                     @error('description')
@@ -127,7 +128,7 @@
                           >
                             <img
                               class="object-cover w-full h-full rounded-full"
-                              src="{{asset('land.png')}}"
+                              src="{{asset('storage/'.'land.png')}}"
                               alt=""
                               loading="lazy"
                             />

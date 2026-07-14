@@ -104,10 +104,10 @@ id: this.logos.length +1,
             >X</span></button>
 
             <!--@if (substr($dossier->actevente, -3) == 'pdf' )-->
-            <a href="{{ asset($dossier->actevente) }}" download="{{ $dossier->actevente }}"
+            <a href="{{ asset('storage/'. $dossier->actevente) }}" download="{{ $dossier->actevente }}"
               class="text-blue-500 underline border px-4 py-4 bg-blue-100">Télécharger l'acte de vente</a>
             <!--@else-->
-            <img src="{{asset($dossier->actevente)}}" width="250" class="px-2 py-2 w-48 border border-blue-400 shadow-lg rounded-lg mb-2">
+            <img src="{{asset('storage/'. $dossier->actevente)}}" width="250" class="px-2 py-2 w-48 border border-blue-400 shadow-lg rounded-lg mb-2">
             <!--@endif-->
 
           

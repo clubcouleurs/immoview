@@ -14,11 +14,11 @@
             <div class="flex justify-between">
               <div class="my-6 mr-2">
               <a href="/visites/export{{$urlWithQueryString}}">
-                <img class="h-6" src="{{asset('excel.png')}}">
+                <img class="h-6" src="{{asset('storage/'.'excel.png')}}">
               </a>
             </div>
               <div class="my-6">
-                <img class="h-6" src="{{asset('printer.png')}}" onclick="window.print()">
+                <img class="h-6" src="{{asset('storage/'.'printer.png')}}" onclick="window.print()">
             </div>  
             </div>          
           </div>
@@ -48,8 +48,8 @@
                   <p
                     class="flex text-lg font-semibold text-gray-700 dark:text-gray-200"
                   >
-                    {{$visitesDay}} <img class="h-6 ml-2 mr-2" src="{{asset('visite.png')}}"> | 
-                    {{$appelsDay}} <img class="h-6 ml-2" src="{{asset('appel.png')}}">
+                    {{$visitesDay}} <img class="h-6 ml-2 mr-2" src="{{asset('storage/'.'visite.png')}}"> | 
+                    {{$appelsDay}} <img class="h-6 ml-2" src="{{asset('storage/'.'appel.png')}}">
                   </p>
                 </div>
               </div>
@@ -77,8 +77,8 @@
                   <p
                     class="flex text-lg font-semibold text-gray-700 dark:text-gray-200"
                   >
-                  {{$visitesWeek}} <img class="h-6 ml-2 mr-2" src="{{asset('visite.png')}}"> | 
-                  {{$appelsWeek}} <img class="h-6 ml-2" src="{{asset('appel.png')}}">
+                  {{$visitesWeek}} <img class="h-6 ml-2 mr-2" src="{{asset('storage/'.'visite.png')}}"> | 
+                  {{$appelsWeek}} <img class="h-6 ml-2" src="{{asset('storage/'.'appel.png')}}">
                   </p>
                 </div>
               </div>
@@ -104,8 +104,8 @@
                   <p
                     class="flex text-lg font-semibold text-gray-700 dark:text-gray-200"
                   >
-                    {{ $visitesMonth }} <img class="h-6 ml-2 mr-2" src="{{asset('visite.png')}}"> | 
-                    {{$appelsMonth}} <img class="h-6 ml-2" src="{{asset('appel.png')}}">
+                    {{ $visitesMonth }} <img class="h-6 ml-2 mr-2" src="{{asset('storage/'.'visite.png')}}"> | 
+                    {{$appelsMonth}} <img class="h-6 ml-2" src="{{asset('storage/'.'appel.png')}}">
                   </p>
                 </div>
               </div>
@@ -130,8 +130,8 @@
                   <p
                     class="flex text-lg font-semibold text-gray-700 dark:text-gray-200"
                   >
-                    {{ $visitesYear }} <img class="h-6 ml-2 mr-2" src="{{asset('visite.png')}}"> | 
-                    {{$appelsYear}} <img class="h-6 ml-2" src="{{asset('appel.png')}}">
+                    {{ $visitesYear }} <img class="h-6 ml-2 mr-2" src="{{asset('storage/'.'visite.png')}}"> | 
+                    {{$appelsYear}} <img class="h-6 ml-2" src="{{asset('storage/'.'appel.png')}}">
                   </p>
                 </div>
               </div>
@@ -507,7 +507,7 @@
                             <img
                               class="object-cover w-full h-full rounded-full"
                               src="
-                              {{($visite->typeContact == 'appel') ? asset('appel.png') : asset('visite.png')}}
+                              {{($visite->typeContact == 'appel') ? asset('storage/'.'appel.png') : asset('storage/'.'visite.png')}}
                               "
                               alt=""
                               loading="lazy"

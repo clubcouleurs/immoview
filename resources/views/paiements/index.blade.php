@@ -15,7 +15,7 @@
             @isset($paiement)
               Modifier un paiement 
             @else 
-              Ajouter un nouveau paiement 
+              Ajouter un nouveau paiement
             @endisset
 
             </h2>
@@ -313,7 +313,7 @@ id: this.logos.length +1,
             bg-red-600 w-6 h-6 transform translate-x-2 -translate-y-2 rounded-full"
             >X</span></button>
 
-            <img src="{{asset($paiement->pj)}}" width="250" class="px-2 py-2 w-48 border border-blue-400 shadow-lg rounded-lg mb-2">
+            <img src="{{asset('storage/'.$paiement->pj)}}" width="250" class="px-2 py-2 w-48 border border-blue-400 shadow-lg rounded-lg mb-2">
    
         </section>
           <section x-show="logos.length">
@@ -376,7 +376,7 @@ id: this.logos.length +1,
                     @enderror
 
                 <span class="text-gray-700 dark:text-gray-400">
-                  Destination du paiement
+                  Destination du paiement (Banque)
                 </span>
                 <div class="mt-2">
                 @foreach ($banques as $banque)
@@ -472,18 +472,12 @@ id: this.logos.length +1,
                 </div>
                 <div class="p-2 bg-red-500 rounded-lg dark:bg-gray-800">              
                     <p class="text-white font-bold">
-                      Total paiements non-validés :</p>
+                      Total paiements non-encaissées :</p>
                             <p class="font-semibold text-2xl text-white dark:text-gray-400">
                           {{ numberFormat($dossier->totalPaiements - $dossier->totalPaiementsV) }} Dhs
                             </p>                   
                 </div>  
-                <div class="p-2 bg-red-500 rounded-lg dark:bg-gray-800">              
-                    <p class="text-white font-bold">
-                      Avance non-encaissées :</p>
-                            <p class="font-semibold text-2xl text-white dark:text-gray-400">
-                          {{ numberFormat(($dossier->avanceNonEnc)) }} Dhs
-                            </p>                   
-                </div>                               
+                            
                 <div class="p-2 bg-blue-500 rounded-lg dark:bg-gray-800">              
                     <p class="font-semibold text-white font-bold">
                       Taux des avances :</p>
@@ -514,7 +508,7 @@ id: this.logos.length +1,
                       <th class="px-4 py-3">Date du paiement</th>
                       <th class="px-4 py-3">Moyen de paiement</th>
                       <th class="px-4 py-3">Numéro de la pièce</th>
-                      <th class="px-4 py-3">Destination</th>
+                      <th class="px-4 py-3">Destination (Banque)</th>
                       <th class="px-4 py-3">Pièce scannée</th>
 
                       <th class="px-4 py-3">Status</th>
@@ -537,7 +531,7 @@ id: this.logos.length +1,
                           >
                             <img
                               class="object-cover w-full h-full rounded-full"
-                              src="{{asset('dollar.png')}}"
+                              src="{{asset('storage/'.'dollar.png')}}"
                               alt=""
                               loading="lazy"
                             />
@@ -578,13 +572,16 @@ id: this.logos.length +1,
                       </td>
                       <td class="px-4 py-3 text-sm">
                         @isset($p->pj)
-                        <a href="{{asset($p->pj)}}" target="_blank">
-                        <img class="h-8" src="{{asset($p->pj)}}">
+                        <a href="{{asset('storage/'.$p->pj)}}" target="_blank">
+                        <img class="h-8" src="{{asset('storage/'.$p->pj)}}">
                         </a>
                         @else
                         Aucune pièce jointe
                         @endisset
-                      </td>                      
+                      </td>
+
+
+
                       <td class="px-4 py-3 text-sm">
                         <form action="/dossiers/{{$dossier->id}}/paiements/{{$p->id}}" method="POST">
                           @csrf
@@ -592,7 +589,28 @@ id: this.logos.length +1,
                     {!!$p->validate!!}
                     </form>
                   </td>
-                      <td class="px-4 py-3 text-sm">
+
+                <td class="px-4 py-3 text-sm">
+                         <div class="flex px-1 py-1">  
+                     <div class="mr-1">
+                            <a
+                              class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
+                              aria-label="Like"
+                              target="_blank"
+                              href="/dossiers/{{$dossier->id}}/paiements/{{$p->id}}/generate"
+                            >
+                                <svg
+                                class="w-4 h-4"
+                                aria-hidden="true"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                              >
+                                    <path d="M14,14 L18,14 L18,2 L2,2 L2,14 L6,14 L6,14.0020869 C6,15.1017394 6.89458045,16 7.99810135,16 L12.0018986,16 C13.1132936,16 14,15.1055038 14,14.0020869 L14,14 L14,14 Z M0,1.99079514 C0,0.891309342 0.898212381,0 1.99079514,0 L18.0092049,0 C19.1086907,0 20,0.898212381 20,1.99079514 L20,18.0092049 C20,19.1086907 19.1017876,20 18.0092049,20 L1.99079514,20 C0.891309342,20 0,19.1017876 0,18.0092049 L0,1.99079514 L0,1.99079514 Z M4,4 L16,4 L16,6 L4,6 L4,4 L4,4 Z M4,7 L16,7 L16,9 L4,9 L4,7 L4,7 Z M4,10 L16,10 L16,12 L4,12 L4,10 L4,10 Z" id="Combined-Shape"></path>
+                                </svg>
+                            </a>
+                      </div>
+
+                     
                         @canany(['supprimer paiements', 'supprimer ses paiements'])
                       <form action="/dossiers/{{$dossier->id}}/paiements/{{$p->id}}" method="POST">
                         @csrf
@@ -620,12 +638,14 @@ id: this.logos.length +1,
               </div>
                       </form>
                       @endcanany
+                       </div>
                       </td>
                     </tr>
                     @endforeach
                   </tbody>
                 </table>
               </div>
+              <div class="mt-24"></div>
               <div
                 class="grid py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t"
               >

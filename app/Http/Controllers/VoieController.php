@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Projet;
 use App\Models\Voie;
 use Illuminate\Http\Request;
 
@@ -14,7 +15,9 @@ class VoieController extends Controller
      */
     public function index()
     {
-        return view('voies.index', ['voies' => Voie::all()]) ; //->paginate(2)]) ;
+        return view('voies.index', [
+            'voies' => Voie::where('projet_id' , session('projet_id'))->get(),
+        ]);
         
     }
 
@@ -35,17 +38,20 @@ class VoieController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-       //dd($request) ;      
+    {    
+        $projet_id = session('projet_id');
+        $projet = Projet::where('id' , $projet_id)->limit(1)->first() ;  
+
         $request->validate([
             'Largeur' => 'required|alpha_num',
         ]);
 
         $voie = new Voie([
-        'Largeur'       => $request['Largeur'] ,
+        'Largeur'       => $request['Largeur'],
         ]) ;
         $voie->save() ;
 
+        $projet->voies()->save($voie) ;
 
 
         return redirect()->action([VoieController::class, 'index'])
@@ -60,8 +66,9 @@ class VoieController extends Controller
      */
     public function show(Voie $voie)
     {
-        return view('voies.index', ['voies' => Voie::all(),
-        'voie' => $voie]) ; //->paginate(2)]) ;
+        return view('voies.index', [
+            'voies' => Voie::where('projet_id' , session('projet_id'))->get(),
+        'voie' => $voie]) ;
     }
 
     /**

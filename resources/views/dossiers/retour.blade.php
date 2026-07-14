@@ -104,10 +104,10 @@ id: this.logos.length +1,
             >X</span></button>
 
             @if (substr($dossier->actePj, -3) == 'pdf' )
-            <a href="{{ asset($dossier->actePj) }}" download="pj"
+            <a href="{{ asset('storage/'.$dossier->actePj) }}" download="pj"
               class="text-blue-500 underline border px-4 py-4 bg-blue-100">Télécharger votre logo</a>
             @else
-            <img src="{{asset($dossier->actePj)}}" width="250" class="px-2 py-2 w-48 border border-blue-400 shadow-lg rounded-lg mb-2">
+            <img src="{{asset('storage/'.$dossier->actePj)}}" width="250" class="px-2 py-2 w-48 border border-blue-400 shadow-lg rounded-lg mb-2">
             @endif
 
           

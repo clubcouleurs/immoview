@@ -42,7 +42,7 @@ class ValidationController extends Controller
         $dossier->validation()->save($validation) ;
         $dossier->isVente = true ;
         $dossier->update() ;
-        return redirect($dossier->produit->constructible_type . '/0/dossiers')
+        return redirect('dossiers/?constructible=' . $dossier->produit->constructible_type)
                     ->with('message','Dossier validé !');
     }
 

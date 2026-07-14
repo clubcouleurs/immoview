@@ -1,7 +1,7 @@
 <x-master>
       <main class="h-full overflow-y-auto"
       @if(null !== $SearchByLitige)
-        style="  background-image: url('{{asset('justice.jpg')}}');
+        style="  background-image: url('{{asset('storage/'.'justice.jpg')}}');
         background-repeat: no-repeat;
         background-attachment: fixed;
         background-position: center;"
@@ -13,27 +13,31 @@
               <h2
                 class="my-6 text-4xl font-semibold text-black dark:text-gray-200"
               >
-              @if(null == $SearchByLitige)
-                Récapitulatif des dossiers {{$constructible}}
-              @else
+              @if(null != $SearchByLitige)
                 Dossiers en litige
+              @elseif(null != $SearchByDesisstement)
+                Dossiers désistés
+              @elseif(null != $SearchByTransfert)
+                Dossiers transferés                
+              @else
+                Récapitulatif des dossiers {{$constructible}}
               @endif
               </h2>
             </div>
             <div class="flex justify-between">
               <div class="my-6 mr-2">
               <a href="/dossiers/export{{$urlWithQueryString}}">
-                <img class="h-6" src="{{asset('excel.png')}}">
+                <img class="h-6" src="{{asset('storage/'.'excel.png')}}">
               </a>
             </div>
               <div class="my-6">
-                <img class="h-6" src="{{asset('printer.png')}}" onclick="window.print()">
+                <img class="h-6" src="{{asset('storage/'.'printer.png')}}" onclick="window.print()">
             </div>  
             </div>          
           </div>
 <hr>  
             <!-- Cards -->
-            @if(null == $SearchByLitige)
+            
             <div class="grid gap-6 mb-2 md:grid-cols-2 xl:grid-cols-6">
 
               <!-- Card -->
@@ -62,6 +66,8 @@
                   </p>
                 </div>
               </div>
+
+              @if($SearchByLitige == null && $SearchByDesisstement == null && $SearchByTransfert == null )
               <!-- Card -->
               <!-- Card -->
               <div
@@ -166,15 +172,15 @@
                   </p>
                 </div>
               </div>              
-              
+              @endif
             </div>
            
+            @if($SearchByLitige == null && $SearchByDesisstement == null && $SearchByTransfert == null )
             <!-- filtre -->
               <p class="text-sm text-gray-600 dark:text-gray-400 ml-2 mb-2">Filtres</p>   
 
               <div
               class="flex items-center justify-between p-2 mb-2 text-sm font-semibold text-blue-600 bg-yellow-100 rounded-lg shadow-sm focus:outline-none focus:shadow-outline-blue rounded-2xl"
-              
             >
               <div class="flex items-center gap-2">
                 @foreach ($tranches as $tranche)
@@ -199,16 +205,25 @@
               <div class="flex items-center gap-2">
                 <a
                   class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-2xl active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue"
-                  @if(null == $SearchByLitige)
-                    href="/dossiers?constructible={{$constructible}}&type={{$type}}"
-                  @else
+                  @if(null != $SearchByLitige)
                     href="/dossiers?constructible={{$constructible}}&litige=1"
+
+                  @elseif(null != $SearchByTransfert)
+                    href="/dossiers?constructible={{$constructible}}&transfert=1"
+
+                  @elseif(null != $SearchByDesisstement)
+                    href="/dossiers?constructible={{$constructible}}&desisstement=1"
+                  @else
+                  href="/dossiers?constructible={{$constructible}}&type={{$type}}"
                   @endif
                 >Tout</a>
                 <input type="hidden" name="constructible" value="{{$constructible}}"/>
                 <input type="hidden" name="tranche" value="{{$SearchByTranche}}"/>
-                <input type="hidden" name="litige" value="{{$SearchByLitige}}"/>
                 <input type="hidden" name="type" value="{{$type}}"/>
+
+                <input type="hidden" name="desisstement" value="{{$SearchByDesisstement}}"/>
+                <input type="hidden" name="transfert" value="{{$SearchByTransfert}}"/>
+                <input type="hidden" name="litige" value="{{$SearchByLitige}}"/>
 
 <!-- date picker -->
 <div class="antialiased sans-serif">
@@ -369,13 +384,15 @@
                   name="client"
                   value="{{$SearchByClient}}"
                 />
+                 @if($SearchByDesisstement == null)     
                 <input
                   class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input rounded-2xl"
                   placeholder="lot, appartement etc, séparé par (,)"
                   type="text"
                   name="num"
                   value="{{$SearchByNum}}"
-                />                
+                />    
+                      
                 <select
                   class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray rounded-2xl"
                   name="user"
@@ -438,7 +455,7 @@
                   <option value="tomorrow" @if ( $SearchByRelance =="tomorrow" ) selected @endif>Demain</option>
                   <option value="afterTomorrow" @if ( $SearchByRelance =="afterTomorrow" ) selected @endif>Après-Demain</option>
                 </select>
-
+                @endif
 
               <button
                   class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-2xl active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue"
@@ -455,7 +472,8 @@
 
 
 
-  <!-- filtre -->
+  <!-- actions groupées -->
+              @if($SearchByLitige != null)
 
                 <form action="/dossiers/litige" id="actionsGroupedForm">
 
@@ -491,7 +509,7 @@
               </div>
             </div>
               </form>
-
+@endif
 
 
             <!-- New Table -->
@@ -503,7 +521,15 @@
                       class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border  dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
                     >
                      <th></th>
-                      <th class="py-3">Vente</th>
+                      <th class="py-3">
+                        @if($SearchByDesisstement == null)
+                        Vente
+                        @else
+                        Vente désisté
+                        @endif
+                      
+                      </th>
+
                       @if($constructible != 'lot')
                       <th class="py-3">Frais</th>
                       @else
@@ -513,7 +539,7 @@
                       @endif
                       <th class="py-3" id="section-not-to-print">Date du dossier</th>                      
                       <th class="py-3">Client</th>
-                      <th class="py-3" id="section-not-to-print">Com</th>
+                      <th class="py-3" id="section-not-to-print">Commercial</th>
                       <th class="py-3">Total Paiements</th>
                       <th class="py-3">Total dû</th>
                       <th class="py-3">Taux</th>
@@ -529,7 +555,9 @@
 
                   @foreach ($dossiers as $dossier)
                     <tr class="text-gray-700
-                    {{($dossier->isVente)? '' : 'bg-yellow-200'}}
+                    {{$dossier->trashed() ? 'bg-gray-200' : ''}}
+                    {{$dossier->isVente ? '' : 'bg-yellow-200'}}
+
                     dark:text-gray-400">
                     <td class="{{($dossier->litige)? 'bg-red-500' : ''}}"                    
                     >
@@ -557,9 +585,9 @@
                               class="object-cover w-full h-full rounded-full"
                               src="
                               @if($dossier->litige == false)
-                              {{asset('floor-plan.png')}}
+                              {{asset('storage/'.'floor-plan.png')}}
                               @else
-                              {{asset('litige.png')}}
+                              {{asset('storage/'.'litige.png')}}
                               @endif
                               "
                               alt=""
@@ -579,7 +607,7 @@
                           {{ ucfirst($dossier->produit->constructible_type) }} N°
                           {{ $dossier->produit->constructible->num }}
                           <p class="mb-2 text-xs font-semibold text-gray-600 dark:text-gray-400">
-                          Tranche {{ $dossier->produit->tranche }} 
+                          Tranche {{ $dossier->produit->tranche }} | Imm {{ $dossier->produit->immeuble }}
                         </p>
                           
                         </a>
@@ -614,7 +642,9 @@
                       @endcan
                       @endif                      
                       <td class="px-1 py-3 text-sm" id="section-not-to-print">
-                        {{ $dossier->date }}
+                {{ $dossier->date }}<br>
+                {{ $dossier->deleted_at !=null ? 'Désisté le : ' . $dossier->deleted_at->format('d/m/Y') : ''  }}
+
                           @if(!$dossier->isVente)
                         <br>
                         <p class="mb-2 text-xs font-semibold text-gray-600 dark:text-gray-400">
@@ -655,7 +685,10 @@
                         @endforeach                           
                       </td>
                       <td class="px-1 py-3 text-sm" id="section-not-to-print">
-                        {{ substr($dossier->user->name, 0, strpos($dossier->user->name, ' ')+2) }}.
+                        {{ substr($dossier->user->name, 0, strpos($dossier->user->name, ' ')+2) }}.<br>
+
+                {{ $dossier->deleted_at !=null ? 'Désisté par : ' . $dossier->desisteBy->name : ''  }}
+
                       </td>                      
                       <td class="px-1 py-3 text-sm">
                         <span
@@ -688,6 +721,7 @@
                         </span>
                       </td>     
                       <td class="px-1 py-3 text-sm">
+
                         <span
                           class="px-2 py-1 font-semibold leading-tight rounded-full dark:bg-green-700 dark:text-green-100
                           @if ($dossier->etatProduit == 'En stock')
@@ -696,16 +730,32 @@
                             text-white bg-gray-900
                             @else
                             text-red-200 bg-red-900
-                          @endif
-
-                          "
+                          @endif"
                         >
-                          {{ $dossier->tauxPaiementV }} %
+
+                {{ $dossier->deleted_at !=null ? $dossier->indemnite.'%' : $dossier->tauxPaiementV.'%'  }}
                         </span>
                       </td>                                       
 
                       <td class="px-1 py-3 text-sm" id="section-not-to-print">
+
+          <!-- ne pas afficher la barre des boutons si le dossier est désisté -->
+            @if($SearchByDesisstement == null)
               <div class="flex px-1 py-1">
+                @can('Ajouter dossiers lots')
+                <!-- pour télécharger la fiche produit -->
+                <div class="mr-1">
+                <a
+                  class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none focus:shadow-outline-gray"
+                  aria-label="Like"
+                  href="/produits/{{ $dossier->produit->id }}/fiche"
+                >
+                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M7.47 10.78a.75.75 0 001.06 0l3.75-3.75a.75.75 0 00-1.06-1.06L8.75 8.44V1.75a.75.75 0 00-1.5 0v6.69L4.78 5.97a.75.75 0 00-1.06 1.06l3.75 3.75zM3.75 13a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5z"></path></svg>
+                </a>
+              </div>
+                <!-- fin telechargement fiche produit -->
+                @endcan
+
                 @if(!$dossier->isVente)
                 <!-- icon prolongation délai -->
                 <div class="mr-1">
@@ -730,6 +780,7 @@
                 @canany(['voir actes', 'voir actes ses dossiers'])
                   {!!$dossier->acte!!}
                 @endcan
+                
             @canany(['voir dossiers appartements',
                      'voir dossiers lots',
                      'voir dossiers boxes',
@@ -754,7 +805,7 @@
                 </a>
                 </div>
 
-                
+
 
                 @endcanany
 
@@ -797,10 +848,6 @@
 
             </div>
       @endcanany
-
-
-
-
             @canany(['editer dossiers appartements',
                      'editer dossiers lots',
                      'editer dossiers boxes',
@@ -825,6 +872,28 @@
                 </a>
 
             </div>
+
+               <div class="mr-1">
+             
+                <a
+                  class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none focus:shadow-outline-gray"
+                  aria-label="Like"
+                  href="/dossiers/{{ $dossier->id }}/transfert"
+                >
+                  <svg
+                    class="w-4 h-4"
+                    aria-hidden="true"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+  <path d="M0 0h24v24H0z" fill="none" />
+  <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 10H4l5.5-6M4 14h16l-5.5 6" />
+
+</svg>
+
+</a>
+</div>
+
             @endcanany
             @canany(['supprimer dossiers appartements',
                      'supprimer dossiers lots',
@@ -832,7 +901,9 @@
                      'supprimer dossiers magasins',
                      'supprimer dossiers bureaux',
                      'supprimer ses propres dossiers'])
-            <div>
+
+                      <!-- début bouton supprimer -->                     
+            <div class="mr-1">
                         <form action="/dossiers/{{$dossier->id}}" method="POST">
                         @csrf
                         @method('DELETE')
@@ -840,6 +911,7 @@
                   class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
                   aria-label="Like"
                   type="submit"
+                  onclick="return confirm('Confirmer la supression du dossier ? Cette action est définitive.')"
                 >
                   <svg
                     class="w-4 h-4"
@@ -856,16 +928,58 @@
                   </svg>
                 </button>
                       </form>
+                      </div> 
+                      <!-- fin bouton supprimer -->                 
+
+            <div>
+
+                           <div class="mr-1">
+                <a
+                  class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
+                  aria-label="Like"
+                  href="/dossiers/{{$dossier->id}}/desisstement"
+                >
+                  <svg
+                    class="w-4 h-4"
+                    aria-hidden="true"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                  <path stroke="#000000" stroke-linecap="round" stroke-linejoin="round" d="M4.546 19.453L19.453 4.547M12 22.542c5.822 0 10.542-4.72 10.542-10.542S17.822 1.458 12 1.458S1.458 6.178 1.458 12S6.178 22.542 12 22.542" />
+                  </svg>
+
+
+                </a>
+             </div>
                       </div>  
                       @endcan              
+              </div>  
+              @else
+              <div class="flex">
+                @can('supprimer dossiers')
+                <!-- pour télécharger la la demande de désistement -->
+                <div class="mr-1">
+                <a
+                  class="flex items-center justify-between px-1 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none focus:shadow-outline-gray"
+                  aria-label="Like"
+                  target="_blank"
+                  href="{{asset($dossier->demandeDesisstement)}}"
+                >
+                    Voir la demande de désistement
+                </a>
+                
+                Motif : {{$dossier->motif_desistement}}
               </div>
+                <!-- fin telechargement la demande de désistement -->
+                @endcan
+              </div>
+              @endif
 
-                      
+
+
+
+
                       </td>
-
-
-
-
                     </tr>
                     @endforeach
                   </tbody>

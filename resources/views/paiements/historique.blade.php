@@ -27,13 +27,13 @@ role="progressbar" :aria-valuenow="value" aria-valuemin="0" :aria-valuemax="tota
               <h2
                 class="my-6 text-4xl font-semibold text-black dark:text-gray-200"
               >
-              Historique des paiements
+              Historique des paiements 
               </h2>
             </div>
             <div class="flex justify-between">
               <div class="my-6 mr-2">
               <a href="/paiements/export{{$urlWithQueryString}}">
-                <img class="h-6" src="{{asset('excel.png')}}">
+                <img class="h-6" src="{{asset('storage/'. 'excel.png')}}">
               </a>
             </div>
             </div>          
@@ -167,8 +167,9 @@ role="progressbar" :aria-valuenow="value" aria-valuemin="0" :aria-valuemax="tota
                 >
                   <option value="" @if ( $status == '') selected @endif>Tout</option>
                 
-                  <option value="1"     @if ( $status == '1') selected @endif>Validé</option>
-                  <option value="0"     @if ( $status == '0') selected @endif>Non validé</option>
+                  <option value="1"     @if ( $status == '1') selected @endif>Encaissé</option>
+                  <option value="0"     @if ( $status == '0') selected @endif>Non-encaissé</option>
+                  <option value="2"     @if ( $status == '2') selected @endif>Impayé</option>
               
                 </select>  
                 <input
@@ -381,7 +382,7 @@ role="progressbar" :aria-valuenow="value" aria-valuemin="0" :aria-valuemax="tota
                           >
                             <img
                               class="object-cover w-full h-full rounded-full"
-                              src="{{asset('land.png')}}"
+                              src="{{asset('storage/'. 'land.png')}}"
                               alt=""
                               loading="lazy"
                             />
@@ -405,6 +406,10 @@ role="progressbar" :aria-valuenow="value" aria-valuemin="0" :aria-valuemax="tota
                       <td class="px-4 py-3 text-sm">
                             @foreach($p->dossier->clients as $client)
                               Client : {{ $client->nom}} {{ $client->prenom}} <br>
+                              @if($p->valider==2)
+                    <p class="px-1 rounded-md w-40
+                    bg-red-500 text-white font-bold"> Mobile : {{ $client->mobile  }}</p>
+                              @endisset
                             @endforeach  
                       </td> 
                       <td class="px-4 py-3 text-sm">
@@ -416,10 +421,15 @@ role="progressbar" :aria-valuenow="value" aria-valuemin="0" :aria-valuemax="tota
                         <form action="/dossiers/{{$p->dossier->id}}/paiements/{{$p->id}}" method="POST">
                           @csrf
                           @method('PATCH')
+
+
+
+
                     {!!$p->validate!!}
+
                     </form>
                   </td>
-                      <td class="flex px-4 py-3 text-sm">
+                      <td class="flex px-4 py-6 text-sm">
             @can('editer paiements')
                 <div class="mr-1">
                 <a
