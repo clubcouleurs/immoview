@@ -21,7 +21,6 @@ class TransfertController extends Controller
 
         return view('dossiers.transfert' , [
         'clients' => Client::where('activer', '=', 1 )
-                            ->whereNotIn('id', $dossier->clients()->pluck('clients.id')->toArray())
                             ->orderby('nom', 'desc')
                             ->get(),
             'dossier'   => $dossier,

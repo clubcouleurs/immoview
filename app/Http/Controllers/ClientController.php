@@ -133,9 +133,9 @@ class ClientController extends Controller
             $pjExtension = $request->file('cinPj')->extension() ;                 
 
             $pdfPath = $request->file('cinPj')
-            ->storeAs('public/cin', $pjName . '.' . $pjExtension) ;
+            ->storeAs('documents/cin', $pjName . '.' . $pjExtension) ;
 
-            $client->cinPj = 'cin/' . $pjName . '.' . $pjExtension ;
+            $client->cinPj = 'documents/cin/' . $pjName . '.' . $pjExtension ;
         }
 
         $client->save();
@@ -234,9 +234,9 @@ class ClientController extends Controller
             $pjExtension = $request->file('cinPj')->extension() ;                 
 
             $pdfPath = $request->file('cinPj')
-            ->storeAs('public/cin', $pjName . '.' . $pjExtension) ;
+            ->storeAs('documents/cin', $pjName . '.' . $pjExtension) ;
 
-            $client->cinPj = 'cin/' . $pjName . '.' . $pjExtension ;
+            $client->cinPj = 'documents/cin/' . $pjName . '.' . $pjExtension ;
         }
         else
         {

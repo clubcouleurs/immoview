@@ -35,7 +35,7 @@ class AppServiceProvider extends ServiceProvider
             'appartement' => 'App\Models\Appartement',
             'magasin' => 'App\Models\Magasin',
             'bureau' => 'App\Models\Office',
-            'box' => 'App\Models\Box',
+            'place' => 'App\Models\Place',
         ]);
 
 

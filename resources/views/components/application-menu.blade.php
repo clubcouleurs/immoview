@@ -455,7 +455,7 @@
 
             </li>            
             @endcanany
-          @endforeach            
+          @endforeach
 
 
 

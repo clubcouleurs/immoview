@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Appartement;
 use App\Models\Magasin;
+use App\Models\Place;
 use App\Models\Tranche;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -27,5 +28,11 @@ class Immeuble extends Model
     {
         return $this->hasMany(Magasin::class);
     }     
-    
+
+    public function places()
+    {
+        return $this->hasMany(Place::class);
+    }  
+
+
 }

@@ -85,8 +85,8 @@ class EntrepriseController extends Controller
             $infoEntreprise = 'logo-' . Str::slug($entreprise->nom) ;
             $pjExtension = $request->file('logo')->extension() ;                 
             $pdfPath = $request->file('logo')
-            ->storeAs('public', $infoEntreprise . '.' . $pjExtension) ;
-            $entreprise->logo = $infoEntreprise . '.' . $pjExtension ;
+            ->storeAs('documents/logos', $infoEntreprise . '.' . $pjExtension) ;
+            $entreprise->logo = 'documents/logos/' . $infoEntreprise . '.' . $pjExtension ;
         }
         $rslt  = $entreprise->save();
 
@@ -171,8 +171,8 @@ class EntrepriseController extends Controller
             $infoEntreprise =  'logo-' . Str::slug($entreprise->nom) ;
             $pjExtension = $request->file('logo')->extension() ;                 
             $pdfPath = $request->file('logo')
-            ->storeAs('public', $infoEntreprise . '.' . $pjExtension) ;
-            $entreprise->logo = $infoEntreprise . '.' . $pjExtension ;
+            ->storeAs('documents/logos', $infoEntreprise . '.' . $pjExtension) ;
+            $entreprise->logo = 'documents/logos/' . $infoEntreprise . '.' . $pjExtension ;
             
         }
 

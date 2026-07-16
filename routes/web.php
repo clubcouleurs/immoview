@@ -4,6 +4,7 @@ use App\Http\Controllers\AppartementController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\BanqueController;
 use App\Http\Controllers\BordereauController;
+use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ContratController;
@@ -55,11 +56,13 @@ Route::middleware('auth')->group(function(){
 // Authorization not OK
 Route::resource('types', TypeController::class);
 
-Route::resource('projets', ProjetController::class);
+Route::resource('projets', ProjetController::class)->middleware('can:editer projets');
+
 Route::resource('contrats', ContratController::class);
 Route::post('/contratsDuplicate', [ContratController::class, 'duplicate']) ;
 
-Route::resource('entreprises', EntrepriseController::class);
+Route::resource('entreprises', EntrepriseController::class)->middleware('can:editer entreprises');
+
 Route::resource('banques', BanqueController::class);
 Route::resource('articles', ArticleController::class);
 
@@ -100,6 +103,8 @@ Route::resource('lots', LotController::class);
 Route::resource('appartements', AppartementController::class);
 // Authorization OK, taking car of it in the controller
 Route::resource('magasins', MagasinController::class);
+// Authorization OK, taking car of it in the controller
+Route::resource('places', PlaceController::class);
 // Authorization OK, taking car of it in the controller
 Route::resource('offices', OfficeController::class);
 // Authorization OK, taking car of it in the controller
@@ -218,13 +223,10 @@ Route::middleware(['can:view,dossier'])->group(function () {
 	Route::get('/dossiers/{dossier}/retour', [DossierController::class, 'retour']);
 	//rajoutée le 06/07/22 
 	Route::get('/dossiers/{dossier}/acte-vente', [DossierController::class, 'acte_vente']);
-	// fin modification du 06/07/22
-	Route::get('/dossiers/{dossier}/appartement/actes', [DossierController::class, 'actesApp']);
-	Route::get('/dossiers/{dossier}/lot/actes', [DossierController::class, 'actesLot']);
 
-	// Route::get('/dossiers/{dossier}/appartement/actesStanding', [DossierController::class, 'actesStanding']);
-	// modification du 20/02/2023
-	Route::get('/dossiers/{dossier}/magasin/actes', [DossierController::class, 'actesMag']);	
+	// fin modification du 06/07/22
+	Route::get('/dossiers/{dossier}/actes', [DossierController::class, 'actes']);
+
 
 
 });

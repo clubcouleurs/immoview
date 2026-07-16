@@ -13,6 +13,8 @@ class ProjectModulesService
     {
         $projetConstructibles = explode(',' , session('projetConstructibles'));
         $projetConstructibles = array_map('trim', $projetConstructibles);
+
+
         return $projetConstructibles ;
     }
 
@@ -35,7 +37,6 @@ class ProjectModulesService
     public function getSingular(String $string)
     {
         $inflector = InflectorFactory::createForLanguage(Language::FRENCH)->build();
-
         return $inflector->singularize($string);
     }
 }

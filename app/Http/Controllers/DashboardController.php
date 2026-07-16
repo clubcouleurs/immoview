@@ -101,30 +101,7 @@ $commerciaux = \App\Models\User::whereHas('dossiers.produit', function($q) use (
                 }
             $i++;
         }
-        //dd($maxStatement) ;
-        // $performanceCommercial = \DB::select("
-        //         SELECT an, mois," .
-        //         $maxStatement
-        //         .
-        //         "FROM
-        //         (SELECT u.name as Commercial, YEAR (t1.date) as an, MONTH(t1.date) as mois , COUNT(*) as nbrVentes 
-        // from dossiers as t1
-        // LEFT JOIN users as u
-        // ON t1.user_id = u.id
-        // join
-        // (SELECT YEAR (dossiers.date) as an, MONTH(dossiers.date) as mois
-        // from dossiers
-        // group by YEAR (dossiers.date) ,MONTH(dossiers.date)
-        // Order by YEAR (dossiers.date) desc, MONTH(dossiers.date) desc
-        // limit 7
-        // ) as dt
-        // on dt.an=YEAR(t1.date) and dt.mois=MONTH(t1.date)
-        // Group by MONTH(t1.date), YEAR(t1.date), u.name
-        // Order by YEAR(t1.date) desc, MONTH(t1.date) desc
-        // ) AS tt
-        // GROUP BY an, mois
-            
-        //     ");
+
         
 // 1. Récupérer les données brutes
 $data = DB::table('dossiers')
@@ -235,9 +212,7 @@ $nombreVentesParMois = \DB::select("
             return [$item->constructible_type => $item->nombre];
         });
 
-//dd(Projet::getFinancesOfThisProjet($projet->id)->all());
-        // dd($performanceCommercial) ;
-        // dd($commerciaux) ;
+        $produitsOverView = Produit::getEtatProduitsProjet($projet, $inflector) ;
 
         return view('dashboard',[
             'paiementsDueNbr' => Paiement::getNbrPaiementsDueToday($projet->id, [0,2], 0),
@@ -250,11 +225,6 @@ $nombreVentesParMois = \DB::select("
             'projets' => Projet::all(),
             'today' => Carbon::now()->toDateString(),
 
-            //'valeurTotalLots' => $prixTotalLots->sum(),
-            // 'valeurTotalAppartements' => $prixTotalappartements->sum(),
-            // 'valeurTotalBureaux' => $prixTotalbureaux->sum(),
-            //'valeurTotalMagasins' => $prixTotalmagasins->sum(),
-            //'valeurTotalBoxes' => $prixTotalboxes->sum(),
             'dossiers' => Dossier::getAllDossiersProjet($projet->id),
 
 	        'nombreVisites' => $nombreVisites,
@@ -279,9 +249,11 @@ $nombreVentesParMois = \DB::select("
             'appelsMonth'  => Visite::visitesMonth()[0],
             'appelsYear'   => Visite::visitesYear()[0],
             'appelsWeek'   => Visite::visitesWeek()[0],
-            'dossiersLitige' => Dossier::litige() ,
+            'dossiersLitige' => Dossier::litige(),
+            'projet' => $projet,
+            'produitsOverView' => $produitsOverView,  
                         
-        ],      Produit::getEtatProduitsProjet($projet, $inflector)->all()
+        ],      $produitsOverView->all()
             +   $dossiersParType->all()
             +   $produitsParType->all()
             +   Projet::getFinancesOfThisProjet($projet->id)->all(),

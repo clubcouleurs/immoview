@@ -31,9 +31,10 @@ class ProjetController extends Controller
         if (! Gate::allows('editer projets')) {
                 abort(403);
         }        
+
         $entreprises = Entreprise::All() ;
         $villes = explode(',', $this->villes());        
-        $types_constructibles = ['lot','appartement','magasin','bureau'] ;
+        $types_constructibles = ['lot','appartement','magasin','bureau','place'] ; ;
         return view('projets.create', [
             'villes' => $villes,
             'types_constructibles' => $types_constructibles,
@@ -110,7 +111,7 @@ class ProjetController extends Controller
         }
         $villes = explode(',', $this->villes());        
         $types_constructibles_projet = explode(',' , $projet->type_constructible) ;
-        $types_constructibles = ['lot','appartement','magasin','bureau'] ;
+        $types_constructibles = ['lot','appartement','magasin','bureau','place'] ;
         $entreprises = Entreprise::All() ;
         return view('projets.edit', [
             'projet' => $projet,

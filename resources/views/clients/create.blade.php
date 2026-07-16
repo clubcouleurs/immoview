@@ -136,20 +136,7 @@
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror
               </label>
-              <label class="block text-sm mt-4">
-                <span class="text-gray-700 dark:text-gray-400">Nom client en Arabe</span>
-                <input
-                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                  placeholder="المرابط"
-                  type="text"
-                  name="nomAr"
-                  value="{{old('nomAr')}}"
-                />
-                    @error('nomAr')
-                    <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
-                    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
-                    @enderror
-              </label>
+
               <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">Prénom client</span>
                 <input
@@ -165,20 +152,7 @@
                     bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
                     @enderror
               </label>
-              <label class="block mt-4 text-sm">
-                <span class="text-gray-700 dark:text-gray-400">Prénom client en Arabe</span>
-                <input
-                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                  placeholder="سارة"
-                  type="text"
-                  name="prenomAr"
-                  value="{{old('prenomAr')}}"
-                />
-                    @error('prenomAr')
-                    <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
-                    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
-                    @enderror
-              </label>
+
 
               <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">N°CIN client</span>
@@ -367,20 +341,6 @@ id: this.logos.length +1,
               </label>
             
 
-              <label class="block mt-4 text-sm">
-                <span class="text-gray-700 dark:text-gray-400">Adresse en Arabe</span>
-                <textarea
-                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-textarea focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
-                  rows="3"
-                  placeholder="العنوان"
-                  name="adresseAr"
-                >{{old('adresseAr')}}</textarea>
-                    @error('adresseAr')
-                    <p class="block h-10 px-2 py-2 rounded-md w-full mt-2
-                    bg-red-600 text-white font-bold"> Attention : {{ $message }}</p>
-                    @enderror
-
-              </label>
 
                 <div class="block mt-4 text-sm">
                 <button

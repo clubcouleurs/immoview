@@ -93,7 +93,7 @@ class ProduitRequest extends FormRequest
             'numMag.unique' => 'Ce numéro de magasin existe déjà',
             'numApp.unique' => 'Ce numéro d\' appartement existe déjà',
             'numBur.unique' => 'Ce numéro de bureau existe déjà',
-            'numBox.unique' => 'Ce numéro de box existe déjà',
+            'num.unique' => 'Ce numéro de box existe déjà',
 
             'surfaceLot.required' => 'Merci de siaisir une surface pour ce lot',
             'surfaceLot.numeric' => 'La surface du lot doit être en chiffre',

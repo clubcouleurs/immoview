@@ -102,7 +102,7 @@ class Produit extends Model
     {
         switch ($this->constructible_type) {
             case 'appartement':
-            case 'box':
+            case 'place':
             case 'magasin':
                 return $this->constructible->immeuble->tranche->num . '/' . 
                  $this->constructible->immeuble->tranche->description;
@@ -127,7 +127,7 @@ class Produit extends Model
     {
         switch ($this->constructible_type) {
             case 'appartement':
-            case 'box':
+            case 'place':
                 return $this->constructible->etage === 0
                     ? 'RDC'
                     : $this->constructible->etage;
@@ -161,7 +161,7 @@ class Produit extends Model
     {
         switch ($this->constructible_type) {
             case 'appartement':
-            case 'box':
+            case 'place':
             case 'magasin':
                 return $this->constructible->immeuble->num ;
                 break;

@@ -17,7 +17,7 @@ class oneLotPerProjet implements Rule
     public function __construct($id='', $typeNum='lots.num', $table = 'lots', $typeConstructible = 'lot')
     {
         $this->id = $id ;
-        $this->typeNum = $typeNum ;
+        $this->num = $typeNum ;
         $this->table = $table ;
         $this->typeConstructible = $typeConstructible ;
 
@@ -35,7 +35,7 @@ class oneLotPerProjet implements Rule
 
         $count = DB::table($this->table)
             ->join('produits', 'produits.constructible_id' , '=' , $this->table.'.id')
-            ->where($this->typeNum, $value)
+            ->where($this->num, $value)
             ->whereNotIn($this->table.'.id' , [$this->id])
             ->where('produits.constructible_type' , $this->typeConstructible)
             ->where('produits.projet_id', session('projet_id'))

@@ -956,9 +956,9 @@ class DossierController extends Controller
             $pjExtension = $request->file('actePj')->extension() ;                 
 
             $pdfPath = $request->file('actePj')
-            ->storeAs('public/actes', $pjName . '.' . $pjExtension) ;
+            ->storeAs('documents/actes', $pjName . '.' . $pjExtension) ;
 
-            $dossier->actePj = 'actes/' . $pjName . '.' . $pjExtension ;
+            $dossier->actePj = 'documents/actes/' . $pjName . '.' . $pjExtension ;
 
         }elseif($request->hasFile('actevente'))
         {
@@ -980,9 +980,9 @@ class DossierController extends Controller
             $pjExtension = $request->file('actevente')->extension() ;                 
 
             $pdfPath = $request->file('actevente')
-            ->storeAs('public/actes', $pjName . '.' . $pjExtension) ;
+            ->storeAs('documents/actes', $pjName . '.' . $pjExtension) ;
 
-            $dossier->actevente = 'actes/' . $pjName . '.' . $pjExtension ;
+            $dossier->actevente = 'documents/actes/' . $pjName . '.' . $pjExtension ;
         }
         else
         {
@@ -1161,9 +1161,9 @@ class DossierController extends Controller
             $pjExtension = $request->file('demandeDesisstement')->extension() ;                 
 
             $pdfPath = $request->file('demandeDesisstement')
-            ->storeAs('desistements', $pjName . '.' . $pjExtension) ;
+            ->storeAs('documents/desistements', $pjName . '.' . $pjExtension) ;
 
-            $lien = 'desistements/' . $pjName . '.' . $pjExtension ;
+            $lien = 'documents/desistements/' . $pjName . '.' . $pjExtension ;
 
         }
 
@@ -1203,377 +1203,25 @@ class DossierController extends Controller
 
     }
 
-    public function actesLot(Dossier $dossier)
+
+
+// 16/07/26 ajout de cette function pour créer le pdf du contrat partout : actesApp, actesMag, ... à supprimer
+    public function actes(Dossier $dossier)
     {
 
+
         $projet = $dossier->produit->projet ;
-        $contrat = Contrat::firstWhere('type_produit', 'lot')
-                            ->where('projet_id' , $projet->id)->first() ;
-
-        $a = $contrat->articles->map(function ($article) use ($dossier){
-            $article->texte =  replace_shortcodes( $article->texte, $dossier) ;
-            return $article ;
-        });
-        $a = $a->sortBy('classement');
-
-        $pdf = Pdf::loadView('pdf.contrats.lot', ['data' => $a, 'logo' => $projet->entreprise->logo]);
-        return $pdf->download('contratLot.pdf');
-
-/////////////////////////////
-
-      
-    }    
-
-////
-
-
-// 05/05/26 ajout de cette function pour créer le pdf du contrat
-    public function actesApp(Dossier $dossier)
-    {
-        $projet = $dossier->produit->projet ;
-        $contrat = Contrat::firstWhere('type_produit', 'appartement')
-                            ->where('projet_id' , $projet->id)->first() ;
-
-        $a = $contrat->articles->map(function ($article) use ($dossier){
-            $article->texte =  replace_shortcodes( $article->texte, $dossier) ;
-            return $article ;
-        });
-        $a = $a->sortBy('classement');
-
-        $pdf = Pdf::loadView('pdf.contrats.lot', ['data' => $a, 'logo' => $projet->entreprise->logo]);
-        return $pdf->download('contratAppartement.pdf');
-    }    
-
-
-/////    
-
-// 05/05/26 ajout de cette function pour créer le pdf du contrat
-    public function actesMag(Dossier $dossier)
-    {
-        $projet = $dossier->produit->projet ;
-        $contrat = Contrat::Where('type_produit', 'magasin')
+        $contrat = Contrat::where('type_produit', $dossier->produit->type)
                             ->where('projet_id' , $projet->id)->first() ;
         $a = $contrat->articles->map(function ($article) use ($dossier){
             $article->texte =  replace_shortcodes( $article->texte, $dossier) ;
             return $article ;
         });
         $a = $a->sortBy('classement');
-
-        $pdf = Pdf::loadView('pdf.contrats.magasin', ['data' => $a, 'logo' => $projet->entreprise->logo]);
-        return $pdf->download('contratMagasin.pdf');
+        $type = $dossier->produit->type ;
+        $pdf = Pdf::loadView('pdf.contrats.contrat', ['data' => $a, 'type' => $type, 'logo' => $projet->entreprise->logo]);
+        return $pdf->download('contrat.pdf');
     }    
 
-
-///// 
-
-
-// modification 20/02/2023 : ajout actes réservation magasins
-
- public function actesMag0000(Dossier $dossier)
-    {
-
-        // create the number to words "manager" class
-        $toWords = new NumberToWords();
-        // build a new number transformer using the RFC 3066 language identifier
-        $numberTransformer = $toWords->getNumberTransformer('ar');
-
-         // outputs "five thousand one hundred twenty"
-
-        // initiate FPDI
-        $pdf = new TCPDF();
-        $pdf->SetTextColor(0, 0, 255) ;
-        //$pdf->SetFont('Helvetica');
-        $pdf->setRTL(true);
-        $pdf->SetFont('aealarabiya', '', 14);
-            $pdf->setPrintHeader(false);
-            $pdf->setPrintFooter(false);
-
-        $pageCount = $pdf->setSourceFile(Storage_path('app/public/acte-reservation-magasin.pdf'));
-
-
-        // iterate through all pages
-        for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
-            $pdf->SetMargins(0, 0, 0 , 0) ;
-
-            // import a page
-            $templateId = $pdf->importPage($pageNo); //$pageNo
-            // get the size of the imported page
-            $size = $pdf->getTemplateSize($templateId);
-            //dd($size) ;
-            // create a page (landscape or portrait depending on the imported page size)
-            if ($size['width'] > $size['height']) {
-                $pdf->AddPage('L', array($size['width'], $size['height']));
-            } else {
-                $pdf->AddPage('P', array($size['width'], $size['height']));
-            }
-
-            // use the imported page
-            $pdf->useTemplate($templateId);
-            if ($pageNo == 1) // 1 
-            {
-                $i_start = 35 ;
-                $cin_start = 69 ;
-                $ad_start = 117 ;
-                foreach ($dossier->clients as $client)
-                {
-                    $prenom = stripslashes($client->prenomAr);
-                    //$prenom = iconv('UTF-8', 'windows-1251//TRANSLIT//IGNORE', $prenom);
-                    //    dd('مفعول') ;
-                    $nom = stripslashes($client->nomAr);
-                    //$nom = iconv("Windows-1256//TRANSLIT//IGNORE", "UTF-8//TRANSLIT//IGNORE", 'مفعول');
-
-                    $pdf->SetXY($i_start, 95.75);
-                    $nomC =  $nom . ' ' . $prenom . ' |';
-                    $i_start += strlen($nomC)+2 ;
-
-                    $pdf->Write(8, $nomC);
-
-                    $adresse = stripslashes($client->adresseAr);
-                    //$adresse = iconv('UTF-8', 'windows-1251//TRANSLIT//IGNORE', $adresse);
-
-                    $pdf->SetXY(14, $ad_start);
-                    $pdf->Write(8, ucfirst(preg_replace( "/\r|\n/", " ", '- ' . $adresse )));
-                    $ad_start += 8 ;
-
-                    $pdf->SetXY($cin_start, 103);
-                    $pdf->Write(8, strtoupper($client->cin) . ' | ');    
-
-                    $cin_start += (strlen($client->cin)*3) +2 ;
-
-                }                
-            }    
-
-            if ($pageNo == 2) // 2
-            {
-                $pdf->SetFont('Helvetica', 12);
-
-
-                $pdf->SetXY(137, 25.5);
-                $pdf->Write(0,$dossier->produit->constructible->immeuble->tranche->num) ;
-
-                $pdf->SetXY(15, 32.5);
-                $pdf->Write(0,$dossier->produit->constructible->immeuble->num) ;
-
-                $pdf->SetXY(40, 32.5);
-                $pdf->Write(0,$dossier->produit->constructible->num) ;
-
-                $pdf->SetXY(84, 32.5);
-                $pdf->Write(0,$dossier->produit->constructible->surface) ;
-
-                $pdf->SetXY(83, 54);
-                $pdf->Write(0,$dossier->produit->constructible->surfacePlancher) ;
-                $pdf->SetXY(83, 60.5);
-                $pdf->Write(0,$dossier->produit->constructible->surfaceSousSol) ;
-                $pdf->SetXY(76, 67.5);
-                $pdf->Write(0,$dossier->produit->constructible->surfaceMezzanine) ;
-
-
-
-                
-                $pdf->SetXY(35, 181.5);
-                $pdf->Write(0, number_format($dossier->produit->totalIndicatif) ) ; 
-
-                $pdf->SetFont('aealarabiya', '', 14);
-                // avance en arabe
-                $pdf->SetXY(73, 181);
-                $pdf->Write(0,'('. $numberTransformer->toWords($dossier->produit->totalIndicatif) . ' درهم ' .')' ) ; 
-                // avance en arabe
-
-           
-            }  
-
-                if ($pageNo == 3) // 2
-                    {
-                        $pdf->SetFont('Helvetica', 12);
-
-                        $pdf->SetXY(15, 96.5);
-                        $pdf->Write(0, number_format(round($dossier->produit->totalIndicatif) * 0.3) ) ; 
-
-                        $pdf->SetFont('aealarabiya', '', 14);
-                        // avance en arabe
-                        $pdf->SetXY(47, 96.5);
-                        $pdf->Write(0,'('. $numberTransformer->toWords(round($dossier->produit->totalIndicatif) * 0.3) . ' درهم ' .')' ) ; 
-
-
-                        $pdf->SetFont('Helvetica', 12);
-                        // avance en numéraire
-                        $pdf->SetXY(15, 258.5);
-                        $pdf->Write(0,number_format($dossier->totalPaiementsV)) ;  
-
-                        $pdf->SetFont('aealarabiya', '', 14);
-                        // avance en arabe
-                        $pdf->SetXY(47, 258.5);
-                        $pdf->Write(0,'('. $numberTransformer->toWords($dossier->totalPaiementsV) . ' درهم ' .')' ) ; 
-                      
-                    }  
-
-
-            if ($pageNo == 5) // 6
-            {
-
-            $pdf->SetXY(99, 94.5);
-            $pdf->Write(8, date("j/n/Y"));   
-          
-
-            }  
-
-        }
-        $pdf->Output('actes_reservation_magsin_N_' . $dossier->produit->constructible->num
-            . '_' .  '_' . '.pdf', 'I'); 
-    }        
-    // fin modification 20/02/2023
-    // 05/05/26 changement nom function pour créer une autre version
-    public function actesStanding0(Dossier $dossier)
-    {
-
-        // create the number to words "manager" class
-        $toWords = new NumberToWords();
-        // build a new number transformer using the RFC 3066 language identifier
-        $numberTransformer = $toWords->getNumberTransformer('ar');
-
-         // outputs "five thousand one hundred twenty"
-
-        // initiate FPDI
-        $pdf = new TCPDF();
-        $pdf->SetTextColor(0, 0, 255) ;
-        //$pdf->SetFont('Helvetica');
-        $pdf->setRTL(true);
-        $pdf->SetFont('aealarabiya', '', 14);
-            $pdf->setPrintHeader(false);
-            $pdf->setPrintFooter(false);
-        // get the page count
-
-        $pageCount = $pdf->setSourceFile(Storage_path('app/public/acte-reservation-appartement-standing.pdf'));
-
-        // iterate through all pages
-        for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
-            $pdf->SetMargins(0, 0, 0 , 0) ;
-
-            // import a page
-            $templateId = $pdf->importPage($pageNo); //$pageNo
-            // get the size of the imported page
-            $size = $pdf->getTemplateSize($templateId);
-            //dd($size) ;
-            // create a page (landscape or portrait depending on the imported page size)
-            if ($size['width'] > $size['height']) {
-                $pdf->AddPage('L', array($size['width'], $size['height']));
-            } else {
-                $pdf->AddPage('P', array($size['width'], $size['height']));
-            }
-
-            // use the imported page
-            $pdf->useTemplate($templateId);
-            if ($pageNo == 1) // 1 
-            {
-                $i_start = 35 ;
-                $cin_start = 69 ;
-                $ad_start = 117 ;
-                foreach ($dossier->clients as $client)
-                {
-                    $prenom = stripslashes($client->prenomAr);
-                    //$prenom = iconv('UTF-8', 'windows-1251//TRANSLIT//IGNORE', $prenom);
-                    //    dd('مفعول') ;
-                    $nom = stripslashes($client->nomAr);
-                    //$nom = iconv("Windows-1256//TRANSLIT//IGNORE", "UTF-8//TRANSLIT//IGNORE", 'مفعول');
-
-                    $pdf->SetXY($i_start, 95.75);
-                    $nomC =  $nom . ' ' . $prenom . ' |';
-                    $i_start += strlen($nomC)+2 ;
-
-                    $pdf->Write(8, $nomC);
-
-                    $adresse = stripslashes($client->adresseAr);
-                    //$adresse = iconv('UTF-8', 'windows-1251//TRANSLIT//IGNORE', $adresse);
-
-                    $pdf->SetXY(14, $ad_start);
-                    $pdf->Write(8, ucfirst(preg_replace( "/\r|\n/", " ", '- ' . $adresse )));
-                    $ad_start += 8 ;
-
-                    $pdf->SetXY($cin_start, 103);
-                    $pdf->Write(8, strtoupper($client->cin) . ' | ');    
-
-                    $cin_start += (strlen($client->cin)*3) +2 ;
-
-                }                
-            }    
-
-            if ($pageNo == 2) // 2
-            {
-
-
-                $pdf->SetXY(41, 168.5);
-                $pdf->Write(0, number_format($dossier->produit->totalIndicatif) . ' درهم.  ' ) ;
-
-                $len = strlen(number_format($dossier->produit->totalIndicatif) . ' درهم.  ' );
-
-                $pdf->SetXY(41+$len+13, 168.5);
-                $pdf->Write(0,'(' . $numberTransformer->toWords($dossier->produit->totalIndicatif) . ' درهم.' . ').' ) ;
-
-
-                $pdf->SetFont('Helvetica', 12);
-
-                $pdf->SetXY(39, 27.5);
-                $pdf->Write(0,$dossier->produit->constructible->immeuble->tranche->num) ;
-
-                $pdf->SetXY(65, 27.5);
-                $pdf->Write(0,$dossier->produit->constructible->immeuble->num) ;
-
-                $pdf->SetXY(95, 27.5);
-                $pdf->Write(0,$dossier->produit->constructible->surface) ;
-
-                $pdf->SetXY(152, 27.5);
-                $pdf->Write(0,$dossier->produit->constructible->etage) ;   
-
-                $pdf->SetXY(31, 34.5);
-                $pdf->Write(0,$dossier->produit->constructible->num) ;   
-                
-                $pdf->SetFont('aealarabiya', '', 16);   
-
-                $pdf->SetXY(11.5, 40);
-                $pdf->Write(0,$dossier->produit->constructible->composer) ;                 
-                           
-            }  
-
-            if ($pageNo == 3) // 2
-            {
-                $pdf->SetFont('aealarabiya', '', 16);   
-
-                $pdf->SetXY(11, 258.5);             
-                $pdf->Write(0,number_format(
-                    $dossier->totalPaiementsV) . ' درهم' 
-                    ) ;
-                $len = strlen(number_format($dossier->totalPaiementsV) . ' درهم');
-                $pdf->SetXY(11+$len +17, 258.5);             
-                $pdf->Write(0,'(' . $numberTransformer->toWords(
-                    $dossier->totalPaiementsV) . ' درهم' . ').'
-                    ) ;
-
-                $len = strlen(number_format(
-                round($dossier->produit->totalIndicatif * 0.3)
-                ) . ' درهم');
-
-                $pdf->SetXY(11, 88.5);
-                $pdf->Write(0, number_format(
-                round($dossier->produit->totalIndicatif * 0.3)
-                ) . ' درهم' ) ;
-
-                $pdf->SetXY(11+$len+17, 88.5);
-                $pdf->Write(0,'(' . $numberTransformer->toWords(
-                round($dossier->produit->totalIndicatif * 0.3)
-                ) . ' درهم' . ').') ;
-          
-            }  
-            if ($pageNo == 5) // 6
-            {
-
-            $pdf->SetXY(73  , 120);
-            $pdf->Write(8, date("j/n/Y"));   
-          
-
-            }  
-
-        }
-        $pdf->Output('actes_reservation_app_standing_N_' . $dossier->produit->constructible->num
-            . '.pdf', 'I'); 
-    }     
+    
 }

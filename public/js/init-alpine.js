@@ -81,9 +81,9 @@ function data() {
     toggleBureauxMenu() {
       this.isBureauxMenuOpen = !this.isBureauxMenuOpen
     },   
-    isBoxesMenuOpen: false,
-    toggleBoxesMenu() {
-      this.isBoxesMenuOpen = !this.isBoxesMenuOpen
+    isPlacesMenuOpen: false,
+    togglePlacesMenu() {
+      this.isPlacesMenuOpen = !this.isPlacesMenuOpen
     },
 
     isClientsMenuOpen: false,
