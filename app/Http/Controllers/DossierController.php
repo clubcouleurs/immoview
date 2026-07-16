@@ -55,12 +55,14 @@ class DossierController extends Controller
         }
         if (!isset($typeApp) && $constructible=="appartement" && !Gate::allows('voir dossiers ' . p($constructible))) {
             abort(403);
-        }        
+        }  
+
         $tranche = $request['tranche'] ;
         $tranches = Tranche::where('projet_id' , session('projet_id'))->orderBy('num')->get();
         $tranchesArray = ($tranche == null) ? $tranches->pluck('id')->toArray() : [$tranche] ;
         $constructiblesArray = ($constructible == null) ?
-                    ['lot','appartement','box','magasin','bureau'] : [$constructible] ;
+                    ['lot','appartement','place','magasin','bureau'] : [$constructible] ;
+
           if ($constructible == 'appartement' && isset($request['type']) && !is_null($request['type']))
             {
 
@@ -244,7 +246,7 @@ class DossierController extends Controller
             switch ($constructible) {
                 case 'appartement':
                 case 'magasin':
-                case 'box':
+                case 'place':
                     $dossiersAll = $dossiersAll->filter(function ($dossier) use ($tranchesArray)
                     {
                         if(in_array($dossier->produit->constructible->immeuble->tranche_id, $tranchesArray))
@@ -372,7 +374,10 @@ class DossierController extends Controller
         // recherche par etat légale du dossier
         if (isset($request['desisstement']) && $request['desisstement'] != '' ) {
 
-            $dossiersAll = Dossier::onlyTrashed()->get();  
+            $dossiersAll = Dossier::onlyTrashed()
+                            ->whereHas('produit', function (Builder $query) use ($projet_id) {
+                                    $query->where('projet_id', $projet_id);
+                            })->get();  
         }
 
            $dossiersParPage = $this->paginate($dossiersAll) ;
@@ -474,7 +479,7 @@ class DossierController extends Controller
         $tranches = Tranche::all();
         $tranchesArray = ($tranche == null) ? $tranches->pluck('id')->toArray() : [$tranche] ;
         $constructiblesArray = ($constructible == null) ?
-                    ['lot','appartement','box','magasin','bureau'] : [$constructible] ;
+                    ['lot','appartement','place','magasin','bureau'] : [$constructible] ;
 
 
         $All = Produit::with('constructible')
@@ -590,7 +595,7 @@ class DossierController extends Controller
             switch ($constructible) {
                 case 'appartement':
                 case 'magasin':
-                case 'box':
+                case 'place':
                     $dossiersAll = $dossiersAll->filter(function ($dossier) use ($tranchesArray)
                     {
                         if(in_array($dossier->produit->constructible->immeuble->tranche_id, $tranchesArray))

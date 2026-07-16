@@ -3,7 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Appartement;
-use App\Models\Box;
+use App\Models\Place;
 use App\Models\Etiquette;
 use App\Models\Lot;
 use App\Models\Magasin;
@@ -47,7 +47,7 @@ class StockExport implements FromView, WithColumnFormatting, WithMapping, Should
     {
 
         //créer un tableau contenant tout les types de constructibles
-        $constructibleArray = ['appartement' ,'lot',  'bureau' , 'magasin' , 'box', 'showroom'] ;
+        $constructibleArray = ['appartement' ,'lot',  'bureau' , 'magasin' , 'place', 'showroom'] ;
 
         //une boucle pour collecter la data selon le type de constructible
         foreach ($constructibleArray as $constructible) {
@@ -97,7 +97,7 @@ class StockExport implements FromView, WithColumnFormatting, WithMapping, Should
                      break;
                  case 'appartement':
                  case 'magasin':
-                 case 'box':
+                 case 'place':
                     ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}
                             ->groupBy('constructible.immeuble.tranche_id');
                      break;
@@ -201,7 +201,7 @@ class StockExport implements FromView, WithColumnFormatting, WithMapping, Should
                 'Appartements'=>'appartement',
                 'Bureaux' => 'bureau',
                 'Magasins' =>'magasin',
-                'Boxes' => 'box',
+                'Places' => 'place',
                 //'Showrooms' => 'showroom'
             ]
             ] +
@@ -213,8 +213,8 @@ class StockExport implements FromView, WithColumnFormatting, WithMapping, Should
                                     ['magasin' => $magasinDossiers] + 
                                     ['Magasins' => $magasinsDossiers] +
 
-                                    ['box' => $boxDossiers] + 
-                                    ['Boxes' => $boxsDossiers] +
+                                    ['place' => $placeDossiers] + 
+                                    ['Places' => $placesDossiers] +
 
                                     ['bureau' => $bureauDossiers] +
                                     ['Bureaux' => $bureausDossiers]// +

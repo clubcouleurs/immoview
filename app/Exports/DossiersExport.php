@@ -29,22 +29,53 @@ class DossiersExport implements FromView
     */
 	public function view(): View
     {
+
         $constructible = $this->request['constructible'] ;
-        if (Gate::none(['voir dossiers ' . p($constructible), 'voir ses propres dossiers'])) {
-            abort(403);
+        $projet_id = session('projet_id') ;
+
+        if ($constructible == 'appartement' && isset($this->request['type']) && !is_null($this->request['type']))
+        {
+            $typeApp = $this->request['type'] ;
         }
 
+        if (Gate::none(['voir dossiers ' . p($constructible),
+                'voir ses propres dossiers'
+                , 'voir dossiers ' . p($constructible) . ' standing'])) {
+            abort(403);
+        }
+        if (!isset($typeApp) && $constructible=="appartement" && !Gate::allows('voir dossiers ' . p($constructible))) {
+            abort(403);
+        }  
+
         $tranche = $this->request['tranche'] ;
-        $tranches = Tranche::all();
+        $tranches = Tranche::where('projet_id' , session('projet_id'))->orderBy('num')->get();
         $tranchesArray = ($tranche == null) ? $tranches->pluck('id')->toArray() : [$tranche] ;
         $constructiblesArray = ($constructible == null) ?
-                    ['lot','appartement','box','magasin','bureau'] : [$constructible] ;
+                    ['lot','appartement','place','magasin','bureau'] : [$constructible] ;
 
+          if ($constructible == 'appartement' && isset($this->request['type']) && !is_null($this->request['type']))
+            {
 
-        $All = Produit::with('constructible')
-                            ->whereIn('constructible_type', $constructiblesArray)
-                            ->with('etiquette')
-                            ->get();
+                $All = Produit::with('constructible')
+                                    ->whereIn('constructible_type', $constructiblesArray)
+                                    ->whereHasMorph('constructible',
+                                                [Appartement::class],
+                                                function (Builder $qu) use ($typeApp)
+                                            {
+                                                $qu->where('type', $typeApp);
+
+                                            })                                    
+                                    ->with('etiquette')
+                                    ->where('projet_id', $projet_id)
+                                    ->get();
+            }else
+            {
+                $All = Produit::with('constructible')
+                                    ->whereIn('constructible_type', $constructiblesArray)
+                                    ->with('etiquette')
+                                    ->where('projet_id', $projet_id)
+                                    ->get();                
+            }
 
         $reserved = $All->where('etiquette_id', 3)->count() ;
         $stocked = $All->where('etiquette_id', 2)->count() ;
@@ -52,7 +83,33 @@ class DossiersExport implements FromView
         $blocked = $All->whereNotIn('etiquette_id', [3,2,9])->count() ;
 
 
-        if (Gate::allows('voir dossiers ' . p($constructible))) {
+        if (Gate::allows('voir dossiers ' . p($constructible)) 
+            || Gate::allows('voir dossiers ' . p($constructible) . ' standing')) {
+        if ($constructible == 'appartement' && isset($this->request['type']) && !is_null($this->request['type']))
+        {
+        $dossiersAll = Dossier::whereHas('produit', function (Builder $query) use ($typeApp, $constructiblesArray)
+                            {
+                                $query->whereIn('constructible_type', $constructiblesArray)
+                                ->whereHasMorph('constructible',
+                                            [Appartement::class],
+                                            function (Builder $qu) use ($typeApp)
+                                        {
+                                            $qu->where('type', $typeApp);
+
+                                        })
+                                ;
+                            })
+                            ->whereHas('produit', function (Builder $query) use ($projet_id) {
+                                    $query->where('projet_id', $projet_id);
+                                })        
+                            ->with('produit')
+                            ->with('delais')
+                            ->with('clients')
+                            ->with('paiements')->orderbyDesc('created_at')
+                            ->get(); 
+                        }
+                        else
+                        {
         $dossiersAll = Dossier::whereHas('produit', function (Builder $query) use ($constructiblesArray)
                             {
                                 $query->whereIn('constructible_type', $constructiblesArray);
@@ -61,10 +118,16 @@ class DossiersExport implements FromView
                             ->with('delais')
                             ->with('clients')
                             ->with('paiements')->orderbyDesc('created_at')
-                            ->get(); 
+                            ->whereHas('produit', function (Builder $query) use ($projet_id) {
+                                    $query->where('projet_id', $projet_id);
+                            })                            
+                            ->get();                             
+                        }
         }
         elseif(Gate::allows('voir ses propres dossiers'))
         {
+          if ($constructible == 'appartement' && isset($this->request['type'])  && !is_null($this->request['type']))
+            {
         $dossiersAll = Dossier::where('user_id' , Auth::user()->id)->
         whereHas('produit', function (Builder $query) use ($constructiblesArray)
                             {
@@ -73,8 +136,28 @@ class DossiersExport implements FromView
                             ->with('produit')
                             ->with('delais')
                             ->with('clients')
+                            ->whereHas('produit', function (Builder $query) use ($projet_id) {
+                                    $query->where('projet_id', $projet_id);
+                            })                            
                             ->with('paiements')->orderbyDesc('created_at')
-                            ->get();           
+                            ->get();                
+            }
+        else
+        {
+        $dossiersAll = Dossier::where('user_id' , Auth::user()->id)->
+        whereHas('produit', function (Builder $query) use ($constructiblesArray)
+                            {
+                                $query->whereIn('constructible_type', $constructiblesArray);
+                            })
+                            ->whereHas('produit', function (Builder $query) use ($projet_id) {
+                                    $query->where('projet_id', $projet_id);
+                            })        
+                            ->with('produit')
+                            ->with('delais')
+                            ->with('clients')
+                            ->with('paiements')->orderbyDesc('created_at')
+                            ->get();
+            }
         }
         //recherche par taux de paiement
         if (isset($this->request['sign']) && $this->request['sign'] != '' ) {
@@ -84,7 +167,11 @@ class DossiersExport implements FromView
             $tauxComparateur = $this->request['tauxComparateur'] ;
             $sign = $this->request['sign'] ;
             $dossiersAll = $dossiersAll->filter(function ($dossier) use ($sign, $tauxComparateur)  {
-            $taux = $dossier->tauxPaiementV ;
+            // $taux = $dossier->paiements->sum('montant') * 100 /
+            //                 ($dossier->produit->Total) ;
+
+            $taux = $dossier->tauxPaiementV ;   
+
                 switch ($sign) {
                     case '>':
                     if ($taux > $tauxComparateur) {
@@ -144,13 +231,12 @@ class DossiersExport implements FromView
 
         }        
 
-
         //recherche par tranche
         if (isset($tranche) && $tranche != '-' ) {
             switch ($constructible) {
                 case 'appartement':
                 case 'magasin':
-                case 'box':
+                case 'place':
                     $dossiersAll = $dossiersAll->filter(function ($dossier) use ($tranchesArray)
                     {
                         if(in_array($dossier->produit->constructible->immeuble->tranche_id, $tranchesArray))
@@ -229,7 +315,6 @@ class DossiersExport implements FromView
             $dateStartExist = true ;
 
         }
-
         //recherche par prix
         if (isset($this->request['dateEnd']) && $this->request['dateEnd'] != '' ) {
             $de =  $this->request['dateEnd'] ;
@@ -259,13 +344,33 @@ class DossiersExport implements FromView
             $dossiersAll = $dossiersAll->where('date' , $dateEnd); 
         }
 
-
-
         //recherche par etat du dossier
         if (isset($this->request['etatDossier']) && $this->request['etatDossier'] != '-' ) {
             $etat = $this->request['etatDossier'] ;
             $dossiersAll = $dossiersAll->where('isVente', $etat);  
-        }           
+        }
+
+        // recherche par etat légale du dossier
+        if (isset($this->request['litige']) && $this->request['litige'] != '' ) {
+            $litige = $this->request['litige'] ;
+            $dossiersAll = $dossiersAll->where('litige', $litige);  
+        }
+        // recherche par etat transfert du dossier
+        if (isset($this->request['transfert']) && $this->request['transfert'] != '' ) {
+
+            $dossiersAll = $dossiersAll->whereNotNull('transferred_at');  
+        }        
+
+        // recherche par etat légale du dossier
+        if (isset($this->request['desisstement']) && $this->request['desisstement'] != '' ) {
+
+            $dossiersAll = Dossier::onlyTrashed()
+                            ->whereHas('produit', function (Builder $query) use ($projet_id) {
+                                    $query->where('projet_id', $projet_id);
+                            })->get();  
+        }
+
+     
 
         return view('exports.dossiers', [
             'dossiers'              => $dossiersAll,

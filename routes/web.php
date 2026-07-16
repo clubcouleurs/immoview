@@ -91,6 +91,7 @@ Route::get('clients/export/', [ClientController::class, 'export'])->middleware('
 
 Route::get('appartements/export/', [AppartementController::class, 'export'])->middleware('can:voir appartements');
 Route::get('magasins/export/', [MagasinController::class, 'export'])->middleware('can:voir magasins');
+Route::get('places/export/', [PlaceController::class, 'export'])->middleware('can:voir places');
 
 //Route::get('/{constructible?}/{tranche?}/dossiers', [DossierController::class, 'index']);
 
@@ -224,9 +225,9 @@ Route::middleware(['can:view,dossier'])->group(function () {
 	//rajoutée le 06/07/22 
 	Route::get('/dossiers/{dossier}/acte-vente', [DossierController::class, 'acte_vente']);
 
-	// fin modification du 06/07/22
+	// fin modification du 16/07/26
+	// tous les contrats ont le même chemin, même fichier html, 
 	Route::get('/dossiers/{dossier}/actes', [DossierController::class, 'actes']);
-
 
 
 });

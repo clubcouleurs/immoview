@@ -23,7 +23,7 @@ class StockController extends Controller
     public function index()
     {
         //créer un tableau contenant tout les types de constructibles
-        $constructibleArray = ['appartement' ,'lot',  'bureau' , 'magasin' , 'box', 'showroom' , 'standing'] ;
+        $constructibleArray = ['appartement' ,'lot',  'bureau' , 'magasin' , 'place', 'showroom' , 'standing'] ;
 
         //une boucle pour collecter la data selon le type de constructible
         foreach ($constructibleArray as $constructible) {
@@ -104,7 +104,7 @@ class StockController extends Controller
                      break;
                  case 'appartement':
                  case 'magasin':
-                 case 'box':
+                 case 'place':
                     ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}
                             ->groupBy('constructible.immeuble.tranche.num');
                      break;
@@ -220,8 +220,8 @@ class StockController extends Controller
                 'Appartements'=>'appartement',
                 'Bureaux' => 'bureau',
                 'Magasins' =>'magasin',
-                'Boxes' => 'box',
-                'Standings' => 'standing'
+                'Places' => 'place',
+
             ]
             ] +
             ['appartement' => $appartementDossiers] +
@@ -232,13 +232,11 @@ class StockController extends Controller
                                     ['magasin' => $magasinDossiers] + 
                                     ['Magasins' => $magasinsDossiers] +
 
-                                    ['box' => $boxDossiers] + 
-                                    ['Boxes' => $boxsDossiers] +
+                                    ['place' => $placeDossiers] + 
+                                    ['Places' => $placesDossiers] +
 
                                     ['bureau' => $bureauDossiers] +
-                                    ['Bureaux' => $bureausDossiers] +
-                                    ['standing' => $standingDossiers] +
-                                    ['Standings' => $standingsDossiers]                                    
+                                    ['Bureaux' => $bureausDossiers]                                  
 
         ) ;
     }

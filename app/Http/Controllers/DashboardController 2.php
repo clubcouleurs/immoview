@@ -61,7 +61,7 @@ SELECT an, mois,
     max(case when (constructible_type='magasin') then nombreVentes else 0 end) as 'magasin',
     max(case when (constructible_type='appartement') then nombreVentes else 0 end) as 'appartement',
     max(case when (constructible_type='bureau') then nombreVentes else 0 end) as 'bureau',
-    max(case when (constructible_type='box') then nombreVentes else 0 end) as 'box'
+    max(case when (constructible_type='place') then nombreVentes else 0 end) as 'place'
 FROM
 (
     SELECT produits.constructible_type as constructible_type, YEAR (dossiers.date) as an, MONTH(dossiers.date) as mois , COUNT(*) as nombreVentes
@@ -247,7 +247,7 @@ $nombreVentesParMois = \DB::select("
             // 'valeurTotalAppartements' => $prixTotalappartements->sum(),
             // 'valeurTotalBureaux' => $prixTotalbureaux->sum(),
             //'valeurTotalMagasins' => $prixTotalmagasins->sum(),
-            //'valeurTotalBoxes' => $prixTotalboxes->sum(),
+            //'valeurTotalplaces' => $prixTotalplaces->sum(),
             'dossiers' => Dossier::getAllDossiersProjet($projet->id),
 
 	        'nombreVisites' => $nombreVisites,

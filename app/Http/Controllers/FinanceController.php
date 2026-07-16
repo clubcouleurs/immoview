@@ -22,7 +22,7 @@ class FinanceController extends Controller
     public function index()
     {
         //créer un tableau contenant tout les types de constructibles
-        $constructibleArray = ['appartement' ,'lot',  'bureau' , 'magasin' , 'box', 'showroom','standing'] ;
+        $constructibleArray = ['appartement' ,'lot',  'bureau' , 'magasin' , 'place', 'showroom'] ;
         //une boucle pour collecter la data selon le type de constructible
         foreach ($constructibleArray as $constructible) {
         if ($constructible == 'showroom') {  
@@ -38,20 +38,6 @@ class FinanceController extends Controller
                                 )
                             ->with('paiements')
                             ->get();           
-        }elseif($constructible == 'standing')
-        {
-            ${$constructible . 'Dossiers'} = Produit::where('constructible_type', 'appartement')
-                            ->with('dossier')
-                            ->with('constructible')
-                            ->whereHasMorph(
-                                    'constructible',
-                                    [Appartement::class],
-                                    function (Builder $query) {
-                                        $query->where('type','Standing');
-                                    }
-                                )
-                            ->with('paiements')
-                            ->get();
         }
         elseif($constructible == 'appartement')
         {
@@ -61,7 +47,6 @@ class FinanceController extends Controller
                             ->whereHasMorph(
                                     'constructible',
                                     [Appartement::class],
-
                                 )
                             ->with('paiements')
                             ->get();
@@ -98,14 +83,11 @@ class FinanceController extends Controller
                      break;
                  case 'appartement':
                  case 'magasin':
-                 case 'box':
+                 case 'place':
                     ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}
                             ->groupBy('constructible.immeuble.tranche.num');
                      break;
-                 case 'standing':
-                    ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}
-                            ->groupBy('constructible.immeuble.num');
-                     break;                     
+                   
                  case 'bureau':
                     ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}
                             ->groupBy('constructible.situable.immeuble.tranche.num');
@@ -274,8 +256,7 @@ class FinanceController extends Controller
                 'Appartements'=>'appartement',
                 'Bureaux' => 'bureau',
                 'Magasins' =>'magasin',
-                'Boxes' => 'box',
-                'Standings' => 'standing'
+                'Places' => 'place',
                 //'Showrooms' => 'showroom'
             ]
             ] +
@@ -287,13 +268,11 @@ class FinanceController extends Controller
                                     ['magasin' => $magasinDossiers] + 
                                     ['Magasins' => $magasinsDossiers] +
 
-                                    ['box' => $boxDossiers] + 
-                                    ['Boxes' => $boxsDossiers] +
+                                    ['place' => $placeDossiers] + 
+                                    ['Places' => $placesDossiers] +
 
                                     ['bureau' => $bureauDossiers] +
-                                    ['Bureaux' => $bureausDossiers]+
-                                    ['standing' => $standingDossiers] +
-                                    ['Standings' => $standingsDossiers]                                    
+                                    ['Bureaux' => $bureausDossiers]                                  
 
         ) ;
     }

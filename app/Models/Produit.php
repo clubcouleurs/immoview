@@ -15,6 +15,7 @@ class Produit extends Model
 {
     use BelongsToProject;
     use HasFactory;
+    
     protected $fillable = ['prixM2Indicatif','prixM2Definitif', 'etiquette_id','projet_id'];
 
     public function constructible()

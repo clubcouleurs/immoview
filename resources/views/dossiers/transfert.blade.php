@@ -35,7 +35,24 @@
               class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800"
             >
 
+@if(count($dossier->transferts) != 0 )
+  <hr class="mt-4 mb-4">
+                  <span class="text-gray-700 dark:text-gray-400">
+                  Documents des anciens transferts
+                </span>
+
+  <div class="mb-6">
+    @foreach($dossier->transferts as $transfert)
+      <a href="{{asset($transfert->document_legalise_path)}}" 
+         class="text-blue-600 underline">
+          📄 Retélécharger le document à légaliser
+      </a>
+    @endforeach
+  </div>
+@endif
+
 <hr class="mt-4">
+
 
  @can('supprimer dossiers')
 

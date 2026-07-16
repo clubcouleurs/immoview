@@ -30,7 +30,7 @@ class ProduitRequest extends FormRequest
         $idApp = (isset($this->appartement->id)) ? $this->appartement->id : Null ;
         $idMag = (isset($this->magasin->id)) ? $this->magasin->id : Null ;
         $idBur = (isset($this->office->id)) ? $this->office->id : Null ;
-        $idBox = (isset($this->box->id)) ? $this->box->id : Null ;
+        $idplace = (isset($this->place->id)) ? $this->place->id : Null ;
 
         return [
             
@@ -44,8 +44,8 @@ class ProduitRequest extends FormRequest
             // 'numBur' => 'sometimes|required|numeric',
             // 'numBur' => 'unique:offices,num,'.$idBur, 
 
-            // 'numBox' => 'sometimes|required|numeric',
-            // 'numBox' => 'unique:boxes,num,'.$idBox, 
+            // 'numplace' => 'sometimes|required|numeric',
+            // 'numplace' => 'unique:places,num,'.$idplace, 
 
 
 
@@ -93,7 +93,7 @@ class ProduitRequest extends FormRequest
             'numMag.unique' => 'Ce numéro de magasin existe déjà',
             'numApp.unique' => 'Ce numéro d\' appartement existe déjà',
             'numBur.unique' => 'Ce numéro de bureau existe déjà',
-            'num.unique' => 'Ce numéro de box existe déjà',
+            'num.unique' => 'Ce numéro de place existe déjà',
 
             'surfaceLot.required' => 'Merci de siaisir une surface pour ce lot',
             'surfaceLot.numeric' => 'La surface du lot doit être en chiffre',

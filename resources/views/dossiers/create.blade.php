@@ -21,7 +21,7 @@
               </div>
               @else
              
-             @canany(['Ajouter dossiers lots', 'Ajouter dossiers appartements', 'Ajouter dossiers magasins', 'Ajouter dossiers bureaux', 'Ajouter dossiers boxes'])
+             @canany(['Ajouter dossiers lots', 'Ajouter dossiers appartements', 'Ajouter dossiers magasins', 'Ajouter dossiers bureaux', 'Ajouter dossiers places'])
             <!-- la boite pour rechercher un produit avant son affectation -->
 <div class="bg-blue-100 rounded-lg px-4 py-4 mb-4 text-sm">
 <div x-data="produitSearch()">
@@ -90,7 +90,7 @@
                     <span class="ml-2">Bureau</span>
                   </label>
                   @endcan
-                   @can('Ajouter dossiers boxes')   
+                   @can('Ajouter dossiers places')   
                   <label
                     class="inline-flex items-center mr-6 text-gray-600 dark:text-gray-400"
                   >

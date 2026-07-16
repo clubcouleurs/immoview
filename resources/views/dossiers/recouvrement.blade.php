@@ -275,7 +275,7 @@
                 @endcan
             @canany(['voir dossiers appartements',
                      'voir dossiers lots',
-                     'voir dossiers boxes',
+                     'voir dossiers places',
                      'voir dossiers magasins',
                      'voir dossiers bureaux',
                      'voir ses propres dossiers'])
@@ -344,7 +344,7 @@
 
             @canany(['editer dossiers appartements',
                      'editer dossiers lots',
-                     'editer dossiers boxes',
+                     'editer dossiers places',
                      'editer dossiers magasins',
                      'editer dossiers bureaux',
                      'editer ses propres dossiers'])              
@@ -369,7 +369,7 @@
             @endcanany
             @canany(['supprimer dossiers appartements',
                      'supprimer dossiers lots',
-                     'supprimer dossiers boxes',
+                     'supprimer dossiers places',
                      'supprimer dossiers magasins',
                      'supprimer dossiers bureaux',
                      'supprimer ses propres dossiers'])

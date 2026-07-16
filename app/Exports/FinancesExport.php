@@ -44,7 +44,7 @@ class FinancesExport implements FromView, WithColumnFormatting, WithMapping, Sho
 	public function view(): View
     {
         //créer un tableau contenant tout les types de constructibles
-        $constructibleArray = ['appartement' ,'lot',  'bureau' , 'magasin' , 'box', 'showroom','standing'] ;
+        $constructibleArray = ['appartement' ,'lot',  'bureau' , 'magasin' , 'place', 'showroom'] ;
         //une boucle pour collecter la data selon le type de constructible
         foreach ($constructibleArray as $constructible) {
         if ($constructible == 'showroom') {  
@@ -60,20 +60,6 @@ class FinancesExport implements FromView, WithColumnFormatting, WithMapping, Sho
                                 )
                             ->with('paiements')
                             ->get();           
-        }elseif($constructible == 'standing')
-        {
-            ${$constructible . 'Dossiers'} = Produit::where('constructible_type', 'appartement')
-                            ->with('dossier')
-                            ->with('constructible')
-                            ->whereHasMorph(
-                                    'constructible',
-                                    [Appartement::class],
-                                    function (Builder $query) {
-                                        $query->where('type','Standing');
-                                    }
-                                )
-                            ->with('paiements')
-                            ->get();
         }
         elseif($constructible == 'appartement')
         {
@@ -83,9 +69,6 @@ class FinancesExport implements FromView, WithColumnFormatting, WithMapping, Sho
                             ->whereHasMorph(
                                     'constructible',
                                     [Appartement::class],
-                                    function (Builder $query) {
-                                        $query->where('type','Economique');
-                                    }
                                 )
                             ->with('paiements')
                             ->get();
@@ -122,7 +105,7 @@ class FinancesExport implements FromView, WithColumnFormatting, WithMapping, Sho
                      break;
                  case 'appartement':
                  case 'magasin':
-                 case 'box':
+                 case 'place':
                     ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}
                             ->groupBy('constructible.immeuble.tranche_id');
                      break;
@@ -298,8 +281,7 @@ class FinancesExport implements FromView, WithColumnFormatting, WithMapping, Sho
                 'Appartements'=>'appartement',
                 'Bureaux' => 'bureau',
                 'Magasins' =>'magasin',
-                'Boxes' => 'box',
-                'Standings' => 'standing'
+                'Places' => 'place',
                 //'Showrooms' => 'showroom'
             ]
             ] +
@@ -311,18 +293,16 @@ class FinancesExport implements FromView, WithColumnFormatting, WithMapping, Sho
                                     ['magasin' => $magasinDossiers] + 
                                     ['Magasins' => $magasinsDossiers] +
 
-                                    ['box' => $boxDossiers] + 
-                                    ['Boxes' => $boxsDossiers] +
+                                    ['place' => $placeDossiers] + 
+                                    ['Places' => $placesDossiers] +
 
                                     ['bureau' => $bureauDossiers] +
-                                    ['Bureaux' => $bureausDossiers]+
-                                    ['standing' => $standingDossiers] +
-                                    ['Standings' => $standingsDossiers]                                    
+                                    ['Bureaux' => $bureausDossiers]                                  
 
         );
 
        /* //créer un tableau contenant tout les types de constructibles
-        $constructibleArray = ['appartement' ,'lot',  'bureau' , 'magasin' , 'box', 'showroom'] ;
+        $constructibleArray = ['appartement' ,'lot',  'bureau' , 'magasin' , 'place', 'showroom'] ;
 
         //une boucle pour collecter la data selon le type de constructible
         foreach ($constructibleArray as $constructible) {
@@ -372,7 +352,7 @@ class FinancesExport implements FromView, WithColumnFormatting, WithMapping, Sho
                      break;
                  case 'appartement':
                  case 'magasin':
-                 case 'box':
+                 case 'place':
                     ${$constructible . 'Dossiers'} = ${$constructible . 'Dossiers'}
                             ->groupBy('constructible.immeuble.tranche_id');
                      break;
@@ -529,7 +509,7 @@ class FinancesExport implements FromView, WithColumnFormatting, WithMapping, Sho
                 'Appartements'=>'appartement',
                 'Bureaux' => 'bureau',
                 'Magasins' =>'magasin',
-                'Boxes' => 'box',
+                'placees' => 'place',
             ]
             ] +
             ['appartement' => $appartementDossiers] +
@@ -540,8 +520,8 @@ class FinancesExport implements FromView, WithColumnFormatting, WithMapping, Sho
                                     ['magasin' => $magasinDossiers] + 
                                     ['Magasins' => $magasinsDossiers] +
 
-                                    ['box' => $boxDossiers] + 
-                                    ['Boxes' => $boxsDossiers] +
+                                    ['place' => $placeDossiers] + 
+                                    ['placees' => $placesDossiers] +
 
                                     ['bureau' => $bureauDossiers] +
                                     ['Bureaux' => $bureausDossiers]

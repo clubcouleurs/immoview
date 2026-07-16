@@ -20,7 +20,8 @@
                       <th width="15" bgcolor="#ffdc73">Prix m2</th>
                       @endif
                       <th width="18" bgcolor="#ffdc73">Prix Total</th>
-                      <th width="10" bgcolor="#ffdc73">Taux</th>
+                      <th width="10" bgcolor="#ffdc73">Taux de paiements</th>
+                      <th width="10" bgcolor="#ffdc73">Immeuble</th>
                       <th width="10" bgcolor="#ffdc73">Tranche</th>
                       <th width="10" bgcolor="#ffdc73">Surface</th>
                       <th width="10" bgcolor="#ffdc73">Etage</th>
@@ -122,7 +123,10 @@
 
                       <td>
                           {{ $dossier->tauxPaiementV }} %
-                      </td>      
+                      </td>   
+                      <td>
+                          {{ $dossier->produit->immeuble }}
+                      </td>                           
                       <td>
                           {{ $dossier->produit->tranche }}
                       </td>  
